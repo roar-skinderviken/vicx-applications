@@ -10,7 +10,7 @@ updates:
 
   - package-ecosystem: npm
     versioning-strategy: increase
-    directory: "/web-frontend"
+    directory: "/frontend"
     schedule:
       interval: daily
       time: "03:00"
