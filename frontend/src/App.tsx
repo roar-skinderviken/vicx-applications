@@ -9,7 +9,7 @@ const App = () => {
 
     const handleCalculation = async (operation: 'plus' | 'minus') => {
         setOperation(operation);
-        const response = await fetch(`/api/${firstValue}/${secondValue}/${operation}`);
+        const response = await fetch(`api/${firstValue}/${secondValue}/${operation}`);
         const data = await response.json();
         setResult(data.result);
     };
