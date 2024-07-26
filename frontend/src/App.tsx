@@ -1,6 +1,8 @@
 import {useState} from 'react';
 import './App.css';
 
+const baseUrl = import.meta.env.BASE_URL;
+
 const App = () => {
     const [firstValue, setFirstValue] = useState<number>(0);
     const [secondValue, setSecondValue] = useState<number>(0);
@@ -9,7 +11,7 @@ const App = () => {
 
     const handleCalculation = async (operation: 'plus' | 'minus') => {
         setOperation(operation);
-        const response = await fetch(`api/${firstValue}/${secondValue}/${operation}`);
+        const response = await fetch(`${baseUrl}api/${firstValue}/${secondValue}/${operation}`);
         const data = await response.json();
         setResult(data.result);
     };
