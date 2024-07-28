@@ -1,8 +1,8 @@
 plugins {
     java
-    war
     id("org.springframework.boot") version "3.3.1"
     id("io.spring.dependency-management") version "1.1.5"
+    id("com.google.cloud.tools.jib") version "3.4.3"
 }
 
 java {
@@ -17,12 +17,15 @@ repositories {
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
-    providedRuntime("org.springframework.boot:spring-boot-starter-tomcat")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
-tasks.withType<Test> {
+springBoot {
+    mainClass = "no.javatec.calc.CalculatorApplication"
+}
+
+tasks.test {
     useJUnitPlatform()
 }
 
@@ -41,4 +44,9 @@ tasks.register<Copy>("processFrontendResources") {
 
 tasks.processResources {
     dependsOn("processFrontendResources")
+}
+
+jib {
+    from.image = "bellsoft/liberica-openjdk-alpine:21"
+    container { creationTime = "USE_CURRENT_TIMESTAMP" }
 }
