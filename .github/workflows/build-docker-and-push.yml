@@ -48,7 +48,7 @@ jobs:
       - name: Build with Gradle
         run: |
           ./gradlew clean bootJar jibDockerBuild --image=${{ env.DOCKER_IMAGE }}
-          --daemon --parallel --build-cache --info
+          --build-cache --info
 
       - name: Docker push
         run: |
