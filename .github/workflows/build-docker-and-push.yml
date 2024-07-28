@@ -10,7 +10,7 @@ on:
   pull_request:
 
 env:
-  REGISTRY: ghcr.io/roar-skinderviken
+  REGISTRY: ghcr.io
   IMAGE: ${{ github.repository }}
   TAG: ${{ format('main-{0}', github.event.pull_request.head.sha || github.sha) }}
 
