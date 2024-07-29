@@ -58,8 +58,8 @@ jobs:
   retag_docker:
     if: ${{ startsWith(github.ref, 'refs/tags/') }}
     permissions:
-      contents: "read"
-      id-token: "write"
+      contents: read
+      packages: write
     runs-on: ubuntu-latest
     steps:
       - name: Set docker image env var
