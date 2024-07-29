@@ -18,7 +18,7 @@ const App = () => {
 
     return <div>
         <div className="mb-3">
-            <label htmlFor="firstValue" className="form-label">First Value Hello World 2</label>
+            <label htmlFor="firstValue" className="form-label">First Value Hello World</label>
             <input
                 type="number"
                 className="form-control"
