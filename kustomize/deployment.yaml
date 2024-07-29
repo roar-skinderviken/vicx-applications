@@ -14,6 +14,6 @@ spec:
     spec:
       containers:
         - name: spring-react-calculator
-          image: ghcr.io/roar-skinderviken/spring-react-calculator:v1
+          image: ghcr.io/roar-skinderviken/spring-react-calculator:v2
           ports:
             - containerPort: 8080
