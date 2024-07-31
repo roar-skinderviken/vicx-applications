@@ -9,7 +9,7 @@ const App = () => {
     const [operation, setOperation] = useState<string>('');
     const [result, setResult] = useState<number | null>(null);
 
-    const handleCalculation = async (operation: 'plus' | 'minus') => {
+    const handleCalculation = async (operation: 'PLUS' | 'MINUS') => {
         setOperation(operation);
         const response = await fetch(`${baseUrl}api/${firstValue}/${secondValue}/${operation}`);
         const data = await response.json();
@@ -18,7 +18,7 @@ const App = () => {
 
     return <div>
         <div className="mb-3">
-            <label htmlFor="firstValue" className="form-label">First Value Hello World 2</label>
+            <label htmlFor="firstValue" className="form-label">First Value</label>
             <input
                 type="number"
                 className="form-control"
@@ -40,12 +40,12 @@ const App = () => {
         <div>
             <button
                 className="btn btn-primary me-2"
-                onClick={() => handleCalculation('plus')}>
+                onClick={() => handleCalculation('PLUS')}>
                 Add
             </button>
             <button
                 className="btn btn-secondary"
-                onClick={() => handleCalculation('minus')}>
+                onClick={() => handleCalculation('MINUS')}>
                 Subtract
             </button>
         </div>
