@@ -16,14 +16,12 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.http.MediaType;
 
-@SpringBootTest
-@AutoConfigureMockMvc
+@WebMvcTest(ApiController.class)
 class ApiControllerTest {
 
     @Autowired
@@ -34,14 +32,13 @@ class ApiControllerTest {
 
     @ParameterizedTest
     @MethodSource("provideValidTestParameters")
-    void given_valid_parameters_expect_ok_and_result(
+    void givenValidParameters_expectOkAndResult(
             long firstValue, long secondValue, CalculatorOperation operation, Long result
     ) throws Exception {
         var expectedResponse = new CalcVm(firstValue, secondValue, operation, result);
 
         given(calculatorService.calculate(firstValue, secondValue, operation))
                 .willReturn(expectedResponse);
-
 
         var requestBuilder = get(URL_TEMPLATE, firstValue, secondValue, operation).
                 contentType(MediaType.APPLICATION_JSON);
@@ -55,7 +52,7 @@ class ApiControllerTest {
     }
 
     @Test
-    void given_invalid_operation_expect_bad_request() throws Exception {
+    void givenInvalidOperation_expectBadRequest() throws Exception {
         var requestBuilder = get(URL_TEMPLATE, 1, 2, "invalid").
                 contentType(MediaType.APPLICATION_JSON);
 
