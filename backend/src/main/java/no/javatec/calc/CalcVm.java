@@ -4,6 +4,7 @@ public record CalcVm(
         long firstValue,
         long secondValue,
         CalculatorOperation operation,
-        long result
+        long result,
+        String message
 ) {
 }

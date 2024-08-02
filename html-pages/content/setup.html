@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="icon" href="img/nginx.png" type="image/png">
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+  <!-- Font Awesome CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+  <title>My Server Setup | VICX</title>
+  <style>
+    body {
+      scroll-behavior: smooth;
+      background-color: #f8f9fa;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      margin: 0;
+    }
+
+    .content {
+      flex: 1;
+    }
+
+    .hero {
+      background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('https://picsum.photos/3840/2160?random=2') center/cover no-repeat;
+      color: white;
+      padding: 100px 0;
+      text-align: center;
+      position: relative;
+    }
+
+    .hero h1 {
+      font-size: calc(2.5vw + 1rem);
+      padding: 20px;
+      margin-bottom: 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero h1 span {
+      animation: fadeInDown 1.5s;
+    }
+
+    .hero p {
+      animation: fadeInUp 1.5s;
+      font-size: 1.25rem;
+    }
+
+    @keyframes fadeInDown {
+      0% {
+        opacity: 0;
+        transform: translateY(-50px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeInUp {
+      0% {
+        opacity: 0;
+        transform: translateY(50px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .list-group-item {
+      transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.3s;
+      font-size: 1.25rem;
+      background-color: #ffffff;
+      margin-bottom: 15px;
+    }
+
+    .list-group-item:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      background-color: #e9ecef;
+    }
+
+    .list-group img {
+      max-width: 100px;
+      margin-bottom: 10px;
+    }
+
+    footer {
+      background-color: #343a40;
+      color: white;
+      padding: 20px 0;
+      width: 100%;
+    }
+
+    .social-icons a {
+      color: white;
+      font-size: 1.5rem;
+      margin: 0 10px;
+      transition: color 0.3s;
+    }
+
+    .social-icons a:hover {
+      color: #adb5bd;
+    }
+
+    .navbar {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 2;
+    }
+  </style>
+</head>
+<body>
+<!-- Top Navigation Bar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="http://vicx.no">VICX</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" href="http://vicx.no">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="#">Server Setup</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Main Content -->
+<main class="content">
+  <div class="hero">
+    <div class="container">
+      <h1><span>My Server Setup</span></h1>
+      <p class="lead">Follow these steps to set up your own server.</p>
+    </div>
+  </div>
+
+  <div class="container my-5">
+    <h2 class="text-center my-4">Server Setup Guide</h2>
+    <div class="row justify-content-center">
+      <div class="col-lg-8 col-md-10">
+        <div class="mb-4">
+          <h3>Step 1: Raspberry Pi 5 Setup</h3>
+          <img src="img/pic1blog.png" alt="Raspberry Pi Setup" class="img-fluid mb-3">
+          <p>Setting up Raspberry Pi 5 with Linux and booting it.</p>
+          <ul>
+            <li>Gather the necessary components: Raspberry Pi 5, Micro SD card, Micro SD card reader, and micro HDMI cable. Note that if you're able to connect to the internet provider, there won't be any need for a micro HDMI.</li>
+            <li>Load a 64-bit lightweight Linux distribution (e.g., Debian GNU/Linux) onto the Raspberry Pi.</li>
+            <li>This computer will be accessible via the SSH command later on.</li>
+          </ul>
+        </div>
+        <div class="mb-4">
+          <h3>Step 2: Setting up NGINX</h3>
+          <img src="img/nginx.png" alt="NGINX Setup" class="img-fluid mb-3" style="max-width: 200px;">
+          <p>Setting up the NGINX server to run your home site.</p>
+          <ol>
+            <li>NGINX will serve as the primary server for vicx.no.</li>
+            <li>Install NGINX using the terminal and configure it via "/etc/nginx/sites-available/default". Choose the appropriate ports and link the server to the domain (domain purchase will come in step 4).</li>
+            <li>Once configured, edit the HTML files in the "/var/www/html" directory, where the server will initially read the index.html by default.</li>
+          </ol>
+        </div>
+        <div class="mb-4">
+          <h3>Step 3: Configure Your Network</h3>
+          <img src="img/net.png" alt="Network Configuration" class="img-fluid mb-3" style="max-width: 200px;">
+          <p>Port forwarding and network configuration.</p>
+          <ul>
+            <li>Log in to your network, typically using a 192.168.x.x address, and authenticate as the administrator.</li>
+            <li>Configure your router to forward relevant ports to your server.</li>
+            <li>Assign a static IP address to the Raspberry Pi and set up port forwarding for the device.</li>
+          </ul>
+        </div>
+        <div class="mb-4">
+          <h3>Step 4: Domain Configuration</h3>
+          <img src="img/one.png" alt="Domain Configuration" class="img-fluid mb-3">
+          <p>Setting up your domain purchased from one.com.</p>
+          <ul>
+            <li>Once you have purchased the domain without server hosting, you are ready to proceed.</li>
+            <li>Add your public IP address to ensure that one.com can route the traffic to your server.</li>
+            <li>Here Certbot is used. Certbot automatically sets up and renews SSL/TLS certificates for your site, enabling secure HTTPS connections.</li>
+            <li>Disclaimer: Domains are typically rented, with a renewal period often set at 12 months before a new payment is required.</li>
+          </ul>
+        </div>
+        <div class="mb-4">
+          <h3>Step 5: Setting up a Java Server</h3>
+          <img src="img/tom.png" alt="Java Server Setup" class="img-fluid mb-3" style="max-width: 200px;">
+          <p>Setting up Apache Tomcat to run Java applications.</p>
+          <ul>
+            <li>Download and start Apache Tomcat. Ensure you have the ability to create .war files.</li>
+            <li>Configure NGINX to serve Tomcat on port 8080 and deploy the .war file under "/opt/tomcat/webapps". Start the server with "sudo /opt/tomcat/bin/startup.sh".</li>
+            <li>Create the .war file using Spring Boot and transfer it to the Raspberry Pi using the scp command: "scp /path/to/file username@server:/destination/path".</li>
+          </ul>
+        </div>
+        <div class="mb-4">
+          <h3>Step 6: Setting up JavaScript server</h3>
+          <img src="img/node.png" alt="JavaScript Server Setup" class="img-fluid mb-3" style="max-width: 200px;">
+          <p>Setting up Node.js to run JavaScript applications.</p>
+          <ul>
+            <li>Download Node.js as well as npm, we will host our server via pm2.</li>
+            <li>Create the JavaScript file, in this instance create a "Hello World" to see if it runs.</li>
+            <li>pm2 will start our servers, example of execution: "pm2 start helloworld.js".</li>
+            <li>Note that if you have multiple servers, pm2 will only restart one at a time. To properly restart pm2 run "pm2 restart all".</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- Footer -->
+<footer class="text-center text-lg-start mt-4">
+  <div class="container p-4">
+    <div class="row">
+      <div class="col-lg-6 col-md-12 mb-4 mb-md-0">
+        <h5 class="text-uppercase">VICX</h5>
+        <p>Thank you for reading about my server setup.</p>
+      </div>
+      <div class="col-lg-6 col-md-12 mb-4 mb-md-0">
+        <div class="social-icons">
+          <a href="#"><i class="fab fa-facebook-f"></i></a>
+          <a href="#"><i class="fab fa-twitter"></i></a>
+          <a href="#"><i class="fab fa-instagram"></i></a>
+          <a href="#"><i class="fab fa-linkedin-in"></i></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5yIbUpXpDA2QyJtc8qC5StGkTPq4vEUjFZgESt8CAssFZKfa8+YI5dz4R0aNd0v" crossorigin="anonymous"></script>
+</body>
+</html>
+
