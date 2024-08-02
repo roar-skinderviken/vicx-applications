@@ -54,7 +54,7 @@ const App = () => {
             <div className="mt-3">
                 <h4>Result</h4>
                 <p>
-                    {firstValue} {operation === 'plus' ? '+' : '-'} {secondValue} = {result}
+                    {firstValue} {operation === 'PLUS' ? '+' : '-'} {secondValue} = {result}
                 </p>
             </div>
         )}
