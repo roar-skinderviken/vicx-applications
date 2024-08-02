@@ -6,12 +6,12 @@ import org.springframework.stereotype.Service;
 public class CalculatorService {
 
     public CalcVm calculate(
-            long firstValue, long secondValue, CalculatorOperation operation, String message) {
+            long firstValue, long secondValue, CalculatorOperation operation) {
         var result = switch (operation) {
             case PLUS -> firstValue + secondValue;
             case MINUS -> firstValue - secondValue;
         };
 
-        return new CalcVm(firstValue, secondValue, operation, result, message);
+        return new CalcVm(firstValue, secondValue, operation, result);
     }
 }
