@@ -7,10 +7,10 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  APP_NAME: vicx-static-content
+  APP_NAME: snake-game
 
 jobs:
-  build_and_push_docker_static_content:
+  build_and_push_docker_snake_game:
     permissions:
       contents: read
       packages: write
@@ -38,7 +38,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build Docker image
-        run: docker build -t ${{ env.DOCKER_IMAGE }} ./html-pages
+        run: docker build -t ${{ env.DOCKER_IMAGE }} ./snake-game
 
       - name: Push Docker image
         run: docker push ${{ env.DOCKER_IMAGE }}

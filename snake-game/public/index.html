@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snake Game</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <style>
+        body {
+            background-color: #f0f0f0;
+            padding-top: 60px; /* Adjusted padding for the fixed navbar */
+        }
+
+        #game-board {
+            border: 2px solid #333;
+            background-color: #fff;
+            width: 400px;
+            height: 400px;
+            margin: 20px auto;
+            display: grid;
+            grid-template-columns: repeat(20, 1fr);
+            grid-template-rows: repeat(20, 1fr);
+        }
+
+        .snake {
+            width: 20px;
+            height: 20px;
+            background-color: #333;
+        }
+
+        .food {
+            width: 20px;
+            height: 20px;
+            background-color: #f00;
+        }
+
+        /* Additional Bootstrap classes for navbar */
+        .navbar {
+            background-color: #333;
+        }
+
+        .navbar-brand, .navbar-nav .nav-link {
+            color: #fff;
+        }
+
+        .navbar-brand:hover, .navbar-nav .nav-link:hover {
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body>
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+    <div class="container">
+        <a class="navbar-brand" href="#">Snake Game</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">About</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Instructions</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Game Board -->
+<div class="container">
+    <div id="game-board"></div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Constants
+        const GRID_SIZE = 20;
+        const CELL_SIZE = 20;
+        const INITIAL_SPEED = 200; // milliseconds
+
+        // Variables
+        let snake = [{x: 10, y: 10}];
+        let food = {x: 15, y: 10};
+        let dx = 1; // Initial direction: right
+        let dy = 0;
+        let score = 0;
+        let speed = INITIAL_SPEED;
+        let gameInterval;
+
+        // Game board element
+        const gameBoard = document.getElementById('game-board');
+
+        // Start the game
+        function startGame() {
+            // Reset variables
+            snake = [{x: 10, y: 10}];
+            food = {x: 15, y: 10};
+            dx = 1;
+            dy = 0;
+            score = 0;
+            speed = INITIAL_SPEED;
+
+            // Clear the game board
+            gameBoard.innerHTML = '';
+
+            // Start game loop
+            clearInterval(gameInterval);
+            gameInterval = setInterval(updateGame, speed);
+
+            // Add keyboard event listener
+            document.addEventListener('keydown', changeDirection);
+
+            // Draw initial snake and food
+            drawSnake();
+            drawFood();
+        }
+
+        // Draw the snake on the game board
+        function drawSnake() {
+            snake.forEach(segment => {
+                const snakeElement = document.createElement('div');
+                snakeElement.style.gridRowStart = segment.y;
+                snakeElement.style.gridColumnStart = segment.x;
+                snakeElement.classList.add('snake');
+                gameBoard.appendChild(snakeElement);
+            });
+        }
+
+        // Draw the food on the game board
+        function drawFood() {
+            const foodElement = document.createElement('div');
+            foodElement.style.gridRowStart = food.y;
+            foodElement.style.gridColumnStart = food.x;
+            foodElement.classList.add('food');
+            gameBoard.appendChild(foodElement);
+        }
+
+        // Update game state each frame
+        function updateGame() {
+            // Move snake
+            const head = {x: snake[0].x + dx, y: snake[0].y + dy};
+            snake.unshift(head);
+
+            // Check for collision with food
+            if (head.x === food.x && head.y === food.y) {
+                // Snake eats the food
+                score++;
+                speed -= 5; // Increase game speed
+                clearInterval(gameInterval);
+                gameInterval = setInterval(updateGame, speed);
+
+                // Generate new food
+                generateFood();
+            } else {
+                // Remove the tail
+                snake.pop();
+            }
+
+            // Check for collision with walls or itself
+            if (isCollision()) {
+                endGame();
+                return;
+            }
+
+            // Clear game board
+            gameBoard.innerHTML = '';
+
+            // Draw new snake and food
+            drawSnake();
+            drawFood();
+        }
+
+        // Generate new food position
+        function generateFood() {
+            food.x = Math.floor(Math.random() * GRID_SIZE) + 1;
+            food.y = Math.floor(Math.random() * GRID_SIZE) + 1;
+            // Ensure food does not spawn on the snake
+            while (snake.some(segment => segment.x === food.x && segment.y === food.y)) {
+                food.x = Math.floor(Math.random() * GRID_SIZE) + 1;
+                food.y = Math.floor(Math.random() * GRID_SIZE) + 1;
+            }
+        }
+
+        // Check for collision with walls or itself
+        function isCollision() {
+            const head = snake[0];
+            return (
+                head.x < 1 || head.x > GRID_SIZE ||
+                head.y < 1 || head.y > GRID_SIZE ||
+                snake.slice(1).some(segment => segment.x === head.x && segment.y === head.y)
+            );
+        }
+
+        // Change snake direction based on keyboard input
+        function changeDirection(event) {
+            switch (event.key) {
+                case 'ArrowUp':
+                    if (dy === 0) {
+                        dx = 0;
+                        dy = -1;
+                    }
+                    break;
+                case 'ArrowDown':
+                    if (dy === 0) {
+                        dx = 0;
+                        dy = 1;
+                    }
+                    break;
+                case 'ArrowLeft':
+                    if (dx === 0) {
+                        dx = -1;
+                        dy = 0;
+                    }
+                    break;
+                case 'ArrowRight':
+                    if (dx === 0) {
+                        dx = 1;
+                        dy = 0;
+                    }
+                    break;
+            }
+        }
+
+        // End the game
+        function endGame() {
+            clearInterval(gameInterval);
+            document.removeEventListener('keydown', changeDirection);
+            alert(`Game Over! Your score: ${score}`);
+        }
+
+        // Start the game initially
+        startGame();
+    });
+</script>
+</body>
+</html>
