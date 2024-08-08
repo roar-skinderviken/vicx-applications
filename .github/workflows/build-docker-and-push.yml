@@ -34,8 +34,10 @@ jobs:
         run: |
           echo "DOCKER_IMAGE=${REGISTRY}/${IMAGE}:${TAG}" >> $GITHUB_ENV
 
-#      - name: Set up QEMU
-#        uses: docker/setup-qemu-action@v3
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: linux/amd64,linux/arm64
 
       - name: Set up JDK 21
         uses: actions/setup-java@v4
