@@ -61,7 +61,7 @@ jobs:
         # run: ./gradlew clean bootJar jibDockerBuild --image=${{ env.DOCKER_IMAGE }} --build-cache --info
 
       - name: Build with jar
-        run: java -jar build/libs/app.jar
+        run: java -jar build/libs/backend.jar
 
       - name: Build and push Docker images
         uses: docker/build-push-action@v6
