@@ -47,6 +47,18 @@ tasks.processResources {
 }
 
 jib {
-    from.image = "bellsoft/liberica-openjdk-alpine:21"
+    from {
+        image = "bellsoft/liberica-openjdk-alpine:21"
+        platforms {
+            platform {
+                os = "linux"
+                architecture = "arm64"
+            }
+            platform {
+                os = "linux"
+                architecture = "amd64"
+            }
+        }
+    }
     container { creationTime = "USE_CURRENT_TIMESTAMP" }
 }
