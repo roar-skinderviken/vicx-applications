@@ -52,7 +52,7 @@ const App = () => {
 
         {result !== null && (
             <div className="mt-3">
-                <h4>Result Hello World</h4>
+                <h4>Result Hello Victor</h4>
                 <p>
                     {firstValue} {operation === 'PLUS' ? '+' : '-'} {secondValue} = {result}
                 </p>
