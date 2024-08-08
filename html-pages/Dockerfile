@@ -4,7 +4,7 @@
 # docker rm my-static-site # remove stopped container
 # docker rmi my-static-site # remove Docker-image
 
-FROM nginx
+FROM nginx:alpine
 
 COPY content/ /usr/share/nginx/html/
 
