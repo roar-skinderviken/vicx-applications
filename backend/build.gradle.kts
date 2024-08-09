@@ -29,6 +29,10 @@ tasks.test {
     useJUnitPlatform()
 }
 
+tasks.jar{
+    enabled = false
+}
+
 tasks.register<Copy>("processFrontendResources") {
     val backendTargetDir = project.layout.buildDirectory.dir("resources/main/static")
     val frontendBuildDir =
