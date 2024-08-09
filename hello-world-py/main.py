@@ -1,6 +1,7 @@
+import signal
 import time
-import atexit
 import logging
+import sys
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(message)s')
@@ -11,21 +12,25 @@ def on_startup():
     logger.info("Hello World")
 
 
-def on_shutdown():
-    logger.info("Good Bye")
+def on_sigterm(signum, frame):
+    logger.info("Goodbye (sigterm). Signal: %d, frame: %s", signum, frame)
+    time.sleep(30)
 
-    # emulate long running shutdown
+
+def on_sigint(signum, frame):
+    logger.info("Goodbye (sigint). Signal: %d, frame: %s", signum, frame)
     time.sleep(30)
 
 
 if __name__ == "__main__":
     on_startup()
 
-    # Register shutdown hook
-    atexit.register(on_shutdown)
+    signal.signal(signal.SIGINT, on_sigint)
+    signal.signal(signal.SIGTERM, on_sigterm)
 
     try:
         while True:
             time.sleep(1)
     except KeyboardInterrupt:
         logger.debug("Exiting due to keyboard interrupt.")
+        sys.exit(0)
