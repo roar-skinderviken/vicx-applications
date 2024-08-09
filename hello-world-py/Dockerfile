@@ -1,5 +1,5 @@
-# Stage 1: Build the wheel using Poetry
-FROM python:3.8-slim AS builder
+# Stage 1: Install dependencies using Poetry
+FROM python:3.12-slim AS builder
 
 # Install Poetry
 RUN pip install poetry
@@ -10,24 +10,20 @@ WORKDIR /app
 # Copy pyproject.toml and poetry.lock
 COPY pyproject.toml poetry.lock* /app/
 
-# Install dependencies and build the wheel
+# Install dependencies
 RUN poetry config virtualenvs.create false \
- && poetry install --no-dev \
- && poetry build -f wheel
+ && poetry install --only main
 
 # Stage 2: Production image
-FROM python:3.8-slim
+FROM python:3.12-slim
 
 # Set the working directory
 WORKDIR /app
 
-# Copy the wheel from the builder stage
-COPY --from=builder /app/dist/*.whl /app/
+# Copy the installed dependencies from the builder stage
+COPY --from=builder /app /app
 
-# Install the wheel package
-RUN pip install --no-cache-dir *.whl
-
-# Copy the rest of the application code
+# Copy the application code
 COPY . /app
 
 # Command to run the application
