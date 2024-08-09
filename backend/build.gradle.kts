@@ -30,7 +30,7 @@ tasks.test {
 }
 
 tasks.jar{
-    enabled = false
+    //enabled = false
 }
 
 tasks.register<Copy>("processFrontendResources") {

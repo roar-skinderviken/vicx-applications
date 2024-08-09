@@ -73,6 +73,7 @@ jobs:
           context: ./backend
           platforms: linux/amd64,linux/arm64
           push: true
+          provenance: false # to avoid unknown/unknown
           tags: |
             ${{ env.DOCKER_IMAGE }}
             ${{ env.DOCKER_IMAGE }}-gh${{ github.run_id }}

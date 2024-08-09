@@ -51,4 +51,5 @@ jobs:
           context: ./html-pages
           platforms: linux/amd64,linux/arm64
           push: true
+          provenance: false # to avoid unknown/unknown
           tags: ${{ env.DOCKER_IMAGE }}
