@@ -1,4 +1,4 @@
-name: Build Docker and push
+name: Build spring-react-calculator Docker and push
 
 on:
   push:
