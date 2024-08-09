@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "hello-goodbye-app"
+version = "0.1.0"
+description = "A simple Python app that logs startup and shutdown messages."
+authors = ["Your Name <your.email@example.com>"]
+packages = [{include = "src"}]
+
+[tool.poetry.dependencies]
+python = ">=3.11"
+
+[tool.poetry.scripts]
+main = "main:main"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
