@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -17,7 +18,10 @@ public class SecurityConfig {
         );
 
         http.headers(headers ->
-                headers.contentSecurityPolicy(csp ->
+
+                headers
+                        .frameOptions(HeadersConfigurer.FrameOptionsConfig::deny)
+                        .contentSecurityPolicy(csp ->
                         csp.policyDirectives(
                                 "default-src 'self'; " +
                                         "script-src 'self'; " +
