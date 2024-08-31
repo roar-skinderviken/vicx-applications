@@ -20,23 +20,20 @@ public class SecurityConfig {
             headers.permissionsPolicy(permissions -> permissions.policy("geolocation=(), microphone=(), camera=()"));
 
             headers
-                    //.frameOptions(HeadersConfigurer.FrameOptionsConfig::deny)
-                    //.xssProtection(HeadersConfigurer.XXssConfig::disable)
                     .contentSecurityPolicy(csp ->
-                            csp.policyDirectives("script-src 'self'")
-//                            csp.policyDirectives(
-//                                    "default-src 'self'; " +
-//                                            "script-src 'self'; " +
-//                                            "style-src 'self'; " +
-//                                            "img-src 'self'; " +
-//                                            "font-src 'self'; " +
-//                                            "connect-src 'self'; " +
-//                                            "media-src 'self'; " +
-//                                            "frame-src 'none'; " +  // Example for blocking iframes
-//                                            "frame-ancestors 'none'; " +  // Prevent framing
-//                                            "form-action 'self'; " +  // Restrict form submissions
-//                                            "base-uri 'self';"  // Restrict base URI                        ))
-//                            )
+                            csp.policyDirectives(
+                                    "default-src 'self'; " +
+                                            "script-src 'self'; " +
+                                            "style-src 'self'; " +
+                                            "img-src 'self'; " +
+                                            "font-src 'self'; " +
+                                            "connect-src 'self'; " +
+                                            "media-src 'self'; " +
+                                            "frame-src 'none'; " +  // Example for blocking iframes
+                                            "frame-ancestors 'none'; " +  // Prevent framing
+                                            "form-action 'self'; " +  // Restrict form submissions
+                                            "base-uri 'self';"  // Restrict base URI                        ))
+                            )
                     );
         });
         return http.build();
