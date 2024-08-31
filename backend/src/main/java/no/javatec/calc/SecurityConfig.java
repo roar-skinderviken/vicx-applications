@@ -21,6 +21,7 @@ public class SecurityConfig {
 
                 headers
                         .frameOptions(HeadersConfigurer.FrameOptionsConfig::deny)
+                        .xssProtection(HeadersConfigurer.XXssConfig::disable)
                         .contentSecurityPolicy(csp ->
                         csp.policyDirectives(
                                 "default-src 'self'; " +
