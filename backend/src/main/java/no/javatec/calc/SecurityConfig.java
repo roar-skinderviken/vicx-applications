@@ -4,7 +4,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -21,8 +20,8 @@ public class SecurityConfig {
             headers.permissionsPolicy(permissions -> permissions.policy("geolocation=(), microphone=(), camera=()"));
 
             headers
-                    .frameOptions(HeadersConfigurer.FrameOptionsConfig::deny)
-                    .xssProtection(HeadersConfigurer.XXssConfig::disable)
+                    //.frameOptions(HeadersConfigurer.FrameOptionsConfig::deny)
+                    //.xssProtection(HeadersConfigurer.XXssConfig::disable)
                     .contentSecurityPolicy(csp ->
                             csp.policyDirectives(
                                     "default-src 'self'; " +
