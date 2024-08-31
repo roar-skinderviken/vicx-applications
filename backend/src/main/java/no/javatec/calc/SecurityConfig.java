@@ -22,8 +22,16 @@ public class SecurityConfig {
                                 "default-src 'self'; " +
                                         "script-src 'self'; " +
                                         "style-src 'self'; " +
-                                        "img-src 'self';"
-                        ))
+                                        "img-src 'self'; " +
+                                        "font-src 'self'; " +
+                                        "connect-src 'self'; " +
+                                        "media-src 'self'; " +
+                                        "frame-src 'none'; " +  // Example for blocking iframes
+                                        "frame-ancestors 'none'; " +  // Prevent framing
+                                        "form-action 'self'; " +  // Restrict form submissions
+                                        "base-uri 'self';"  // Restrict base URI                        ))
+                        )
+                )
         );
         return http.build();
     }
