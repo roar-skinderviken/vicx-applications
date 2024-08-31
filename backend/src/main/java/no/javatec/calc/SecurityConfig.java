@@ -17,27 +17,28 @@ public class SecurityConfig {
                 authz.anyRequest().permitAll()
         );
 
-        http.headers(headers ->
+        http.headers(headers -> {
+            headers.permissionsPolicy(permissions -> permissions.policy("geolocation=(), microphone=(), camera=()"));
 
-                headers
-                        .frameOptions(HeadersConfigurer.FrameOptionsConfig::deny)
-                        .xssProtection(HeadersConfigurer.XXssConfig::disable)
-                        .contentSecurityPolicy(csp ->
-                        csp.policyDirectives(
-                                "default-src 'self'; " +
-                                        "script-src 'self'; " +
-                                        "style-src 'self'; " +
-                                        "img-src 'self'; " +
-                                        "font-src 'self'; " +
-                                        "connect-src 'self'; " +
-                                        "media-src 'self'; " +
-                                        "frame-src 'none'; " +  // Example for blocking iframes
-                                        "frame-ancestors 'none'; " +  // Prevent framing
-                                        "form-action 'self'; " +  // Restrict form submissions
-                                        "base-uri 'self';"  // Restrict base URI                        ))
-                        )
-                )
-        );
+            headers
+                    .frameOptions(HeadersConfigurer.FrameOptionsConfig::deny)
+                    .xssProtection(HeadersConfigurer.XXssConfig::disable)
+                    .contentSecurityPolicy(csp ->
+                            csp.policyDirectives(
+                                    "default-src 'self'; " +
+                                            "script-src 'self'; " +
+                                            "style-src 'self'; " +
+                                            "img-src 'self'; " +
+                                            "font-src 'self'; " +
+                                            "connect-src 'self'; " +
+                                            "media-src 'self'; " +
+                                            "frame-src 'none'; " +  // Example for blocking iframes
+                                            "frame-ancestors 'none'; " +  // Prevent framing
+                                            "form-action 'self'; " +  // Restrict form submissions
+                                            "base-uri 'self';"  // Restrict base URI                        ))
+                            )
+                    );
+        });
         return http.build();
     }
 }
