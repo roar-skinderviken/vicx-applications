@@ -11,6 +11,7 @@ import static org.mockito.BDDMockito.given;
 
 import java.util.stream.Stream;
 
+import no.javatec.calc.config.SecurityConfig;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;

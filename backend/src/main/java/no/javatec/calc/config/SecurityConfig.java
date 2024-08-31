@@ -1,4 +1,4 @@
-package no.javatec.calc;
+package no.javatec.calc.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
