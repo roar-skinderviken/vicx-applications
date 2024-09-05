@@ -7,6 +7,8 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <!-- Bootstrap Icons CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css" rel="stylesheet">
     <style>
         body {
             background-color: #f0f0f0;
@@ -50,6 +52,31 @@
 
         .navbar-brand:hover, .navbar-nav .nav-link:hover {
             opacity: 0.7;
+        }
+
+        /* Style for control buttons */
+        #control-buttons {
+            display: grid;
+            grid-template-columns: repeat(3, 60px);
+            grid-template-rows: repeat(3, 60px);
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        #control-buttons button {
+            width: 60px;
+            height: 60px;
+            background-color: #333; /* Button color */
+            color: white; /* Icon color */
+            border: none; /* Remove border */
+            border-radius: 8px; /* Rounded corners */
+            font-size: 1.5em; /* Increase icon size */
+        }
+
+        .empty-space {
+            background: transparent;
+            border: none;
         }
     </style>
 </head>
@@ -95,6 +122,21 @@
     <div id="game-board"></div>
 </div>
 
+<!-- Control Buttons -->
+<div class="container text-center">
+    <div id="control-buttons">
+        <div></div>
+        <button class="btn" id="up"><i class="bi bi-arrow-up"></i></button>
+        <div></div>
+        <button class="btn" id="left"><i class="bi bi-arrow-left"></i></button>
+        <div class="empty-space"></div>
+        <button class="btn" id="right"><i class="bi bi-arrow-right"></i></button>
+        <div></div>
+        <button class="btn" id="down"><i class="bi bi-arrow-down"></i></button>
+        <div></div>
+    </div>
+</div>
+
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
@@ -137,6 +179,12 @@
 
             // Add keyboard event listener
             document.addEventListener('keydown', changeDirection);
+
+            // Add control button event listeners
+            document.getElementById('left').addEventListener('click', () => changeDirection({key: 'ArrowLeft'}));
+            document.getElementById('up').addEventListener('click', () => changeDirection({key: 'ArrowUp'}));
+            document.getElementById('down').addEventListener('click', () => changeDirection({key: 'ArrowDown'}));
+            document.getElementById('right').addEventListener('click', () => changeDirection({key: 'ArrowRight'}));
 
             // Draw initial snake and food
             drawSnake();
@@ -219,7 +267,7 @@
             );
         }
 
-        // Change snake direction based on keyboard input
+        // Change snake direction based on keyboard or button input
         function changeDirection(event) {
             switch (event.key) {
                 case 'ArrowUp':
