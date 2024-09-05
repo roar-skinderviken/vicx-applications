@@ -1,87 +1,137 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Snake Game</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="icon" href="img/nginx.png" type="image/png">
     <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <!-- Bootstrap Icons CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+    <!-- Font Awesome CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <title>Snake Game - VICX</title>
     <style>
         body {
-            background-color: #f0f0f0;
-            padding-top: 60px; /* Adjusted padding for the fixed navbar */
+            background-color: #f8f9fa;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0; /* Remove default margin */
+            overflow-x: hidden; /* Prevent horizontal scrolling */
+        }
+
+        footer {
+            background-color: #343a40;
+            color: white;
+            padding: 20px 0;
+            width: 100%;
+        }
+
+        .social-icons a {
+            color: white;
+            font-size: 1.5rem;
+            margin: 0 10px;
+            transition: color 0.3s;
+        }
+
+        .social-icons a:hover {
+            color: #adb5bd;
+        }
+
+        .content {
+            flex: 1;
+            padding-top: 60px; /* Space for fixed navbar */
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 2; /* Ensure navbar is above other elements */
+        }
+
+        #game-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+            padding: 10px;
+        }
+
+        #score-display {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
         }
 
         #game-board {
             border: 2px solid #333;
             background-color: #fff;
-            width: 400px;
-            height: 400px;
-            margin: 20px auto;
+            width: 90vw; /* Responsive width */
+            height: 90vw; /* Responsive height */
+            max-width: 400px;
+            max-height: 400px;
             display: grid;
             grid-template-columns: repeat(20, 1fr);
             grid-template-rows: repeat(20, 1fr);
         }
 
         .snake {
-            width: 20px;
-            height: 20px;
+            width: 100%;
+            height: 100%;
             background-color: #333;
         }
 
         .food {
-            width: 20px;
-            height: 20px;
+            width: 100%;
+            height: 100%;
             background-color: #f00;
         }
 
-        /* Additional Bootstrap classes for navbar */
-        .navbar {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            z-index: 2;
-        }
-
-        .navbar-brand, .navbar-nav .nav-link {
-            color: #fff;
-        }
-
-        .navbar-brand:hover, .navbar-nav .nav-link:hover {
-            opacity: 0.7;
-        }
-
-        /* Style for control buttons */
         #control-buttons {
             display: grid;
-            grid-template-columns: repeat(3, 60px);
-            grid-template-rows: repeat(3, 60px);
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
             gap: 10px;
             justify-content: center;
             margin-top: 20px;
+            width: 90vw;
+            max-width: 300px;
         }
 
         #control-buttons button {
-            width: 60px;
-            height: 60px;
-            background-color: #333; /* Button color */
-            color: white; /* Icon color */
-            border: none; /* Remove border */
-            border-radius: 8px; /* Rounded corners */
-            font-size: 1.5em; /* Increase icon size */
+            width: 100%;
+            padding: 20px;
+            background-color: #333;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.5em;
         }
 
         .empty-space {
             background: transparent;
             border: none;
         }
+
+        #restart-button {
+            display: none;
+            margin-top: 20px;
+            font-size: 1.2rem;
+            background-color: #333; /* Match control button color */
+            color: white; /* Text color */
+            border: none; /* No border */
+            border-radius: 8px; /* Rounded corners */
+            padding: 5px; /* Padding similar to control buttons */
+            width: 25%; /* Full width for consistency */
+        }
+
     </style>
 </head>
 <body>
-<!-- Navbar -->
+<!-- Top Navigation Bar -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="/">VICX</a>
@@ -117,81 +167,88 @@
     </div>
 </nav>
 
-<!-- Game Board -->
-<div class="container">
-    <div id="game-board"></div>
-</div>
-
-<!-- Control Buttons -->
-<div class="container text-center">
-    <div id="control-buttons">
-        <div></div>
-        <button class="btn" id="up"><i class="bi bi-arrow-up"></i></button>
-        <div></div>
-        <button class="btn" id="left"><i class="bi bi-arrow-left"></i></button>
-        <div class="empty-space"></div>
-        <button class="btn" id="right"><i class="bi bi-arrow-right"></i></button>
-        <div></div>
-        <button class="btn" id="down"><i class="bi bi-arrow-down"></i></button>
-        <div></div>
+<!-- Game Content -->
+<div class="content">
+    <div id="game-container" class="container">
+        <!-- Score Display -->
+        <div id="score-display">Score: 0</div>
+        <!-- Game Board -->
+        <div id="game-board"></div>
+        <!-- Control Buttons -->
+        <div id="control-buttons">
+            <div></div>
+            <button class="btn" id="up"><i class="bi bi-arrow-up"></i></button>
+            <div></div>
+            <button class="btn" id="left"><i class="bi bi-arrow-left"></i></button>
+            <div class="empty-space"></div>
+            <button class="btn" id="right"><i class="bi bi-arrow-right"></i></button>
+            <div></div>
+            <button class="btn" id="down"><i class="bi bi-arrow-down"></i></button>
+            <div></div>
+        </div>
+        <!-- Restart Button -->
+        <button id="restart-button" class="btn btn-primary">Restart Game</button>
     </div>
 </div>
 
-<!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
-        crossorigin="anonymous"></script>
+<!-- Footer -->
+<footer class="text-center text-lg-start mt-4">
+    <div class="container p-4">
+        <div class="row">
+            <div class="col-lg-6 col-md-12 mb-4 mb-md-0">
+                <h5 class="text-uppercase">VICX &copy;</h5>
+                <p>All rights reserved.</p>
+            </div>
+            <div class="col-lg-6 col-md-12 mb-4 mb-md-0">
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="https://github.com/VictorSkinderviken"><i class="fab fa-github"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-        // Constants
         const GRID_SIZE = 20;
         const CELL_SIZE = 20;
-        const INITIAL_SPEED = 200; // milliseconds
+        const INITIAL_SPEED = 200;
 
-        // Variables
         let snake = [{x: 10, y: 10}];
         let food = {x: 15, y: 10};
-        let dx = 1; // Initial direction: right
+        let dx = 1;
         let dy = 0;
         let score = 0;
         let speed = INITIAL_SPEED;
         let gameInterval;
 
-        // Game board element
         const gameBoard = document.getElementById('game-board');
+        const scoreDisplay = document.getElementById('score-display');
+        const restartButton = document.getElementById('restart-button');
 
-        // Start the game
         function startGame() {
-            // Reset variables
             snake = [{x: 10, y: 10}];
             food = {x: 15, y: 10};
             dx = 1;
             dy = 0;
             score = 0;
             speed = INITIAL_SPEED;
-
-            // Clear the game board
             gameBoard.innerHTML = '';
-
-            // Start game loop
+            updateScore();
             clearInterval(gameInterval);
             gameInterval = setInterval(updateGame, speed);
-
-            // Add keyboard event listener
             document.addEventListener('keydown', changeDirection);
-
-            // Add control button event listeners
             document.getElementById('left').addEventListener('click', () => changeDirection({key: 'ArrowLeft'}));
             document.getElementById('up').addEventListener('click', () => changeDirection({key: 'ArrowUp'}));
             document.getElementById('down').addEventListener('click', () => changeDirection({key: 'ArrowDown'}));
             document.getElementById('right').addEventListener('click', () => changeDirection({key: 'ArrowRight'}));
-
-            // Draw initial snake and food
             drawSnake();
             drawFood();
+            restartButton.style.display = 'none';
         }
 
-        // Draw the snake on the game board
         function drawSnake() {
             snake.forEach(segment => {
                 const snakeElement = document.createElement('div');
@@ -202,7 +259,6 @@
             });
         }
 
-        // Draw the food on the game board
         function drawFood() {
             const foodElement = document.createElement('div');
             foodElement.style.gridRowStart = food.y;
@@ -211,53 +267,37 @@
             gameBoard.appendChild(foodElement);
         }
 
-        // Update game state each frame
         function updateGame() {
-            // Move snake
             const head = {x: snake[0].x + dx, y: snake[0].y + dy};
             snake.unshift(head);
 
-            // Check for collision with food
             if (head.x === food.x && head.y === food.y) {
-                // Snake eats the food
                 score++;
-                speed -= 5; // Increase game speed
-                clearInterval(gameInterval);
-                gameInterval = setInterval(updateGame, speed);
-
-                // Generate new food
+                updateScore();
                 generateFood();
             } else {
-                // Remove the tail
                 snake.pop();
             }
 
-            // Check for collision with walls or itself
             if (isCollision()) {
                 endGame();
                 return;
             }
 
-            // Clear game board
             gameBoard.innerHTML = '';
-
-            // Draw new snake and food
             drawSnake();
             drawFood();
         }
 
-        // Generate new food position
         function generateFood() {
             food.x = Math.floor(Math.random() * GRID_SIZE) + 1;
             food.y = Math.floor(Math.random() * GRID_SIZE) + 1;
-            // Ensure food does not spawn on the snake
             while (snake.some(segment => segment.x === food.x && segment.y === food.y)) {
                 food.x = Math.floor(Math.random() * GRID_SIZE) + 1;
                 food.y = Math.floor(Math.random() * GRID_SIZE) + 1;
             }
         }
 
-        // Check for collision with walls or itself
         function isCollision() {
             const head = snake[0];
             return (
@@ -267,7 +307,6 @@
             );
         }
 
-        // Change snake direction based on keyboard or button input
         function changeDirection(event) {
             switch (event.key) {
                 case 'ArrowUp':
@@ -297,14 +336,18 @@
             }
         }
 
-        // End the game
         function endGame() {
             clearInterval(gameInterval);
             document.removeEventListener('keydown', changeDirection);
-            alert(`Game Over! Your score: ${score}`);
+            restartButton.style.display = 'block';
         }
 
-        // Start the game initially
+        function updateScore() {
+            scoreDisplay.textContent = `Score: ${score}`;
+        }
+
+        restartButton.addEventListener('click', startGame);
+
         startGame();
     });
 </script>
