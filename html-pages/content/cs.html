@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="icon" href="img/nginx.png" type="img/png">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+
+    <!-- Font Awesome CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <title>Counter Strike Smokes | VICX</title>
+    <style>
+        body {
+            scroll-behavior: smooth;
+            background-color: #f8f9fa;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .content {
+            flex: 1;
+        }
+
+        .hero {
+            background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('img/cs2back.jpg') center 67%/cover no-repeat;
+            color: white;
+            padding: 100px 0;
+            text-align: center;
+            position: relative;
+        }
+
+        .hero h1 {
+            font-size: calc(2.5vw + 1rem);
+            padding: 20px;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero h1 span {
+            animation: fadeInDown 1.5s;
+        }
+
+        .hero p {
+            animation: fadeInUp 1.5s;
+            font-size: 1.25rem;
+        }
+
+        @keyframes fadeInDown {
+            0% {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            0% {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .list-group-item {
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.3s;
+            font-size: 1.25rem;
+            background-color: #ffffff;
+            margin-bottom: 15px;
+            cursor: pointer;
+        }
+
+        .list-group-item:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            background-color: #e9ecef;
+        }
+
+        .list-group img {
+            max-width: 100px;
+            margin-bottom: 10px;
+        }
+
+        footer {
+            background-color: #343a40;
+            color: white;
+            padding: 20px 0;
+            width: 100%;
+        }
+
+        .social-icons a {
+            color: white;
+            font-size: 1.5rem;
+            margin: 0 10px;
+            transition: color 0.3s;
+        }
+
+        .social-icons a:hover {
+            color: #adb5bd;
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 2;
+        }
+
+        .centered-content {
+            text-align: center;
+            padding: 60px 0; /* Adjust padding to center vertically if needed */
+        }
+
+        .options, .smoke-places {
+            display: none; /* Hidden by default */
+            text-align: center;
+        }
+
+        .options button, .smoke-places button {
+            margin: 10px;
+            font-size: 1.25rem;
+        }
+
+        .map-image, .smoke-image {
+            max-width: 100%;
+            height: auto;
+            margin: 20px 0;
+        }
+
+        .back-button {
+            margin: 20px;
+        }
+    </style>
+</head>
+<body>
+<!-- Top Navigation Bar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/">VICX</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="index.html">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="old_index.html">Portfolio</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="snake-game.html">Snake</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="setup.html">Old Setup</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="microk8s.html">Microk8s</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="arch.html">Arch</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="pen.html">Pen Testing</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Main Content -->
+<main class="content">
+    <div class="hero">
+        <div class="container">
+            <h1><span>Counter Strike Smokes</span></h1>
+            <p class="lead">Pick a map to get started!</p>
+        </div>
+    </div>
+
+    <div class="container my-4">
+        <div class="list-group" id="map-list">
+            <h2 class="text-center">Available Maps</h2>
+            <a href="#" class="list-group-item list-group-item-action" onclick="showOptions('mirage')">
+                <img src="img/mirage.png" alt="Mirage"> Mirage
+            </a>
+            <a href="#" class="list-group-item list-group-item-action" onclick="showOptions('dust2')">
+                <img src="img/dust2.png" alt="Dust2"> Dust2
+            </a>
+            <a href="#" class="list-group-item list-group-item-action" onclick="showOptions('anubis')">
+                <img src="img/anubis.png" alt="Anubis"> Anubis
+            </a>
+            <a href="#" class="list-group-item list-group-item-action" onclick="showOptions('vertigo')">
+                <img src="img/vertigo.png" alt="Vertigo"> Vertigo
+            </a>
+            <a href="#" class="list-group-item list-group-item-action" onclick="showOptions('ancient')">
+                <img src="img/ancient.png" alt="Ancient"> Ancient
+            </a>
+            <a href="#" class="list-group-item list-group-item-action" onclick="showOptions('nuke')">
+                <img src="img/nuke.png" alt="Nuke"> Nuke
+            </a>
+            <a href="#" class="list-group-item list-group-item-action" onclick="showOptions('inferno')">
+                <img src="img/inferno.png" alt="Inferno"> Inferno
+            </a>
+        </div>
+
+        <div class="options" id="options">
+            <h2 class="text-center">Choose Your Side</h2>
+            <div id="map-image-container">
+                <!-- The map image will be dynamically inserted here -->
+            </div>
+            <button class="btn btn-primary" onclick="showSmokePlaces('ct')">Counter-terrorist</button>
+            <button class="btn btn-danger" onclick="showSmokePlaces('t')">Terrorist</button>
+        </div>
+
+        <div class="smoke-places" id="smoke-places">
+            <h2 class="text-center">Smoke Places</h2>
+            <div id="smoke-places-list">
+                <!-- The list of smoke places will be dynamically inserted here -->
+            </div>
+            <div id="smoke-image-container">
+                <!-- The smoke image will be dynamically inserted here -->
+            </div>
+            <button class="btn btn-secondary back-button" onclick="showMapSelector()">Back to Map Selector</button>
+        </div>
+    </div>
+</main>
+
+<!-- Footer -->
+<footer class="text-center text-lg-start mt-4">
+    <div class="container p-4">
+        <div class="row">
+            <div class="col-lg-6 col-md-12 mb-4 mb-md-0">
+                <h5 class="text-uppercase">VICX &copy;</h5>
+                <p>All rights reserved.</p>
+            </div>
+            <div class="col-lg-6 col-md-12 mb-4 mb-md-0">
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="https://github.com/VictorSkinderviken"><i class="fab fa-github"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+<script>
+    function showOptions(mapName) {
+        document.getElementById('map-list').style.display = 'none';
+        document.getElementById('options').style.display = 'block';
+        document.getElementById('smoke-places').style.display = 'none';
+        document.getElementById('map-image-container').innerHTML = `<img src="img/${mapName}.png" alt="${mapName}" class="map-image">`;
+    }
+
+    function showSmokePlaces(side) {
+        const smokePlaces = {
+            mirage: {
+                ct: ['Palace', 'Apartments', 'Top mid'],
+                t: ['Test', 'På', 'Swap']
+            },
+            dust2: {
+                ct: ['A Site', 'B Site', 'Mid'],
+                t: ['A Site', 'B Site', 'Mid']
+            },
+            anubis: {
+                ct: ['A Site', 'B Site', 'Mid'],
+                t: ['A Site', 'B Site', 'Mid']
+            },
+            vertigo: {
+                ct: ['A Site', 'B Site', 'Mid'],
+                t: ['A Site', 'B Site', 'Mid']
+            },
+            ancient: {
+                ct: ['A Site', 'B Site', 'Mid'],
+                t: ['A Site', 'B Site', 'Mid']
+            },
+            nuke: {
+                ct: ['A Site', 'B Site', 'Mid'],
+                t: ['A Site', 'B Site', 'Mid']
+            },
+            inferno: {
+                ct: ['A Site', 'B Site', 'Mid'],
+                t: ['A Site', 'B Site', 'Mid']
+            }
+        };
+
+        const selectedMap = document.getElementById('map-image-container').querySelector('img').alt;
+        const places = smokePlaces[selectedMap][side] || [];
+
+        let smokePlacesList = '<ul class="list-group">';
+        places.forEach(place => {
+            smokePlacesList += `<li class="list-group-item list-group-item-action" onclick="showSmokeImage('${selectedMap}-${side}-${place.toLowerCase().replace(/ /g, '-')}'">
+                ${place}
+            </li>`;
+        });
+        smokePlacesList += '</ul>';
+
+        document.getElementById('smoke-places-list').innerHTML = smokePlacesList;
+        document.getElementById('smoke-places').style.display = 'block';
+    }
+
+    function showSmokeImage(imageName) {
+        document.getElementById('smoke-image-container').innerHTML = `<img src="img/${imageName}.png" alt="${imageName}" class="smoke-image">`;
+    }
+
+    function showMapSelector() {
+        document.getElementById('map-list').style.display = 'block';
+        document.getElementById('options').style.display = 'none';
+        document.getElementById('smoke-places').style.display = 'none';
+    }
+</script>
+</body>
+</html>
