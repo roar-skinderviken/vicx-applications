@@ -194,7 +194,7 @@
 
     <div class="container my-4">
         <div class="list-group" id="map-list">
-            <h2 class="text-center">Available Maps</h2>
+            <h2 class="text-center">Available Maps - Mirage only done</h2>
             <a href="#" class="list-group-item list-group-item-action" onclick="showOptions('mirage')">
                 <img src="img/mirage.png" alt="Mirage"> Mirage
             </a>
@@ -223,7 +223,7 @@
             <div id="map-image-container">
                 <!-- The map image will be dynamically inserted here -->
             </div>
-            <button class="btn btn-primary" onclick="showSmokePlaces('ct')">Counter-terrorist</button>
+            <button class="btn btn-primary" onclick="showSmokePlaces('ct')">Counter</button>
             <button class="btn btn-danger" onclick="showSmokePlaces('t')">Terrorist</button>
         </div>
 
@@ -271,7 +271,7 @@
         const smokePlaces = {
             mirage: {
                 ct: ['Palace', 'Apartments', 'Top mid'],
-                t: ['Test', 'På', 'Swap']
+                t: ['Ticket', 'Stairs', 'Jungle']
             },
             dust2: {
                 ct: ['A Site', 'B Site', 'Mid'],
@@ -303,11 +303,24 @@
         const places = smokePlaces[selectedMap][side] || [];
 
         let smokePlacesList = '<ul class="list-group">';
+
+        // Iterate through the list of smoke places
         places.forEach(place => {
-            smokePlacesList += `<li class="list-group-item list-group-item-action" onclick="showSmokeImage('${selectedMap}-${side}-${place.toLowerCase().replace(/ /g, '-')}'">
+            // Determine the correct image name for each place
+            let imageName;
+            if (place.toLowerCase() === 'top mid' && selectedMap === 'mirage' && side === 'ct') {
+                imageName = 'mirage-ct-top';  // Custom handling for 'Top mid' to match the image name
+            } else {
+                imageName = `${selectedMap}-${side}-${place.toLowerCase().replace(/ /g, '-')}`;
+            }
+
+            // Create a list item for each smoke place
+            smokePlacesList += `
+            <li class="list-group-item list-group-item-action" onclick="showSmokeImage('${imageName}')">
                 ${place}
             </li>`;
         });
+
         smokePlacesList += '</ul>';
 
         document.getElementById('smoke-places-list').innerHTML = smokePlacesList;
@@ -315,7 +328,9 @@
     }
 
     function showSmokeImage(imageName) {
-        document.getElementById('smoke-image-container').innerHTML = `<img src="img/${imageName}.png" alt="${imageName}" class="smoke-image">`;
+        // Ensure the image path is constructed correctly
+        const imagePath = `img/showsmokeplaces/${imageName}.jpg`;
+        document.getElementById('smoke-image-container').innerHTML = `<img src="${imagePath}" alt="${imageName}" class="smoke-image">`;
     }
 
     function showMapSelector() {
