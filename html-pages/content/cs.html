@@ -194,7 +194,7 @@
 
     <div class="container my-4">
         <div class="list-group" id="map-list">
-            <h2 class="text-center">Available Maps - Mirage only done</h2>
+            <h2 class="text-center">Available Maps - Mirage Done - Dust2 T side Done</h2>
             <a href="#" class="list-group-item list-group-item-action" onclick="showOptions('mirage')">
                 <img src="img/mirage.png" alt="Mirage"> Mirage
             </a>
@@ -223,8 +223,8 @@
             <div id="map-image-container">
                 <!-- The map image will be dynamically inserted here -->
             </div>
-            <button class="btn btn-primary" onclick="showSmokePlaces('ct')">Counter</button>
-            <button class="btn btn-danger" onclick="showSmokePlaces('t')">Terrorist</button>
+            <button class="btn btn-primary" onclick="showSmokePlaces('ct')">C-Side</button>
+            <button class="btn btn-danger" onclick="showSmokePlaces('t')">T-Side</button>
         </div>
 
         <div class="smoke-places" id="smoke-places">
@@ -270,12 +270,12 @@
     function showSmokePlaces(side) {
         const smokePlaces = {
             mirage: {
-                ct: ['Palace', 'Apartments', 'Top mid'],
+                ct: ['Palace', 'Apartments', 'Top Mid'],
                 t: ['Ticket', 'Stairs', 'Jungle']
             },
             dust2: {
                 ct: ['A Site', 'B Site', 'Mid'],
-                t: ['A Site', 'B Site', 'Mid']
+                t: ['Entrance', 'B Window', 'B Door']
             },
             anubis: {
                 ct: ['A Site', 'B Site', 'Mid'],
