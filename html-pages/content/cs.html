@@ -304,31 +304,30 @@
 
         let smokePlacesList = '<ul class="list-group">';
 
-        // Iterate through the list of smoke places
         places.forEach(place => {
-            // Determine the correct image name for each place
             let imageName;
             if (place.toLowerCase() === 'top mid' && selectedMap === 'mirage' && side === 'ct') {
-                imageName = 'mirage-ct-top';  // Custom handling for 'Top mid' to match the image name
+                imageName = 'mirage-ct-top';
             } else {
                 imageName = `${selectedMap}-${side}-${place.toLowerCase().replace(/ /g, '-')}`;
             }
 
-            // Create a list item for each smoke place
             smokePlacesList += `
-            <li class="list-group-item list-group-item-action" onclick="showSmokeImage('${imageName}')">
-                ${place}
-            </li>`;
+        <li class="list-group-item list-group-item-action" onclick="showSmokeImage('${imageName}')">
+            ${place}
+        </li>`;
         });
 
         smokePlacesList += '</ul>';
 
         document.getElementById('smoke-places-list').innerHTML = smokePlacesList;
         document.getElementById('smoke-places').style.display = 'block';
+
+        // Clear the smoke image container when switching sides
+        document.getElementById('smoke-image-container').innerHTML = '';
     }
 
     function showSmokeImage(imageName) {
-        // Ensure the image path is constructed correctly
         const imagePath = `img/showsmokeplaces/${imageName}.jpg`;
         document.getElementById('smoke-image-container').innerHTML = `<img src="${imagePath}" alt="${imageName}" class="smoke-image">`;
     }
@@ -337,7 +336,13 @@
         document.getElementById('map-list').style.display = 'block';
         document.getElementById('options').style.display = 'none';
         document.getElementById('smoke-places').style.display = 'none';
+
+        // Clear dynamically generated content
+        document.getElementById('map-image-container').innerHTML = '';
+        document.getElementById('smoke-places-list').innerHTML = '';
+        document.getElementById('smoke-image-container').innerHTML = '';
     }
+
 </script>
 </body>
 </html>
