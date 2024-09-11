@@ -177,7 +177,7 @@
           <ul>
             <li>Gather the necessary components: Raspberry Pi 5, Micro SD card, Micro SD card reader, and micro HDMI cable. Note that if you're able to connect to the internet provider, there won't be any need for a micro HDMI.</li>
             <li>Load a 64-bit lightweight Linux distribution (e.g., Debian GNU/Linux) onto the Raspberry Pi.</li>
-            <li>This computer will be accessible via the SSH command later on.</li>
+            <li>This computer will be accessible via the <code>ssh</code> command later on.</li>
           </ul>
         </div>
         <div class="mb-4">
@@ -186,8 +186,8 @@
           <p>Setting up the NGINX server to run your home site.</p>
           <ol>
             <li>NGINX will serve as the primary server for vicx.no.</li>
-            <li>Install NGINX using the terminal and configure it via "/etc/nginx/sites-available/default". Choose the appropriate ports and link the server to the domain (domain purchase will come in step 4).</li>
-            <li>Once configured, edit the HTML files in the "/var/www/html" directory, where the server will initially read the index.html by default.</li>
+            <li>Install NGINX using the terminal and configure it via <code>/etc/nginx/sites-available/default</code>. Choose the appropriate ports and link the server to the domain (domain purchase will come in step 4).</li>
+            <li>Once configured, edit the HTML files in the <code>/var/www/html</code> directory, where the server will initially read the index.html by default.</li>
           </ol>
         </div>
         <div class="mb-4">
@@ -195,7 +195,7 @@
           <img src="img/net.png" alt="Network Configuration" class="img-fluid mb-3" style="max-width: 200px;">
           <p>Port forwarding and network configuration.</p>
           <ul>
-            <li>Log in to your network, typically using a 192.168.x.x address, and authenticate as the administrator.</li>
+            <li>Log in to your network, typically using a <code>192.168.x.x</code> address, and authenticate as the administrator.</li>
             <li>Configure your router to forward relevant ports to your server.</li>
             <li>Assign a static IP address to the Raspberry Pi and set up port forwarding for the device.</li>
           </ul>
@@ -217,8 +217,8 @@
           <p>Setting up Apache Tomcat to run Java applications.</p>
           <ul>
             <li>Download and start Apache Tomcat. Ensure you have the ability to create .war files.</li>
-            <li>Configure NGINX to serve Tomcat on port 8080 and deploy the .war file under "/opt/tomcat/webapps". Start the server with "sudo /opt/tomcat/bin/startup.sh".</li>
-            <li>Create the .war file using Spring Boot and transfer it to the Raspberry Pi using the scp command: "scp /path/to/file username@server:/destination/path".</li>
+            <li>Configure NGINX to serve Tomcat on port 8080 and deploy the .war file under <code>/opt/tomcat/webapps</code>. Start the server with <code>sudo /opt/tomcat/bin/startup.sh</code>.</li>
+            <li>Create the .war file using Spring Boot and transfer it to the Raspberry Pi using the scp command: <code>scp /path/to/file username@server:/destination/path</code>.</li>
           </ul>
         </div>
         <div class="mb-4">
@@ -227,9 +227,9 @@
           <p>Setting up Node.js to run JavaScript applications.</p>
           <ul>
             <li>Download Node.js as well as npm, we will host our server via pm2.</li>
-            <li>Create the JavaScript file, in this instance create a "Hello World" to see if it runs.</li>
-            <li>pm2 will start our servers, example of execution: "pm2 start helloworld.js".</li>
-            <li>Note that if you have multiple servers, pm2 will only restart one at a time. To properly restart pm2 run "pm2 restart all".</li>
+            <li>Create the JavaScript file, in this instance create <code>helloworld.js</code> to see if it runs.</li>
+            <li>pm2 will start our servers, example of execution: <code>pm2 start helloworld.js</code>.</li>
+            <li>Note that if you have multiple servers, pm2 will only restart one at a time. To properly restart pm2 run <code>pm2 restart all</code>.</li>
           </ul>
         </div>
       </div>
