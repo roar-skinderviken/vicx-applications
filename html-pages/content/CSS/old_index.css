@@ -1,0 +1,133 @@
+body {
+    scroll-behavior: smooth;
+    background-color: #f8f9fa;
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin: 0; /* Remove default margin */
+}
+
+.content {
+    flex: 1;
+}
+
+.hero {
+    background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('https://picsum.photos/3840/2160?random=1') center/cover no-repeat;
+    color: white;
+    padding: 100px 0; /* Adjust padding */
+    text-align: center;
+    position: relative; /* Ensure relative positioning for absolute content */
+}
+
+.hero h1 {
+    font-size: calc(2.5vw + 1rem); /* Responsive font size using vw units with a minimum size of 2.5rem */
+    padding: 20px; /* Adjust padding */
+    margin-bottom: 20px; /* Adjust margin-bottom */
+    position: relative; /* Ensure relative positioning for absolute content */
+    z-index: 1; /* Ensure text is above the background */
+}
+
+.hero h1 span {
+    animation: fadeInDown 1.5s;
+}
+
+.hero p {
+    animation: fadeInUp 1.5s;
+    font-size: 1.25rem;
+}
+
+@keyframes fadeInDown {
+    0% {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInUp {
+    0% {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.list-group-item {
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.3s;
+    font-size: 1.25rem;
+    background-color: #ffffff;
+    margin-bottom: 15px; /* Add margin-bottom for spacing */
+}
+
+.list-group-item:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    background-color: #e9ecef;
+}
+
+.list-group img {
+    max-width: 100px; /* Adjust the size as needed */
+    margin-bottom: 10px;
+}
+
+footer {
+    background-color: #343a40;
+    color: white;
+    padding: 20px 0;
+    width: 100%;
+}
+
+.social-icons a {
+    color: white;
+    font-size: 1.5rem;
+    margin: 0 10px;
+    transition: color 0.3s;
+}
+
+.social-icons a:hover {
+    color: #adb5bd;
+}
+.navbar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 2; /* Ensure navbar is above the hero section */
+}
+
+.project {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.project:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.project h2 {
+    font-size: 1.75rem;
+    color: #333; /* Changed to match the rest of the text */
+}
+
+.project ul {
+    padding-left: 20px;
+    list-style-type: disc;
+}
+
+.project img {
+    max-width: 100px; /* Adjusted size */
+    margin-top: 15px;
+}
