@@ -13,149 +13,13 @@
   <!-- Font Awesome CSS -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
+  <!-- CSS link -->
+  <link rel="stylesheet" href="CSS/index.css">
+
   <title>Arch Linux Setup | VICX</title>
-  <style>
-    body {
-      scroll-behavior: smooth;
-      background-color: #f8f9fa;
-      color: #333;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-      margin: 0;
-    }
-
-    .content {
-      flex: 1;
-    }
-
-    .hero {
-      background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('https://picsum.photos/3840/2160?random=3') center/cover no-repeat;
-      color: white;
-      padding: 100px 0;
-      text-align: center;
-      position: relative;
-    }
-
-    .hero h1 {
-      font-size: calc(2.5vw + 1rem);
-      padding: 20px;
-      margin-bottom: 20px;
-      position: relative;
-      z-index: 1;
-    }
-
-    .hero h1 span {
-      animation: fadeInDown 1.5s;
-    }
-
-    .hero p {
-      animation: fadeInUp 1.5s;
-      font-size: 1.25rem;
-    }
-
-    @keyframes fadeInDown {
-      0% {
-        opacity: 0;
-        transform: translateY(-50px);
-      }
-      100% {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    @keyframes fadeInUp {
-      0% {
-        opacity: 0;
-        transform: translateY(50px);
-      }
-      100% {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .list-group-item {
-      transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.3s;
-      font-size: 1.25rem;
-      background-color: #ffffff;
-      margin-bottom: 15px;
-    }
-
-    .list-group-item:hover {
-      transform: scale(1.05);
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-      background-color: #e9ecef;
-    }
-
-    .list-group img {
-      max-width: 100px;
-      margin-bottom: 10px;
-    }
-
-    footer {
-      background-color: #343a40;
-      color: white;
-      padding: 20px 0;
-      width: 100%;
-    }
-
-    .social-icons a {
-      color: white;
-      font-size: 1.5rem;
-      margin: 0 10px;
-      transition: color 0.3s;
-    }
-
-    .social-icons a:hover {
-      color: #adb5bd;
-    }
-
-    .navbar {
-      position: fixed;
-      top: 0;
-      width: 100%;
-      z-index: 2;
-    }
-  </style>
 </head>
 <body>
-<!-- Top Navigation Bar -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="/">VICX</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-      <ul class="navbar-nav">
-        <li class="nav-item">
-          <a class="nav-link" href="index.html">Home</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="old_index.html">Portfolio</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="snake-game.html">Snake</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="setup.html">Old Setup</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="microk8s.html">Microk8s</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="arch.html">Arch</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="pen.html">Pen Testing</a>
-        </li>
-      </ul>
-    </div>
-  </div>
-</nav>
+<div id="navbar"></div>
 
 <!-- Main Content -->
 <main class="content">
@@ -285,23 +149,23 @@
   </div>
 </main>
 
-<!-- Footer -->
-<footer class="text-center text-lg-start mt-4">
-  <div class="container p-4">
-    <div class="row">
-      <div class="col-lg-6 col-md-12 mb-4 mb-md-0">
-        <h5 class="text-uppercase">VICX &copy;</h5>
-        <p>All rights reserved.</p>
-      </div>
-      <div class="col-lg-6 col-md-12 mb-4 mb-md-0">
-        <div class="social-icons">
-          <a href="#"><i class="fab fa-linkedin-in"></i></a>
-          <a href="https://github.com/VictorSkinderviken"><i class="fab fa-github"></i></a>
-        </div>
-      </div>
-    </div>
-  </div>
-</footer>
+<div id="footer"></div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+<script>
+  // Load Navbar
+  fetch('navbar.html')
+          .then(response => response.text())
+          .then(data => {
+            document.getElementById('navbar').innerHTML = data;
+          });
+
+  // Load Footer
+  fetch('footer.html')
+          .then(response => response.text())
+          .then(data => {
+            document.getElementById('footer').innerHTML = data;
+          });
+</script>
 </body>
 </html>
