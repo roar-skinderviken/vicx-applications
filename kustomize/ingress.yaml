@@ -6,6 +6,8 @@ metadata:
     nginx.ingress.kubernetes.io/rewrite-target: /
     nginx.ingress.kubernetes.io/use-forwarded-headers: "true"
     nginx.ingress.kubernetes.io/cors-allow-origin: "https://api.pandascore.co" #Lagt til
+    nginx.ingress.kubernetes.io/cors-allow-methods: "GET, POST, PUT, PATCH, OPTIONS" #Lagt til
+    nginx.ingress.kubernetes.io/cors-allow-headers: "Authorization, Content-Type" #Lagt til
   namespace: default
 spec:
   rules:
