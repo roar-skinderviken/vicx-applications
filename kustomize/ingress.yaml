@@ -4,10 +4,12 @@ metadata:
   name: spring-react-calculator-ingress
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
-    nginx.ingress.kubernetes.io/use-forwarded-headers: "true"
-    nginx.ingress.kubernetes.io/cors-allow-origin: "https://api.pandascore.co" #Lagt til
-    nginx.ingress.kubernetes.io/cors-allow-methods: "GET, POST, PUT, PATCH, OPTIONS" #Lagt til
-    nginx.ingress.kubernetes.io/cors-allow-headers: "Authorization, Content-Type" #Lagt til
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "https://api.pandascore.co"
+    nginx.ingress.kubernetes.io/cors-allow-methods: "GET, POST, OPTIONS"
+    nginx.ingress.kubernetes.io/cors-allow-headers: "Content-Type, Authorization"
+    nginx.ingress.kubernetes.io/cors-expose-headers: "X-Custom-Header"
+    nginx.ingress.kubernetes.io/cors-max-age: "86400"
   namespace: default
 spec:
   rules:
