@@ -3,7 +3,11 @@ const axios = require('axios');
 const app = express();  // No issues with 'app.set'
 const port = 3000;
 
-const apiKey = 'CjLyJNKiUGdP3G-g2s0E4DWygmRQKM0moeOgYP2fpMaLkUdojpM';
+const apiKey  = 'CjLyJNKiUGdP3G-g2s0E4DWygmRQKM0moeOgYP2fpMaLkUdojpM';
+
+app.get('/', (req, res) => {
+    res.send('Hello World!');
+});
 
 // Proxy request for running matches
 app.get('/api/csgo/matches/running', (req, res) => {
