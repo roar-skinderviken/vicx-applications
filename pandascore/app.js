@@ -7,10 +7,24 @@ const apiKey = process.env.API_KEY
 const RUNNING_MATCH_TYPE = "running"
 const UPCOMING_MATCH_TYPE = "upcoming"
 
-function handleProxyRequest(matchType, req, res) {
+const cache = {}
+const CACHE_EXPIRATION = Number(process.env.CACHE_EXPIRATION) || 5 * 60 * 1000 // 5 minutes in milliseconds
+
+const handleProxyRequest = (matchType, req, res) => {
+    if (cache[matchType] && (Date.now() - cache[matchType].timestamp < CACHE_EXPIRATION)) {
+        return res.json(cache[matchType].data)
+    }
+
     const url = `https://api.pandascore.co/csgo/matches/${matchType}?token=${apiKey}`
+
     axios.get(url)
-        .then(response => res.json(response.data))
+        .then(response => {
+            cache[matchType] = {
+                data: response.data,
+                timestamp: Date.now()
+            }
+            return res.json(response.data)
+        })
         .catch(error => res.status(error.response?.status || 500).send(error.message))
 }
 
