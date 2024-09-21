@@ -43,8 +43,8 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
 <script>
-  const runningMatchesUrl = "https://vicx.no/pandascore/api/csgo/matches/running";
-  const upcomingMatchesUrl = "https://vicx.no/pandascore/api/csgo/matches/upcoming";
+  const runningMatchesUrl = "/pandascore/api/csgo/matches/running";
+  const upcomingMatchesUrl = "/pandascore/api/csgo/matches/upcoming";
 
   const fetchAndDisplayMatches = (url, elementId) => {
     fetch(url)
