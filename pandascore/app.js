@@ -1,9 +1,9 @@
 const express = require('express');
 const axios = require('axios');
-const app = express();  // No issues with 'app.set'
+const app = express();
 const port = 3000;
 
-const apiKey  = 'CjLyJNKiUGdP3G-g2s0E4DWygmRQKM0moeOgYP2fpMaLkUdojpM';
+const apiKey = process.env.API_KEY;
 
 app.get('/', (req, res) => {
     res.send('Hello World!');
