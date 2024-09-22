@@ -1,86 +1,73 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <!-- Required meta tags -->
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <link rel="icon" href="img/nginx.png" type="image/png">
+    <link rel="icon" href="img/nginx.png" type="image/png">
 
-  <!-- Bootstrap CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          crossorigin="anonymous">
 
-  <!-- Font Awesome CSS -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <!-- Font Awesome CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
-  <!-- CSS link -->
-  <link rel="stylesheet" href="CSS/esport.css">
+    <!-- CSS link -->
+    <link rel="stylesheet" href="CSS/esport.css">
 
-  <title>Esport | VICX</title>
+    <title>Esport | VICX</title>
 
 </head>
 <body>
 
-<div id="navbar"></div>
+<!--# include virtual="navbar.html" -->
 
 <main class="content">
-  <div class="hero">
-    <div class="container">
-      <h1><span>Esport Schedual | Counter Strike</span></h1>
-      <p class="lead">These are the live matches</p>
+    <div class="hero">
+        <div class="container">
+            <h1><span>Esport Schedual | Counter Strike</span></h1>
+            <p class="lead">These are the live matches</p>
+        </div>
     </div>
-  </div>
-  <div class="main-container">
-    <div class="section" id="running-matches">
-      <h1>Running Matches</h1>
+    <div class="main-container">
+        <div class="section" id="running-matches">
+            <h1>Running Matches</h1>
+        </div>
+        <div class="section" id="upcoming-matches">
+            <h1>Upcoming Matches</h1>
+        </div>
     </div>
-    <div class="section" id="upcoming-matches">
-      <h1>Upcoming Matches</h1>
-    </div>
-  </div>
 </main>
-<div id="footer"></div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+<!--# include virtual="footer.html" -->
+
 <script>
-  const runningMatchesUrl = "/pandascore/api/csgo/matches/running";
-  const upcomingMatchesUrl = "/pandascore/api/csgo/matches/upcoming";
+    const runningMatchesUrl = "/pandascore/api/csgo/matches/running";
+    const upcomingMatchesUrl = "/pandascore/api/csgo/matches/upcoming";
 
-  const fetchAndDisplayMatches = (url, elementId) => {
-    fetch(url)
+    const fetchAndDisplayMatches = (url, elementId) => {
+        fetch(url)
             .then(response => response.json())
             .then(data => {
-              const matchesDiv = document.getElementById(elementId);
-              data.forEach(match => {
-                const matchElement = document.createElement('div');
-                matchElement.className = 'match';
-                matchElement.innerHTML = `
+                const matchesDiv = document.getElementById(elementId);
+                data.forEach(match => {
+                    const matchElement = document.createElement('div');
+                    matchElement.className = 'match';
+                    matchElement.innerHTML = `
                     <h2>${match.opponents[0].opponent.name} vs ${match.opponents[1].opponent.name}</h2>
                     <p>Date: ${new Date(match.begin_at).toLocaleDateString()}</p>
                     <p>Status: ${match.status}</p>
                 `;
-                matchesDiv.appendChild(matchElement);
-              });
+                    matchesDiv.appendChild(matchElement);
+                });
             })
             .catch(error => console.error('Error fetching data:', error));
-  };
+    };
 
-  fetchAndDisplayMatches(runningMatchesUrl, 'running-matches');
-  fetchAndDisplayMatches(upcomingMatchesUrl, 'upcoming-matches');
-
-  // Load Navbar
-  fetch('navbar.html')
-          .then(response => response.text())
-          .then(data => {
-            document.getElementById('navbar').innerHTML = data;
-          });
-
-  // Load Footer
-  fetch('footer.html')
-          .then(response => response.text())
-          .then(data => {
-            document.getElementById('footer').innerHTML = data;
-          });
+    fetchAndDisplayMatches(runningMatchesUrl, 'running-matches');
+    fetchAndDisplayMatches(upcomingMatchesUrl, 'upcoming-matches');
 </script>
 </body>
 </html>

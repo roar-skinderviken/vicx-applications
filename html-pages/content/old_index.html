@@ -8,7 +8,8 @@
     <link rel="icon" type="image/png" href="/img/Tux.png">
 
     <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          crossorigin="anonymous">
 
     <!-- CSS link -->
     <link rel="stylesheet" href="CSS/old_index.css">
@@ -17,7 +18,7 @@
 
 </head>
 <body>
-<div id="navbar"></div>
+<!--# include virtual="navbar.html" -->
 
 <main class="content">
     <div class="hero">
@@ -37,7 +38,9 @@
                 <li>Using GitHub repositories to push changes and sync with my server.</li>
                 <li>Specializing in responsive design and modern web technologies.</li>
                 <li>Leveraging Bootstrap to enhance and modernize website design.</li>
-                <li>Focused on achieving a clean and professional appearance while ensuring all necessary functionalities are included.</li>
+                <li>Focused on achieving a clean and professional appearance while ensuring all necessary
+                    functionalities are included.
+                </li>
             </ul>
             <img src="img/nginx.png" alt="NGINX" class="project-img">
         </div>
@@ -70,7 +73,9 @@
                 <li>Operating a Raspberry Pi server with Raspberry Pi Lite x64 OS.</li>
                 <li>Customizing Kali Linux with multiple desktop environments, including KDE Plasma and GNOME.</li>
                 <li>Setting up a fully functional Ubuntu server with SSH access configured.</li>
-                <li>Currently running a cluster with two Raspberry Pi devices, using Ubuntu Server, with one acting as the master node.</li>
+                <li>Currently running a cluster with two Raspberry Pi devices, using Ubuntu Server, with one acting as
+                    the master node.
+                </li>
             </ul>
             <img src="img/rasp.png" alt="Raspberry Pi" class="project-img">
         </div>
@@ -80,7 +85,9 @@
             <ul>
                 <li>Customizing and optimizing my PC system with Arch Linux with and without the Black Arch tools.</li>
                 <li>Exploring different desktop environments and tools for performance tuning.</li>
-                <li>Also familiar with distributions such as Black Arch, Fedora, Ubuntu, Ubuntu Server, Kali, ParrotOS & Debian GNU/Linux.</li>
+                <li>Also familiar with distributions such as Black Arch, Fedora, Ubuntu, Ubuntu Server, Kali, ParrotOS &
+                    Debian GNU/Linux.
+                </li>
             </ul>
             <img src="img/Tux.png" alt="Tux Penguin" class="project-img">
         </div>
@@ -107,24 +114,8 @@
     </div>
 </main>
 
-<div id="footer"></div>
+<!--# include virtual="footer.html" -->
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
-<script>
-    // Load Navbar
-    fetch('navbar.html')
-        .then(response => response.text())
-        .then(data => {
-            document.getElementById('navbar').innerHTML = data;
-        });
-
-    // Load Footer
-    fetch('footer.html')
-        .then(response => response.text())
-        .then(data => {
-            document.getElementById('footer').innerHTML = data;
-        });
-</script>
 </body>
 </html>
 
