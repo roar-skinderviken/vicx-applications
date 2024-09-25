@@ -67,7 +67,7 @@ body {
     font-size: 1.25rem;
     background-color: #ffffff;
     margin-bottom: 15px;
-    height: 120px; /* Høyde på bokser */
+    height: 110px; /* Høyde på bokser */
     display: flex;
     align-items: center;
     justify-content: center;
