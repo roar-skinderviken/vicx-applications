@@ -6,7 +6,10 @@ body {
     flex-direction: column;
     min-height: 100vh;
     margin: 0; /* Remove default margin */
-    overflow-x: hidden; /* Prevent horizontal scrolling */
+}
+
+html, body {
+    overflow-x: hidden;
 }
 
 .content {
