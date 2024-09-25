@@ -54,17 +54,22 @@
             .then(data => {
                 const matchesDiv = document.getElementById(elementId);
                 data.forEach(match => {
-                    const opponent1 = match.opponents?.[0]?.opponent?.name;
-                    const opponent2 = match.opponents?.[1]?.opponent?.name;
-                    if (opponent1 && opponent2) {
-                        const matchElement = document.createElement('div');
-                        matchElement.className = 'match';
-                        matchElement.innerHTML = `
-                                <h2>${opponent1} vs ${opponent2}</h2>
-                                <p>Date: ${new Date(match.begin_at).toLocaleDateString()}</p>
-                                <p>Status: ${match.status}</p>
-                            `;
-                        matchesDiv.appendChild(matchElement);
+                    const opponents = match.opponents;
+                    if (opponents && opponents.length === 2) {
+                        const opponent1 = opponents[0]?.opponent?.name;
+                        const opponent2 = opponents[1]?.opponent?.name;
+                        if (opponent1 && opponent2) {
+                            const matchElement = document.createElement('div');
+                            matchElement.className = 'match';
+                            matchElement.innerHTML = `
+                            <h2>${opponent1} vs ${opponent2}</h2>
+                            <p>Date: ${new Date(match.begin_at).toLocaleDateString()}</p>
+                            <p>Status: ${match.status}</p>
+                        `;
+                            matchesDiv.appendChild(matchElement);
+                        } else {
+                            console.warn('Opponent data is incomplete:', match);
+                        }
                     } else {
                         console.warn('Match data is incomplete:', match);
                     }
@@ -75,6 +80,7 @@
 
     fetchAndDisplayMatches(runningMatchesUrl, 'running-matches');
     fetchAndDisplayMatches(upcomingMatchesUrl, 'upcoming-matches');
+
 </script>
 </body>
 </html>
