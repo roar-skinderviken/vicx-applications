@@ -6,6 +6,7 @@ body {
     flex-direction: column;
     min-height: 100vh;
     margin: 0; /* Remove default margin */
+    overflow-x: hidden; /* Prevent horizontal scrolling */
 }
 
 .content {
@@ -65,18 +66,27 @@ body {
     transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.3s;
     font-size: 1.25rem;
     background-color: #ffffff;
-    margin-bottom: 15px; /* Add margin-bottom for spacing */
+    margin-bottom: 15px;
+    height: 120px; /* Høyde på bokser */
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .list-group-item:hover {
     transform: scale(1.05);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
     background-color: #e9ecef;
 }
 
 .list-group img {
-    max-width: 100px; /* Adjust the size as needed */
+    max-width: 100px;
     margin-bottom: 10px;
+}
+
+.list-group i {
+    margin-right: 10px; /* Spacing fra fa-icon til text */
+    margin-left: 5px; /* Spacing fra fa-icon til img */
 }
 
 footer {
