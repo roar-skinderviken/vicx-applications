@@ -53,55 +53,16 @@
             .then(response => response.json())
             .then(data => {
                 const matchesDiv = document.getElementById(elementId);
-                matchesDiv.innerHTML = ''; // Clear previous matches
-
-                // Create promises for fetching opponents
-                const matchPromises = data.map(match => {
-                    const matchId = match.id; // Assuming each match has an ID property
-                    return fetch(`https://api.pandascore.co/matches/${matchId}/opponents`, {
-                        headers: { accept: 'application/json' }
-                    })
-                        .then(opponentsResponse => opponentsResponse.json())
-                        .then(opponentsData => ({
-                            match: match,
-                            opponents: opponentsData
-                        }));
+                data.forEach(match => {
+                    const matchElement = document.createElement('div');
+                    matchElement.className = 'match';
+                    matchElement.innerHTML = `
+                    <h2>${match.opponents[0].opponent.name} vs ${match.opponents[1].opponent.name}</h2>
+                    <p>Date: ${new Date(match.begin_at).toLocaleDateString()}</p>
+                    <p>Status: ${match.status}</p>
+                `;
+                    matchesDiv.appendChild(matchElement);
                 });
-
-                // Wait for all opponent fetches to complete
-                Promise.all(matchPromises)
-                    .then(matchesWithOpponents => {
-                        matchesWithOpponents.forEach(({ match, opponents }) => {
-                            if (opponents.length >= 2) {
-                                const team1 = opponents[0]?.name || 'Team 1';
-                                const team2 = opponents[1]?.name || 'Team 2';
-                                const logo1 = opponents[0]?.image_url || 'default-logo1.png'; // Use image_url for team 1
-                                const logo2 = opponents[1]?.image_url || 'default-logo2.png'; // Use image_url for team 2
-
-                                const matchElement = document.createElement('div');
-                                matchElement.className = 'match d-flex align-items-center justify-content-between mb-3'; // Flexbox for alignment
-                                matchElement.innerHTML = `
-                                <div class="team d-flex align-items-center">
-                                    <img src="${logo1}" alt="${team1} Logo" class="team-logo me-2" style="width: 50px; height: 50px;">
-                                    <span>${team1}</span>
-                                </div>
-                                <div class="vs mx-3">VS</div>
-                                <div class="team d-flex align-items-center">
-                                    <img src="${logo2}" alt="${team2} Logo" class="team-logo me-2" style="width: 50px; height: 50px;">
-                                    <span>${team2}</span>
-                                </div>
-                                <div class="match-info">
-                                    <p>Date: ${new Date(match.begin_at).toLocaleDateString()}</p>
-                                    <p>Status: ${match.status}</p>
-                                </div>
-                            `;
-                                matchesDiv.appendChild(matchElement);
-                            } else {
-                                console.error('Not enough opponents for match:', match);
-                            }
-                        });
-                    })
-                    .catch(error => console.error('Error fetching opponents:', error));
             })
             .catch(error => console.error('Error fetching data:', error));
     };
