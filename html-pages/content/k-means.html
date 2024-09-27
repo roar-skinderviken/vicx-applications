@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>K-Means Clustering in JavaScript</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .result {
+            margin-top: 20px;
+        }
+        .grade {
+            margin: 5px;
+            padding: 5px;
+            border-radius: 4px;
+            color: white;
+        }
+        .A { background-color: green; }
+        .B { background-color: blue; }
+        .C { background-color: orange; }
+        .D { background-color: yellow; }
+        .E { background-color: purple; }
+        .Fail { background-color: red; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1 class="mt-5">K-Means Clustering</h1>
+    <form id="gradesForm" class="mt-4">
+        <div class="form-group">
+            <label for="max_score">Maximum Score:</label>
+            <input type="number" class="form-control" id="max_score" required>
+        </div>
+        <div class="form-group">
+            <label for="fail_grade">Fail Score:</label>
+            <input type="number" class="form-control" id="fail_grade" required>
+        </div>
+        <div class="form-group">
+            <label for="grades">Grades (comma separated):</label>
+            <input type="text" class="form-control" id="grades" required>
+        </div>
+        <div class="form-group">
+            <label for="max_iter">Max Iterations:</label>
+            <input type="number" class="form-control" id="max_iter" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+
+    <h2 class="mt-5">Results</h2>
+    <div id="results" class="result"></div>
+</div>
+
+<script>
+    document.getElementById('gradesForm').addEventListener('submit', function(event) {
+        event.preventDefault();  // Prevent form from submitting the default way
+
+        const maxScore = parseFloat(document.getElementById('max_score').value);
+        const failGrade = parseFloat(document.getElementById('fail_grade').value);
+        const grades = document.getElementById('grades').value.split(',').map(Number);
+        const maxIter = parseInt(document.getElementById('max_iter').value, 10);
+
+        const results = kMeansClustering(grades, failGrade, maxIter);
+        displayResults(results);
+    });
+
+    function kMeansClustering(grades, failGrade, maxIter) {
+        const passGrades = grades.filter(grade => grade >= failGrade);
+        const failGrades = grades.filter(grade => grade < failGrade);
+        const nClusters = 5;  // A, B, C, D, E
+
+        // Initialize centroids randomly
+        const centroids = passGrades.sort(() => 0.5 - Math.random()).slice(0, nClusters);
+        let labels = new Array(passGrades.length);
+        let iterations = 0;
+
+        while (iterations < maxIter) {
+            // Assign labels based on closest centroid
+            for (let i = 0; i < passGrades.length; i++) {
+                let closest = 0;
+                let minDist = Infinity;
+                for (let j = 0; j < nClusters; j++) {
+                    const dist = Math.abs(passGrades[i] - centroids[j]);
+                    if (dist < minDist) {
+                        minDist = dist;
+                        closest = j;
+                    }
+                }
+                labels[i] = closest;
+            }
+
+            // Update centroids
+            const newCentroids = new Array(nClusters).fill(0);
+            const counts = new Array(nClusters).fill(0);
+
+            for (let i = 0; i < passGrades.length; i++) {
+                newCentroids[labels[i]] += passGrades[i];
+                counts[labels[i]]++;
+            }
+
+            for (let j = 0; j < nClusters; j++) {
+                centroids[j] = counts[j] > 0 ? newCentroids[j] / counts[j] : centroids[j];
+            }
+
+            iterations++;
+        }
+
+        // Create a result object
+        const result = [];
+        for (let i = 0; i < passGrades.length; i++) {
+            const grade = passGrades[i];
+            const label = labels[i];
+            let letterGrade;
+            switch (label) {
+                case 0: letterGrade = 'A'; break;
+                case 1: letterGrade = 'B'; break;
+                case 2: letterGrade = 'C'; break;
+                case 3: letterGrade = 'D'; break;
+                case 4: letterGrade = 'E'; break;
+            }
+            result.push({ Score: grade, Grade: letterGrade });
+        }
+
+        // Add fail grades
+        for (const grade of failGrades) {
+            result.push({ Score: grade, Grade: 'Fail' });
+        }
+
+        // Sort results
+        result.sort((a, b) => {
+            if (a.Grade === 'Fail') return 1;
+            if (b.Grade === 'Fail') return -1;
+            return a.Grade.localeCompare(b.Grade);
+        });
+
+        return result;
+    }
+
+    function displayResults(results) {
+        const resultsDiv = document.getElementById('results');
+        resultsDiv.innerHTML = '';  // Clear previous results
+
+        for (const { Score, Grade } of results) {
+            const gradeDiv = document.createElement('div');
+            gradeDiv.className = `grade ${Grade}`;
+            gradeDiv.textContent = `Score: ${Score}, Grade: ${Grade}`;
+            resultsDiv.appendChild(gradeDiv);
+        }
+    }
+</script>
+</body>
+</html>
