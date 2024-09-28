@@ -9,8 +9,7 @@
     <link rel="icon" href="img/logo-no-background.png" type="image/png">
 
     <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-          crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 
     <!-- Font Awesome CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
@@ -39,31 +38,50 @@
 
 <!--# include virtual="navbar.html" -->
 
-<div class="container">
-    <h1 class="mt-5">K-Means Clustering</h1>
-    <form id="gradesForm" class="mt-4">
-        <div class="form-group">
-            <label for="max_score">Maximum Score:</label>
-            <input type="number" class="form-control" id="max_score" required>
-        </div>
-        <div class="form-group">
-            <label for="fail_grade">Fail Score:</label>
-            <input type="number" class="form-control" id="fail_grade" required>
-        </div>
-        <div class="form-group">
-            <label for="grades">Grades (comma separated):</label>
-            <input type="text" class="form-control" id="grades" required>
-        </div>
-        <div class="form-group">
-            <label for="max_iter">Max Iterations:</label>
-            <input type="number" class="form-control" id="max_iter" required>
-        </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
-    </form>
+<main class="content">
 
-    <h2 class="mt-5">Results</h2>
-    <div id="results" class="result"></div>
-</div>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1 class="display-3">K-Means Clustering</h1>
+            <p class="lead">Cluster grades into meaningful groups with the K-Means algorithm</p>
+        </div>
+    </section>
+
+    <!-- Form Section -->
+    <section class="container my-5 text-center">
+        <div class="row justify-content-center">
+            <div class="col-lg-6">
+                <form id="gradesForm" class="mt-4">
+                    <div class="form-group mb-3">
+                        <label for="max_score">Maximum Score:</label>
+                        <input type="number" class="form-control" id="max_score" required>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="fail_grade">Fail Score:</label>
+                        <input type="number" class="form-control" id="fail_grade" required>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="grades">Grades (comma separated):</label>
+                        <input type="text" class="form-control" id="grades" required>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="max_iter">Max Iterations:</label>
+                        <input type="number" class="form-control" id="max_iter" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Submit</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Results Section -->
+    <section class="container text-center">
+        <h2 class="mt-5">Results</h2>
+        <div id="results" class="result"></div>
+    </section>
+
+</main>
 
 <!--# include virtual="footer.html" -->
 
@@ -164,5 +182,6 @@
         }
     }
 </script>
+
 </body>
 </html>
