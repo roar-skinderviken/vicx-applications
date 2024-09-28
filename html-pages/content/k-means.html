@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- Favi Icon-->
+    <!-- Favi Icon -->
     <link rel="icon" href="img/logo-no-background.png" type="image/png">
 
     <!-- Bootstrap CSS -->
@@ -13,6 +13,9 @@
 
     <!-- Font Awesome CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <!-- CSS link -->
     <link rel="stylesheet" href="CSS/index.css">
@@ -32,6 +35,13 @@
         .D { background-color: gold; }
         .E { background-color: purple; }
         .Fail { background-color: red; }
+
+        /* Canvas for Chart */
+        #chartContainer {
+            width: 70%;
+            margin: auto;
+            display: none; /* Hidden until user clicks 'Show Chart' */
+        }
     </style>
 </head>
 <body>
@@ -79,6 +89,10 @@
     <section class="container text-center">
         <h2 class="mt-5">Results</h2>
         <div id="results" class="result"></div>
+        <button id="showChartBtn" class="btn btn-info mt-4">Show Chart</button>
+        <div id="chartContainer">
+            <canvas id="gradeChart"></canvas>
+        </div>
     </section>
 
 </main>
@@ -94,27 +108,39 @@
         const grades = document.getElementById('grades').value.split(',').map(Number);
         const maxIter = parseInt(document.getElementById('max_iter').value, 10);
 
-        const results = kMeansClustering(grades, failGrade, maxIter);
+        const results = kMeansClustering(grades, failGrade, maxScore, maxIter);
         displayResults(results);
     });
 
-    function kMeansClustering(grades, failGrade, maxIter) {
-        const passGrades = grades.filter(grade => grade >= failGrade);
-        const failGrades = grades.filter(grade => grade < failGrade);
-        const nClusters = 5;  // A, B, C, D, E
+    function normalizeScores(grades, maxScore) {
+        return grades.map(grade => grade / maxScore);
+    }
 
-        // Initialize centroids randomly
-        const centroids = passGrades.sort(() => 0.5 - Math.random()).slice(0, nClusters);
-        let labels = new Array(passGrades.length);
+    function denormalizeScore(normalizedScore, maxScore) {
+        return normalizedScore * maxScore;
+    }
+
+    function kMeansClustering(grades, failGrade, maxScore, maxIter) {
+        // Separate fail grades
+        const passingGrades = grades.filter(grade => grade >= failGrade);
+        const failGrades = grades.filter(grade => grade < failGrade);
+
+        // Normalize passing grades
+        const normalizedPassingGrades = normalizeScores(passingGrades, maxScore);
+
+        const nClusters = 5; // For grades A, B, C, D, E
+        const centroids = [0.9, 0.7, 0.5, 0.3, 0.1]; // Initial centroids representing grade clusters A, B, C, D, E
+
+        let labels = new Array(normalizedPassingGrades.length);
         let iterations = 0;
 
         while (iterations < maxIter) {
-            // Assign labels based on closest centroid
-            for (let i = 0; i < passGrades.length; i++) {
+            // Assign labels based on the closest centroid
+            for (let i = 0; i < normalizedPassingGrades.length; i++) {
                 let closest = 0;
                 let minDist = Infinity;
                 for (let j = 0; j < nClusters; j++) {
-                    const dist = Math.abs(passGrades[i] - centroids[j]);
+                    const dist = Math.abs(normalizedPassingGrades[i] - centroids[j]);
                     if (dist < minDist) {
                         minDist = dist;
                         closest = j;
@@ -127,8 +153,8 @@
             const newCentroids = new Array(nClusters).fill(0);
             const counts = new Array(nClusters).fill(0);
 
-            for (let i = 0; i < passGrades.length; i++) {
-                newCentroids[labels[i]] += passGrades[i];
+            for (let i = 0; i < normalizedPassingGrades.length; i++) {
+                newCentroids[labels[i]] += normalizedPassingGrades[i];
                 counts[labels[i]]++;
             }
 
@@ -139,10 +165,10 @@
             iterations++;
         }
 
-        // Create a result object
+        // Create result object and denormalize the scores
         const result = [];
-        for (let i = 0; i < passGrades.length; i++) {
-            const grade = passGrades[i];
+        for (let i = 0; i < normalizedPassingGrades.length; i++) {
+            const grade = denormalizeScore(normalizedPassingGrades[i], maxScore);
             const label = labels[i];
             let letterGrade;
             switch (label) {
@@ -152,7 +178,7 @@
                 case 3: letterGrade = 'D'; break;
                 case 4: letterGrade = 'E'; break;
             }
-            result.push({ Score: grade, Grade: letterGrade });
+            result.push({ Score: Math.round(grade), Grade: letterGrade });
         }
 
         // Add fail grades
@@ -161,25 +187,61 @@
         }
 
         // Sort results
-        result.sort((a, b) => {
-            if (a.Grade === 'Fail') return 1;
-            if (b.Grade === 'Fail') return -1;
-            return a.Grade.localeCompare(b.Grade);
-        });
-
-        return result;
+        return result.sort((a, b) => b.Score - a.Score);
     }
 
     function displayResults(results) {
         const resultsDiv = document.getElementById('results');
         resultsDiv.innerHTML = '';  // Clear previous results
 
+        // Object to store grade counts for the chart
+        const gradeCounts = { A: 0, B: 0, C: 0, D: 0, E: 0, Fail: 0 };
+
         for (const { Score, Grade } of results) {
             const gradeDiv = document.createElement('div');
             gradeDiv.className = `grade ${Grade}`;
             gradeDiv.textContent = `Score: ${Score}, Grade: ${Grade}`;
             resultsDiv.appendChild(gradeDiv);
+
+            // Count grades
+            gradeCounts[Grade]++;
         }
+
+        // Add event listener to the "Show Chart" button to display the chart
+        document.getElementById('showChartBtn').addEventListener('click', function() {
+            displayChart(gradeCounts);
+        });
+    }
+
+    function displayChart(gradeCounts) {
+        const ctx = document.getElementById('gradeChart').getContext('2d');
+        document.getElementById('chartContainer').style.display = 'block';  // Show chart container
+
+        const chart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['A', 'B', 'C', 'D', 'E', 'Fail'],
+                datasets: [{
+                    label: '',
+                    data: [gradeCounts.A, gradeCounts.B, gradeCounts.C, gradeCounts.D, gradeCounts.E, gradeCounts.Fail],
+                    backgroundColor: [
+                        'green', 'blue', 'orange', 'gold', 'purple', 'red'
+                    ],
+                    borderColor: [
+                        'rgba(0, 128, 0, 1)', 'rgba(0, 0, 255, 1)', 'rgba(255, 165, 0, 1)',
+                        'rgba(255, 215, 0, 1)', 'rgba(128, 0, 128, 1)', 'rgba(255, 0, 0, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
     }
 </script>
 
