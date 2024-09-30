@@ -16,7 +16,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
     <!-- CSS link -->
-    <link rel="stylesheet" href="CSS/index.css">
+    <link rel="stylesheet" href="CSS/old_index.css">
 
     <title>Microk8s | VICX</title>
 
@@ -28,16 +28,50 @@
 <main class="content">
     <div class="hero">
         <div class="container">
-            <h1><span>Microk8s</span></h1>
-            <p class="lead">The current setup for VICX.</p>
+            <h1><span>Microk8s Config!</span></h1>
+            <p class="lead">Learn about the kubernetes setup!</p>
         </div>
     </div>
 
     <div class="container my-5">
-        <div class="row">
-            <div class="col-12 centered-content">
-                <h2 class="text-center my-4">Page Under Development</h2>
-            </div>
+        <h2 class="text-center mb-4">My Projects</h2>
+
+        <div class="project">
+            <h2>Installing snapd on Debian based distros:</h2>
+            <ul>
+                <li><code>sudo apt update</code></li>
+                <li><code>sudo apt install snapd</code></li>
+                <li><code>systemctl enable --now snapd apparmor</code></li>
+            </ul>
+        </div>
+
+        <div class="project">
+            <h2>Testing snapd on Debian based distros:</h2>
+            <ul>
+                <li><code>snap install hello-world</code></li>
+                <li><code>hello-world</code></li>
+                <li><code>snap remove hello-world</code></li>
+            </ul>
+        </div>
+
+        <div class="project">
+            <h2>Installing Microk8s:</h2>
+            <ul>
+                <li><code>sudo snap install microk8s --classic --channel=1.31</code></li>
+                <li><code>sudo usermod -a -G microk8s $USER</code></li>
+                <li><code>mkdir -p ~/.kube</code></li>
+                <li><code>chmod 0700 ~/.kube</code></li>
+            </ul>
+        </div>
+
+        <div class="project">
+            <h2>Rpi boot config:</h2>
+            <ul>
+                <li><code>sudo vi /boot/firmware/cmdline.txt</code></li>
+                <li><code>cgroup_enable=memory cgroup_memory=1</code></li>
+                <li><code>sudo apt install linux-modules-extra-raspi</code></li>
+                <li><code>sudo microk8s stop; sudo microk8s start</code></li>
+            </ul>
         </div>
     </div>
 </main>
