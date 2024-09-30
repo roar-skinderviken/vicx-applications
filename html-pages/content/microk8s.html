@@ -34,7 +34,17 @@
     </div>
 
     <div class="container my-5">
-        <h2 class="text-center mb-4">My Projects</h2>
+        <h2 class="text-center mb-4">Config</h2>
+
+        <div class="project">
+            <h2>Chosing right distro:</h2>
+            <ul>
+                <li>When it comes to Microk8s not every distro is usable.</li>
+                <li>After testing multible distros on the rpi5, Ubuntu server was the best.</li>
+                <li>Ubuntu offers better compatibility with Microk8s, due to ownership of the project.</li>
+            </ul>
+            <img src="img/ubuntu.png" alt="Portfolio Image" class="img-fluid mb-3" style="width: 67px;">
+        </div>
 
         <div class="project">
             <h2>Installing snapd on Debian based distros:</h2>
@@ -43,6 +53,7 @@
                 <li><code>sudo apt install snapd</code></li>
                 <li><code>systemctl enable --now snapd apparmor</code></li>
             </ul>
+            <img src="img/snapd.png" alt="Portfolio Image" class="img-fluid mb-3" style="width: 300px;">
         </div>
 
         <div class="project">
@@ -52,6 +63,7 @@
                 <li><code>hello-world</code></li>
                 <li><code>snap remove hello-world</code></li>
             </ul>
+            <img src="img/debian.png" alt="Portfolio Image" class="img-fluid mb-3" style="width: 80px;">
         </div>
 
         <div class="project">
@@ -62,6 +74,7 @@
                 <li><code>mkdir -p ~/.kube</code></li>
                 <li><code>chmod 0700 ~/.kube</code></li>
             </ul>
+            <img src="img/kube.png" alt="Portfolio Image" class="img-fluid mb-3" style="width: 300px;">
         </div>
 
         <div class="project">
@@ -72,6 +85,7 @@
                 <li><code>sudo apt install linux-modules-extra-raspi</code></li>
                 <li><code>sudo microk8s stop; sudo microk8s start</code></li>
             </ul>
+            <img src="img/rasp.png" alt="Portfolio Image" class="img-fluid mb-3" style="width: 300px;">
         </div>
     </div>
 </main>
