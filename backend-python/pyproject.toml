@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "backend-python"
+version = "0.1.0"
+description = ""
+authors = ["Roar Skinderviken <roar.skinderviken@gmail.com>"]
+readme = "README.md"
+packages = [{include = "src"}]
+
+[tool.poetry.dependencies]
+python = "^3.12"
+fastapi = "^0.115.0"
+uvicorn = "^0.31.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

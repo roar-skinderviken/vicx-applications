@@ -34,6 +34,19 @@ updates:
         patterns:
           - "*"
 
+  - package-ecosystem: pip
+    versioning-strategy: increase
+    directory: "/backend-python"
+    schedule:
+      interval: daily
+      time: "03:00"
+      timezone: Europe/Oslo
+    open-pull-requests-limit: 10
+    groups:
+      poetry-dependencies:
+        patterns:
+          - "*"
+
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
