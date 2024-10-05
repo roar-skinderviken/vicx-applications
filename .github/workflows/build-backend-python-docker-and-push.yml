@@ -12,7 +12,7 @@ env:
   APP_NAME: backend-python
 
 jobs:
-  build_and_push_docker_static_content:
+  build_and_push_docker_backend_python:
     permissions:
       contents: read
       packages: write
