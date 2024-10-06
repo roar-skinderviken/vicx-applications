@@ -9,7 +9,7 @@
 .C { background-color: orange; }
 .D { background-color: gold; }
 .E { background-color: purple; }
-.Fail { background-color: red; }
+.Failed { background-color: red; }
 
 /* Canvas for Chart */
 #chartContainer {
