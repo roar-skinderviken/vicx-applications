@@ -4,6 +4,4 @@ poetry run uvicorn src.app:app --reload
 ```
 
 Test-URL:
-http://localhost:8000/items/1?q=hello-world
-
-http://localhost:80/items/1?q=hello-world
+curl -X POST "http://localhost:8000/k-means" -H "Content-Type: application/json" -d '{"failScore": 30, "scores": [20, 30, 60, 90]}'
