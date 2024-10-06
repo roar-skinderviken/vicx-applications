@@ -22,8 +22,8 @@ class TestKmeansGrades(unittest.TestCase):
             }, result)
 
     def test_map_scores_to_grades_given_duplicate_scores_expect_result(self):
-        result = map_scores_to_grades(fail_score=30, scores=[80, 80, 80, 80, 80])
-        self.assertEqual({80: "A"}, result)
+        result = map_scores_to_grades(fail_score=30, scores=[80, 80, 80, 80, 80, 82])
+        self.assertEqual({80: 'B', 82: 'A'}, result)
 
     def test_map_scores_to_grades_given_failed_scores_only_expect_result(self):
         result = map_scores_to_grades(fail_score=30, scores=[20])

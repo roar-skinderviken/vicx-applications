@@ -7,9 +7,8 @@ def map_scores_to_grades(
         fail_score: int,
         scores: list[int]
 ) -> dict[int, str]:
-    unique_scores = list(set(scores))
-    valid_scores = [[score] for score in unique_scores if score >= fail_score]
-    failed_scores = {score: "Failed" for score in unique_scores if score < fail_score}
+    valid_scores = [[score] for score in scores if score >= fail_score]
+    failed_scores = {score: "Failed" for score in scores if score < fail_score}
 
     if len(valid_scores) < 1:
         return failed_scores
