@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>K-Means Grades</title>
+    <script>
+        async function submitScores() {
+            const failScore = document.getElementById("failScore").value;
+            const scores = document.getElementById("scores").value.split(',').map(Number);
+
+            const response = await fetch("/k-means", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ failScore: parseInt(failScore), scores: scores })
+            });
+
+            const result = await response.json();
+            document.getElementById("result").innerText = JSON.stringify(result, null, 2);
+        }
+    </script>
+</head>
+<body>
+<h1>K-Means Grade Assignment</h1>
+<label for="failScore">Fail Score:</label>
+<input type="number" id="failScore" required><br><br>
+
+<label for="scores">Scores (comma-separated):</label>
+<input type="text" id="scores" required><br><br>
+
+<button onclick="submitScores()">Submit</button>
+
+<h2>Result:</h2>
+<pre id="result"></pre>
+</body>
+</html>
