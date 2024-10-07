@@ -34,12 +34,20 @@
             <div class="col-lg-6">
                 <form id="gradesForm" class="mt-4">
                     <div class="form-group mb-3">
+                        <label for="max_score">Maximum Score:</label>
+                        <input type="number" class="form-control" id="max_score" required>
+                    </div>
+                    <div class="form-group mb-3">
                         <label for="fail_grade">Fail Score:</label>
                         <input type="number" class="form-control" id="fail_grade" required>
                     </div>
                     <div class="form-group mb-3">
                         <label for="grades">Scores (comma separated):</label>
                         <input type="text" class="form-control" id="grades" required>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="max_iter">Max Iterations:</label>
+                        <input type="number" class="form-control" id="max_iter" required>
                     </div>
                     <button type="submit" class="btn btn-primary w-100">Submit</button>
                 </form>
@@ -62,9 +70,11 @@
         event.preventDefault();  // Prevent form from submitting the default way
 
         const requestBody = {
+            maxScore: parseFloat(document.getElementById('max_score').value),
             failScore: parseFloat(document.getElementById('fail_grade').value),
-            scores: document.getElementById('grades').value.split(',').map(Number)
-        }
+            scores: document.getElementById('grades').value.split(',').map(Number),
+            maxIter: parseInt(document.getElementById('max_iter').value)
+        };
 
         // For localhost testing: const url = "http://localhost:8000/k-means";
         const url = "/backend-python/k-means";
@@ -81,7 +91,7 @@
                 return response.json(); // Parse the JSON from the response
             })
             .then(data => displayResults(data))
-            .catch(error => console.error('Error:', error))
+            .catch(error => console.error('Error:', error));
     });
 
     const displayResults = (result) => {
@@ -98,5 +108,6 @@
             });
     }
 </script>
+
 </body>
 </html>

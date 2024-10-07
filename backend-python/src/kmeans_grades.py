@@ -1,35 +1,31 @@
 from sklearn.cluster import KMeans
+import numpy as np
 
 GRADES = ["A", "B", "C", "D", "E"]
 
+def map_scores_to_grades(fail_score: float, max_score: float, scores: list[float], max_iter: int) -> dict:
+    # Separate passing and failing grades
+    pass_grades = [[score] for score in scores if score >= fail_score]
+    fail_grades = {score: "F" for score in scores if score < fail_score}
 
-def map_scores_to_grades(
-        fail_score: int,
-        scores: list[int]
-) -> dict[int, str]:
-    valid_scores = [[score] for score in scores if score >= fail_score]
-    failed_scores = {score: "Failed" for score in scores if score < fail_score}
+    if len(pass_grades) < 5:
+        return {"error": "Not enough passing grades to assign A, B, C, D, E."}
 
-    if len(valid_scores) < 1:
-        return failed_scores
+    # KMeans clustering on passing grades
+    kmeans = KMeans(n_clusters=5, max_iter=max_iter)
+    kmeans.fit(pass_grades)
+    labels = kmeans.labels_
 
-    n_clusters = min(5, len(valid_scores))
+    # Assign letter grades (A, B, C, D, E)
+    sorted_clusters = {idx: GRADES[i] for i, (center, idx) in enumerate(sorted(zip(kmeans.cluster_centers_, range(5)), reverse=True))}
 
-    # Apply KMeans to group scores into max 5 clusters for grades A, B, C, D, E
-    # noinspection PyTypeChecker
-    kmeans: KMeans = KMeans(n_clusters=n_clusters, random_state=0).fit(valid_scores)
+    # Combine scores with their letter grades
+    graded_scores = {score[0]: sorted_clusters[label] for score, label in zip(pass_grades, labels)}
 
-    # Sort the clusters based on their centroids
-    centroids = kmeans.cluster_centers_.flatten()
-    sorted_indices = sorted(range(len(centroids)), key=lambda i: centroids[i], reverse=True)
+    # Merge passing and failing grades
+    result = {**graded_scores, **fail_grades}
 
-    # Map the sorted clusters to grades
-    grade_mapping = {sorted_indices[i]: GRADES[i] for i in range(n_clusters)}
+    # Sort output by score
+    result_sorted = dict(sorted(result.items(), key=lambda item: item[0], reverse=True))
 
-    # Assign grades based on clustering results
-    graded_scores = {score[0]: grade_mapping[kmeans.predict([score])[0]] for score in valid_scores}
-
-    # Merge failed and graded scores
-    result = {**graded_scores, **failed_scores}
-
-    return result
+    return result_sorted
