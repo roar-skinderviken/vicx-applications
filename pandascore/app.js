@@ -23,7 +23,6 @@ const handleProxyRequest = (matchType, req, res) => {
                 data: response.data,
                 timestamp: Date.now()
             }
-            res.set('X-Pod', req.headers['x-pod']);
             return res.json(response.data)
         })
         .catch(error => res.status(error.response?.status || 500).send(error.message))
@@ -35,6 +34,8 @@ app.get("/", (req, res) =>
 
 app.get("/api/csgo/matches/:type", (req, res) => {
     const matchType = req.params.type
+    res.set("X-Pod", req.headers["X-Pod"])
+
     if (![RUNNING_MATCH_TYPE, UPCOMING_MATCH_TYPE].includes(matchType)) {
         return res.status(404).send(`The match type ${matchType} is not supported`)
     }
