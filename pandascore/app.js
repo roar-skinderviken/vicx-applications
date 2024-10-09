@@ -34,7 +34,7 @@ app.get("/", (req, res) =>
 
 app.get("/api/csgo/matches/:type", (req, res) => {
     const matchType = req.params.type
-    res.set("X-Pod", req.headers["X-Pod"])
+    res.set("X-Pod", req.headers["x-pod"])
 
     if (![RUNNING_MATCH_TYPE, UPCOMING_MATCH_TYPE].includes(matchType)) {
         return res.status(404).send(`The match type ${matchType} is not supported`)
