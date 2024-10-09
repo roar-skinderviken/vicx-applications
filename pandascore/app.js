@@ -4,6 +4,8 @@ const app = express()
 const port = 3000
 
 const apiKey = process.env.API_KEY
+const hostname = process.env.HOSTNAME
+
 const RUNNING_MATCH_TYPE = "running"
 const UPCOMING_MATCH_TYPE = "upcoming"
 
@@ -34,7 +36,7 @@ app.get("/", (req, res) =>
 
 app.get("/api/csgo/matches/:type", (req, res) => {
     const matchType = req.params.type
-    res.set("X-Pod", req.headers["x-pod"])
+    res.set("X-Pod", hostname)
 
     if (![RUNNING_MATCH_TYPE, UPCOMING_MATCH_TYPE].includes(matchType)) {
         return res.status(404).send(`The match type ${matchType} is not supported`)
