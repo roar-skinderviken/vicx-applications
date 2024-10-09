@@ -23,6 +23,7 @@ const handleProxyRequest = (matchType, req, res) => {
                 data: response.data,
                 timestamp: Date.now()
             }
+            res.set('X-Pod', req.headers['x-pod']);
             return res.json(response.data)
         })
         .catch(error => res.status(error.response?.status || 500).send(error.message))
