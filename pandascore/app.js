@@ -31,7 +31,7 @@ const handleProxyRequest = (matchType, req, res) => {
 }
 
 // Health
-app.get("/", (req, res) =>
+app.get("/health", (req, res) =>
     res.send("ALIVE"))
 
 app.get("/api/csgo/matches/:type", (req, res) => {
@@ -43,9 +43,5 @@ app.get("/api/csgo/matches/:type", (req, res) => {
     }
     handleProxyRequest(matchType, req, res)
 })
-
-app.get("/headers", (req, res) => {
-    res.json({ headers: req.headers });
-});
 
 app.listen(port, () => console.log(`Server is running on http://localhost:${port}`))
