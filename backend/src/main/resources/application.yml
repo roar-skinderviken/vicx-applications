@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: spring-react-calculator
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, prometheus, info
+  endpoint:
+    prometheus:
+      enabled: true
+    health:
+      enabled: true
+      show-details: always
