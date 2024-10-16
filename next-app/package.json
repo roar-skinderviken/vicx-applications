@@ -1,0 +1,29 @@
+{
+  "name": "my-next-app-2",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^6.6.0",
+    "@fortawesome/free-brands-svg-icons": "^6.6.0",
+    "@fortawesome/free-solid-svg-icons": "^6.6.0",
+    "@fortawesome/react-fontawesome": "^0.2.2",
+    "@hookform/resolvers": "^3.9.0",
+    "flowbite-react": "^0.10.2",
+    "next": "14.2.15",
+    "react": "^18",
+    "react-dom": "^18",
+    "react-fontawesome": "^1.7.1",
+    "react-hook-form": "^7.53.0",
+    "yup": "^1.4.0"
+  },
+  "devDependencies": {
+    "postcss": "^8",
+    "tailwindcss": "^3.4.1"
+  }
+}

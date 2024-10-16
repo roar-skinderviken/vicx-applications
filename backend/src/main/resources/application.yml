@@ -13,3 +13,10 @@ management:
     health:
       enabled: true
       show-details: always
+
+server:
+  tomcat:
+    accept-count: 0 # 0 to prevent queuing of requests
+    max-connections: 1
+    threads:
+      max: 1

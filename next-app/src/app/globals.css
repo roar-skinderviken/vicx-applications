@@ -1,0 +1,245 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+    --background: #ffffff;
+    --foreground: #171717;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --background: #0a0a0a;
+        --foreground: #ededed;
+    }
+}
+
+@layer utilities {
+    .text-balance {
+        text-wrap: balance;
+    }
+}
+
+/* Global Styles */
+body {
+    scroll-behavior: smooth;
+    background-color: #f8f9fa; /* Tailwind's bg-gray-100 */
+    color: #333; /* Tailwind's text-gray-800 */
+    display: flex; /* Tailwind's flex */
+    flex-direction: column; /* Tailwind's flex-col */
+    min-height: 100vh; /* Tailwind's min-h-screen */
+    margin: 0; /* Tailwind's m-0 */
+}
+
+.content {
+    flex: 1; /* Tailwind's flex-1 */
+}
+
+.hero {
+    background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('https://picsum.photos/3840/2160?random=1') center 67%/cover no-repeat;
+    color: white;
+    padding: 100px 0;
+    text-align: center;
+    position: relative;
+}
+
+.hero h1 {
+    font-size: calc(2.5vw + 1rem); /* Use Tailwind's text-[calc(2.5vw+1rem)] */
+    padding: 20px; /* Tailwind's p-5 */
+    margin-bottom: 20px; /* Tailwind's mb-5 */
+    position: relative; /* Tailwind's relative */
+    z-index: 1; /* Tailwind's z-10 */
+}
+
+/* Keyframes for animations */
+@keyframes fadeInDown {
+    0% {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInUp {
+    0% {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.list-item {
+    @apply flex items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105 hover:shadow-lg mb-4 p-2;
+}
+
+.list-item img {
+    @apply mr-3;
+}
+
+/* portfolio page */
+
+.project {
+    @apply p-4 bg-white rounded-lg shadow-md w-full
+}
+
+.project h2 {
+    @apply text-xl font-semibold mb-2
+}
+
+.project ul {
+    @apply list-disc list-inside mb-4
+}
+
+.project img {
+    max-width: 100px;
+}
+
+
+/* Other styles */
+.navbar {
+    @apply fixed top-0 w-full z-20;
+    /* Tailwind utilities */
+}
+
+.centered-content {
+    @apply text-center py-[60px];
+    /* Tailwind utilities */
+}
+
+.options, .smoke-places {
+    @apply hidden text-center;
+    /* Tailwind utilities */
+}
+
+.options button, .smoke-places button {
+    @apply mx-2 text-xl;
+    /* Tailwind utilities */
+}
+
+.map-image, .smoke-image {
+    @apply max-w-full h-auto my-5;
+    /* Tailwind utilities */
+}
+
+.back-button {
+    @apply my-5;
+    /* Tailwind utilities */
+}
+
+/* Snake */
+
+#game-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+    padding: 10px;
+}
+
+#score-display {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+
+#game-board {
+    border: 2px solid #333;
+    background-color: #fff;
+    width: 90vw; /* Responsive width */
+    height: 90vw; /* Responsive height */
+    max-width: 400px;
+    max-height: 400px;
+    display: grid;
+    grid-template-columns: repeat(20, 1fr);
+    grid-template-rows: repeat(20, 1fr);
+}
+
+.snake {
+    width: 100%;
+    height: 100%;
+    background-color: #333;
+}
+
+.food {
+    width: 100%;
+    height: 100%;
+    background-color: #f00;
+}
+
+#control-buttons {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 10px;
+    justify-content: center;
+    margin-top: 20px;
+    width: 90vw;
+    max-width: 300px;
+}
+
+#control-buttons button {
+    width: 100%;
+    padding: 20px;
+    background-color: #333;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.5em;
+}
+
+.empty-space {
+    background: transparent;
+    border: none;
+}
+
+#restart-button {
+    display: none;
+    margin-top: 20px;
+    font-size: 1.2rem;
+    background-color: #333; /* Match control button color */
+    color: white; /* Text color */
+    border: none; /* No border */
+    border-radius: 8px; /* Rounded corners */
+    padding: 5px; /* Padding similar to control buttons */
+    width: 25%; /* Full width for consistency */
+}
+
+/* K-Means */
+
+#gradesForm label {
+    @apply block mb-2 font-medium;
+}
+
+#gradesForm input {
+    @apply block w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-cyan-500;
+}
+
+#gradesForm .validationError {
+    @apply p-4 mb-4 text-sm text-yellow-800 rounded-lg bg-yellow-50 dark:bg-gray-800 dark:text-yellow-300
+}
+
+.grade {
+    margin: 5px;
+    padding: 5px;
+    border-radius: 4px;
+    color: white;
+}
+
+.grade.A { background-color: green; }
+.grade.B { background-color: blue; }
+.grade.C { background-color: orange; }
+.grade.D { background-color: gold; }
+.grade.E { background-color: purple; }
+.grade.Failed { background-color: red; }
+
+/* Canvas for Chart */
+#chartContainer {
+    width: 70%;
+    margin: auto;
+    display: none; /* Hidden until user clicks 'Show Chart' */
+}
