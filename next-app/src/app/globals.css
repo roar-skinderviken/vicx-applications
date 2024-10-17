@@ -94,9 +94,6 @@ body {
 
 
 /*!* Other styles *!*/
-/*.navbar {*/
-/*    @apply fixed top-0 w-full z-20;*/
-/*}*/
 
 .centered-content {
     @apply text-center py-[60px];
@@ -178,11 +175,6 @@ body {
     font-size: 1.5em;
 }
 
-.empty-space {
-    background: transparent;
-    border: none;
-}
-
 #restart-button {
     display: none;
     margin-top: 20px;
@@ -216,4 +208,19 @@ body {
     width: 70%;
     margin: auto;
     display: none; /* Hidden until user clicks 'Show Chart' */
+}
+
+/* esport */
+
+.match {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    text-align: center; /* Center text */
+}
+
+.match h2 {
+    margin: 0 0 10px;
 }

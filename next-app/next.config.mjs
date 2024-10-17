@@ -12,7 +12,16 @@ const nextConfig = {
                     },
                 ],
             },
-        ];
+            {
+                source: '/esport',
+                headers: [
+                    {
+                        key: 'Cache-Control',
+                        value: 'public, max-age=30',
+                    },
+                ],
+            },
+        ]
     },
 };
 

@@ -61,12 +61,12 @@ const CalculatorFormAndResult = () => {
                                 type="submit"
                                 disabled={!formState.isValid}
                                 onClick={() => methods.setValue("operation", "PLUS")}
-                            >Plus</Button>
+                            >Add</Button>
                             <Button
                                 type="submit"
                                 disabled={!formState.isValid}
                                 onClick={() => methods.setValue("operation", "MINUS")}
-                            >Minus</Button>
+                            >Subtract</Button>
                         </div>
                     </form>
                 </FormProvider>
