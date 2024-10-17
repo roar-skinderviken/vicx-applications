@@ -27,7 +27,7 @@ export default function RootLayout({children}) {
 
             <footer className="bg-gray-800 text-white py-4">
                 <div className="container mx-auto flex justify-between items-center">
-                    <p className="text-left">VICX &copy All rights reserved.</p>
+                    <p className="text-left">VICX &copy; All rights reserved.</p>
                     <div className="flex-grow flex justify-center">
                         <div className="flex space-x-4">
                             <a href="#" className="hover:text-yellow-400">
