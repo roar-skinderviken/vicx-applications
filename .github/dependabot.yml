@@ -34,6 +34,19 @@ updates:
         patterns:
           - "*"
 
+  - package-ecosystem: npm
+    versioning-strategy: increase
+    directory: "/next-app"
+    schedule:
+      interval: daily
+      time: "03:00"
+      timezone: Europe/Oslo
+    open-pull-requests-limit: 10
+    groups:
+      npm-dependencies:
+        patterns:
+          - "*"
+
   - package-ecosystem: pip
     versioning-strategy: increase
     directory: "/backend-python"
