@@ -74,14 +74,6 @@ body {
     }
 }
 
-.list-item {
-    @apply flex items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105 hover:shadow-lg mb-4 p-2;
-}
-
-.list-item img {
-    @apply mr-3;
-}
-
 /* portfolio page */
 
 .project {
@@ -101,35 +93,29 @@ body {
 }
 
 
-/* Other styles */
-.navbar {
-    @apply fixed top-0 w-full z-20;
-    /* Tailwind utilities */
-}
+/*!* Other styles *!*/
+/*.navbar {*/
+/*    @apply fixed top-0 w-full z-20;*/
+/*}*/
 
 .centered-content {
     @apply text-center py-[60px];
-    /* Tailwind utilities */
 }
 
 .options, .smoke-places {
     @apply hidden text-center;
-    /* Tailwind utilities */
 }
 
 .options button, .smoke-places button {
     @apply mx-2 text-xl;
-    /* Tailwind utilities */
 }
 
 .map-image, .smoke-image {
     @apply max-w-full h-auto my-5;
-    /* Tailwind utilities */
 }
 
 .back-button {
     @apply my-5;
-    /* Tailwind utilities */
 }
 
 /* Snake */
@@ -210,18 +196,6 @@ body {
 }
 
 /* K-Means */
-
-#gradesForm label {
-    @apply block mb-2 font-medium;
-}
-
-#gradesForm input {
-    @apply block w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-cyan-500;
-}
-
-#gradesForm .validationError {
-    @apply p-4 mb-4 text-sm text-yellow-800 rounded-lg bg-yellow-50 dark:bg-gray-800 dark:text-yellow-300
-}
 
 .grade {
     margin: 5px;

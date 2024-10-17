@@ -8,6 +8,7 @@ import {
     faTerminal,
     faThumbsUp,
 } from "@fortawesome/free-solid-svg-icons"
+import ItemLink from "@/components/ItemLink"
 
 export const dynamic = "force-static"
 
@@ -34,33 +35,30 @@ export default function Home() {
 
                 <div className="flex flex-col items-center">
                     <div className="w-full max-w-md text-center">
-                        <a href="/portfolio" className="list-item">
-                            <img
-                                src="/images/portis.png"
-                                alt="Portfolio Image"
-                                width={67}
-                            />
-                            <FontAwesomeIcon icon={faIdCard} className="fa-fw mr-2"/>
-                            Portfolio
-                        </a>
-                        <a href="/tomcat" className="list-item">
-                            <img
-                                src="/images/tom.png"
-                                alt="Tomcat Image"
-                                width={80}
-                            />
-                            <FontAwesomeIcon icon={faServer} className="fa-fw mr-2"/>
-                            Tomcat
-                        </a>
-                        <a href="/snake" className="list-item">
-                            <img
-                                src="/images/snake.png"
-                                alt="Snake Image"
-                                width={50}
-                            />
-                            <FontAwesomeIcon icon={faGamepad} className="fa-fw mr-2"/>
-                            Snake
-                        </a>
+                        <ItemLink
+                            href="/portfolio"
+                            imgSrc="/images/portis.png"
+                            imgAlt="Portfolio Image"
+                            imgWidth={67}
+                            icon={faIdCard}
+                            text="Portfolio"
+                        />
+                        <ItemLink
+                            href="/tomcat"
+                            imgSrc="/images/tom.png"
+                            imgAlt="Tomcat Image"
+                            imgWidth={80}
+                            icon={faServer}
+                            text="Tomcat"
+                        />
+                        <ItemLink
+                            href="/snake"
+                            imgSrc="/images/snake.png"
+                            imgAlt="Snake Image"
+                            imgWidth={50}
+                            icon={faGamepad}
+                            text="Snake"
+                        />
                         {/*<a href="setup.html" className="list-item">*/}
                         {/*    <img*/}
                         {/*        src="/images/net.png"*/}
@@ -115,15 +113,14 @@ export default function Home() {
                         {/*    <FontAwesomeIcon icon={faHeadset} className="fa-fw mr-2"/>*/}
                         {/*    Esport*/}
                         {/*</a>*/}
-                        <a href="/k-means" className="list-item">
-                            <img
-                                src="/images/kmeans.png"
-                                alt="K-means Image"
-                                width={65}
-                            />
-                            <FontAwesomeIcon icon={faList} className="fa-fw mr-2"/>
-                            K-means
-                        </a>
+                        <ItemLink
+                            href="k-means"
+                            imgSrc="/images/kmeans.png"
+                            imgAlt="K-means Image"
+                            imgWidth={65}
+                            icon={faList}
+                            text="K-means"
+                        />
                     </div>
                 </div>
             </div>

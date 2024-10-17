@@ -7,7 +7,7 @@ export const dynamic = "force-static"
 export default function SnakePage() {
     return (
         <div className="content">
-            <div id="game-container" className="container">
+            <div id="game-container">
                 {/*Score Display*/}
                 <div id="score-display">Score: 0</div>
                 {/*Game Board*/}
