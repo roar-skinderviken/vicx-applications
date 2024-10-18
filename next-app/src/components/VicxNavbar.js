@@ -2,6 +2,7 @@
 
 import {usePathname} from "next/navigation"
 import {Navbar} from "flowbite-react"
+import {SITE_PAGES} from "@/constants/sitePages"
 
 const customTheme = {
     link: {
@@ -13,36 +14,25 @@ const customTheme = {
     },
 }
 
-const LINKS = [
-    {name: 'Home', href: '/'},
-    {name: 'Portfolio', href: '/portfolio'},
-    {name: 'Tomcat', href: '/tomcat'},
-    {name: 'Snake', href: '/snake'},
-    {name: 'Microk8s', href: '/microk8s'},
-    {name: 'Arch', href: '/arch'},
-    {name: 'Pen Testing', href: '/penetration-testing'},
-    {name: 'Counter Strike', href: '/cs'},
-    {name: 'Esport', href: '/esport'},
-    {name: 'K-means', href: '/k-means'},
-]
-
 export default function VicxNavbar() {
     const pathname = usePathname()
 
     return <Navbar fluid rounded theme={customTheme}>
-            <Navbar.Brand href="/">
-                <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">VICX</span>
-            </Navbar.Brand>
-            <Navbar.Toggle/>
-            <Navbar.Collapse>
-                {
-                    LINKS.map(({name, href}) =>
-                        <Navbar.Link
-                            key={href}
-                            href={href}
-                            active={href === pathname}
-                        >{name}</Navbar.Link>)
-                }
-            </Navbar.Collapse>
-        </Navbar>
+        <Navbar.Brand href="/">
+            <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">VICX</span>
+        </Navbar.Brand>
+        <Navbar.Toggle/>
+        <Navbar.Collapse>
+            <Navbar.Link
+                href="/"
+                active={pathname === "/"}>Home</Navbar.Link>
+
+            {SITE_PAGES.map(({title, href}, index) =>
+                <Navbar.Link
+                    key={index}
+                    href={href}
+                    active={href === pathname}>{title}</Navbar.Link>)
+            }
+        </Navbar.Collapse>
+    </Navbar>
 }
