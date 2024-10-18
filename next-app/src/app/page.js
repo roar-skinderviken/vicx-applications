@@ -94,17 +94,16 @@ export default function Home() {
                     {/*    <FontAwesomeIcon icon={faShieldHalved} className="fa-fw mr-2"/>*/}
                     {/*    Pen Testing*/}
                     {/*</a>*/}
-                    {/*<a href="cs.html" className="list-item">*/}
-                    {/*    <img*/}
-                    {/*        src="/images/counter.png"*/}
-                    {/*        alt="Cs2 Image"*/}
-                    {/*        width={75}*/}
-                    {/*    />*/}
-                    {/*    <FontAwesomeIcon icon={faPlay} className="fa-fw mr-2"/>*/}
-                    {/*    Counter Strike*/}
-                    {/*</a>*/}
                     <ItemLink
-                        href="esport"
+                        href="/cs"
+                        imgSrc="/images/counter.png"
+                        imgAlt="Cs2 Image"
+                        imgWidth={75}
+                        icon={faPlay}
+                        text="Counter Strike"
+                    />
+                    <ItemLink
+                        href="/esport"
                         imgSrc="/images/esl.png"
                         imgAlt="Esport Image"
                         imgWidth={65}
@@ -112,7 +111,7 @@ export default function Home() {
                         text="Esport"
                     />
                     <ItemLink
-                        href="k-means"
+                        href="/k-means"
                         imgSrc="/images/kmeans.png"
                         imgAlt="K-means Image"
                         imgWidth={65}

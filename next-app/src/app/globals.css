@@ -214,17 +214,16 @@ body {
     display: none; /* Hidden until user clicks 'Show Chart' */
 }
 
-/* esport */
+/* Counter Strike */
 
-.match {
-    background-color: #fff;
-    border: 1px solid #ddd;
-    padding: 10px;
-    margin-bottom: 10px;
-    border-radius: 5px;
-    text-align: center; /* Center text */
+.cs-side-button {
+    @apply text-white py-2 px-4 rounded disabled:bg-gray-400 disabled:cursor-not-allowed
 }
 
-.match h2 {
-    margin: 0 0 10px;
+.cs-inactive-tab {
+    @apply inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300
+}
+
+.cs-active-tab {
+    @apply inline-block p-4 text-blue-600 border-b-2 border-blue-600 rounded-t-lg dark:text-blue-500 dark:border-blue-500
 }
