@@ -18,7 +18,7 @@ export default function SmokesPage({params}) {
     return (
         <main className="content">
             <div className="hero cs-hero">
-                <h1><span>Counter Strike Smokes</span></h1>
+                <h1>Counter Strike Smokes</h1>
                 <p className="lead">{selectedMap.name} Smoke Places</p>
             </div>
             <div>

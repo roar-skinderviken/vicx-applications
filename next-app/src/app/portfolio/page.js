@@ -4,7 +4,7 @@ export default function PortfolioPage() {
     return (
         <main className="content">
             <div className="hero">
-                <h1><span>Welcome to My Portfolio!</span></h1>
+                <h1>Welcome to My Portfolio!</h1>
                 <p className="lead">Explore my projects and experience below.</p>
             </div>
 

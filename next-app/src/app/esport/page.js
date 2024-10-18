@@ -51,7 +51,7 @@ export default async function EsportPage() {
 
     return <main className="content">
         <div className="hero">
-            <h1><span>Counter Strike Esport</span></h1>
+            <h1>Counter Strike Esport</h1>
             <p className="lead">These are the live matches</p>
         </div>
 

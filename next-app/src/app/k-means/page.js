@@ -6,7 +6,7 @@ export default function KMeansPage() {
     return (
         <main className="content">
             <div className="hero">
-                <h1><span>K-Means Clustering</span></h1>
+                <h1>K-Means Clustering</h1>
                 <p className="lead">Cluster grades into meaningful groups with the K-Means algorithm</p>
             </div>
             <KMeansFormAndResult/>
