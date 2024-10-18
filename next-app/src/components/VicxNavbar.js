@@ -18,6 +18,7 @@ const LINKS = [
     {name: 'Portfolio', href: '/portfolio'},
     {name: 'Tomcat', href: '/tomcat'},
     {name: 'Snake', href: '/snake'},
+    {name: 'Pen Testing', href: '/penetration-testing'},
     {name: 'Counter Strike', href: '/cs'},
     {name: 'Esport', href: '/esport'},
     {name: 'K-means', href: '/k-means'},

@@ -85,15 +85,14 @@ export default function Home() {
                     {/*    <FontAwesomeIcon icon={faTerminal} className="fa-fw mr-2"/>*/}
                     {/*    Arch*/}
                     {/*</a>*/}
-                    {/*<a href="pen.html" className="list-item">*/}
-                    {/*    <img*/}
-                    {/*        src="/images/Tux.png"*/}
-                    {/*        alt="Arch Image"*/}
-                    {/*        width={55}*/}
-                    {/*    />*/}
-                    {/*    <FontAwesomeIcon icon={faShieldHalved} className="fa-fw mr-2"/>*/}
-                    {/*    Pen Testing*/}
-                    {/*</a>*/}
+                    <ItemLink
+                        href="/penetration-testing"
+                        imgSrc="/images/Tux.png"
+                        imgAlt="Arch Image"
+                        imgWidth={55}
+                        icon={faShieldHalved}
+                        text="Pen Testing"
+                    />
                     <ItemLink
                         href="/cs"
                         imgSrc="/images/counter.png"
