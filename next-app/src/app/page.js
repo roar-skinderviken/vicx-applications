@@ -1,4 +1,3 @@
-import Link from "next/link"
 import {SITE_PAGES} from "@/constants/sitePages"
 import {urlFromBasePath} from "@/util/basePathUtils"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
@@ -28,7 +27,7 @@ export default function Home() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     {SITE_PAGES.map((page, index) =>
-                        <Link href={page.href}
+                        <a href={urlFromBasePath(page.href)}
                               key={index}
                               className="flex items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105 hover:shadow-lg mb-4 p-2"
                         >
@@ -39,7 +38,7 @@ export default function Home() {
                                 width={page.imgWidth} />
                             <FontAwesomeIcon icon={page.icon} className="fa-fw mr-2" />
                             {page.title}
-                        </Link>
+                        </a>
                     )}
                 </div>
             </div>

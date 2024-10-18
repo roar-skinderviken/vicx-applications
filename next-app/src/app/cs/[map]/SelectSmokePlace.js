@@ -1,7 +1,6 @@
 "use client"
 
 import {useState} from "react"
-import Link from "next/link"
 import {urlFromBasePath} from "@/util/basePathUtils"
 
 const INITIAL_SMOKE_PLACES = {side: "", places: []}
@@ -40,9 +39,9 @@ const SelectSmokePlace = ({selectedMap}) => {
                     T-Side
                 </button>
 
-                <Link href="/cs"
+                <a href={urlFromBasePath("/cs")}
                       className="bg-gray-200 text-gray-700 py-2 px-4 rounded shadow hover:bg-gray-300 hover:shadow-md"
-                >Back to Map Selector</Link>
+                >Back to Map Selector</a>
             </div>
 
             {smokePlaces && smokePlaces.side &&

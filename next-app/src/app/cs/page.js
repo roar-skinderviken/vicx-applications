@@ -1,4 +1,3 @@
-import Link from "next/link"
 import {urlFromBasePath} from "@/util/basePathUtils"
 import {MAPS} from "@/app/cs/mapConstants"
 
@@ -21,13 +20,13 @@ export default function CounterStrikePage() {
                             key={index}
                             className="p-2 flex flex-col items-center transition-transform duration-200 ease-in-out hover:scale-105 hover:shadow-lg rounded-lg"
                         >
-                            <Link href={`/cs/${map.name}`} className="text-center">
+                            <a href={urlFromBasePath(`/cs/${map.name}`)} className="text-center">
                                 <img
                                     src={urlFromBasePath(`/images/${map.image}`)}
                                     className="w-32 my-3"
                                     alt={map.name}/>
                                 {map.name}
-                            </Link>
+                            </a>
                         </div>
                     ))}
                 </div>
