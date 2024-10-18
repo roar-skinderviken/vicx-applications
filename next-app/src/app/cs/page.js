@@ -1,4 +1,4 @@
-import CounterStrikeScreen from "@/app/cs/CounterStrikeScreen"
+import {MAPS} from "@/app/cs/mapConstants"
 
 export const dynamic = "force-static"
 
@@ -9,7 +9,25 @@ export default function CounterStrikePage() {
                 <h1><span>Counter Strike Smokes</span></h1>
                 <p className="lead">Pick a map to get started!</p>
             </div>
-            <CounterStrikeScreen/>
+            <div>
+                <h2 className="text-center text-3xl my-4">Available Maps</h2>
+                <div className="container mx-auto grid grid-cols-1 sm:grid-cols-4 gap-4 cursor-pointer ">
+                    {MAPS.map((map, index) => (
+                        <div
+                            key={index}
+                            className="p-2 flex flex-col items-center transition-transform duration-200 ease-in-out hover:scale-105 hover:shadow-lg rounded-lg"
+                        >
+                            <a href={`/cs/${map.name}`} className="text-center">
+                                <img
+                                    src={`/images/${map.image}`}
+                                    className="w-32 my-3"
+                                    alt={map.name}/>
+                                {map.name}
+                            </a>
+                        </div>
+                    ))}
+                </div>
+            </div>
         </main>
     )
 }
