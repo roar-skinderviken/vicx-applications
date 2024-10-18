@@ -1,3 +1,5 @@
+import {urlFromBasePath} from "@/util/basePathUtils"
+
 export const dynamic = "force-static"
 
 export default function PenetrationTestingPage() {
@@ -12,7 +14,7 @@ export default function PenetrationTestingPage() {
                     <div className="lg:w-2/3 md:w-5/6">
                         {/* Section 1: Distros */}
                         <div className="mb-10">
-                            <img src="/images/Tux.png" alt="Prepare Installation Media"
+                            <img src={urlFromBasePath("/images/Tux.png")} alt="Prepare Installation Media"
                                  className="mx-auto mb-5 max-w-[200px]"/>
                             <h3 className="text-3xl font-semibold mb-4 text-left">Distros</h3>
                             <p className="text-sm mb-6">
@@ -75,7 +77,7 @@ export default function PenetrationTestingPage() {
 
                         {/* Section 2: John */}
                         <div className="mb-10">
-                            <img src="/images/john.png" alt="Prepare Installation Media"
+                            <img src={urlFromBasePath("/images/john.png")} alt="Prepare Installation Media"
                                  className="mx-auto mb-5 max-w-[300px]"/>
                             <h3 className="text-3xl font-semibold mb-4 text-left">John</h3>
                             <p className="text-left">
@@ -113,7 +115,7 @@ export default function PenetrationTestingPage() {
 
                         {/* Section 3: Nmap */}
                         <div className="mb-10">
-                            <img src="/images/nmap.png" alt="Prepare Installation Media"
+                            <img src={urlFromBasePath("/images/nmap.png")} alt="Prepare Installation Media"
                                  className="mx-auto mb-5 max-w-[400px]"/>
                             <h3 className="text-3xl font-semibold mb-4 text-left">Nmap</h3>
                             <p className="text-left">

@@ -1,3 +1,5 @@
+import {urlFromBasePath} from "@/util/basePathUtils"
+
 export const dynamic = "force-static"
 
 export default function ArchPage() {
@@ -15,7 +17,7 @@ export default function ArchPage() {
                         <div className="my-4">
                             <h3 className="text-left text-2xl font-semibold mb-4">Step 1: Prepare Installation
                                 Media</h3>
-                            <img src="/images/blackarch.png" alt="Prepare Installation Media"
+                            <img src={urlFromBasePath("/images/blackarch.png")} alt="Prepare Installation Media"
                                  className="w-full max-w-xs mb-3 mx-auto"/>
                             <p>Download the Arch Linux ISO and create a bootable USB drive.</p>
                             <ul className="list-disc ml-5">
@@ -28,7 +30,7 @@ export default function ArchPage() {
                         </div>
                         <div className="mb-4">
                             <h3 className="text-left text-2xl font-semibold mb-4">Step 2: Boot and Initial Setup</h3>
-                            <img src="/images/boot.png" alt="Boot and Initial Setup"
+                            <img src={urlFromBasePath("/images/boot.png")} alt="Boot and Initial Setup"
                                  className="w-full max-w-xl mb-3 mx-auto"/>
                             <p>Boot from the USB drive and start the Arch Linux installation process.</p>
                             <ol className="list-decimal ml-5">
@@ -43,7 +45,7 @@ export default function ArchPage() {
                         <div className="mb-4">
                             <h3 className="text-left text-2xl font-semibold mb-4">Step 3: Connecting to the
                                 internet</h3>
-                            <img src="/images/install.png" alt="Connecting to the internet"
+                            <img src={urlFromBasePath("/images/install.png")} alt="Connecting to the internet"
                                  className="w-full max-w-xl mb-3 mx-auto"/>
                             <p>Connect to the Internet.</p>
                             <ol className="list-decimal ml-5">
@@ -59,7 +61,7 @@ export default function ArchPage() {
                         </div>
                         <div className="mb-4">
                             <h3 className="text-left text-2xl font-semibold mb-4">Step 4: Partition the Disks</h3>
-                            <img src="/images/cfdisk.png" alt="Partition the Disks"
+                            <img src={urlFromBasePath("/images/cfdisk.png")} alt="Partition the Disks"
                                  className="w-full max-w-xl mb-3 mx-auto"/>
                             <p>Use tools like <code>cfdisk</code> to partition your disk, normally referred to as sda.
                             </p>
@@ -86,7 +88,7 @@ export default function ArchPage() {
                         <div className="mb-4">
                             <h3 className="text-left text-2xl font-semibold mb-4">Step 5: Install the Base System and
                                 Configure Chroot</h3>
-                            <img src="/images/pacstrap.png" alt="Install the Base System"
+                            <img src={urlFromBasePath("/images/pacstrap.png")} alt="Install the Base System"
                                  className="w-full max-w-xl mb-3 mx-auto"/>
                             <p>Install the base packages for Arch Linux.</p>
                             <ul className="list-disc ml-5">
@@ -100,7 +102,7 @@ export default function ArchPage() {
                         </div>
                         <div className="mb-4">
                             <h3 className="text-left text-2xl font-semibold mb-4">Step 6: Users and hosts</h3>
-                            <img src="/images/user.png" alt="Configure the System"
+                            <img src={urlFromBasePath("/images/user.png")} alt="Configure the System"
                                  className="w-full max-w-xl mb-3 mx-auto"/>
                             <p>Lets make a user.</p>
                             <ul className="list-disc ml-5">
@@ -126,7 +128,7 @@ export default function ArchPage() {
                         </div>
                         <div className="mb-4">
                             <h3 className="text-left text-2xl font-semibold mb-4">Step 7: Install Bootloader</h3>
-                            <img src="/images/grub.png" alt="Install Bootloader"
+                            <img src={urlFromBasePath("/images/grub.png")} alt="Install Bootloader"
                                  className="w-full max-w-xl mb-3 mx-auto"/>
                             <p>Install and configure the GRUB bootloader.</p>
                             <ul className="list-disc ml-5">
@@ -149,7 +151,7 @@ export default function ArchPage() {
                         </div>
                         <div className="mb-4">
                             <h3 className="text-left text-2xl font-semibold mb-4">Step 8: Desktop Environment Setup</h3>
-                            <img src="/images/neofetch.png" alt="Reboot and Post-Installation"
+                            <img src={urlFromBasePath("/images/neofetch.png")} alt="Reboot and Post-Installation"
                                  className="img-fluid mb-3 w-full max-w-2xl mx-auto"/>
                             <p>In this instance we will be using KDE plasma.</p>
                             <ul className="list-disc ml-5">

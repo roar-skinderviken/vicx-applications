@@ -1,5 +1,7 @@
-import ItemLink from "@/components/ItemLink"
+import Link from "next/link"
 import {SITE_PAGES} from "@/constants/sitePages"
+import {urlFromBasePath} from "@/util/basePathUtils"
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 
 export const dynamic = "force-static"
 
@@ -10,7 +12,7 @@ export default function Home() {
                 <div className="container mx-auto">
                     <h1 className="text-center flex justify-center">
                         <img
-                            src="/images/logo-no-background.png"
+                            src={urlFromBasePath("/images/logo-no-background.png")}
                             alt="Welcome to VICX!"
                             width={400}
                             height={400}
@@ -26,15 +28,18 @@ export default function Home() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     {SITE_PAGES.map((page, index) =>
-                        <ItemLink
-                            key={index}
-                            href={page.href}
-                            imgSrc={page.imgSrc}
-                            imgAlt={page.imgAlt}
-                            imgWidth={page.imgWidth}
-                            icon={page.icon}
-                            text={page.title}
-                        />
+                        <Link href={page.href}
+                              key={index}
+                              className="flex items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105 hover:shadow-lg mb-4 p-2"
+                        >
+                            <img
+                                src={urlFromBasePath(page.imgSrc)}
+                                alt={page.imgAlt}
+                                className="mr-3"
+                                width={page.imgWidth} />
+                            <FontAwesomeIcon icon={page.icon} className="fa-fw mr-2" />
+                            {page.title}
+                        </Link>
                     )}
                 </div>
             </div>

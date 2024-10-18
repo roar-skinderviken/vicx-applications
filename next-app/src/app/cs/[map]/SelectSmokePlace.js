@@ -1,18 +1,21 @@
 "use client"
 
 import {useState} from "react"
+import Link from "next/link"
+import {urlFromBasePath} from "@/util/basePathUtils"
 
 const INITIAL_SMOKE_PLACES = {side: "", places: []}
 
 const createImagePath = (mapName, side, smokePlace) => {
     const cleanString = (str) => str.replace(/\s+/g, '-').toLowerCase()
-    return `/images/smoke-places/${cleanString(mapName)}-${side}-${cleanString(smokePlace)}.jpg`
+    return urlFromBasePath(`/images/smoke-places/${cleanString(mapName)}-${side}-${cleanString(smokePlace)}.jpg`)
 }
 
 const SelectSmokePlace = ({selectedMap}) => {
     const [smokePlaces, setSmokePlaces] = useState(INITIAL_SMOKE_PLACES)
     const [selectedSmokePlace, setSelectedSmokePlace] = useState("")
 
+    // noinspection HtmlUnknownTarget
     return (
         <div className="flex flex-col items-center">
             {/* Button row */}
@@ -37,9 +40,9 @@ const SelectSmokePlace = ({selectedMap}) => {
                     T-Side
                 </button>
 
-                <a href="/cs"
-                   className="bg-gray-200 text-gray-700 py-2 px-4 rounded shadow hover:bg-gray-300 hover:shadow-md"
-                >Back to Map Selector</a>
+                <Link href="/cs"
+                      className="bg-gray-200 text-gray-700 py-2 px-4 rounded shadow hover:bg-gray-300 hover:shadow-md"
+                >Back to Map Selector</Link>
             </div>
 
             {smokePlaces && smokePlaces.side &&

@@ -3,6 +3,7 @@
 import {usePathname} from "next/navigation"
 import {Navbar} from "flowbite-react"
 import {SITE_PAGES} from "@/constants/sitePages"
+import {urlFromBasePath} from "@/util/basePathUtils"
 
 const customTheme = {
     link: {
@@ -24,13 +25,13 @@ export default function VicxNavbar() {
         <Navbar.Toggle/>
         <Navbar.Collapse>
             <Navbar.Link
-                href="/"
+                href={urlFromBasePath("/")}
                 active={pathname === "/"}>Home</Navbar.Link>
 
             {SITE_PAGES.map(({title, href}, index) =>
                 <Navbar.Link
                     key={index}
-                    href={href}
+                    href={urlFromBasePath(href)}
                     active={href === pathname}>{title}</Navbar.Link>)
             }
         </Navbar.Collapse>
