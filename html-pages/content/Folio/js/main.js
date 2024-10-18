@@ -79,7 +79,7 @@ $(document).ready(function() {
 
   $(function() {
     typed.typed({
-      strings: ["Marius Bjellebø.", "a Photographer.", "a Cinematographer.", "a Editor", "a Creator."],
+      strings: ["Marius Bjellebø.", "a Photographer.", "a Cinematographer.", "a Editor.", "a Creator."],
       typeSpeed: 100,
       loop: true,
     });
