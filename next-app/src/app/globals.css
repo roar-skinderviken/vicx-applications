@@ -47,6 +47,11 @@ body {
     position: relative;
 }
 
+.cs-hero {
+    /*noinspection CssUnknownTarget*/
+    background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('/images/cs2back.jpg') center 67%/cover no-repeat;
+}
+
 .hero h1 {
     font-size: calc(2.5vw + 1rem); /* Use Tailwind's text-[calc(2.5vw+1rem)] */
     padding: 20px; /* Tailwind's p-5 */
