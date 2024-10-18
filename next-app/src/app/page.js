@@ -1,6 +1,6 @@
 import {SITE_PAGES} from "@/constants/sitePages"
-import {urlFromBasePath} from "@/util/basePathUtils"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
+import {urlFromBasePath} from "@/app/basePathUtils"
 
 export const dynamic = "force-static"
 

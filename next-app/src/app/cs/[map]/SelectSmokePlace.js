@@ -1,7 +1,7 @@
 "use client"
 
 import {useState} from "react"
-import {urlFromBasePath} from "@/util/basePathUtils"
+import {urlFromBasePath} from "@/app/basePathUtils"
 
 const INITIAL_SMOKE_PLACES = {side: "", places: []}
 

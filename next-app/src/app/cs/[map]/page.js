@@ -1,6 +1,6 @@
 import SelectSmokePlace from "@/app/cs/[map]/SelectSmokePlace"
 import {notFound} from "next/navigation"
-import {urlFromBasePath} from "@/util/basePathUtils"
+import {urlFromBasePath} from "@/app/basePathUtils"
 import {MAPS} from "@/app/cs/mapConstants"
 
 export const dynamic = "force-static"

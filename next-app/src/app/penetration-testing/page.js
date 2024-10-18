@@ -1,4 +1,4 @@
-import {urlFromBasePath} from "@/util/basePathUtils"
+import {urlFromBasePath} from "@/app/basePathUtils"
 
 export const dynamic = "force-static"
 

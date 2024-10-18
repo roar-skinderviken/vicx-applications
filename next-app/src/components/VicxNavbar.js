@@ -3,7 +3,7 @@
 import {usePathname} from "next/navigation"
 import {Navbar} from "flowbite-react"
 import {SITE_PAGES} from "@/constants/sitePages"
-import {urlFromBasePath} from "@/util/basePathUtils"
+import {urlFromBasePath} from "@/app/basePathUtils"
 
 const customTheme = {
     link: {
