@@ -47,20 +47,22 @@ const MAPS = [
     },
 ]
 
+const INITIAL_SMOKE_PLACES = { side: "", places: [] }
+
 const createImagePath = (mapName, side, smokePlace) => {
     const cleanString = (str) => str.replace(/\s+/g, '-').toLowerCase()
     return `/images/smoke-places/${cleanString(mapName)}-${side}-${cleanString(smokePlace)}.jpg`
 }
 
 const CounterStrikeScreen = () => {
-    const [selectedMapName, setSelectedMapName] = useState()
-    const [selectedSmokePlaces, setSelectedSmokePlaces] = useState({})
+    const [selectedMapName, setSelectedMapName] = useState("")
+    const [selectedSmokePlaces, setSelectedSmokePlaces] = useState(INITIAL_SMOKE_PLACES)
     const [selectedSmokePlace, setSelectedSmokePlace] = useState("")
 
     const reset = () => {
-        setSelectedMapName(undefined)
-        setSelectedSmokePlaces({})
-        setSelectedSmokePlace(undefined)
+        setSelectedMapName("")
+        setSelectedSmokePlaces(INITIAL_SMOKE_PLACES)
+        setSelectedSmokePlace("")
     }
 
     const displayAvailableMaps = () =>
@@ -91,11 +93,12 @@ const CounterStrikeScreen = () => {
 
     return (
         <div className="flex flex-col items-center">
-            <h2 className="text-center text-3xl my-4">Choose Your Side for {selectedMap.name}</h2>
             <img
                 src={`/images/${selectedMap.image}`}
-                className="w-32"
+                className="w-32 mt-4"
                 alt={selectedMap.name}/>
+
+            <h2 className="text-center text-3xl my-4">Choose Your Side for {selectedMap.name}</h2>
 
             <div className="flex space-x-4 mt-4">
                 <button
@@ -127,14 +130,17 @@ const CounterStrikeScreen = () => {
 
             {selectedSmokePlaces && selectedSmokePlaces.side &&
                 <div className="flex flex-col items-center mt-5">
-                    <h2 className="text-center text-3xl my-4">Smoke Places {selectedSmokePlaces.side === "ct" ? "C-Side" : "T-Side"}</h2>
+                    <h2
+                        className="text-center text-3xl my-4">
+                        {selectedSmokePlaces.side === "ct" ? "C-Side" : "T-Side"} Smoke Places
+                    </h2>
 
                     {/* Tabs */}
                     <div
                         className="text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:text-gray-400 dark:border-gray-700">
                         <ul className="flex flex-wrap -mb-px">
                             {selectedSmokePlaces.places.map((smokePlace, index) => (
-                                <li className="me-2" key={index}>
+                                <li className="mr-2" key={index}>
                                     <button
                                         className={selectedSmokePlace === smokePlace ? "cs-active-tab" : "cs-inactive-tab"}
                                         aria-current="page"
