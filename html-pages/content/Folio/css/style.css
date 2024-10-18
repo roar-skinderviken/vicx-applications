@@ -240,10 +240,7 @@ nav ul li a {
 /*-----------------------------------------------------------------------------------*/
 
 #header {
-  background: url("../images/home-bg.jpg") no-repeat;
-  background-size: cover;
-  background-size: 100%; /* Zoom out the image */
-  background-position: center top; /* Moves the image up, but keeps it covering */
+  background: url("../images/home-bg.jpg") repeat scroll center 10% / cover;
   height: 100vh;
   width: 100%;
 }
