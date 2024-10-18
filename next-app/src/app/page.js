@@ -1,12 +1,5 @@
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {
-    faCubes,
-    faGamepad, faHeadset,
-    faIdCard, faList, faPlay,
-    faSdCard,
-    faServer, faShieldHalved,
-    faTerminal,
-    faThumbsUp,
+    faCubes, faGamepad, faHeadset, faIdCard, faList, faPlay, faServer, faShieldHalved, faTerminal
 } from "@fortawesome/free-solid-svg-icons"
 import ItemLink from "@/components/ItemLink"
 
@@ -58,24 +51,14 @@ export default function Home() {
                         icon={faGamepad}
                         text="Snake"
                     />
-                    {/*<a href="setup.html" className="list-item">*/}
-                    {/*    <img*/}
-                    {/*        src="/images/net.png"*/}
-                    {/*        alt="Setup Image"*/}
-                    {/*        width={55}*/}
-                    {/*    />*/}
-                    {/*    <FontAwesomeIcon icon={faSdCard} className="fa-fw mr-2"/>*/}
-                    {/*    Old Setup*/}
-                    {/*</a>*/}
-                    {/*<a href="microk8s.html" className="list-item">*/}
-                    {/*    <img*/}
-                    {/*        src="/images/kube.png"*/}
-                    {/*        alt="Setup Image"*/}
-                    {/*        width={100}*/}
-                    {/*    />*/}
-                    {/*    <FontAwesomeIcon icon={faCubes} className="fa-fw mr-2"/>*/}
-                    {/*    Microk8s*/}
-                    {/*</a>*/}
+                    <ItemLink
+                        href="/microk8s"
+                        imgSrc="/images/kube.png"
+                        imgAlt="Setup Image"
+                        imgWidth={100}
+                        icon={faCubes}
+                        text="Microk8s"
+                    />
                     <ItemLink
                         href="/arch"
                         imgSrc="/images/arch.png"
