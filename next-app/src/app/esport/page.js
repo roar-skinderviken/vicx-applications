@@ -55,7 +55,7 @@ export default async function EsportPage() {
             <p className="lead">These are the live matches</p>
         </div>
 
-        <div className="container mx-auto grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="container mx-auto grid grid-cols-1 sm:grid-cols-2 gap-4 px-2">
             {runningMatches && <div>
                 <h2 className="text-center text-3xl my-4">Running Matches</h2>
                 {displayMatches(runningMatches)}

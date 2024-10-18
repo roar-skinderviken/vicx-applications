@@ -8,11 +8,11 @@ export default function PortfolioPage() {
                 <p className="lead">Explore my projects and experience below.</p>
             </div>
 
-            <div className="container my-5">
+            <div className="container mx-auto my-5">
                 <h2 className="text-center text-3xl my-4">My Projects</h2>
 
                 <div className="flex flex-col items-center">
-                    <div className="flex flex-col space-y-4">
+                    <div className="flex flex-col space-y-4 px-2">
 
                         <div className="project">
                             <h2>Web Development</h2>

@@ -8,11 +8,11 @@ export default function Microk8sPage() {
                 <p className="lead">Learn about the kubernetes setup!</p>
             </div>
 
-            <div className="container my-5">
+            <div className="container my-5 mx-auto">
                 <h2 className="text-center text-3xl my-4">Config</h2>
 
                 <div className="flex flex-col items-center">
-                    <div className="flex flex-col space-y-4">
+                    <div className="flex flex-col space-y-4 px-2">
 
                         <div className="project">
                             <h2>Choosing the right distro:</h2>

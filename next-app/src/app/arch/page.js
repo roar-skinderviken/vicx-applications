@@ -8,7 +8,7 @@ export default function ArchPage() {
                 <p className="lead">Learn how to set up Arch Linux on your system.</p>
             </div>
 
-            <div className="container my-5">
+            <div className="container my-5 px-2 mx-auto">
                 <h2 className="text-center text-3xl my-4">Arch Linux Installation Guide</h2>
                 <div className="flex justify-center">
                     <div className="w-full max-w-2xl">
