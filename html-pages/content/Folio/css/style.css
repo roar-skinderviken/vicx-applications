@@ -247,7 +247,7 @@ nav ul li a {
 
 
 #header .header-content {
-  height: 155vh;
+  height: 150vh;
   text-align: left;
   width: 100%;
   display: flex;
@@ -256,7 +256,7 @@ nav ul li a {
 }
 
 .header-content h1 {
-  font-size: 30px;
+  font-size: 25px;
   font-weight: 700;
   margin-bottom: 10px;
   text-transform: uppercase;
