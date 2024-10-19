@@ -40,16 +40,10 @@ body {
 }
 
 .hero {
-    background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('https://picsum.photos/3840/2160?random=1') center 67%/cover no-repeat;
     color: white;
     padding: 100px 0;
     text-align: center;
     position: relative;
-}
-
-.cs-hero {
-    /*noinspection CssUnknownTarget*/
-    background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('/images/cs2back.jpg') center 67%/cover no-repeat;
 }
 
 .hero h1 {

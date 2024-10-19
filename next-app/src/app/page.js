@@ -1,26 +1,16 @@
 import {SITE_PAGES} from "@/constants/sitePages"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 import {urlFromBasePath} from "@/app/basePathUtils"
-
-export const dynamic = "force-static"
+import Hero from "@/components/Hero"
 
 export default function Home() {
     return (
         <main className="content">
-            <div className="hero">
-                <div className="container mx-auto">
-                    <h1 className="text-center flex justify-center">
-                        <img
-                            src={urlFromBasePath("/images/logo-no-background.png")}
-                            alt="Welcome to VICX!"
-                            width={400}
-                            height={400}
-                            className="w-[400px]"
-                        />
-                    </h1>
-                    <p className="lead text-yellow-300 text-center">Explore my showcase of recent work</p>
-                </div>
-            </div>
+            <Hero
+                title=""
+                lead="Explore my showcase of recent work"
+                isHomePage={true}
+            />
 
             <div className="container mx-auto">
                 <h2 className="text-center text-3xl my-4">Table of Contents</h2>

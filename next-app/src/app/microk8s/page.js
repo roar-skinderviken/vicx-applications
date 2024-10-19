@@ -1,6 +1,5 @@
 import {urlFromBasePath} from "@/app/basePathUtils"
-
-export const dynamic = "force-static"
+import Hero from "@/components/Hero"
 
 export const metadata = {
     title: "Microk8s | VICX"
@@ -9,10 +8,10 @@ export const metadata = {
 export default function Microk8sPage() {
     return (
         <main className="content">
-            <div className="hero">
-                <h1>Microk8s Config!</h1>
-                <p className="lead">Learn about the kubernetes setup!</p>
-            </div>
+            <Hero
+                title="Microk8s Config"
+                lead="Learn about the kubernetes setup!"
+            />
 
             <div className="container my-5 mx-auto">
                 <h2 className="text-center text-3xl my-4">Config</h2>

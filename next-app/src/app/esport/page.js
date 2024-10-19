@@ -1,5 +1,7 @@
 // noinspection JSUnresolvedReference
 
+import Hero from "@/components/Hero"
+
 const PANDASCORE_BASE_URL = "https://api.pandascore.co/csgo/matches"
 const RUNNING_MATCH_TYPE = "running"
 const UPCOMING_MATCH_TYPE = "upcoming"
@@ -55,10 +57,10 @@ export default async function EsportPage() {
     const upcomingMatches = await getMatches(UPCOMING_MATCH_TYPE)
 
     return <main className="content">
-        <div className="hero">
-            <h1>Counter Strike Esport</h1>
-            <p className="lead">These are the live matches</p>
-        </div>
+        <Hero
+            title="Counter Strike Esport"
+            lead="These are the live matches"
+        />
 
         <div className="container mx-auto grid grid-cols-1 sm:grid-cols-2 gap-4 px-2">
             {runningMatches && <div>

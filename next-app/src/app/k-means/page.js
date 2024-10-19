@@ -1,6 +1,5 @@
 import KMeansFormAndResult from "@/app/k-means/KMeansFormAndResult"
-
-export const dynamic = "force-static"
+import Hero from "@/components/Hero"
 
 export const metadata = {
     title: "K-Means | VICX"
@@ -9,10 +8,11 @@ export const metadata = {
 export default function KMeansPage() {
     return (
         <main className="content">
-            <div className="hero">
-                <h1>K-Means Clustering</h1>
-                <p className="lead">Cluster grades into meaningful groups with the K-Means algorithm</p>
-            </div>
+            <Hero
+                title="K-Means Clustering"
+                lead="Cluster grades into meaningful groups with the K-Means algorithm"
+            />
+
             <KMeansFormAndResult/>
         </main>
     )

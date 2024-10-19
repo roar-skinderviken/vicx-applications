@@ -3,10 +3,17 @@ import {notFound} from "next/navigation"
 import {urlFromBasePath} from "@/app/basePathUtils"
 import {MAPS} from "@/app/cs/mapConstants"
 
-export const dynamic = "force-static"
+export const dynamicParams = false
+export const revalidate = 3600
 
 export const metadata = {
     title: "Counter Strike Smokes | VICX"
+}
+
+export async function generateStaticParams() {
+    return MAPS.map(({name}) => ({
+        map: name
+    }))
 }
 
 export default function SmokesPage({params}) {

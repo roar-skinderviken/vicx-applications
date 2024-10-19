@@ -1,6 +1,5 @@
 import {urlFromBasePath} from "@/app/basePathUtils"
-
-export const dynamic = "force-static"
+import Hero from "@/components/Hero"
 
 export const metadata = {
     title: "Penetration Testing | VICX"
@@ -9,10 +8,11 @@ export const metadata = {
 export default function PenetrationTestingPage() {
     return (
         <main className="content">
-            <div className="hero">
-                <h1>Penetration Testing</h1>
-                <p className="lead">How to use different tools for testing</p>
-            </div>
+            <Hero
+                title="Penetration Testing"
+                lead="How to use different tools for testing"
+            />
+
             <div className="container mx-auto my-10 px-4">
                 <div className="flex justify-center">
                     <div className="lg:w-2/3 md:w-5/6">

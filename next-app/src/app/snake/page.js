@@ -2,8 +2,6 @@ import Script from "next/script"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 import {faArrowDown, faArrowLeft, faArrowRight, faArrowUp} from "@fortawesome/free-solid-svg-icons"
 
-export const dynamic = "force-static"
-
 export const metadata = {
     title: "Snake | VICX"
 }

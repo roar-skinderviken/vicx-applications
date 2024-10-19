@@ -1,6 +1,5 @@
 import {urlFromBasePath} from "@/app/basePathUtils"
-
-export const dynamic = "force-static"
+import Hero from "@/components/Hero"
 
 export const metadata = {
     title: "Arch | VICX"
@@ -9,10 +8,10 @@ export const metadata = {
 export default function ArchPage() {
     return (
         <main className="content">
-            <div className="hero">
-                <h1>Arch Linux Setup</h1>
-                <p className="lead">Learn how to set up Arch Linux on your system.</p>
-            </div>
+            <Hero
+                title="Arch Linux Setup"
+                lead="Learn how to set up Arch Linux on your system."
+            />
 
             <div className="container my-5 px-2 mx-auto">
                 <h2 className="text-center text-3xl my-4">Arch Linux Installation Guide</h2>

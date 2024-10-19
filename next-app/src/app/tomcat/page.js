@@ -1,6 +1,5 @@
 import CalculatorFormAndResult from "@/app/tomcat/CalculatorFormAndResult"
-
-export const dynamic = "force-static"
+import Hero from "@/components/Hero"
 
 export const metadata = {
     title: "Tomcat | VICX"
@@ -9,10 +8,10 @@ export const metadata = {
 export default function KMeansPage() {
     return (
         <main className="content">
-            <div className="hero">
-                <h1>Simple Calculator</h1>
-                <p className="lead">Simple Spring Boot calculator hosted by Tomcat</p>
-            </div>
+            <Hero
+                title="Simple Calculator"
+                lead="Simple Spring Boot calculator hosted by Tomcat"
+            />
             <CalculatorFormAndResult/>
         </main>
     )

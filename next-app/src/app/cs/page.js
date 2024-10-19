@@ -1,7 +1,6 @@
 import {urlFromBasePath} from "@/app/basePathUtils"
 import {MAPS} from "@/app/cs/mapConstants"
-
-export const dynamic = "force-static"
+import Hero from "@/components/Hero"
 
 export const metadata = {
     title: "Counter Strike Smokes | VICX"
@@ -10,10 +9,12 @@ export const metadata = {
 export default function CounterStrikePage() {
     return (
         <main className="content">
-            <div className="hero cs-hero">
-                <h1>Counter Strike Smokes</h1>
-                <p className="lead">Pick a map to get started!</p>
-            </div>
+            <Hero
+                title="Counter Strike Smokes"
+                lead="Pick a map to get started!"
+                backgroundImage="/images/cs2back.jpg"
+            />
+
             <div>
                 <h2 className="text-center text-3xl my-4">Available Maps</h2>
                 <div className="container mx-auto grid grid-cols-1 sm:grid-cols-4 gap-4 cursor-pointer ">

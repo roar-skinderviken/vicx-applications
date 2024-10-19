@@ -1,6 +1,5 @@
 import {urlFromBasePath} from "@/app/basePathUtils"
-
-export const dynamic = "force-static"
+import Hero from "@/components/Hero"
 
 export const metadata = {
     title: "Portfolio | VICX"
@@ -9,10 +8,10 @@ export const metadata = {
 export default function PortfolioPage() {
     return (
         <main className="content">
-            <div className="hero">
-                <h1>Welcome to My Portfolio!</h1>
-                <p className="lead">Explore my projects and experience below.</p>
-            </div>
+            <Hero
+                title="Welcome to My Portfolio!"
+                lead="Explore my projects and experience below."
+            />
 
             <div className="container mx-auto my-5">
                 <h2 className="text-center text-3xl my-4">My Projects</h2>
