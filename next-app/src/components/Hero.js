@@ -25,8 +25,7 @@ const Hero = async ({title, lead, backgroundImage = undefined, isHomePage = fals
                 alt="Welcome to VICX!"
                 width={400}
                 height={400}
-                className="w-[400px]"
-            />
+                className="w-[400px]"/>
         </h1>
         : <h1>{title}</h1>
 
@@ -36,9 +35,7 @@ const Hero = async ({title, lead, backgroundImage = undefined, isHomePage = fals
             style={{
                 background: `url('${imageUrl}') center 67%/cover no-repeat`,
                 transition: "background 0.5s ease-in-out", // Smooth transition when image is loaded
-            }}
-
-        >
+            }}>
             {headerElement}
             <p className={leadClassName}>{lead}</p>
         </div>)
