@@ -2,6 +2,7 @@ import SelectSmokePlace from "@/app/cs/[map]/SelectSmokePlace"
 import {notFound} from "next/navigation"
 import {urlFromBasePath} from "@/app/basePathUtils"
 import {MAPS} from "@/app/cs/mapConstants"
+import Hero from "@/components/Hero"
 
 export const dynamicParams = false
 export const revalidate = 3600
@@ -29,10 +30,12 @@ export default function SmokesPage({params}) {
 
     return (
         <main className="content">
-            <div className="hero cs-hero">
-                <h1>Counter Strike Smokes</h1>
-                <p className="lead">{selectedMap.name} Smoke Places</p>
-            </div>
+            <Hero
+                title="Counter Strike Smokes"
+                lead={`${selectedMap.name} Smoke Places`}
+                backgroundImage="/images/cs2back.jpg"
+            />
+
             <div>
                 <div className="flex flex-col items-center">
                     <img
