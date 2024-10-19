@@ -6,9 +6,7 @@ export const dynamic = "force-static"
 export default function CounterStrikePage() {
     return (
         <main className="content">
-            <div className="hero" style={{
-                background: `linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(${urlFromBasePath("/images/cs2back.jpg")}) center 67%/cover no-repeat`,
-            }}>
+            <div className="hero cs-hero">
                 <h1>Counter Strike Smokes</h1>
                 <p className="lead">Pick a map to get started!</p>
             </div>
