@@ -32,7 +32,7 @@ export default function VicxNavbar() {
                 <Navbar.Link
                     key={index}
                     href={urlFromBasePath(href)}
-                    active={href === pathname}>{title}</Navbar.Link>)
+                    active={pathname.startsWith(href)}>{title}</Navbar.Link>)
             }
         </Navbar.Collapse>
     </Navbar>
