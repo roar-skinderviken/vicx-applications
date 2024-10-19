@@ -18,17 +18,17 @@ export default function CounterStrikePage() {
             <div>
                 <h2 className="text-center text-3xl my-4">Available Maps</h2>
                 <div className="container mx-auto grid grid-cols-1 sm:grid-cols-4 gap-4 cursor-pointer ">
-                    {MAPS.map((map, index) => (
+                    {MAPS.map(({name, image}, index) => (
                         <div
                             key={index}
                             className="p-2 flex flex-col items-center transition-transform duration-200 ease-in-out hover:scale-105 hover:shadow-lg rounded-lg"
                         >
-                            <a href={urlFromBasePath(`/cs/${map.name}`)} className="text-center">
+                            <a href={urlFromBasePath(`/cs/${name}`)} className="text-center">
                                 <img
-                                    src={urlFromBasePath(`/images/${map.image}`)}
+                                    src={urlFromBasePath(`/images/${image}`)}
                                     className="w-32 my-3"
-                                    alt={map.name}/>
-                                {map.name}
+                                    alt={name}/>
+                                {name}
                             </a>
                         </div>
                     ))}
