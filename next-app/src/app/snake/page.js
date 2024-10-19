@@ -4,6 +4,10 @@ import {faArrowDown, faArrowLeft, faArrowRight, faArrowUp} from "@fortawesome/fr
 
 export const dynamic = "force-static"
 
+export const metadata = {
+    title: "Snake | VICX"
+}
+
 export default function SnakePage() {
     return (
         <div className="content">

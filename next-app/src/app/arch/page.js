@@ -2,6 +2,10 @@ import {urlFromBasePath} from "@/app/basePathUtils"
 
 export const dynamic = "force-static"
 
+export const metadata = {
+    title: "Arch | VICX"
+}
+
 export default function ArchPage() {
     return (
         <main className="content">

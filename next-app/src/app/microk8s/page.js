@@ -2,6 +2,10 @@ import {urlFromBasePath} from "@/app/basePathUtils"
 
 export const dynamic = "force-static"
 
+export const metadata = {
+    title: "Microk8s | VICX"
+}
+
 export default function Microk8sPage() {
     return (
         <main className="content">

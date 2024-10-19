@@ -2,6 +2,10 @@ import {urlFromBasePath} from "@/app/basePathUtils"
 
 export const dynamic = "force-static"
 
+export const metadata = {
+    title: "Penetration Testing | VICX"
+}
+
 export default function PenetrationTestingPage() {
     return (
         <main className="content">

@@ -3,6 +3,10 @@ import {MAPS} from "@/app/cs/mapConstants"
 
 export const dynamic = "force-static"
 
+export const metadata = {
+    title: "Counter Strike Smokes | VICX"
+}
+
 export default function CounterStrikePage() {
     return (
         <main className="content">

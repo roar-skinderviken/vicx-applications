@@ -2,6 +2,10 @@ import CalculatorFormAndResult from "@/app/tomcat/CalculatorFormAndResult"
 
 export const dynamic = "force-static"
 
+export const metadata = {
+    title: "Tomcat | VICX"
+}
+
 export default function KMeansPage() {
     return (
         <main className="content">

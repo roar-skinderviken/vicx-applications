@@ -2,6 +2,10 @@ import KMeansFormAndResult from "@/app/k-means/KMeansFormAndResult"
 
 export const dynamic = "force-static"
 
+export const metadata = {
+    title: "K-Means | VICX"
+}
+
 export default function KMeansPage() {
     return (
         <main className="content">

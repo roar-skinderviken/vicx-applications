@@ -2,6 +2,10 @@ import {urlFromBasePath} from "@/app/basePathUtils"
 
 export const dynamic = "force-static"
 
+export const metadata = {
+    title: "Portfolio | VICX"
+}
+
 export default function PortfolioPage() {
     return (
         <main className="content">
