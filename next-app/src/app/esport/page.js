@@ -1,3 +1,5 @@
+// noinspection JSUnresolvedReference
+
 const PANDASCORE_BASE_URL = "https://api.pandascore.co/csgo/matches"
 const RUNNING_MATCH_TYPE = "running"
 const UPCOMING_MATCH_TYPE = "upcoming"
@@ -17,7 +19,6 @@ const getMatches = async (matchType) => {
             return []
         }
         const data = await response.json()
-        console.log("Fetched matches", matchType)
         return data.filter(match => match.opponents && match.opponents.length === 2)
     } catch (error) {
         console.error("Error:", error)

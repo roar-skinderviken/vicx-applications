@@ -14,7 +14,6 @@ const SelectSmokePlace = ({selectedMap}) => {
     const [smokePlaces, setSmokePlaces] = useState(INITIAL_SMOKE_PLACES)
     const [selectedSmokePlace, setSelectedSmokePlace] = useState("")
 
-    // noinspection HtmlUnknownTarget
     return (
         <div className="flex flex-col items-center">
             {/* Button row */}
@@ -40,7 +39,7 @@ const SelectSmokePlace = ({selectedMap}) => {
                 </button>
 
                 <a href={urlFromBasePath("/cs")}
-                      className="bg-gray-200 text-gray-700 py-2 px-4 rounded shadow hover:bg-gray-300 hover:shadow-md"
+                   className="bg-gray-200 text-gray-700 py-2 px-4 rounded shadow hover:bg-gray-300 hover:shadow-md"
                 >Back to Map Selector</a>
             </div>
 
