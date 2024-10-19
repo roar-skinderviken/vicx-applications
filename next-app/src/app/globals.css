@@ -102,28 +102,6 @@ body {
 }
 
 
-/*!* Other styles *!*/
-
-.centered-content {
-    @apply text-center py-[60px];
-}
-
-.options, .smoke-places {
-    @apply hidden text-center;
-}
-
-.options button, .smoke-places button {
-    @apply mx-2 text-xl;
-}
-
-.map-image, .smoke-image {
-    @apply max-w-full h-auto my-5;
-}
-
-.back-button {
-    @apply my-5;
-}
-
 /* Snake */
 
 #game-container {
