@@ -16,8 +16,6 @@ const fetchBackgroundImageUrl = async () => {
 const Hero = async ({title, lead, backgroundImage = undefined, isHomePage = false}) => {
     const imageUrl = backgroundImage || await fetchBackgroundImageUrl()
 
-    const leadClassName = `lead${isHomePage ? " text-yellow-300" : ""}`
-
     const headerElement = isHomePage
         ? <h1 className="flex justify-center">
             <img
@@ -37,7 +35,7 @@ const Hero = async ({title, lead, backgroundImage = undefined, isHomePage = fals
                 transition: "background 0.5s ease-in-out", // Smooth transition when image is loaded
             }}>
             {headerElement}
-            <p className={leadClassName}>{lead}</p>
+            <p className={`lead${isHomePage ? " text-yellow-300" : ""}`}>{lead}</p>
         </div>)
 }
 
