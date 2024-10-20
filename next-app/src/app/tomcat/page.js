@@ -5,7 +5,7 @@ export const metadata = {
     title: "Tomcat | VICX"
 }
 
-export default function KMeansPage() {
+export default function TomcatPage() {
     return (
         <main className="content">
             <Hero
