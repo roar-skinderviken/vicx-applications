@@ -17,7 +17,7 @@ const Hero = async ({title, lead, backgroundImage = undefined, isHomePage = fals
     const imageUrl = backgroundImage || await fetchBackgroundImageUrl()
 
     const headerElement = isHomePage
-        ? <h1 className="flex justify-center">
+        ? <h1 className="flex justify-center animate-fadeInDown">
             <img
                 src={urlFromBasePath("/images/logo-no-background.png")}
                 alt="Welcome to VICX!"
@@ -25,7 +25,7 @@ const Hero = async ({title, lead, backgroundImage = undefined, isHomePage = fals
                 height={400}
                 className="w-[400px]"/>
         </h1>
-        : <h1>{title}</h1>
+        : <h1 className="animate-fadeInDown">{title}</h1>
 
     return (
         <div
@@ -35,7 +35,7 @@ const Hero = async ({title, lead, backgroundImage = undefined, isHomePage = fals
                 transition: "background 0.5s ease-in-out", // Smooth transition when image is loaded
             }}>
             {headerElement}
-            <p className={`lead${isHomePage ? " text-yellow-300" : ""}`}>{lead}</p>
+            <p className={`lead${isHomePage ? " text-yellow-300" : ""}  animate-fadeInUp`}>{lead}</p>
         </div>)
 }
 
