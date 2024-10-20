@@ -70,8 +70,8 @@ const nextConfig = {
                 destination: "/snake",
                 permanent: true
             },
-        ];
+        ]
     },
-};
+}
 
 export default nextConfig;
