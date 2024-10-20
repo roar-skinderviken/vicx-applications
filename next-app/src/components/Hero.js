@@ -2,7 +2,7 @@ import {urlFromBasePath} from "@/app/basePathUtils"
 
 const fetchBackgroundImageUrl = async () => {
     const response = await fetch(
-        "https://picsum.photos/3840/2160?random=1",
+        "https://picsum.photos/1280/720",
         {next: {revalidate: 3600}}
     )
 
