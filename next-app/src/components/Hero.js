@@ -1,12 +1,15 @@
 import {urlFromBasePath} from "@/app/basePathUtils"
 
+const IMAGE_EXPIRATION_IN_SECS = 900 // 15 minutes
+
 const fetchBackgroundImageUrl = async () => {
     const response = await fetch(
         "https://picsum.photos/1280/720",
-        {next: {revalidate: 3600}}
+        {next: {revalidate: IMAGE_EXPIRATION_IN_SECS}}
     )
 
     if (!response.ok) {
+        console.log("Error Reloaded image")
         throw new Error('Failed to fetch the image');
     }
 
@@ -15,6 +18,7 @@ const fetchBackgroundImageUrl = async () => {
 
 const Hero = async ({title, lead, backgroundImage = undefined, isHomePage = false}) => {
     const imageUrl = backgroundImage || await fetchBackgroundImageUrl()
+    console.log("Reloaded image", imageUrl)
 
     const headerElement = isHomePage
         ? <h1 className="flex justify-center animate-fadeInDown">

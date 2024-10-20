@@ -1,15 +1,12 @@
 import './globals.css'
 import {config} from '@fortawesome/fontawesome-svg-core'
 import '@fortawesome/fontawesome-svg-core/styles.css'
+import '@fortawesome/fontawesome-svg-core/styles.css'
+import {faGithub, faLinkedinIn} from "@fortawesome/free-brands-svg-icons"
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
+import VicxNavbar from "@/components/VicxNavbar"
 
 config.autoAddCss = false
-
-import VicxNavbar from "@/components/VicxNavbar"
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
-import {faGithub, faLinkedinIn} from "@fortawesome/free-brands-svg-icons"
-
-export const dynamic = "force-dynamic"
-export const revalidate = 3600
 
 export const metadata = {
     title: 'Welcome to VICX',

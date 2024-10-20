@@ -22,8 +22,8 @@ module.exports = {
                 },
             },
             animation: {
-                fadeInDown: 'fadeInDown 1.5s ease-in-out',
-                fadeInUp: 'fadeInUp 1.5s ease-in-out',
+                fadeInDown: 'fadeInDown 0.5s ease-in-out', // Adjusted to 0.5s
+                fadeInUp: 'fadeInUp 0.5s ease-in-out', // Adjusted to 0.5s
             },
             colors: {
                 background: "var(--background)",
