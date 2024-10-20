@@ -7,9 +7,6 @@ const RUNNING_MATCH_TYPE = "running"
 const UPCOMING_MATCH_TYPE = "upcoming"
 const CACHE_TIMEOUT_IN_SECS = 30
 
-export const dynamic = "force-dynamic"
-export const revalidate = CACHE_TIMEOUT_IN_SECS
-
 const apiKey = process.env.API_KEY
 
 const getMatches = async (matchType) => {
@@ -23,7 +20,6 @@ const getMatches = async (matchType) => {
         const data = await response.json()
         return data.filter(match => match.opponents && match.opponents.length === 2)
     } catch (error) {
-        console.error("Error:", error)
         return []
     }
 }
