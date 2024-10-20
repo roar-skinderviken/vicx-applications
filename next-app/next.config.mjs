@@ -56,6 +56,11 @@ const nextConfig = {
                 permanent: true
             },
             {
+                source: "/old_index.html",
+                destination: "/portfolio",
+                permanent: true
+            },
+            {
                 source: "/setup.html",
                 destination: "/microk8s",
                 permanent: true
