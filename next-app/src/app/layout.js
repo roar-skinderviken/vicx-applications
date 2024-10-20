@@ -19,31 +19,29 @@ export const metadata = {
 export default function RootLayout({children}) {
     return (
         <html lang="en">
-        <body className="bg-gray-100 antialiased">
-
-        <div className="flex flex-col min-h-screen">
+        <body className="min-h-screen flex flex-col bg-gray-100 antialiased">
+        <header>
             <VicxNavbar/>
+        </header>
 
-            <main className="flex-grow">
-                {children}
-            </main>
+        {children}
 
-            <footer className="bg-gray-800 text-white py-4">
-                <div className="container mx-auto flex justify-between items-center">
-                    <p className="text-left">VICX &copy; All rights reserved.</p>
-                    <div className="flex-grow flex justify-center">
-                        <div className="flex space-x-4">
-                            <a href="#" className="hover:text-yellow-400">
-                                <FontAwesomeIcon icon={faLinkedinIn} className="fa-fw"/>
-                            </a>
-                            <a href="https://github.com/VictorSkinderviken" className="hover:text-yellow-400">
-                                <FontAwesomeIcon icon={faGithub} className="fa-fw"/>
-                            </a>
-                        </div>
+        <footer className="bg-gray-800 text-white p-4">
+            <div className="container mx-auto flex justify-between items-center">
+                <p className="text-left">VICX &copy; All rights reserved.</p>
+
+                <div className="flex-grow flex justify-center">
+                    <div className="flex space-x-4">
+                        <a href="#" className="hover:text-yellow-400">
+                            <FontAwesomeIcon icon={faLinkedinIn} className="fa-fw"/>
+                        </a>
+                        <a href="https://github.com/VictorSkinderviken" className="hover:text-yellow-400">
+                            <FontAwesomeIcon icon={faGithub} className="fa-fw"/>
+                        </a>
                     </div>
                 </div>
-            </footer>
-        </div>
+            </div>
+        </footer>
         </body>
         </html>
     )

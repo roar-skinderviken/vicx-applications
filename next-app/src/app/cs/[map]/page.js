@@ -37,7 +37,7 @@ export default function SmokesPage({params}) {
             />
 
             <div>
-                <div className="flex flex-col items-center">
+                <div className="flex flex-col items-center mb-4">
                     <img
                         src={urlFromBasePath(`/images/${selectedMap.image}`)}
                         className="w-32 mt-4"

@@ -36,7 +36,7 @@ body {
 }
 
 .content {
-    flex: 1; /* Tailwind's flex-1 */
+    flex: 1;
 }
 
 .hero {
