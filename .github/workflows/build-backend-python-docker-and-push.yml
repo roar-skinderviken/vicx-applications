@@ -1,4 +1,4 @@
-name: Build static-content Docker and Push
+name: Build python-backend Docker and Push
 
 on:
   push:
