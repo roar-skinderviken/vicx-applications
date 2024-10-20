@@ -10,7 +10,7 @@ const fetchBackgroundImageUrl = async () => {
             {next: {revalidate: IMAGE_EXPIRATION_IN_SECS}}
         )
 
-        if (!response.ok) {
+        if (!(response.ok && response.url)) {
             return FALLBACK_IMAGE
         }
 
