@@ -15,7 +15,7 @@ export default function CounterStrikePage() {
                 backgroundImage="/images/cs2back.jpg"
             />
 
-            <div>
+            <section id="maps">
                 <h2 className="text-center text-3xl my-4">Available Maps</h2>
                 <div className="container mx-auto grid grid-cols-1 sm:grid-cols-4 gap-4 cursor-pointer ">
                     {MAPS.map(({name, image}, index) => (
@@ -33,7 +33,7 @@ export default function CounterStrikePage() {
                         </div>
                     ))}
                 </div>
-            </div>
+            </section>
         </main>
     )
 }
