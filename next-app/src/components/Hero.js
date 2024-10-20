@@ -9,7 +9,7 @@ const fetchBackgroundImageUrl = async () => {
     if (!response.ok) {
         throw new Error('Failed to fetch the image');
     }
-    console.log("Fetched the image", response.url)
+
     return response.url
 }
 
@@ -25,17 +25,19 @@ const Hero = async ({title, lead, backgroundImage = undefined, isHomePage = fals
                 height={400}
                 className="w-[400px]"/>
         </h1>
-        : <h1 className="animate-fadeInDown">{title}</h1>
+        : <h1 className="animate-fadeInDown text-xl mb-5 sm:text-2xl md:text-4xl">
+            {title}
+        </h1>
 
     return (
         <div
-            className="hero"
+            className="text-white py-24 text-center"
             style={{
                 background: `url('${imageUrl}') center 67%/cover no-repeat`,
-                transition: "background 0.5s ease-in-out", // Smooth transition when image is loaded
+                transition: "background 0.5s ease-in-out",
             }}>
             {headerElement}
-            <p className={`lead${isHomePage ? " text-yellow-300" : ""}  animate-fadeInUp`}>{lead}</p>
+            <p className={`${isHomePage ? "text-yellow-300" : ""}  animate-fadeInUp`}>{lead}</p>
         </div>)
 }
 

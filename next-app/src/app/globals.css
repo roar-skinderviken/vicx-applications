@@ -18,40 +18,8 @@ html {
     }
 }
 
-@layer utilities {
-    .text-balance {
-        text-wrap: balance;
-    }
-}
-
-/* Global Styles */
-body {
-    scroll-behavior: smooth;
-    background-color: #f8f9fa; /* Tailwind's bg-gray-100 */
-    color: #333; /* Tailwind's text-gray-800 */
-    display: flex; /* Tailwind's flex */
-    flex-direction: column; /* Tailwind's flex-col */
-    min-height: 100vh; /* Tailwind's min-h-screen */
-    margin: 0; /* Tailwind's m-0 */
-}
-
 .content {
     flex: 1;
-}
-
-.hero {
-    color: white;
-    padding: 100px 0;
-    text-align: center;
-    position: relative;
-}
-
-.hero h1 {
-    font-size: calc(2.5vw + 1rem); /* Use Tailwind's text-[calc(2.5vw+1rem)] */
-    padding: 20px; /* Tailwind's p-5 */
-    margin-bottom: 20px; /* Tailwind's mb-5 */
-    position: relative; /* Tailwind's relative */
-    z-index: 1; /* Tailwind's z-10 */
 }
 
 /* portfolio page */
