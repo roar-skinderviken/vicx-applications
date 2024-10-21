@@ -74,15 +74,15 @@ export default async function EsportPage() {
         />
 
         <div className="container mx-auto grid grid-cols-1 sm:grid-cols-2 gap-4 px-2">
-            {runningMatches && <div>
+            <div>
                 <h2 className="text-center text-3xl my-4">Running Matches</h2>
                 {displayMatches(runningMatches)}
-            </div>}
+            </div>
 
-            {upcomingMatches && <div>
+            <div>
                 <h2 className="text-center text-3xl my-4">Upcoming Matches</h2>
                 {displayMatches(upcomingMatches)}
-            </div>}
+            </div>
         </div>
     </main>
 }
