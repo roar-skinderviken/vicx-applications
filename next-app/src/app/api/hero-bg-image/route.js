@@ -9,14 +9,9 @@ const FALLBACK_IMAGE_PATH = path.join(process.cwd(), 'public', 'images', 'hero-f
 export async function GET() {
 
     const buildResponse = (buffer) => new Response(
-            buffer,
-            {
-                headers: {
-                    "Content-Type": "image/jpeg",
-                    "Cache-Control": `public, max-age=${IMAGE_EXPIRATION_IN_SECS}`,
-                },
-            }
-        )
+        buffer,
+        {headers: {"Content-Type": "image/jpeg"}}
+    )
 
     try {
         const response = await fetch(
