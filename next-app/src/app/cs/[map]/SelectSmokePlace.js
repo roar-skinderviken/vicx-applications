@@ -72,8 +72,9 @@ const SelectSmokePlace = ({selectedMap}) => {
                         <div className="w-full p-4 border rounded-b-lg border-gray-300 bg-gray-100">
                             <img
                                 src={createImagePath(selectedMap.name, smokePlaces.side, selectedSmokePlace)}
-                                className="my-2 max-w-6xl"
+                                className="w-full h-auto object-cover"
                                 alt={selectedSmokePlace}
+                                loading="lazy"
                             />
                         </div>
                     )}
