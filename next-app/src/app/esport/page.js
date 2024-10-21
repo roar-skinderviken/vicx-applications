@@ -1,22 +1,33 @@
 // noinspection JSUnresolvedReference
 
 import Hero from "@/components/Hero"
+import {revalidateTag} from "next/cache"
 
 const PANDASCORE_BASE_URL = "https://api.pandascore.co/csgo/matches"
 const RUNNING_MATCH_TYPE = "running"
 const UPCOMING_MATCH_TYPE = "upcoming"
 const CACHE_TIMEOUT_IN_SECS = 30
+const CACHE_TAG = "pandascore-cache"
 
 const apiKey = process.env.API_KEY
 
 const getMatches = async (matchType) => {
-    const url = `${PANDASCORE_BASE_URL}/${matchType}?token=${apiKey}`
-
     try {
-        const response = await fetch(url,  { next: { revalidate: CACHE_TIMEOUT_IN_SECS } })
+        const response = await fetch(
+            `${PANDASCORE_BASE_URL}/${matchType}?token=${apiKey}`,
+            {
+                next: {
+                    revalidate: CACHE_TIMEOUT_IN_SECS,
+                    tags: [CACHE_TAG]
+                }
+            }
+        )
+
         if (!response.ok) {
+            await revalidateTag(CACHE_TAG)
             return []
         }
+
         const data = await response.json()
         return data.filter(match => match.opponents && match.opponents.length === 2)
     } catch (error) {
