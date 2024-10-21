@@ -4,15 +4,14 @@ import * as fs from "node:fs"
 const IMAGE_EXPIRATION_IN_SECS = 900 // 15 minutes
 const IMAGE_URL = 'https://picsum.photos/1280/720'
 
-const FALLBACK_IMAGE_PATH = path.join(process.cwd(), 'public', 'images', 'hero-fallback.jpg');
+const FALLBACK_IMAGE_PATH = path.join(process.cwd(), 'public', 'images', 'hero-fallback.jpg')
+
+const buildResponse = (buffer) => new Response(
+    buffer,
+    {headers: {"Content-Type": "image/jpeg"}}
+)
 
 export async function GET() {
-
-    const buildResponse = (buffer) => new Response(
-        buffer,
-        {headers: {"Content-Type": "image/jpeg"}}
-    )
-
     try {
         const response = await fetch(
             IMAGE_URL,
