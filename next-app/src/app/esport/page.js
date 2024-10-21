@@ -62,8 +62,10 @@ export const metadata = {
 }
 
 export default async function EsportPage() {
-    const runningMatches = await getMatches(RUNNING_MATCH_TYPE)
-    const upcomingMatches = await getMatches(UPCOMING_MATCH_TYPE)
+    const [runningMatches, upcomingMatches] = await Promise.all([
+        getMatches(RUNNING_MATCH_TYPE),
+        getMatches(UPCOMING_MATCH_TYPE)
+    ])
 
     return <main className="content">
         <Hero
