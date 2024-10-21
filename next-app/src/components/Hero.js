@@ -22,9 +22,9 @@ const fetchBackgroundImageBase64 = async () => {
         const contentType = response.headers.get("content-type")
 
         // Return the data URL format
-        return `data:${contentType}base64,${base64String}`
+        return `data:${contentType};base64,${base64String}`
     } catch (error) {
-        return FALLBACK_IMAGE // Return fallback image in case of error
+        return FALLBACK_IMAGE
     }
 }
 
