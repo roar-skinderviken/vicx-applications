@@ -7,24 +7,26 @@ const PANDASCORE_BASE_URL = "https://api.pandascore.co/csgo/matches"
 const RUNNING_MATCH_TYPE = "running"
 const UPCOMING_MATCH_TYPE = "upcoming"
 const CACHE_TIMEOUT_IN_SECS = 30
-const CACHE_TAG = "pandascore-cache"
+const CACHE_TAG_BASE = "pandascore-cache-"
 
 const apiKey = process.env.API_KEY
 
 const getMatches = async (matchType) => {
+    const cacheTag = `${CACHE_TAG_BASE}${matchType}`
+
     try {
         const response = await fetch(
             `${PANDASCORE_BASE_URL}/${matchType}?token=${apiKey}`,
             {
                 next: {
                     revalidate: CACHE_TIMEOUT_IN_SECS,
-                    tags: [CACHE_TAG]
+                    tags: [cacheTag]
                 }
             }
         )
 
         if (!response.ok) {
-            await revalidateTag(CACHE_TAG)
+            await revalidateTag(cacheTag)
             return []
         }
 
