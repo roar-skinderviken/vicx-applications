@@ -20,7 +20,7 @@ export default function Microk8sPage() {
                     <div className="flex flex-col space-y-4 px-2">
 
                         <div className="project">
-                            <h2>Choosing the right distro:</h2>
+                            <h2>Choosing the right distro</h2>
                             <ul>
                                 <li>When it comes to Microk8s not every distro is usable.</li>
                                 <li>After testing multible distros on the rpi5, Ubuntu server was the best.</li>
@@ -31,7 +31,7 @@ export default function Microk8sPage() {
                         </div>
 
                         <div className="project">
-                            <h2>Installing snapd on Debian based distros:</h2>
+                            <h2>Installing snapd on Debian based distros</h2>
                             <ul>
                                 <li><code>sudo apt update</code></li>
                                 <li><code>sudo apt install snapd</code></li>
@@ -41,7 +41,7 @@ export default function Microk8sPage() {
                         </div>
 
                         <div className="project">
-                            <h2>Testing snapd on Debian based distros:</h2>
+                            <h2>Testing snapd on Debian based distros</h2>
                             <ul>
                                 <li><code>snap install hello-world</code></li>
                                 <li><code>hello-world</code></li>
@@ -51,7 +51,7 @@ export default function Microk8sPage() {
                         </div>
 
                         <div className="project">
-                            <h2>Installing Microk8s:</h2>
+                            <h2>Installing Microk8s</h2>
                             <ul>
                                 <li><code>sudo snap install microk8s --classic --channel=1.31</code></li>
                                 <li><code>sudo usermod -a -G microk8s $USER</code></li>
@@ -62,7 +62,7 @@ export default function Microk8sPage() {
                         </div>
 
                         <div className="project">
-                            <h2>Raspberry PI boot config:</h2>
+                            <h2>Raspberry Pi boot config</h2>
                             <ul>
                                 <li><code>sudo vi /boot/firmware/cmdline.txt</code></li>
                                 <li><code>cgroup_enable=memory cgroup_memory=1</code></li>
