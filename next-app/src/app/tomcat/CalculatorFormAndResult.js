@@ -7,8 +7,9 @@ import * as yup from "yup"
 import ValidatedInput from "@/components/ValidatedInput"
 import {Button} from "flowbite-react"
 
-//const BACKEND_BASE_URL = "http://localhost:8080/api"
-const BACKEND_BASE_URL = "/sample/api"
+// put this in next-app/.env.local
+// NEXT_PUBLIC_TOMCAT_BACKEND_URL=http://localhost:8080/api
+const BACKEND_BASE_URL = process.env.NEXT_PUBLIC_TOMCAT_BACKEND_URL || "/sample/api"
 
 const schema = yup.object().shape({
     firstValue: yup

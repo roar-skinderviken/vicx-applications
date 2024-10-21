@@ -7,8 +7,9 @@ import * as yup from "yup"
 import ValidatedInput from "@/components/ValidatedInput"
 import {Button} from "flowbite-react"
 
-// const BACKEND_URL = "http://localhost:8000/k-means"  //"/backend-python/k-means"
-const BACKEND_URL = "/backend-python/k-means"
+// put this in next-app/.env.local
+// NEXT_PUBLIC_KMEANS_BACKEND_URL=http://localhost:8000/k-means
+const BACKEND_URL = process.env.NEXT_PUBLIC_KMEANS_BACKEND_URL || "/backend-python/k-means"
 
 const schema = yup.object().shape({
     max_score: yup
@@ -35,6 +36,15 @@ const schema = yup.object().shape({
         .min(1, "Max Iterations must be greater than 0")
         .max(1000, "Max Iterations must be less than 1000"),
 })
+
+const gradeToColorMap = {
+    A: "bg-green-500",
+    B: "bg-blue-500",
+    C: "bg-orange-500",
+    D: "bg-yellow-400",
+    E: "bg-purple-500",
+    F: "bg-red-500"
+}
 
 const KMeansFormAndResult = () => {
     const [result, setResult] = useState()
@@ -69,6 +79,7 @@ const KMeansFormAndResult = () => {
             .catch(error => console.error("Error:", error))
     }
 
+    // noinspection JSUnresolvedReference
     return (
         <div className="container mx-auto my-10 text-center">
             <div className="flex justify-center">
@@ -88,17 +99,19 @@ const KMeansFormAndResult = () => {
                     </form>
                 </FormProvider>
             </div>
-            {result && (
-                <div id="results" className="mt-8">
-                    {Object.entries(result)
-                        .sort(([keyA], [keyB]) => keyB - keyA)
-                        .map(([score, grade]) => (
-                            <div key={score} className={`grade ${grade}`}>
-                                Score: {score}, Grade: {grade}
-                            </div>
-                        ))}
-                </div>
-            )}
+            {result && <div className="m-4">
+                {result.error
+                    ? <div className="text-red-600 font-bold text-xl bg-red-100 border border-red-400 rounded p-4 mx-4">
+                        {result.error}
+                    </div>
+                    : Object.entries(result).map(([score, grade], index) =>
+                        <div
+                            key={index}
+                            className={`mt-2 p-2 rounded text-white ${gradeToColorMap[grade]}`}
+                        >Score: {score}, Grade: {grade}</div>
+                    )
+                }
+            </div>}
         </div>
     )
 }

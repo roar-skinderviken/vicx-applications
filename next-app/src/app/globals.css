@@ -116,20 +116,6 @@ html {
 
 /* K-Means */
 
-.grade {
-    margin: 5px;
-    padding: 5px;
-    border-radius: 4px;
-    color: white;
-}
-
-.grade.A { background-color: green; }
-.grade.B { background-color: blue; }
-.grade.C { background-color: orange; }
-.grade.D { background-color: gold; }
-.grade.E { background-color: purple; }
-.grade.Failed { background-color: red; }
-
 /* Canvas for Chart */
 #chartContainer {
     width: 70%;

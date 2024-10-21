@@ -3,6 +3,7 @@ import numpy as np
 
 GRADES = ["A", "B", "C", "D", "E"]
 
+
 def map_scores_to_grades(fail_score: float, max_score: float, scores: list[float], max_iter: int) -> dict:
     # Separate passing and failing grades
     pass_grades = [[score] for score in scores if score >= fail_score]
@@ -17,7 +18,8 @@ def map_scores_to_grades(fail_score: float, max_score: float, scores: list[float
     labels = kmeans.labels_
 
     # Assign letter grades (A, B, C, D, E)
-    sorted_clusters = {idx: GRADES[i] for i, (center, idx) in enumerate(sorted(zip(kmeans.cluster_centers_, range(5)), reverse=True))}
+    sorted_clusters = {idx: GRADES[i] for i, (center, idx) in
+                       enumerate(sorted(zip(kmeans.cluster_centers_, range(5)), reverse=True))}
 
     # Combine scores with their letter grades
     graded_scores = {score[0]: sorted_clusters[label] for score, label in zip(pass_grades, labels)}
