@@ -11,6 +11,9 @@ const buildResponse = (buffer) => new Response(
     {headers: {"Content-Type": "image/jpeg"}}
 )
 
+const buildFallbackResponse = () =>
+    buildResponse(fs.readFileSync(FALLBACK_IMAGE_PATH))
+
 export async function GET() {
     try {
         const response = await fetch(
@@ -19,12 +22,11 @@ export async function GET() {
         )
 
         if (!response.ok) {
-            // noinspection ExceptionCaughtLocallyJS
-            throw new Error('Image fetch failed')
+            return buildFallbackResponse()
         }
 
         return buildResponse(response.body)
     } catch (error) {
-        return buildResponse(fs.readFileSync(FALLBACK_IMAGE_PATH))
+        return buildFallbackResponse()
     }
 }
