@@ -17,9 +17,9 @@ export async function generateStaticParams() {
     }))
 }
 
-export default function SmokesPage({params}) {
+export default async function SmokesPage({params}) {
 
-    const {map} = params
+    const {map} = await params
 
     const selectedMap = MAPS.find(currentMap => currentMap.name === map)
 
