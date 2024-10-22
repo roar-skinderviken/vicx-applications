@@ -18,7 +18,6 @@ const getMatches = async (matchType) => {
         const response = await fetch(
             `${PANDASCORE_BASE_URL}/${matchType}?token=${apiKey}`,
             {
-                cache: "force-cache",
                 next: {
                     revalidate: CACHE_TIMEOUT_IN_SECS,
                     tags: [cacheTag]
