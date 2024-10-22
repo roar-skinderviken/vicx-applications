@@ -21,6 +21,7 @@ export async function GET() {
         const response = await fetch(
             IMAGE_URL,
             {
+                cache: "force-cache",
                 next: {
                     revalidate: IMAGE_EXPIRATION_IN_SECS,
                     tags: [FALLBACK_CACHE_TAG]
