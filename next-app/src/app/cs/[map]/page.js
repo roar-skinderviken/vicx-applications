@@ -11,6 +11,7 @@ export const metadata = {
     title: "Counter Strike Smokes | VICX"
 }
 
+
 export async function generateStaticParams() {
     return MAPS.map(({name}) => ({
         map: name
