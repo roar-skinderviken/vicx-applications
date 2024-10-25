@@ -8,6 +8,8 @@ node {
     version.set("20.15.0")
     npmVersion.set("10.7.0")
     download.set(true)
+    workDir.set(file("${project.layout.buildDirectory}/nodejs"))
+    nodeProjectDir.set(file("${project.projectDir}/next-app"))
 }
 
 tasks.register<NpmTask>("runJest") {
