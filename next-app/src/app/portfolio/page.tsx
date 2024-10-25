@@ -1,4 +1,5 @@
 import Hero from "@/components/Hero"
+import Image from "next/image"
 
 export const metadata = {
     title: "Portfolio | VICX"
@@ -32,7 +33,9 @@ export default function PortfolioPage() {
                                     functionalities are included.
                                 </li>
                             </ul>
-                            <img src="/images/nginx.png" alt="NGINX"/>
+                            <div className="image-container">
+                                <Image src="/images/nginx.png" alt="NGINX" fill={true}/>
+                            </div>
                         </div>
 
                         <div className="project">
@@ -44,7 +47,9 @@ export default function PortfolioPage() {
                                 <li>Java with databases and simpler programs.</li>
                                 <li>Focused on creating efficient and scalable server-side applications.</li>
                             </ul>
-                            <img src="/images/tom.png" alt="Backend Development"/>
+                            <div className="image-container">
+                                <Image src="/images/tom.png" alt="Backend Development" fill/>
+                            </div>
                         </div>
 
                         <div className="project">
@@ -56,7 +61,9 @@ export default function PortfolioPage() {
                                     operations.
                                 </li>
                             </ul>
-                            <img src="/images/node.png" alt="Node.js"/>
+                            <div className="image-container">
+                                <Image src="/images/node.png" alt="Node.js" fill/>
+                            </div>
                         </div>
 
                         <div className="project">
@@ -73,7 +80,9 @@ export default function PortfolioPage() {
                                     the master node.
                                 </li>
                             </ul>
-                            <img src="/images/rasp.png" alt="Raspberry Pi"/>
+                            <div className="image-container">
+                                <Image src="/images/rasp.png" alt="Raspberry Pi" fill/>
+                            </div>
                         </div>
 
                         <div className="project">
@@ -90,7 +99,9 @@ export default function PortfolioPage() {
                                     Debian GNU/Linux.
                                 </li>
                             </ul>
-                            <img src="/images/Tux.png" alt="Tux Penguin"/>
+                            <div className="image-container">
+                                <Image src="/images/Tux.png" alt="Tux Penguin" fill/>
+                            </div>
                         </div>
 
                         <div className="project">
@@ -101,7 +112,9 @@ export default function PortfolioPage() {
                                 <li>Desktops used: KDE Plasma 6, GNOME, Hyprland.</li>
                                 <li>Consoles used: Konsole, Kitty, GNOME Terminal and MATE Terminal.</li>
                             </ul>
-                            <img src="/images/arch.png" alt="Arch"/>
+                            <div className="image-container">
+                                <Image src="/images/arch.png" alt="Arch" fill/>
+                            </div>
                         </div>
 
                         <div className="project">
@@ -110,7 +123,9 @@ export default function PortfolioPage() {
                                 <li>Proficient in database management with MySQL, H2 and SQLite3.</li>
                                 <li>Designing efficient schemas and optimizing query performance.</li>
                             </ul>
-                            <img src="/images/mysql.png" alt="MySQL"/>
+                            <div className="image-container">
+                                <Image src="/images/mysql.png" alt="MySQL" fill/>
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -4,7 +4,7 @@ import "@fortawesome/fontawesome-svg-core/styles.css"
 import {faGithub, faLinkedinIn} from "@fortawesome/free-brands-svg-icons"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 import VicxNavbar from "@/components/VicxNavbar"
-import {ReactNode} from "react";
+import {ReactNode} from "react"
 
 config.autoAddCss = false
 
@@ -25,7 +25,7 @@ const RootLayout = ({children}: { children: ReactNode }) => {
 
         <footer className="bg-gray-800 text-white p-4">
             <div className="container mx-auto flex justify-between items-center">
-                <p className="text-left">VICX &copy; All rights reserved.</p>
+                <p className="text-left">VICX &copy All rights reserved.</p>
 
                 <div className="flex-grow flex justify-center">
                     <div className="flex space-x-4">

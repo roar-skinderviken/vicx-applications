@@ -37,6 +37,7 @@ const getMatches = async (matchType: string) => {
         const data: MatchEntry[] = await response.json()
         return data.filter(match => match.opponents && match.opponents.length === 2)
     } catch (error) {
+        console.error(error)
         return []
     }
 }

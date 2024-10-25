@@ -1,4 +1,5 @@
-import Hero from "@/components/Hero";
+import Hero from "@/components/Hero"
+import Image from "next/image"
 
 export const metadata = {
     title: "Microk8s | VICX"
@@ -26,7 +27,7 @@ export default function Microk8sPage() {
                                 <li>Ubuntu offers better compatibility with Microk8s, due to ownership of the project.
                                 </li>
                             </ul>
-                            <img src="/images/ubuntu.png" alt="Ubuntu"/>
+                            <Image src="/images/ubuntu.png" alt="Ubuntu"  width="460" height="460"/>
                         </div>
 
                         <div className="project">
@@ -36,7 +37,7 @@ export default function Microk8sPage() {
                                 <li><code>sudo apt install snapd</code></li>
                                 <li><code>systemctl enable --now snapd apparmor</code></li>
                             </ul>
-                            <img src="/images/snapd.png" alt="Snapd"/>
+                            <Image src="/images/snapd.png" alt="Snapd"  width="460" height="460"/>
                         </div>
 
                         <div className="project">
@@ -46,7 +47,7 @@ export default function Microk8sPage() {
                                 <li><code>hello-world</code></li>
                                 <li><code>snap remove hello-world</code></li>
                             </ul>
-                            <img src="/images/debian.png" alt="Debian"/>
+                            <Image src="/images/debian.png" alt="Debian"  width="242" height="300"/>
                         </div>
 
                         <div className="project">
@@ -57,7 +58,7 @@ export default function Microk8sPage() {
                                 <li><code>mkdir -p ~/.kube</code></li>
                                 <li><code>chmod 0700 ~/.kube</code></li>
                             </ul>
-                            <img src="/images/kube.png" alt="Kubernetes"/>
+                            <Image src="/images/kube.png" alt="Kubernetes" width="600" height="300"/>
                         </div>
 
                         <div className="project">
@@ -66,9 +67,9 @@ export default function Microk8sPage() {
                                 <li><code>sudo vi /boot/firmware/cmdline.txt</code></li>
                                 <li><code>cgroup_enable=memory cgroup_memory=1</code></li>
                                 <li><code>sudo apt install linux-modules-extra-raspi</code></li>
-                                <li><code>sudo microk8s stop; sudo microk8s start</code></li>
+                                <li><code>sudo microk8s stop sudo microk8s start</code></li>
                             </ul>
-                            <img src="/images/rasp.png" alt="Raspberry PI"/>
+                            <Image src="/images/rasp.png" alt="Raspberry PI"  width="800" height="600"/>
                         </div>
                     </div>
                 </div>

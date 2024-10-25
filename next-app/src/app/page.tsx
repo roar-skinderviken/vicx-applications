@@ -1,6 +1,7 @@
 import {SITE_PAGES} from "@/constants/sitePages"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 import Hero from "@/components/Hero"
+import Image from "next/image"
 
 export default function Home() {
     return (
@@ -20,11 +21,13 @@ export default function Home() {
                            key={index}
                            className="flex items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105 hover:shadow-lg mb-4 p-2"
                         >
-                            <img
+                            <Image
                                 src={page.imgSrc}
                                 alt={page.imgAlt}
                                 className="mr-3"
-                                width={page.imgWidth}/>
+                                width={page.imgWidth}
+                                height={page.imgWidth}
+                            />
                             <FontAwesomeIcon icon={page.icon} className="fa-fw mr-2"/>
                             {page.title}
                         </a>

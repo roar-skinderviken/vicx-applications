@@ -1,4 +1,5 @@
 import Hero from "@/components/Hero"
+import Image from "next/image"
 
 export const metadata = {
     title: "Penetration Testing | VICX"
@@ -17,8 +18,10 @@ export default function PenetrationTestingPage() {
                     <div className="lg:w-2/3 md:w-5/6">
                         {/* Section 1: Distros */}
                         <div className="mb-10">
-                            <img src="/images/Tux.png" alt="Prepare Installation Media"
-                                 className="mx-auto mb-5 max-w-[200px]"/>
+                            <Image src="/images/Tux.png"
+                                   alt="Prepare Installation Media"
+                                   className="mx-auto mb-5 max-w-[200px]"
+                                   width="265" height="314"/>
                             <h3 className="text-3xl font-semibold mb-4 text-left">Distros</h3>
                             <p className="text-sm mb-6">
                                 These distros come with the necessary tools to get started and are easy to keep up to
@@ -80,8 +83,10 @@ export default function PenetrationTestingPage() {
 
                         {/* Section 2: John */}
                         <div className="mb-10">
-                            <img src="/images/john.png" alt="Prepare Installation Media"
-                                 className="mx-auto mb-5 max-w-[300px]"/>
+                            <Image src="/images/john.png"
+                                   alt="Prepare Installation Media"
+                                   className="mx-auto mb-5 max-w-[300px]"
+                                   width="225" height="225"/>
                             <h3 className="text-3xl font-semibold mb-4 text-left">John</h3>
                             <p className="text-left">
                                 John is a brute force tool used to crack user passwords by attempting various
@@ -118,8 +123,10 @@ export default function PenetrationTestingPage() {
 
                         {/* Section 3: Nmap */}
                         <div className="mb-10">
-                            <img src="/images/nmap.png" alt="Prepare Installation Media"
-                                 className="mx-auto mb-5 max-w-[400px]"/>
+                            <Image src="/images/nmap.png"
+                                   alt="Prepare Installation Media"
+                                   className="mx-auto mb-5 max-w-[400px]"
+                                   width="336" height="180"/>
                             <h3 className="text-3xl font-semibold mb-4 text-left">Nmap</h3>
                             <p className="text-left">
                                 Nmap is a network scanning tool used to identify open ports on a network. By detecting

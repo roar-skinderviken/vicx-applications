@@ -26,7 +26,7 @@ const calculatorYupSchema = yup.object({
         .required("Operation is required"),
 })
 
-type CalculatorFormData = InferType<typeof calculatorYupSchema>;
+type CalculatorFormData = InferType<typeof calculatorYupSchema>
 
 interface CalculatorResult extends CalculatorFormData {
     result: number

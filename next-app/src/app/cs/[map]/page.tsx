@@ -2,6 +2,7 @@ import SelectSmokePlace from "@/app/cs/[map]/SelectSmokePlace"
 import {notFound} from "next/navigation"
 import {MAPS} from "@/app/cs/mapEntries"
 import Hero from "@/components/Hero"
+import Image from "next/image"
 
 export const dynamicParams = false
 export const revalidate = 3600
@@ -34,10 +35,11 @@ const SmokesPage = async ({params}: { params: Promise<{ map: string }> }) => {
 
             <div>
                 <div className="flex flex-col items-center mb-4">
-                    <img
+                    <Image
                         src={`/images/${selectedMap.image}`}
                         className="w-32 mt-4"
-                        alt={selectedMap.name}/>
+                        alt={selectedMap.name}
+                        width="512" height="512"/>
                     <h2 className="text-center text-3xl my-4">Choose Your Side for {selectedMap.name}</h2>
                     <SelectSmokePlace selectedMap={selectedMap}/>
                 </div>

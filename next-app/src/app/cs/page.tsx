@@ -1,5 +1,6 @@
 import {MAPS} from "@/app/cs/mapEntries"
 import Hero from "@/components/Hero"
+import Image from "next/image"
 
 export const metadata = {
     title: "Counter Strike Smokes | VICX"
@@ -23,10 +24,11 @@ export default function CounterStrikePage() {
                             className="p-2 flex flex-col items-center transition-transform duration-200 ease-in-out hover:scale-105 hover:shadow-lg rounded-lg"
                         >
                             <a href={`/cs/${name}`} className="text-center">
-                                <img
+                                <Image
                                     src={`/images/${image}`}
                                     className="w-32 my-3"
-                                    alt={name}/>
+                                    alt={name}
+                                    width="512" height="512"/>
                                 {name}
                             </a>
                         </div>

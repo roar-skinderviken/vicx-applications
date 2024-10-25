@@ -1,4 +1,5 @@
-import Hero from "@/components/Hero";
+import Hero from "@/components/Hero"
+import Image from "next/image"
 
 export const metadata = {
     title: "Arch | VICX"
@@ -19,8 +20,10 @@ export default function ArchPage() {
                         <div className="my-4">
                             <h3 className="text-left text-2xl font-semibold mb-4">Step 1: Prepare Installation
                                 Media</h3>
-                            <img src="/images/blackarch.png" alt="Prepare Installation Media"
-                                 className="w-full max-w-xs mb-3 mx-auto"/>
+                            <Image src="/images/blackarch.png"
+                                   alt="Prepare Installation Media"
+                                   className="w-full max-w-xs mb-3 mx-auto"
+                                   width="512" height="512"/>
                             <p>Download the Arch Linux ISO and create a bootable USB drive.</p>
                             <ul className="list-disc ml-5">
                                 <li>Download the Arch Linux ISO from the official website.</li>
@@ -32,8 +35,10 @@ export default function ArchPage() {
                         </div>
                         <div className="mb-4">
                             <h3 className="text-left text-2xl font-semibold mb-4">Step 2: Boot and Initial Setup</h3>
-                            <img src="/images/boot.png" alt="Boot and Initial Setup"
-                                 className="w-full max-w-xl mb-3 mx-auto"/>
+                            <Image src="/images/boot.png"
+                                   alt="Boot and Initial Setup"
+                                   className="w-full max-w-xl mb-3 mx-auto"
+                                   width="776" height="500"/>
                             <p>Boot from the USB drive and start the Arch Linux installation process.</p>
                             <ol className="list-decimal ml-5">
                                 <li>Before you boot, ensure that secure boot is disabled.</li>
@@ -47,12 +52,15 @@ export default function ArchPage() {
                         <div className="mb-4">
                             <h3 className="text-left text-2xl font-semibold mb-4">Step 3: Connecting to the
                                 internet</h3>
-                            <img src="/images/install.png" alt="Connecting to the internet"
-                                 className="w-full max-w-xl mb-3 mx-auto"/>
+                            <Image src="/images/install.png"
+                                   alt="Connecting to the internet"
+                                   className="w-full max-w-xl mb-3 mx-auto"
+                                   width="1152" height="720"/>
                             <p>Connect to the Internet.</p>
                             <ol className="list-decimal ml-5">
                                 <li>Ping a site, e.g. <code>ping vicx.no</code>.</li>
-                                <li>If you have an Ethernet connection, you'll get a response. Otherwise, you'll have to
+                                <li>If you have an Ethernet connection, you&aposll get a response. Otherwise,
+                                    you&aposll have to
                                     set up a WLAN connection.
                                 </li>
                                 <li>Connect via the <code>iwctl</code> command.</li>
@@ -63,8 +71,10 @@ export default function ArchPage() {
                         </div>
                         <div className="mb-4">
                             <h3 className="text-left text-2xl font-semibold mb-4">Step 4: Partition the Disks</h3>
-                            <img src="/images/cfdisk.png" alt="Partition the Disks"
-                                 className="w-full max-w-xl mb-3 mx-auto"/>
+                            <Image src="/images/cfdisk.png"
+                                   alt="Partition the Disks"
+                                   className="w-full max-w-xl mb-3 mx-auto"
+                                   width="640" height="414"/>
                             <p>Use tools like <code>cfdisk</code> to partition your disk, normally referred to as sda.
                             </p>
                             <ul className="list-disc ml-5">
@@ -90,22 +100,27 @@ export default function ArchPage() {
                         <div className="mb-4">
                             <h3 className="text-left text-2xl font-semibold mb-4">Step 5: Install the Base System and
                                 Configure Chroot</h3>
-                            <img src="/images/pacstrap.png" alt="Install the Base System"
-                                 className="w-full max-w-xl mb-3 mx-auto"/>
+                            <Image src="/images/pacstrap.png"
+                                   alt="Install the Base System"
+                                   className="w-full max-w-xl mb-3 mx-auto"
+                                   width="1280" height="720"/>
                             <p>Install the base packages for Arch Linux.</p>
                             <ul className="list-disc ml-5">
                                 <li>Use the pacstrap command to install base packages: <code>pacstrap -K /mnt base linux
                                     linux-firmware nano</code>.
                                 </li>
-                                <li>Generate an fstab file: <code>genfstab -U /mnt &gt;&gt; /mnt/etc/fstab</code>.</li>
+                                <li>Generate an fstab file: <code>genfstab -U /mnt &gt&gt /mnt/etc/fstab</code>.</li>
                                 <li>Chroot into the new system: <code>arch-chroot /mnt</code>.</li>
-                                <li>Note that in this tutorial, I won't go over any time or localization configs.</li>
+                                <li>Note that in this tutorial, I won&apost go over any time or localization configs.
+                                </li>
                             </ul>
                         </div>
                         <div className="mb-4">
                             <h3 className="text-left text-2xl font-semibold mb-4">Step 6: Users and hosts</h3>
-                            <img src="/images/user.png" alt="Configure the System"
-                                 className="w-full max-w-xl mb-3 mx-auto"/>
+                            <Image src="/images/user.png"
+                                   alt="Configure the System"
+                                   className="w-full max-w-xl mb-3 mx-auto"
+                                   width="720" height="402"/>
                             <p>Lets make a user.</p>
                             <ul className="list-disc ml-5">
                                 <li>Create <code>/etc/hostname</code> and add your hostname.</li>
@@ -114,13 +129,14 @@ export default function ArchPage() {
                                     on: <code>useradd -m -G wheel -s /bin/bash your_user_name</code></li>
                                 <li>Lets make a password for the user just added: <code>passwd your_user_name</code>
                                 </li>
-                                <li>If you're in your profile, go out with the following command: <code>exit</code>.
+                                <li>If you&aposre in your profile, go out with the following command: <code>exit</code>.
                                 </li>
                                 <li>Update your system: <code>pacman -Syu</code>, then download sudo: <code>pacman -S
                                     sudo</code>.
                                 </li>
-                                <li>Now that we have sudo installed, it's time to give privileges to our user: <code>EDITOR=nano
-                                    visudo</code>.
+                                <li>Now that we have sudo installed, it&aposs time to give privileges to our
+                                    user: <code>EDITOR=nano
+                                        visudo</code>.
                                 </li>
                                 <li>Here we will uncomment the line <code>%wheel ALL=(ALL) NOPASSWD: ALL</code> by
                                     removing the #, and leaving by pressing ctrl + x, hitting y for yes and pressing
@@ -130,8 +146,10 @@ export default function ArchPage() {
                         </div>
                         <div className="mb-4">
                             <h3 className="text-left text-2xl font-semibold mb-4">Step 7: Install Bootloader</h3>
-                            <img src="/images/grub.png" alt="Install Bootloader"
-                                 className="w-full max-w-xl mb-3 mx-auto"/>
+                            <Image src="/images/grub.png"
+                                   alt="Install Bootloader"
+                                   className="w-full max-w-xl mb-3 mx-auto"
+                                   width="800" height="507"/>
                             <p>Install and configure the GRUB bootloader.</p>
                             <ul className="list-disc ml-5">
                                 <li>Install GRUB and related packages: <code>pacman -S grub</code>.</li>
@@ -153,8 +171,10 @@ export default function ArchPage() {
                         </div>
                         <div className="mb-4">
                             <h3 className="text-left text-2xl font-semibold mb-4">Step 8: Desktop Environment Setup</h3>
-                            <img src="/images/neofetch.png" alt="Reboot and Post-Installation"
-                                 className="img-fluid mb-3 w-full max-w-2xl mx-auto"/>
+                            <Image src="/images/neofetch.png"
+                                   alt="Reboot and Post-Installation"
+                                   className="img-fluid mb-3 w-full max-w-2xl mx-auto"
+                                   width="1200" height="900"/>
                             <p>In this instance we will be using KDE plasma.</p>
                             <ul className="list-disc ml-5">
                                 <li>Download the necessary packages as well as SDDM: <code>sudo pacman -S plasma
@@ -165,11 +185,11 @@ export default function ArchPage() {
                                 <li>Grab the packages you need with Pacman, but make sure to add Konsole and Kate.
                                     Spaces between means a new package: <code>sudo pacman -S konsole kate firefox</code>.
                                 </li>
-                                <li>Let's enable SDDM: <code>sudo systemctl enable sddm</code>, and launch into
+                                <li>Let&aposs enable SDDM: <code>sudo systemctl enable sddm</code>, and launch into
                                     it: <code>sudo systemctl enable --now sddm</code>.
                                 </li>
-                                <li>Log in and press "Ctrl + Alt + T" to open the terminal, then write: <code>sudo
-                                    pacman -S neofetch; neofetch</code>.
+                                <li>Log in and press &quotCtrl + Alt + T&quot to open the terminal, then write: <code>sudo
+                                    pacman -S neofetch neofetch</code>.
                                 </li>
                                 <li>Congrats on using Arch! You are now an Arch elitist. Any questions? Read the
                                     manual.

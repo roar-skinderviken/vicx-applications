@@ -14,7 +14,7 @@ const buildResponse = (buffer: Buffer) => new Response(
 )
 
 const buildFallbackResponse = () => {
-    return buildResponse(fs.readFileSync(FALLBACK_IMAGE_PATH));
+    return buildResponse(fs.readFileSync(FALLBACK_IMAGE_PATH))
 }
 
 export async function GET() {
@@ -37,6 +37,7 @@ export async function GET() {
         const buffer = await response.arrayBuffer()
         return buildResponse(Buffer.from(buffer))
     } catch (error) {
+        console.error(error)
         return buildFallbackResponse()
     }
 }

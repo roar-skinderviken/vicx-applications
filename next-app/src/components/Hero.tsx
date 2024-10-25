@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 const Hero = ({title, lead, backgroundImage = undefined, isHomePage = false}: {
     title: string,
     lead: string,
@@ -9,7 +11,7 @@ const Hero = ({title, lead, backgroundImage = undefined, isHomePage = false}: {
     const headerElement = isHomePage
         ? (
             <h1 className="flex justify-center animate-fadeInDown">
-                <img
+                <Image
                     src={"/images/logo-no-background.png"}
                     alt="Welcome to VICX!"
                     width={400}

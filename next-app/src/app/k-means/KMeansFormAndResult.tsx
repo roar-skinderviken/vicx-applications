@@ -6,12 +6,13 @@ import {yupResolver} from "@hookform/resolvers/yup"
 import * as yup from "yup"
 import ValidatedInput from "@/components/ValidatedInput"
 import {Button} from "flowbite-react"
+import {InferType} from "yup"
 
 // put this in next-app/.env.local
 // NEXT_PUBLIC_KMEANS_BACKEND_URL=http://localhost:8000/k-means
 const BACKEND_URL = process.env.NEXT_PUBLIC_KMEANS_BACKEND_URL || "/backend-python/k-means"
 
-const schema = yup.object().shape({
+const kMeansSchema = yup.object().shape({
     max_score: yup
         .number()
         .typeError("Max Score must be a number")
@@ -48,12 +49,7 @@ const gradeToColorMap: Record<Grade, string> = {
     F: "bg-red-500"
 }
 
-interface FormData {
-    max_score: number,
-    fail_grade: number,
-    grades: string,
-    max_iter: number
-}
+type KMeansFormData = InferType<typeof kMeansSchema>
 
 interface KMeansSuccessResponse {
     [key: number]: Grade
@@ -69,41 +65,41 @@ const isErrorResponse = (response: KMeansResponse): response is KMeansErrorRespo
     'error' in response
 
 const KMeansFormAndResult = () => {
-    const [result, setResult] = useState<KMeansResponse | null>(null);
+    const [result, setResult] = useState<KMeansResponse | null>(null)
 
-    const methods = useForm<FormData>({
-        resolver: yupResolver(schema),
+    const methods = useForm<KMeansFormData>({
+        resolver: yupResolver(kMeansSchema),
         mode: "onChange"
-    });
+    })
 
-    const {handleSubmit, formState} = methods;
+    const {handleSubmit, formState} = methods
 
-    const onSubmit = async (formData: FormData) => {
+    const onSubmit = async (formData: KMeansFormData) => {
         const requestBody = {
             maxScore: formData.max_score,
             failScore: formData.fail_grade,
             scores: formData.grades.split(',').map(Number),
             maxIter: formData.max_iter
-        };
+        }
 
         try {
             const response = await fetch(BACKEND_URL, {
                 method: "POST",
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(requestBody)
-            });
+            })
 
             if (!response.ok) {
-                console.error("Error: Network response was not ok");
+                console.error("Error: Network response was not ok")
                 return
             }
 
-            const data: KMeansResponse = await response.json();
-            setResult(data);
+            const data: KMeansResponse = await response.json()
+            setResult(data)
         } catch (error) {
-            console.error("Error:", error);
+            console.error("Error:", error)
         }
-    };
+    }
 
     return (
         <div className="container mx-auto my-10 text-center">
@@ -142,7 +138,7 @@ const KMeansFormAndResult = () => {
                 </div>
             )}
         </div>
-    );
+    )
 }
 
-export default KMeansFormAndResult;
+export default KMeansFormAndResult
