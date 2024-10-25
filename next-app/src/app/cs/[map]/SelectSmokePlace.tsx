@@ -1,47 +1,47 @@
 "use client"
 
-import { useState, useCallback } from "react"
+import {useState, useCallback} from "react"
 import Image from "next/image"
-import { CsMapEntry } from "@/app/cs/mapEntries"
+import {CsMapEntry} from "@/app/cs/mapEntries"
 import Link from "next/link"
 
-const INITIAL_SMOKE_PLACES = { side: "", places: [""] }
+const INITIAL_SMOKE_PLACES = {side: "", places: [""]}
 
 const createImagePath = (mapName: string, side: string, smokePlace: string) => {
     const cleanString = (str: string) => str.replace(/\s+/g, '-').toLowerCase()
     return `/images/smoke-places/${cleanString(mapName)}-${side}-${cleanString(smokePlace)}.jpg`
 }
 
-const SelectSmokePlace = ({ selectedMap }: { selectedMap: CsMapEntry }) => {
-    const { ct, t, name } = selectedMap // Destructure selectedMap
+const SelectSmokePlace = ({selectedMap}: { selectedMap: CsMapEntry }) => {
+    const {ct, t} = selectedMap
     const [smokePlaces, setSmokePlaces] = useState(INITIAL_SMOKE_PLACES)
     const [selectedSmokePlace, setSelectedSmokePlace] = useState("")
 
     const handleClick = useCallback((side: string, places: string[]) => {
         setSelectedSmokePlace(places[0])
-        setSmokePlaces({ side, places })
+        setSmokePlaces({side, places})
     }, [])
 
     return (
         <div className="flex flex-col items-center w-full px-4">
             {/* Button row */}
-            <div className="flex space-x-4 mt-4">
+            <div className="flex flex-nowrap space-x-4 mt-4 overflow-x-auto">
                 <button
-                    className="cs-side-button bg-blue-500 hover:bg-blue-600"
+                    className="cs-side-button bg-blue-500 hover:bg-blue-600 whitespace-nowrap"
                     disabled={ct.length < 1}
                     onClick={() => handleClick("ct", ct)}>
                     C-Side
                 </button>
 
                 <button
-                    className="cs-side-button bg-red-500 hover:bg-red-600"
+                    className="cs-side-button bg-red-500 hover:bg-red-600 whitespace-nowrap"
                     disabled={t.length < 1}
                     onClick={() => handleClick("t", t)}>
                     T-Side
                 </button>
 
                 <Link href="/cs#maps"
-                   className="bg-gray-200 text-gray-700 py-2 px-4 rounded shadow hover:bg-gray-300 hover:shadow-md">
+                      className="bg-gray-200 text-gray-700 py-2 px-4 rounded shadow hover:bg-gray-300 hover:shadow-md whitespace-nowrap">
                     Back to Map Selector
                 </Link>
             </div>
@@ -54,7 +54,8 @@ const SelectSmokePlace = ({ selectedMap }: { selectedMap: CsMapEntry }) => {
 
                     {/* Tabs */}
                     <div className="flex justify-center w-full">
-                        <div className="text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:text-gray-400 dark:border-gray-700 w-full">
+                        <div
+                            className="text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:text-gray-400 dark:border-gray-700 w-full">
                             <ul className="flex flex-wrap justify-center">
                                 {smokePlaces.places.map((smokePlace) => ( // Removed index for keys
                                     <li className="mr-2" key={smokePlace}>
@@ -73,12 +74,14 @@ const SelectSmokePlace = ({ selectedMap }: { selectedMap: CsMapEntry }) => {
                     {/* Image Display Area */}
                     {selectedSmokePlace && (
                         <div className="w-full p-4 border rounded-b-lg border-gray-300 bg-gray-100">
-                            <div className="relative w-full mx-auto aspect-video">
+                            <div
+                                className="relative w-full mx-auto h-[300px] sm:h-[500px] lg:h-[1000px] overflow-hidden">
                                 <Image
-                                    src={createImagePath(name, smokePlaces.side, selectedSmokePlace)}
+                                    src={createImagePath(selectedMap.name, smokePlaces.side, selectedSmokePlace)}
                                     alt={selectedSmokePlace}
                                     loading="lazy"
                                     fill={true}
+                                    className="object-cover"
                                 />
                             </div>
                         </div>
