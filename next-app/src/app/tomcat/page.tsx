@@ -1,5 +1,5 @@
-import CalculatorFormAndResult from "@/app/tomcat/CalculatorFormAndResult"
-import Hero from "@/components/Hero"
+import Hero from "@/components/Hero";
+import CalculatorFormAndResult from "@/app/tomcat/CalculatorFormAndResult";
 
 export const metadata = {
     title: "Tomcat | VICX"

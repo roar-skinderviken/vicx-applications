@@ -1,6 +1,5 @@
 import {SITE_PAGES} from "@/constants/sitePages"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
-import {urlFromBasePath} from "@/app/basePathUtils"
 import Hero from "@/components/Hero"
 
 export default function Home() {
@@ -17,12 +16,12 @@ export default function Home() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     {SITE_PAGES.map((page, index) =>
-                        <a href={urlFromBasePath(page.href)}
+                        <a href={page.href}
                            key={index}
                            className="flex items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105 hover:shadow-lg mb-4 p-2"
                         >
                             <img
-                                src={urlFromBasePath(page.imgSrc)}
+                                src={page.imgSrc}
                                 alt={page.imgAlt}
                                 className="mr-3"
                                 width={page.imgWidth}/>

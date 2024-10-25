@@ -1,5 +1,3 @@
-// noinspection JSUnresolvedReference
-
 import Hero from "@/components/Hero"
 import {revalidateTag} from "next/cache"
 
@@ -11,7 +9,13 @@ const CACHE_TAG_BASE = "pandascore-cache-"
 
 const apiKey = process.env.API_KEY
 
-const getMatches = async (matchType) => {
+interface MatchEntry {
+    opponents: { opponent: { name: string } }[],
+    begin_at: string,
+    status: string
+}
+
+const getMatches = async (matchType: string) => {
     const cacheTag = `${CACHE_TAG_BASE}${matchType}`
 
     try {
@@ -26,18 +30,18 @@ const getMatches = async (matchType) => {
         )
 
         if (!response.ok) {
-            await revalidateTag(cacheTag)
+            revalidateTag(cacheTag)
             return []
         }
 
-        const data = await response.json()
+        const data: MatchEntry[] = await response.json()
         return data.filter(match => match.opponents && match.opponents.length === 2)
     } catch (error) {
         return []
     }
 }
 
-const displayMatches = (matches) =>
+const displayMatches = (matches: MatchEntry[]) =>
     matches.map((match, index) => {
         const opponent1 = match.opponents[0].opponent.name
         const opponent2 = match.opponents[1].opponent.name

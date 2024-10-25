@@ -52,6 +52,7 @@ tasks.register<Copy>("processFrontendResources") {
 
 tasks.processResources {
     dependsOn("processFrontendResources")
+    dependsOn(":next-app:runJest")
 }
 
 jib {

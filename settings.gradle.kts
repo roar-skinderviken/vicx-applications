@@ -1,3 +1,3 @@
 rootProject.name = "spring-react-calculator"
 
-include("backend", "frontend")
+include("backend", "frontend", "next-app")

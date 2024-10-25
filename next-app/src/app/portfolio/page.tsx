@@ -1,4 +1,3 @@
-import {urlFromBasePath} from "@/app/basePathUtils"
 import Hero from "@/components/Hero"
 
 export const metadata = {
@@ -33,7 +32,7 @@ export default function PortfolioPage() {
                                     functionalities are included.
                                 </li>
                             </ul>
-                            <img src={urlFromBasePath("/images/nginx.png")} alt="NGINX"/>
+                            <img src="/images/nginx.png" alt="NGINX"/>
                         </div>
 
                         <div className="project">
@@ -45,7 +44,7 @@ export default function PortfolioPage() {
                                 <li>Java with databases and simpler programs.</li>
                                 <li>Focused on creating efficient and scalable server-side applications.</li>
                             </ul>
-                            <img src={urlFromBasePath("/images/tom.png")} alt="Backend Development"/>
+                            <img src="/images/tom.png" alt="Backend Development"/>
                         </div>
 
                         <div className="project">
@@ -57,7 +56,7 @@ export default function PortfolioPage() {
                                     operations.
                                 </li>
                             </ul>
-                            <img src={urlFromBasePath("/images/node.png")} alt="Node.js"/>
+                            <img src="/images/node.png" alt="Node.js"/>
                         </div>
 
                         <div className="project">
@@ -74,7 +73,7 @@ export default function PortfolioPage() {
                                     the master node.
                                 </li>
                             </ul>
-                            <img src={urlFromBasePath("/images/rasp.png")} alt="Raspberry Pi"/>
+                            <img src="/images/rasp.png" alt="Raspberry Pi"/>
                         </div>
 
                         <div className="project">
@@ -91,7 +90,7 @@ export default function PortfolioPage() {
                                     Debian GNU/Linux.
                                 </li>
                             </ul>
-                            <img src={urlFromBasePath("/images/Tux.png")} alt="Tux Penguin"/>
+                            <img src="/images/Tux.png" alt="Tux Penguin"/>
                         </div>
 
                         <div className="project">
@@ -102,7 +101,7 @@ export default function PortfolioPage() {
                                 <li>Desktops used: KDE Plasma 6, GNOME, Hyprland.</li>
                                 <li>Consoles used: Konsole, Kitty, GNOME Terminal and MATE Terminal.</li>
                             </ul>
-                            <img src={urlFromBasePath("/images/arch.png")} alt="Arch"/>
+                            <img src="/images/arch.png" alt="Arch"/>
                         </div>
 
                         <div className="project">
@@ -111,7 +110,7 @@ export default function PortfolioPage() {
                                 <li>Proficient in database management with MySQL, H2 and SQLite3.</li>
                                 <li>Designing efficient schemas and optimizing query performance.</li>
                             </ul>
-                            <img src={urlFromBasePath("/images/mysql.png")} alt="MySQL"/>
+                            <img src="/images/mysql.png" alt="MySQL"/>
                         </div>
                     </div>
                 </div>

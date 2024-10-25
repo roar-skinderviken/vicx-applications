@@ -8,13 +8,14 @@ const IMAGE_URL = 'https://picsum.photos/1280/720'
 const FALLBACK_IMAGE_PATH = path.join(process.cwd(), 'public', 'images', 'hero-fallback.jpg')
 const FALLBACK_CACHE_TAG = "hero-image-cache"
 
-const buildResponse = (buffer) => new Response(
+const buildResponse = (buffer: Buffer) => new Response(
     buffer,
     {headers: {"Content-Type": "image/jpeg"}}
 )
 
-const buildFallbackResponse = () =>
-    buildResponse(fs.readFileSync(FALLBACK_IMAGE_PATH))
+const buildFallbackResponse = () => {
+    return buildResponse(fs.readFileSync(FALLBACK_IMAGE_PATH));
+}
 
 export async function GET() {
     try {
@@ -29,11 +30,12 @@ export async function GET() {
         )
 
         if (!response.ok) {
-            await revalidateTag(FALLBACK_CACHE_TAG)
+            revalidateTag(FALLBACK_CACHE_TAG)
             return buildFallbackResponse()
         }
 
-        return buildResponse(response.body)
+        const buffer = await response.arrayBuffer()
+        return buildResponse(Buffer.from(buffer))
     } catch (error) {
         return buildFallbackResponse()
     }

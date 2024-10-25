@@ -1,5 +1,4 @@
-import {urlFromBasePath} from "@/app/basePathUtils"
-import {MAPS} from "@/app/cs/mapConstants"
+import {MAPS} from "@/app/cs/mapEntries"
 import Hero from "@/components/Hero"
 
 export const metadata = {
@@ -23,9 +22,9 @@ export default function CounterStrikePage() {
                             key={index}
                             className="p-2 flex flex-col items-center transition-transform duration-200 ease-in-out hover:scale-105 hover:shadow-lg rounded-lg"
                         >
-                            <a href={urlFromBasePath(`/cs/${name}`)} className="text-center">
+                            <a href={`/cs/${name}`} className="text-center">
                                 <img
-                                    src={urlFromBasePath(`/images/${image}`)}
+                                    src={`/images/${image}`}
                                     className="w-32 my-3"
                                     alt={name}/>
                                 {name}

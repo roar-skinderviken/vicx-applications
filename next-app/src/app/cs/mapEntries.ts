@@ -1,4 +1,11 @@
-export const MAPS = [
+export interface CsMapEntry {
+    name: string,
+    image: string,
+    ct: string[],
+    t: string[],
+}
+
+export const MAPS: CsMapEntry[] = [
     {
         name: "Mirage",
         image: "mirage.png",

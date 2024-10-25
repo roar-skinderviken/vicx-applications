@@ -1,16 +1,18 @@
 "use client"
 
 import {useState} from "react"
-import {urlFromBasePath} from "@/app/basePathUtils"
+import {CsMapEntry} from "@/app/cs/mapEntries";
 
-const INITIAL_SMOKE_PLACES = {side: "", places: []}
+const INITIAL_SMOKE_PLACES = {side: "", places: [""]}
 
-const createImagePath = (mapName, side, smokePlace) => {
-    const cleanString = (str) => str.replace(/\s+/g, '-').toLowerCase()
-    return urlFromBasePath(`/images/smoke-places/${cleanString(mapName)}-${side}-${cleanString(smokePlace)}.jpg`)
+const createImagePath = (mapName: string, side: string, smokePlace: string) => {
+    const cleanString = (str: string) => str.replace(/\s+/g, '-').toLowerCase()
+    return `/images/smoke-places/${cleanString(mapName)}-${side}-${cleanString(smokePlace)}.jpg`
 }
 
-const SelectSmokePlace = ({selectedMap}) => {
+const SelectSmokePlace = ({selectedMap}: {
+    selectedMap: CsMapEntry,
+}) => {
     const [smokePlaces, setSmokePlaces] = useState(INITIAL_SMOKE_PLACES)
     const [selectedSmokePlace, setSelectedSmokePlace] = useState("")
 
@@ -38,7 +40,7 @@ const SelectSmokePlace = ({selectedMap}) => {
                     T-Side
                 </button>
 
-                <a href={urlFromBasePath("/cs#maps")}
+                <a href="/cs#maps"
                    className="bg-gray-200 text-gray-700 py-2 px-4 rounded shadow hover:bg-gray-300 hover:shadow-md"
                 >Back to Map Selector</a>
             </div>

@@ -3,7 +3,12 @@
 import {Label, TextInput} from "flowbite-react"
 import {useFormContext} from "react-hook-form"
 
-const ValidatedInput = ({name, label, type = "text", defaultValue = undefined}) => {
+const ValidatedInput = ({name, label, type = "text", defaultValue}: {
+    name: string,
+    label: string,
+    type?: string,
+    defaultValue?: string
+}) => {
     const {register, formState: {errors}} = useFormContext()
 
     return (
@@ -22,7 +27,9 @@ const ValidatedInput = ({name, label, type = "text", defaultValue = undefined}) 
                 defaultValue={defaultValue}
                 className="block w-full rounded focus:outline-none focus:ring-2 focus:ring-cyan-500"
                 helperText={errors[name] && (
-                    <span className="font-medium">{errors[name].message}</span>
+                    <span className="font-medium">
+                        {(errors[name] as { message?: string }).message}
+                    </span>
                 )}
             />
         </div>

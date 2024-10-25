@@ -1,5 +1,4 @@
-import {urlFromBasePath} from "@/app/basePathUtils"
-import Hero from "@/components/Hero"
+import Hero from "@/components/Hero";
 
 export const metadata = {
     title: "Microk8s | VICX"
@@ -27,7 +26,7 @@ export default function Microk8sPage() {
                                 <li>Ubuntu offers better compatibility with Microk8s, due to ownership of the project.
                                 </li>
                             </ul>
-                            <img src={urlFromBasePath("/images/ubuntu.png")} alt="Ubuntu"/>
+                            <img src="/images/ubuntu.png" alt="Ubuntu"/>
                         </div>
 
                         <div className="project">
@@ -37,7 +36,7 @@ export default function Microk8sPage() {
                                 <li><code>sudo apt install snapd</code></li>
                                 <li><code>systemctl enable --now snapd apparmor</code></li>
                             </ul>
-                            <img src={urlFromBasePath("/images/snapd.png")} alt="Snapd"/>
+                            <img src="/images/snapd.png" alt="Snapd"/>
                         </div>
 
                         <div className="project">
@@ -47,7 +46,7 @@ export default function Microk8sPage() {
                                 <li><code>hello-world</code></li>
                                 <li><code>snap remove hello-world</code></li>
                             </ul>
-                            <img src={urlFromBasePath("/images/debian.png")} alt="Debian"/>
+                            <img src="/images/debian.png" alt="Debian"/>
                         </div>
 
                         <div className="project">
@@ -58,7 +57,7 @@ export default function Microk8sPage() {
                                 <li><code>mkdir -p ~/.kube</code></li>
                                 <li><code>chmod 0700 ~/.kube</code></li>
                             </ul>
-                            <img src={urlFromBasePath("/images/kube.png")} alt="Kubernetes"/>
+                            <img src="/images/kube.png" alt="Kubernetes"/>
                         </div>
 
                         <div className="project">
@@ -69,7 +68,7 @@ export default function Microk8sPage() {
                                 <li><code>sudo apt install linux-modules-extra-raspi</code></li>
                                 <li><code>sudo microk8s stop; sudo microk8s start</code></li>
                             </ul>
-                            <img src={urlFromBasePath("/images/rasp.png")} alt="Raspberry PI"/>
+                            <img src="/images/rasp.png" alt="Raspberry PI"/>
                         </div>
                     </div>
                 </div>

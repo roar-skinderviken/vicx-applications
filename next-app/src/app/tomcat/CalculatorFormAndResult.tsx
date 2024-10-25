@@ -6,12 +6,13 @@ import {yupResolver} from "@hookform/resolvers/yup"
 import * as yup from "yup"
 import ValidatedInput from "@/components/ValidatedInput"
 import {Button} from "flowbite-react"
+import { InferType } from "yup"
 
 // put this in next-app/.env.local
 // NEXT_PUBLIC_TOMCAT_BACKEND_URL=http://localhost:8080/api
 const BACKEND_BASE_URL = process.env.NEXT_PUBLIC_TOMCAT_BACKEND_URL || "/sample/api"
 
-const schema = yup.object().shape({
+const calculatorYupSchema = yup.object({
     firstValue: yup
         .number()
         .typeError("First value must be a number")
@@ -19,20 +20,29 @@ const schema = yup.object().shape({
     secondValue: yup
         .number()
         .typeError("Second value must be a number")
-        .required("Second value is required")
+        .required("Second value is required"),
+    operation: yup
+        .string()
+        .required("Operation is required"),
 })
 
-const CalculatorFormAndResult = () => {
-    const [result, setResult] = useState()
+type CalculatorFormData = InferType<typeof calculatorYupSchema>;
 
-    const methods = useForm({
-        resolver: yupResolver(schema),
+interface CalculatorResult extends CalculatorFormData {
+    result: number
+}
+
+const CalculatorFormAndResult = () => {
+    const [result, setResult] = useState<CalculatorResult | null>(null)
+
+    const methods = useForm<CalculatorFormData>({
+        resolver: yupResolver(calculatorYupSchema),
         mode: "onChange"
     })
 
     const {handleSubmit, formState, register} = methods
 
-    const onSubmit = (formData) => {
+    const onSubmit = (formData: CalculatorFormData) => {
         const {firstValue, secondValue, operation} = formData
 
         fetch(`${BACKEND_BASE_URL}/${firstValue}/${secondValue}/${operation}`)
@@ -46,7 +56,6 @@ const CalculatorFormAndResult = () => {
             .catch(error => console.error("Error:", error))
     }
 
-    // noinspection JSCheckFunctionSignatures,JSUnresolvedReference
     return (
         <div className="container mx-auto my-10 text-center">
             <div className="flex justify-center">

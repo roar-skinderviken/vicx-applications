@@ -1,5 +1,9 @@
-
-const Hero = ({ title, lead, backgroundImage = undefined, isHomePage = false }) => {
+const Hero = ({title, lead, backgroundImage = undefined, isHomePage = false}: {
+    title: string,
+    lead: string,
+    backgroundImage?: string,
+    isHomePage?: boolean
+}) => {
     const bgImageUrl = backgroundImage || "/api/hero-bg-image"
 
     const headerElement = isHomePage
@@ -10,7 +14,7 @@ const Hero = ({ title, lead, backgroundImage = undefined, isHomePage = false }) 
                     alt="Welcome to VICX!"
                     width={400}
                     height={400}
-                    className="w-[400px]" />
+                    className="w-[400px]"/>
             </h1>
         )
         : (
