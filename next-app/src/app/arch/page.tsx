@@ -59,8 +59,8 @@ export default function ArchPage() {
                             <p>Connect to the Internet.</p>
                             <ol className="list-decimal ml-5">
                                 <li>Ping a site, e.g. <code>ping vicx.no</code>.</li>
-                                <li>If you have an Ethernet connection, you&aposll get a response. Otherwise,
-                                    you&aposll have to
+                                <li>If you have an Ethernet connection, you&apos;ll get a response. Otherwise,
+                                    you&apos;ll have to
                                     set up a WLAN connection.
                                 </li>
                                 <li>Connect via the <code>iwctl</code> command.</li>
@@ -109,9 +109,9 @@ export default function ArchPage() {
                                 <li>Use the pacstrap command to install base packages: <code>pacstrap -K /mnt base linux
                                     linux-firmware nano</code>.
                                 </li>
-                                <li>Generate an fstab file: <code>genfstab -U /mnt &gt&gt /mnt/etc/fstab</code>.</li>
+                                <li>Generate an fstab file: <code>genfstab -U /mnt &gt;&gt; /mnt/etc/fstab</code>.</li>
                                 <li>Chroot into the new system: <code>arch-chroot /mnt</code>.</li>
-                                <li>Note that in this tutorial, I won&apost go over any time or localization configs.
+                                <li>Note that in this tutorial, I won&apos;t go over any time or localization configs.
                                 </li>
                             </ul>
                         </div>
@@ -129,12 +129,12 @@ export default function ArchPage() {
                                     on: <code>useradd -m -G wheel -s /bin/bash your_user_name</code></li>
                                 <li>Lets make a password for the user just added: <code>passwd your_user_name</code>
                                 </li>
-                                <li>If you&aposre in your profile, go out with the following command: <code>exit</code>.
+                                <li>If you&apos;re in your profile, go out with the following command: <code>exit</code>.
                                 </li>
                                 <li>Update your system: <code>pacman -Syu</code>, then download sudo: <code>pacman -S
                                     sudo</code>.
                                 </li>
-                                <li>Now that we have sudo installed, it&aposs time to give privileges to our
+                                <li>Now that we have sudo installed, it&apos;s time to give privileges to our
                                     user: <code>EDITOR=nano
                                         visudo</code>.
                                 </li>
@@ -185,10 +185,10 @@ export default function ArchPage() {
                                 <li>Grab the packages you need with Pacman, but make sure to add Konsole and Kate.
                                     Spaces between means a new package: <code>sudo pacman -S konsole kate firefox</code>.
                                 </li>
-                                <li>Let&aposs enable SDDM: <code>sudo systemctl enable sddm</code>, and launch into
+                                <li>Let&apos;s enable SDDM: <code>sudo systemctl enable sddm</code>, and launch into
                                     it: <code>sudo systemctl enable --now sddm</code>.
                                 </li>
-                                <li>Log in and press &quotCtrl + Alt + T&quot to open the terminal, then write: <code>sudo
+                                <li>Log in and press &quot;Ctrl + Alt + T&quot; to open the terminal, then write: <code>sudo
                                     pacman -S neofetch neofetch</code>.
                                 </li>
                                 <li>Congrats on using Arch! You are now an Arch elitist. Any questions? Read the

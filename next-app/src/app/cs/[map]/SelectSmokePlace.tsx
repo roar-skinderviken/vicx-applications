@@ -46,7 +46,7 @@ const SelectSmokePlace = ({selectedMap}: { selectedMap: CsMapEntry }) => {
                 </Link>
             </div>
 
-            {smokePlaces.side && ( // Simplified condition
+            {smokePlaces.side && (
                 <div className="flex flex-col items-center mt-5 w-full">
                     <h2 className="text-center text-3xl my-4">
                         {smokePlaces.side === "ct" ? "C-Side" : "T-Side"} Smoke Places
