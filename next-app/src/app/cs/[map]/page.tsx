@@ -1,8 +1,8 @@
 import SelectSmokePlace from "@/app/cs/[map]/SelectSmokePlace"
 import {notFound} from "next/navigation"
-import {MAPS} from "@/app/cs/mapEntries"
 import Hero from "@/components/Hero"
 import Image from "next/image"
+import {MAPS} from "@/constants/mapEntries";
 
 export const dynamicParams = false
 export const revalidate = 3600
@@ -23,6 +23,7 @@ const SmokesPage = async ({params}: { params: Promise<{ map: string }> }) => {
 
     if (!selectedMap) {
         notFound()
+        return
     }
 
     return (

@@ -1,6 +1,6 @@
-import {MAPS} from "@/app/cs/mapEntries"
 import Hero from "@/components/Hero"
 import Image from "next/image"
+import {MAPS} from "@/constants/mapEntries";
 
 export const metadata = {
     title: "Counter Strike Smokes | VICX"

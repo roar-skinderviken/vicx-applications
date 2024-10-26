@@ -12,7 +12,8 @@ const createJestConfig = nextJest({
 
 const customJestConfig = {
   moduleNameMapper: {
-    '^@/constants/(.*)$': '<rootDir>/src/constants/$1',
+    "^@/constants/(.*)$": '<rootDir>/src/constants/$1',
+    "^@/components/(.*)$": '<rootDir>/src/components/$1',
     // Add any other aliases here
   },
 
