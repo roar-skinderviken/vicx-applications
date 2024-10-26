@@ -31,7 +31,7 @@ const testSideInteractions = (side: "C-Side" | "T-Side", entries: string[]) => {
         })
 
         it(`displays second smoke place image for ${side} when second tab is clicked`, () => {
-            const secondTabButton = screen.getByRole("button", { name: entries[1] })
+            const secondTabButton = screen.getByRole("button", {name: entries[1]})
             fireEvent.click(secondTabButton)
             expect(screen.queryByAltText(entries[1])).toBeInTheDocument()
         })

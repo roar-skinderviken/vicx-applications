@@ -136,7 +136,7 @@ describe("KMeansFormAndResult", () => {
             fetchMock.mockResponseOnce(JSON.stringify(validResponse))
             await act(() => fireEvent.click(screen.getByRole("button")))
 
-            Object.entries(validResponse).forEach(([score, grade]) =>{
+            Object.entries(validResponse).forEach(([score, grade]) => {
                 expect(screen.queryByText(`Score: ${score}, Grade: ${grade}`)).toBeInTheDocument()
             })
         })

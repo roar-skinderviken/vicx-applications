@@ -6,7 +6,7 @@ import {yupResolver} from "@hookform/resolvers/yup"
 import * as yup from "yup"
 import ValidatedInput from "@/components/ValidatedInput"
 import {Button} from "flowbite-react"
-import { InferType } from "yup"
+import {InferType} from "yup"
 
 // put this in next-app/.env.local
 // NEXT_PUBLIC_TOMCAT_BACKEND_URL=http://localhost:8080/api
