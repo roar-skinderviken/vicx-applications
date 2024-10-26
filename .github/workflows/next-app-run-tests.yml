@@ -1,0 +1,25 @@
+name: next-app run tests
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'next-app/**'
+
+  pull_request:
+    paths:
+      - 'next-app/**'
+
+jobs:
+  next_app_run_tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Run tests with Gradle
+        run: ./gradlew -p next-app runJest --build-cache --info

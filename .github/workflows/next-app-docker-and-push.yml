@@ -1,15 +1,9 @@
-name: Build next-app Docker and Push
+name: next-app Docker and Push
 
 on:
   push:
-    branches:
-      - main
     tags:
       - '*'
-    paths:
-      - 'next-app/**'
-
-  pull_request:
     paths:
       - 'next-app/**'
 
@@ -18,7 +12,7 @@ env:
   APP_NAME: next-app
 
 jobs:
-  build_and_push_docker_next_app:
+  next_app_build_and_push_docker:
     permissions:
       contents: read
       packages: write
@@ -27,12 +21,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
-
-      - name: Run tests with Gradle
-        run: ./gradlew -p next-app runJest --build-cache --info
 
       - name: Extract repository owner
         id: extract_repo
