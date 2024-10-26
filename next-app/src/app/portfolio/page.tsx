@@ -33,9 +33,7 @@ export default function PortfolioPage() {
                                     functionalities are included.
                                 </li>
                             </ul>
-                            <div className="image-container">
-                                <Image src="/images/nginx.png" alt="NGINX" fill={true}/>
-                            </div>
+                            <Image src="/images/nginx.png" alt="NGINX" width="3000" height="2000"/>
                         </div>
 
                         <div className="project">
@@ -47,9 +45,7 @@ export default function PortfolioPage() {
                                 <li>Java with databases and simpler programs.</li>
                                 <li>Focused on creating efficient and scalable server-side applications.</li>
                             </ul>
-                            <div className="image-container">
-                                <Image src="/images/tom.png" alt="Backend Development" fill/>
-                            </div>
+                            <Image src="/images/tom.png" alt="Backend Development" width="1200" height="855"/>
                         </div>
 
                         <div className="project">
@@ -61,9 +57,7 @@ export default function PortfolioPage() {
                                     operations.
                                 </li>
                             </ul>
-                            <div className="image-container">
-                                <Image src="/images/node.png" alt="Node.js" fill/>
-                            </div>
+                            <Image src="/images/node.png" alt="Node.js" width="1200" height="734"/>
                         </div>
 
                         <div className="project">
@@ -80,9 +74,7 @@ export default function PortfolioPage() {
                                     the master node.
                                 </li>
                             </ul>
-                            <div className="image-container">
-                                <Image src="/images/rasp.png" alt="Raspberry Pi" fill/>
-                            </div>
+                            <Image src="/images/rasp.png" alt="Raspberry Pi" width="800" height="600"/>
                         </div>
 
                         <div className="project">
@@ -99,9 +91,7 @@ export default function PortfolioPage() {
                                     Debian GNU/Linux.
                                 </li>
                             </ul>
-                            <div className="image-container">
-                                <Image src="/images/Tux.png" alt="Tux Penguin" fill/>
-                            </div>
+                            <Image src="/images/Tux.png" alt="Tux Penguin" width="265" height="314"/>
                         </div>
 
                         <div className="project">
@@ -112,9 +102,7 @@ export default function PortfolioPage() {
                                 <li>Desktops used: KDE Plasma 6, GNOME, Hyprland.</li>
                                 <li>Consoles used: Konsole, Kitty, GNOME Terminal and MATE Terminal.</li>
                             </ul>
-                            <div className="image-container">
-                                <Image src="/images/arch.png" alt="Arch" fill/>
-                            </div>
+                            <Image src="/images/arch.png" alt="Arch" width="1200" height="1200"/>
                         </div>
 
                         <div className="project">
@@ -123,9 +111,7 @@ export default function PortfolioPage() {
                                 <li>Proficient in database management with MySQL, H2 and SQLite3.</li>
                                 <li>Designing efficient schemas and optimizing query performance.</li>
                             </ul>
-                            <div className="image-container">
-                                <Image src="/images/mysql.png" alt="MySQL" fill/>
-                            </div>
+                            <Image src="/images/mysql.png" alt="MySQL" width="2400" height="2400"/>
                         </div>
                     </div>
                 </div>

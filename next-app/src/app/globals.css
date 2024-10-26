@@ -29,10 +29,6 @@ html {
     @apply p-4 bg-white rounded-lg shadow-md w-full
 }
 
-.image-container {
-    @apply relative w-full h-[100px] mt-1 overflow-hidden
-}
-
 .project h2 {
     @apply text-xl font-semibold mb-2
 }
