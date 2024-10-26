@@ -11,7 +11,7 @@ node {
 }
 
 tasks.register<NpmTask>("installDependencies") {
-    args.set(listOf("install"))
+    args.set(listOf("ci"))
 }
 
 tasks.register<NpmTask>("runJest") {
