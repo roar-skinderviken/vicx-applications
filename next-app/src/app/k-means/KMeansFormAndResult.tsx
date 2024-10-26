@@ -16,26 +16,26 @@ const kMeansSchema = yup.object().shape({
     max_score: yup
         .number()
         .typeError("Max Score must be a number")
-        .required("Max Score is required")
         .min(10, "Max Score must be greater than 10")
         .max(1000, "Max Score must be less than 1000"),
     fail_grade: yup
         .number()
         .typeError("Fail Score must be a number")
-        .required("Fail Score is required")
-        .min(0, "Fail Score must be greater than 0"),
+        .min(0, "Fail Score must be equal or greater than 0"),
     grades: yup
         .string()
-        .required("Grades are required")
+        .required("Scores are required")
         .test("is-valid-list", "There should be at least 5 scores", (value) => {
             return value.split(",").length >= 5
+        })
+        .test("all-numbers", "All scores must be numbers", (value) => {
+            return value.split(",").every(entry => !isNaN(Number(entry)) && entry !== "")
         }),
     max_iter: yup
         .number()
         .typeError("Max Iterations must be a number")
-        .required("Max Iterations are required")
         .min(1, "Max Iterations must be greater than 0")
-        .max(1000, "Max Iterations must be less than 1000"),
+        .max(999, "Max Iterations must be less than 1000"),
 })
 
 type Grade = "A" | "B" | "C" | "D" | "E" | "F"
