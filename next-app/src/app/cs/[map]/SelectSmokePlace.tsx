@@ -3,7 +3,7 @@
 import {useState, useCallback} from "react"
 import Image from "next/image"
 import Link from "next/link"
-import {CsMapEntry} from "@/constants/mapEntries";
+import {CsMapEntry} from "@/constants/mapEntries"
 
 const INITIAL_SMOKE_PLACES = {side: "", places: [""]}
 

@@ -12,7 +12,7 @@ import {InferType} from "yup"
 // NEXT_PUBLIC_KMEANS_BACKEND_URL=http://localhost:8000/k-means
 const BACKEND_URL = process.env.NEXT_PUBLIC_KMEANS_BACKEND_URL || "/backend-python/k-means"
 
-const kMeansSchema = yup.object().shape({
+const kMeansSchema = yup.object({
     max_score: yup
         .number()
         .typeError("Max Score must be a number")

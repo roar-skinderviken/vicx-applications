@@ -1,4 +1,4 @@
-import Image from "next/image";
+import Image from "next/image"
 
 const Hero = ({title, lead, backgroundImage = undefined, isHomePage = false}: {
     title: string,

@@ -15,12 +15,10 @@ const BACKEND_BASE_URL = process.env.NEXT_PUBLIC_TOMCAT_BACKEND_URL || "/sample/
 const calculatorYupSchema = yup.object({
     firstValue: yup
         .number()
-        .typeError("First value must be a number")
-        .required("First value is required"),
+        .typeError("First value must be a number"),
     secondValue: yup
         .number()
-        .typeError("Second value must be a number")
-        .required("Second value is required"),
+        .typeError("Second value must be a number"),
     operation: yup
         .string()
         .required("Operation is required"),
@@ -37,7 +35,10 @@ const CalculatorFormAndResult = () => {
 
     const methods = useForm<CalculatorFormData>({
         resolver: yupResolver(calculatorYupSchema),
-        mode: "onChange"
+        mode: "onChange",
+        defaultValues: {
+            operation: "PLUS"
+        },
     })
 
     const {handleSubmit, formState, register} = methods
@@ -87,7 +88,9 @@ const CalculatorFormAndResult = () => {
                     <h2 className="text-lg font-bold text-gray-700">Result</h2>
                     <p className="text-base text-gray-600 mt-2">
                         {result.firstValue} {result.operation === 'PLUS' ? '+' : '-'} {result.secondValue} =
-                        <span className="font-semibold text-cyan-600"> {result.result}</span>
+                        <span
+                            data-testid="calculator-result"
+                            className="font-semibold text-cyan-600">{result.result}</span>
                     </p>
                 </div>
             )}

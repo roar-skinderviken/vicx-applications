@@ -1,7 +1,7 @@
 import {render, screen} from "@testing-library/react"
 import {usePathname} from "next/navigation"
-import {SITE_PAGES} from "@/constants/sitePages";
-import VicxNavbar from "@/components/VicxNavbar";
+import {SITE_PAGES} from "@/constants/sitePages"
+import VicxNavbar from "@/components/VicxNavbar"
 
 // Mock the usePathname hook
 jest.mock("next/navigation", () => ({

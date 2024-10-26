@@ -1,13 +1,12 @@
-import {render, screen} from "@testing-library/react";
-import EsportPage from "@/app/esport/page";
+import {render, screen} from "@testing-library/react"
+import EsportPage from "@/app/esport/page"
 import {
     CACHE_TAG_BASE,
     PANDASCORE_BASE_URL,
     RUNNING_MATCH_TYPE,
     UPCOMING_MATCH_TYPE
-} from "@/constants/pandascoreConstants";
-import {revalidateTag} from "next/cache";
-import {FALLBACK_CACHE_TAG} from "@/app/api/hero-bg-image/route";
+} from "@/constants/pandascoreConstants"
+import {revalidateTag} from "next/cache"
 
 jest.mock('next/cache', () => ({
     revalidateTag: jest.fn(),

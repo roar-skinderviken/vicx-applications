@@ -4,7 +4,7 @@ import {
     CACHE_TAG_BASE,
     PANDASCORE_BASE_URL, pandaScoreFetchOptions,
     RUNNING_MATCH_TYPE, UPCOMING_MATCH_TYPE
-} from "@/constants/pandascoreConstants";
+} from "@/constants/pandascoreConstants"
 
 const apiKey = process.env.API_KEY
 
