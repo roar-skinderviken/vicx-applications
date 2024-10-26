@@ -29,7 +29,7 @@ describe('GET /api/hero', () => {
 
     it("returns fallback image when status is not OK", async () => {
         (fs.readFileSync as jest.Mock).mockReturnValue(FALLBACK_IMAGE_BUFFER)
-        fetchMock.mockResponseOnce('', { status: 500 })
+        fetchMock.mockResponseOnce("", { status: 500 })
 
         const response = await GET()
         const buffer = await response.arrayBuffer()

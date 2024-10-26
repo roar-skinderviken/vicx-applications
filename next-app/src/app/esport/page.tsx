@@ -1,32 +1,26 @@
 import Hero from "@/components/Hero"
 import {revalidateTag} from "next/cache"
-
-const PANDASCORE_BASE_URL = "https://api.pandascore.co/csgo/matches"
-const RUNNING_MATCH_TYPE = "running"
-const UPCOMING_MATCH_TYPE = "upcoming"
-const CACHE_TIMEOUT_IN_SECS = 30
-const CACHE_TAG_BASE = "pandascore-cache-"
+import {
+    CACHE_TAG_BASE,
+    PANDASCORE_BASE_URL, pandaScoreFetchOptions,
+    RUNNING_MATCH_TYPE, UPCOMING_MATCH_TYPE
+} from "@/constants/pandascoreConstants";
 
 const apiKey = process.env.API_KEY
 
-interface MatchEntry {
+export interface MatchEntry {
     opponents: { opponent: { name: string } }[],
     begin_at: string,
     status: string
 }
 
-const getMatches = async (matchType: string) => {
+const getMatches = async (matchType: "running" | "upcoming") => {
     const cacheTag = `${CACHE_TAG_BASE}${matchType}`
 
     try {
         const response = await fetch(
             `${PANDASCORE_BASE_URL}/${matchType}?token=${apiKey}`,
-            {
-                next: {
-                    revalidate: CACHE_TIMEOUT_IN_SECS,
-                    tags: [cacheTag]
-                }
-            }
+            pandaScoreFetchOptions(cacheTag)
         )
 
         if (!response.ok) {
