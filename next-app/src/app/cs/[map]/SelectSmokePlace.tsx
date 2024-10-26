@@ -6,6 +6,7 @@ import Link from "next/link"
 import {CsMapEntry} from "@/constants/mapEntries"
 
 const INITIAL_SMOKE_PLACES = {side: "", places: [""]}
+const CS_PAGE_URL = "/cs#maps"
 
 const createImagePath = (mapName: string, side: string, smokePlace: string) => {
     const cleanString = (str: string) => str.replace(/\s+/g, '-').toLowerCase()
@@ -40,7 +41,7 @@ const SelectSmokePlace = ({selectedMap}: { selectedMap: CsMapEntry }) => {
                     T-Side
                 </button>
 
-                <Link href="/cs#maps"
+                <Link href={CS_PAGE_URL}
                       className="bg-gray-200 text-gray-700 py-2 px-4 rounded shadow hover:bg-gray-300 hover:shadow-md whitespace-nowrap">
                     Back to Map Selector
                 </Link>
