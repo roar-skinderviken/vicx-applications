@@ -1,6 +1,12 @@
-import {FALLBACK_CACHE_TAG, GET, JPEG_IMAGE_CONTENT_TYPE, PICSUM_IMAGE_URL, PICSUM_OPTIONS} from "./route"
 import * as fs from "node:fs"
 import {revalidateTag} from "next/cache"
+import {
+    FALLBACK_CACHE_TAG,
+    JPEG_IMAGE_CONTENT_TYPE,
+    PICSUM_IMAGE_URL,
+    PICSUM_OPTIONS
+} from "@/constants/picsumConstants";
+import {GET} from "@/app/api/hero-bg-image/route";
 
 jest.mock('node:fs')
 jest.mock('next/cache', () => ({
