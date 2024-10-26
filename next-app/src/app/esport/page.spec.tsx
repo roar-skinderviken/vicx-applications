@@ -1,12 +1,6 @@
 import {render, screen} from "@testing-library/react"
 import EsportPage from "@/app/esport/page"
-import {
-    CACHE_TAG_BASE,
-    PANDASCORE_BASE_URL,
-    RUNNING_MATCH_TYPE,
-    UPCOMING_MATCH_TYPE
-} from "@/constants/pandascoreConstants"
-import {revalidateTag} from "next/cache"
+import {PANDASCORE_BASE_URL} from "@/constants/pandascoreConstants"
 
 jest.mock('next/cache', () => ({
     revalidateTag: jest.fn(),
@@ -63,17 +57,6 @@ describe("Esport Page", () => {
             expect(screen.queryByText("Team-3 vs Team-4")).toBeInTheDocument()
             expect(screen.queryByText("not_started")).toBeInTheDocument()
             expect(screen.queryByText("2/2/2024")).toBeInTheDocument()
-        })
-    })
-
-    describe("API interactions", () => {
-        it("calls ", async () => {
-            fetchMock.mockResponse("", {status: 500})
-
-            render(await EsportPage())
-
-            expect(revalidateTag).toHaveBeenCalledWith(`${CACHE_TAG_BASE}${RUNNING_MATCH_TYPE}`)
-            expect(revalidateTag).toHaveBeenCalledWith(`${CACHE_TAG_BASE}${UPCOMING_MATCH_TYPE}`)
         })
     })
 })

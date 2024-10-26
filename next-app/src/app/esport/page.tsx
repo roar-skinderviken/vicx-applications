@@ -1,5 +1,4 @@
 import Hero from "@/components/Hero"
-import {revalidateTag} from "next/cache"
 import {
     CACHE_TAG_BASE,
     PANDASCORE_BASE_URL, pandaScoreFetchOptions,
@@ -24,7 +23,6 @@ const getMatches = async (matchType: "running" | "upcoming") => {
         )
 
         if (!response.ok) {
-            revalidateTag(cacheTag)
             return []
         }
 
