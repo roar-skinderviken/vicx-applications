@@ -87,10 +87,7 @@ const CalculatorFormAndResult = () => {
                 <div className="mt-6 p-4 bg-gray-100 rounded shadow-md">
                     <h2 className="text-lg font-bold text-gray-700">Result</h2>
                     <p className="text-base text-gray-600 mt-2">
-                        {result.firstValue} {result.operation === 'PLUS' ? '+' : '-'} {result.secondValue} =
-                        <span
-                            data-testid="calculator-result"
-                            className="font-semibold text-cyan-600">{result.result}</span>
+                        {result.firstValue} {result.operation === 'PLUS' ? '+' : '-'} {result.secondValue} = {result.result}
                     </p>
                 </div>
             )}

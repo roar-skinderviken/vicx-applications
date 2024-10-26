@@ -91,16 +91,14 @@ describe("CalculatorFormAndResult", () => {
             fetchMock.mockResponseOnce(JSON.stringify(validAddResponse))
             await act(() => fireEvent.click(screen.getByRole("button", {name: "Add"})))
 
-            expect(screen.queryByText("1 + 2 =")).toBeInTheDocument()
-            expect(screen.queryByTestId("calculator-result")).toHaveTextContent("3")
+            expect(screen.queryByText("1 + 2 = 3")).toBeInTheDocument()
         })
 
         it("displays subtract result when API returns valid response", async () => {
             fetchMock.mockResponseOnce(JSON.stringify(validSubtractResponse))
             await act(() => fireEvent.click(screen.getByRole("button", {name: "Subtract"})))
 
-            expect(screen.queryByText("1 - 2 =")).toBeInTheDocument()
-            expect(screen.queryByTestId("calculator-result")).toHaveTextContent("-1")
+            expect(screen.queryByText("1 - 2 = -1")).toBeInTheDocument()
         })
     })
 })
