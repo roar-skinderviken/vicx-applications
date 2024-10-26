@@ -27,7 +27,7 @@ const Hero = ({title, lead, backgroundImage = undefined, isHomePage = false}: {
 
     return (
         <div
-            className="text-white py-24 text-center"
+            className="text-white py-16 text-center"
             style={{
                 background: `url(${bgImageUrl}) center 67%/cover no-repeat`,
                 transition: "background 0.5s ease-in-out",

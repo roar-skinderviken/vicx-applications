@@ -16,7 +16,7 @@ export default function Home() {
                 <h2 className="text-center text-3xl my-4">Table of Contents</h2>
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    {SITE_PAGES.map((page, index) =>
+                    {SITE_PAGES.map((page, index) => (
                         <a href={page.href}
                            key={index}
                            className="flex items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105 hover:shadow-lg mb-4 p-2"
@@ -24,14 +24,14 @@ export default function Home() {
                             <Image
                                 src={page.imgSrc}
                                 alt={page.imgAlt}
-                                className="mr-3"
+                                className="w-20 max-h-[80px] h-auto object-contain"
                                 width={page.imgWidth}
-                                height={page.imgWidth}
+                                height={page.imgHeight}
                             />
-                            <FontAwesomeIcon icon={page.icon} className="fa-fw mr-2"/>
+                            <FontAwesomeIcon icon={page.icon} className="fa-fw mx-2"/>
                             {page.title}
                         </a>
-                    )}
+                    ))}
                 </div>
             </div>
         </main>
