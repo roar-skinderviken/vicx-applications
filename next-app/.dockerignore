@@ -1,0 +1,4 @@
+**/*.spec.ts
+**/*.spec.tsx
+build.gradle.kts
+README.md
