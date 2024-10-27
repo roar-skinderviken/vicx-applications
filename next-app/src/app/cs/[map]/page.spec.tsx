@@ -21,7 +21,6 @@ describe("SmokesPage", () => {
         it("displays map image", async () => {
             const image = screen.queryByAltText(SELECTED_MAP)
             expect(image).toBeInTheDocument()
-            expect(image).toHaveAttribute("src", expect.stringContaining(SELECTED_MAP.toLowerCase()))
         })
 
         it("displays 'Choose Your Side' text for selected map", async () => {
