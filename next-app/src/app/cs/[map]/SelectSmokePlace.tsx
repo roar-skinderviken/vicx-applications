@@ -58,20 +58,20 @@ const SelectSmokePlace = ({selectedMap}: { selectedMap: CsMapEntry }) => {
                         ref={tabsRef}
                         aria-label="Smoke Places"
                         variant="fullWidth"
-                        className="w-full h-full flex-grow">
+                        className="w-full">
                         {smokePlaces.places.map((smokePlace, index) => (
                             <Tabs.Item
                                 key={index}
-                                className="w-full h-full flex justify-center items-center"
+                                className="flex justify-center items-center"
                                 title={smokePlace}>
-                                <Image
-                                    src={createImagePath(selectedMap.name, smokePlaces.side, smokePlace)}
-                                    alt={smokePlace}
-                                    loading="lazy"
-                                    width={1920}
-                                    height={1080}
-                                    className="object-contain w-full h-full"
-                                />
+                                    <Image
+                                        src={createImagePath(selectedMap.name, smokePlaces.side, smokePlace)}
+                                        alt={smokePlace}
+                                        loading="lazy"
+                                        width={1920}
+                                        height={1080}
+                                        className="object-contain w-full"
+                                    />
                             </Tabs.Item>
                         ))}
                     </Tabs>
