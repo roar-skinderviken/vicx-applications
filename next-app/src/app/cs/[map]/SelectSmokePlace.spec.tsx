@@ -1,13 +1,8 @@
 import {fireEvent, render, screen} from "@testing-library/react"
 import SelectSmokePlace from "@/app/cs/[map]/SelectSmokePlace"
-import {CsMapEntry} from "@/constants/mapEntries"
+import {MAPS} from "@/constants/mapEntries";
 
-const SELECTED_MAP: CsMapEntry = {
-    name: "Mirage",
-    image: "mirage.png",
-    ct: ["Palace", "Apartments", "Top Mid"],
-    t: ["Ticket", "Stairs", "Jungle"]
-}
+const SELECTED_MAP = MAPS[0]
 
 const testSideInteractions = (side: "C-Side" | "T-Side", entries: string[]) => {
     describe(`${side} Interactions`, () => {
@@ -31,8 +26,8 @@ const testSideInteractions = (side: "C-Side" | "T-Side", entries: string[]) => {
         })
 
         it(`displays second smoke place image for ${side} when second tab is clicked`, () => {
-            const secondTabButton = screen.getByRole("button", {name: entries[1]})
-            fireEvent.click(secondTabButton)
+            const secondTab = screen.getByRole("tab", {name: entries[1]})
+            fireEvent.click(secondTab)
             expect(screen.queryByAltText(entries[1])).toBeInTheDocument()
         })
     })

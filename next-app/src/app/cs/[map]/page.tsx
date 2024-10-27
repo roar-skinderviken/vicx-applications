@@ -34,17 +34,15 @@ const SmokesPage = async ({params}: { params: Promise<{ map: string }> }) => {
                 backgroundImage="/images/cs2back.jpg"
             />
 
-            <div>
-                <div className="flex flex-col items-center mb-4">
-                    <Image
-                        src={`/images/${selectedMap.image}`}
-                        className="w-32 mt-4"
-                        alt={selectedMap.name}
-                        width="512" height="512"/>
-                    <h2 className="text-center text-3xl my-4">Choose Your Side for {selectedMap.name}</h2>
-                    <SelectSmokePlace selectedMap={selectedMap}/>
-                </div>
+            <div className="flex flex-col items-center">
+                <Image
+                    src={`/images/${selectedMap.image}`}
+                    className="w-32 mt-4"
+                    alt={selectedMap.name}
+                    width="512" height="512"/>
+                <h2 className="text-center text-2xl my-2">Choose Your Side for {selectedMap.name}</h2>
             </div>
+            <SelectSmokePlace selectedMap={selectedMap}/>
         </main>
     )
 }

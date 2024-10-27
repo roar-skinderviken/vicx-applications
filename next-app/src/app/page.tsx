@@ -24,7 +24,7 @@ export default function Home() {
                             <Image
                                 src={page.imgSrc}
                                 alt={page.imgAlt}
-                                className="w-20 max-h-[80px] h-auto object-contain"
+                                className="w-20 max-h-[80px] object-contain"
                                 width={page.imgWidth}
                                 height={page.imgHeight}
                             />
