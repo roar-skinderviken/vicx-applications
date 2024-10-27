@@ -13,17 +13,17 @@ module.exports = {
         extend: {
             keyframes: {
                 fadeInDown: {
-                    '0%': { opacity: 0, transform: 'translateY(-50px)' },
-                    '100%': { opacity: 1, transform: 'translateY(0)' },
+                    "0%": { opacity: 0, transform: 'translateY(-50px)' },
+                    "100%": { opacity: 1, transform: 'translateY(0)' },
                 },
                 fadeInUp: {
-                    '0%': { opacity: 0, transform: 'translateY(50px)' },
-                    '100%': { opacity: 1, transform: 'translateY(0)' },
+                    "0%": { opacity: 0, transform: 'translateY(50px)' },
+                    "100%": { opacity: 1, transform: 'translateY(0)' },
                 },
             },
             animation: {
-                fadeInDown: 'fadeInDown 0.5s ease-in-out', // Adjusted to 0.5s
-                fadeInUp: 'fadeInUp 0.5s ease-in-out', // Adjusted to 0.5s
+                fadeInDown: "fadeInDown 0.8s ease-in-out",
+                fadeInUp: "fadeInUp 0.8s ease-in-out",
             },
             colors: {
                 background: "var(--background)",
