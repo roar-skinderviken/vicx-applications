@@ -1,14 +1,14 @@
 import Hero from "@/components/Hero"
 import Image from "next/image"
 
-import blackArchImage from "../../../public/images/blackarch.png"
-import bootImage from "../../../public/images/boot.png"
-import installImage from "../../../public/images/install.png"
-import cfdiskImage from "../../../public/images/cfdisk.png"
-import pacStrapImage from "../../../public/images/pacstrap.png"
-import userImage from "../../../public/images/user.png"
-import grubImage from "../../../public/images/grub.png"
-import neoFetchImage from "../../../public/images/neofetch.png"
+import blackArchImage from "../../assets/images/blackarch.png"
+import bootImage from "../../assets/images/boot.png"
+import installImage from "../../assets/images/install.png"
+import cfdiskImage from "../../assets/images/cfdisk.png"
+import pacStrapImage from "../../assets/images/pacstrap.png"
+import userImage from "../../assets/images/user.png"
+import grubImage from "../../assets/images/grub.png"
+import neoFetchImage from "../../assets/images/neofetch.png"
 
 export const metadata = {
     title: "Arch | VICX"

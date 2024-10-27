@@ -1,13 +1,13 @@
 import Hero from "@/components/Hero"
 import Image from "next/image"
 
-import nginxImage from "../../../public/images/nginx.png"
-import tomcatImage from "../../../public/images/tom.png"
-import nodeImage from "../../../public/images/node.png"
-import raspberryImage from "../../../public/images/rasp.png"
-import tuxImage from "../../../public/images/Tux.png"
-import archImage from "../../../public/images/arch.png"
-import mysqlImage from "../../../public/images/mysql.png"
+import nginxImage from "../../assets/images/nginx.png"
+import tomcatImage from "../../assets/images/tom.png"
+import nodeImage from "../../assets/images/node.png"
+import raspberryImage from "../../assets/images/rasp.png"
+import tuxImage from "../../assets/images/Tux.png"
+import archImage from "../../assets/images/arch.png"
+import mysqlImage from "../../assets/images/mysql.png"
 
 
 export const metadata = {

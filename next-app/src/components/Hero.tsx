@@ -1,6 +1,6 @@
 import Image from "next/image"
 
-import logoImage from "../../public/images/logo-no-background.png"
+import logoImage from "../assets/images/logo-no-background.png"
 
 const Hero = ({title, lead, backgroundImage = "/api/hero-bg-image", isHomePage = false}: {
     title: string,

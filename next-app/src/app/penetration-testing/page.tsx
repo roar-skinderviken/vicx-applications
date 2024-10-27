@@ -1,9 +1,9 @@
 import Hero from "@/components/Hero"
 import Image from "next/image"
 
-import tuxImage from "../../../public/images/Tux.png"
-import johnImage from "../../../public/images/john.png"
-import nmapImage from "../../../public/images/nmap.png"
+import tuxImage from "../../assets/images/Tux.png"
+import johnImage from "../../assets/images/john.png"
+import nmapImage from "../../assets/images/nmap.png"
 
 export const metadata = {
     title: "Penetration Testing | VICX"

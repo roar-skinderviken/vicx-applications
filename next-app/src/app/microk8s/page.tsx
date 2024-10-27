@@ -1,11 +1,11 @@
 import Hero from "@/components/Hero"
 import Image from "next/image"
 
-import ubuntuImage from "../../../public/images/ubuntu.png"
-import snapdImage from "../../../public/images/snapd.png"
-import debianImage from "../../../public/images/debian.png"
-import kubernetesImage from "../../../public/images/kube.png"
-import raspberryImage from "../../../public/images/rasp.png"
+import ubuntuImage from "../../assets/images/ubuntu.png"
+import snapdImage from "../../assets/images/snapd.png"
+import debianImage from "../../assets/images/debian.png"
+import kubernetesImage from "../../assets/images/kube.png"
+import raspberryImage from "../../assets/images/rasp.png"
 
 export const metadata = {
     title: "Microk8s | VICX"

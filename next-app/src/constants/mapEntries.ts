@@ -7,13 +7,13 @@ export interface CsMapEntry {
     t: string[],
 }
 
-import mirageImage from "../../public/images/mirage.png"
-import dust2Image from "../../public/images/dust2.png"
-import anubisImage from "../../public/images/anubis.png"
-import vertigoImage from "../../public/images/vertigo.png"
-import ancientImage from "../../public/images/ancient.png"
-import nukeImage from "../../public/images/nuke.png"
-import infernoImage from "../../public/images/inferno.png"
+import mirageImage from "../assets/images/mirage.png"
+import dust2Image from "../assets/images/dust2.png"
+import anubisImage from "../assets/images/anubis.png"
+import vertigoImage from "../assets/images/vertigo.png"
+import ancientImage from "../assets/images/ancient.png"
+import nukeImage from "../assets/images/nuke.png"
+import infernoImage from "../assets/images/inferno.png"
 
 export const MAPS: CsMapEntry[] = [
     {
