@@ -19,6 +19,7 @@ export default function Home() {
                     {SITE_PAGES.map((page, index) => (
                         <a href={page.href}
                            key={index}
+                           data-testid={`page-link-${index}`}
                            className="flex items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105 hover:shadow-lg mb-4 p-2"
                         >
                             <Image
