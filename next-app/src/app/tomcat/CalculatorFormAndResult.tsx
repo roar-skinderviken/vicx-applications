@@ -4,7 +4,7 @@ import {useState} from "react"
 import {FormProvider, useForm} from "react-hook-form"
 import {yupResolver} from "@hookform/resolvers/yup"
 import * as yup from "yup"
-import ValidatedInput from "@/components/ValidatedInput"
+import ValidatedTextInput from "@/components/ValidatedTextInput"
 import {Button} from "flowbite-react"
 import {InferType} from "yup"
 
@@ -63,8 +63,8 @@ const CalculatorFormAndResult = () => {
                 <FormProvider {...methods}>
                     <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4 max-w-md">
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <ValidatedInput label="First Value" name="firstValue"/>
-                            <ValidatedInput label="Second Value" name="secondValue"/>
+                            <ValidatedTextInput label="First Value" name="firstValue"/>
+                            <ValidatedTextInput label="Second Value" name="secondValue"/>
 
                             <input type="hidden" {...register("operation")} />
 

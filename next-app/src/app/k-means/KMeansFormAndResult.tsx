@@ -4,7 +4,7 @@ import {useState} from "react"
 import {FormProvider, useForm} from "react-hook-form"
 import {yupResolver} from "@hookform/resolvers/yup"
 import * as yup from "yup"
-import ValidatedInput from "@/components/ValidatedInput"
+import ValidatedTextInput from "@/components/ValidatedTextInput"
 import {Button} from "flowbite-react"
 import {InferType} from "yup"
 
@@ -107,10 +107,10 @@ const KMeansFormAndResult = () => {
                 <FormProvider {...methods}>
                     <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4 max-w-md">
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <ValidatedInput label="Max Score" name="max_score"/>
-                            <ValidatedInput label="Fail Score" name="fail_grade"/>
-                            <ValidatedInput label="Scores (comma separated)" name="grades"/>
-                            <ValidatedInput label="Max Iterations" name="max_iter" defaultValue="300"/>
+                            <ValidatedTextInput label="Max Score" name="max_score"/>
+                            <ValidatedTextInput label="Fail Score" name="fail_grade"/>
+                            <ValidatedTextInput label="Scores (comma separated)" name="grades"/>
+                            <ValidatedTextInput label="Max Iterations" name="max_iter" defaultValue="300"/>
                             <Button
                                 type="submit"
                                 disabled={!formState.isValid}

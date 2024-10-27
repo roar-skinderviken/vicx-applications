@@ -3,10 +3,9 @@
 import {Label, TextInput} from "flowbite-react"
 import {useFormContext} from "react-hook-form"
 
-const ValidatedInput = ({name, label, type = "text", defaultValue}: {
+const ValidatedTextInput = ({name, label, defaultValue}: {
     name: string,
     label: string,
-    type?: string,
     defaultValue?: string
 }) => {
     const {register, formState: {errors}} = useFormContext()
@@ -20,7 +19,6 @@ const ValidatedInput = ({name, label, type = "text", defaultValue}: {
                 value={label}
             />
             <TextInput
-                type={type}
                 id={name}
                 {...register(name)}
                 color={errors[name] ? "failure" : "success"}
@@ -36,4 +34,4 @@ const ValidatedInput = ({name, label, type = "text", defaultValue}: {
     )
 }
 
-export default ValidatedInput
+export default ValidatedTextInput
