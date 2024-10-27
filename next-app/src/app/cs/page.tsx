@@ -26,9 +26,9 @@ export default function CounterStrikePage() {
                             <a href={`/cs/${name}`} className="text-center">
                                 <Image
                                     src={`/images/${image}`}
-                                    className="w-32 my-3"
+                                    className="my-3"
                                     alt={name}
-                                    width="512" height="512"/>
+                                    width="128" height="128"/>
                                 {name}
                             </a>
                         </div>
