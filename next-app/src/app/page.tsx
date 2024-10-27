@@ -23,11 +23,9 @@ export default function Home() {
                            className="flex items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105 hover:shadow-lg mb-4 p-2"
                         >
                             <Image
-                                src={page.imgSrc}
+                                src={page.image}
                                 alt={page.imgAlt}
                                 className="w-20 max-h-[80px] object-contain"
-                                width={page.imgWidth}
-                                height={page.imgHeight}
                             />
                             <FontAwesomeIcon icon={page.icon} className="fa-fw mx-2"/>
                             {page.title}

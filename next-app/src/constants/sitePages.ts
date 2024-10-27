@@ -8,85 +8,77 @@ import {
     faTerminal
 } from "@fortawesome/free-solid-svg-icons"
 
+import portfolioImage from "../../public/images/portis.png"
+import tomcatImage from "../../public/images/tom.png"
+import snakeImage from "../../public/images/snake.png"
+import kubernetesImage from "../../public/images/kube.png"
+import archImage from "../../public/images/arch.png"
+import tuxImage from "../../public/images/Tux.png"
+import counterStrikeImage from "../../public/images/counter.png"
+import esportImage from "../../public/images/esl.png"
+import kmeansImage from "../../public/images/kmeans.png"
+
 export const SITE_PAGES = [
     {
         href: "/portfolio",
-        imgSrc: "/images/portis.png",
+        image: portfolioImage,
         imgAlt: "Portfolio Image",
-        imgWidth: 512,
-        imgHeight: 512,
         icon: faIdCard,
         title: "Portfolio"
     },
     {
         href: "/tomcat",
-        imgSrc: "/images/tom.png",
+        image: tomcatImage,
         imgAlt: "Tomcat Image",
-        imgWidth: 1200,
-        imgHeight: 855,
         icon: faServer,
         title: "Tomcat"
     },
     {
         href: "/snake",
-        imgSrc: "/images/snake.png",
+        image: snakeImage,
         imgAlt: "Snake Image",
-        imgWidth: 488,
-        imgHeight: 640,
         icon: faGamepad,
         title: "Snake"
     },
     {
         href: "/microk8s",
-        imgSrc: "/images/kube.png",
+        image: kubernetesImage,
         imgAlt: "Setup Image",
-        imgWidth: 600,
-        imgHeight: 300,
         icon: faCubes,
         title: "Microk8s",
     },
     {
         href: "/arch",
-        imgSrc: "/images/arch.png",
+        image: archImage,
         imgAlt: "Arch Image",
-        imgWidth: 1200,
-        imgHeight: 1200,
         icon: faTerminal,
         title: "Arch"
     },
     {
         href: "/penetration-testing",
-        imgSrc: "/images/Tux.png",
+        image: tuxImage,
         imgAlt: "Penetration Testing Image",
-        imgWidth: 265,
-        imgHeight: 314,
         icon: faShieldHalved,
         title: "Pen Testing"
     },
     {
         href: "/cs",
-        imgSrc: "/images/counter.png",
+        image: counterStrikeImage,
         imgAlt: "Cs2 Image",
-        imgWidth: 200,
-        imgHeight: 200,
         icon: faPlay,
         title: "Counter Strike"
     },
     {
         href: "/esport",
-        imgSrc: "/images/esl.png",
+        image: esportImage,
         imgAlt: "Esport Image",
-        imgWidth: 2360,
-        imgHeight: 2140,
         icon: faHeadset,
         title: "Esport"
     },
     {
         href: "/k-means",
-        imgSrc: "/images/kmeans.png",
+        image: kmeansImage,
         imgAlt: "K-means Image",
-        imgWidth: 200,
-        imgHeight: 200,
         icon: faList,
         title: "K-means"
     },

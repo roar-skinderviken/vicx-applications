@@ -1,5 +1,7 @@
 import Image from "next/image"
 
+import logoImage from "../../public/images/logo-no-background.png"
+
 const Hero = ({title, lead, backgroundImage = "/api/hero-bg-image", isHomePage = false}: {
     title: string,
     lead: string,
@@ -10,10 +12,8 @@ const Hero = ({title, lead, backgroundImage = "/api/hero-bg-image", isHomePage =
         ? (
             <h1 className="flex justify-center animate-fadeInDown">
                 <Image
-                    src={"/images/logo-no-background.png"}
+                    src={logoImage}
                     alt="Welcome to VICX!"
-                    width={400}
-                    height={400}
                     className="w-[400px]"/>
             </h1>
         )

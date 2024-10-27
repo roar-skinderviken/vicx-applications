@@ -1,6 +1,15 @@
 import Hero from "@/components/Hero"
 import Image from "next/image"
 
+import blackArchImage from "../../../public/images/blackarch.png"
+import bootImage from "../../../public/images/boot.png"
+import installImage from "../../../public/images/install.png"
+import cfdiskImage from "../../../public/images/cfdisk.png"
+import pacStrapImage from "../../../public/images/pacstrap.png"
+import userImage from "../../../public/images/user.png"
+import grubImage from "../../../public/images/grub.png"
+import neoFetchImage from "../../../public/images/neofetch.png"
+
 export const metadata = {
     title: "Arch | VICX"
 }
@@ -20,10 +29,9 @@ export default function ArchPage() {
                         <div className="my-4">
                             <h3 className="text-left text-2xl font-semibold mb-4">Step 1: Prepare Installation
                                 Media</h3>
-                            <Image src="/images/blackarch.png"
+                            <Image src={blackArchImage}
                                    alt="Prepare Installation Media"
-                                   className="w-full max-w-xs mb-3 mx-auto"
-                                   width="512" height="512"/>
+                                   className="max-w-xs mb-3 mx-auto"/>
                             <p>Download the Arch Linux ISO and create a bootable USB drive.</p>
                             <ul className="list-disc ml-5">
                                 <li>Download the Arch Linux ISO from the official website.</li>
@@ -35,10 +43,9 @@ export default function ArchPage() {
                         </div>
                         <div className="mb-4">
                             <h3 className="text-left text-2xl font-semibold mb-4">Step 2: Boot and Initial Setup</h3>
-                            <Image src="/images/boot.png"
+                            <Image src={bootImage}
                                    alt="Boot and Initial Setup"
-                                   className="w-full max-w-xl mb-3 mx-auto"
-                                   width="776" height="500"/>
+                                   className="max-w-xl mb-3 mx-auto"/>
                             <p>Boot from the USB drive and start the Arch Linux installation process.</p>
                             <ol className="list-decimal ml-5">
                                 <li>Before you boot, ensure that secure boot is disabled.</li>
@@ -52,10 +59,9 @@ export default function ArchPage() {
                         <div className="mb-4">
                             <h3 className="text-left text-2xl font-semibold mb-4">Step 3: Connecting to the
                                 internet</h3>
-                            <Image src="/images/install.png"
+                            <Image src={installImage}
                                    alt="Connecting to the internet"
-                                   className="w-full max-w-xl mb-3 mx-auto"
-                                   width="1152" height="720"/>
+                                   className="max-w-xl mb-3 mx-auto"/>
                             <p>Connect to the Internet.</p>
                             <ol className="list-decimal ml-5">
                                 <li>Ping a site, e.g. <code>ping vicx.no</code>.</li>
@@ -71,10 +77,9 @@ export default function ArchPage() {
                         </div>
                         <div className="mb-4">
                             <h3 className="text-left text-2xl font-semibold mb-4">Step 4: Partition the Disks</h3>
-                            <Image src="/images/cfdisk.png"
+                            <Image src={cfdiskImage}
                                    alt="Partition the Disks"
-                                   className="w-full max-w-xl mb-3 mx-auto"
-                                   width="640" height="414"/>
+                                   className="max-w-xl mb-3 mx-auto"/>
                             <p>Use tools like <code>cfdisk</code> to partition your disk, normally referred to as sda.
                             </p>
                             <ul className="list-disc ml-5">
@@ -100,10 +105,9 @@ export default function ArchPage() {
                         <div className="mb-4">
                             <h3 className="text-left text-2xl font-semibold mb-4">Step 5: Install the Base System and
                                 Configure Chroot</h3>
-                            <Image src="/images/pacstrap.png"
+                            <Image src={pacStrapImage}
                                    alt="Install the Base System"
-                                   className="w-full max-w-xl mb-3 mx-auto"
-                                   width="1280" height="720"/>
+                                   className="max-w-xl mb-3 mx-auto"/>
                             <p>Install the base packages for Arch Linux.</p>
                             <ul className="list-disc ml-5">
                                 <li>Use the pacstrap command to install base packages: <code>pacstrap -K /mnt base linux
@@ -117,10 +121,9 @@ export default function ArchPage() {
                         </div>
                         <div className="mb-4">
                             <h3 className="text-left text-2xl font-semibold mb-4">Step 6: Users and hosts</h3>
-                            <Image src="/images/user.png"
+                            <Image src={userImage}
                                    alt="Configure the System"
-                                   className="w-full max-w-xl mb-3 mx-auto"
-                                   width="720" height="402"/>
+                                   className="max-w-xl mb-3 mx-auto"/>
                             <p>Lets make a user.</p>
                             <ul className="list-disc ml-5">
                                 <li>Create <code>/etc/hostname</code> and add your hostname.</li>
@@ -146,10 +149,9 @@ export default function ArchPage() {
                         </div>
                         <div className="mb-4">
                             <h3 className="text-left text-2xl font-semibold mb-4">Step 7: Install Bootloader</h3>
-                            <Image src="/images/grub.png"
+                            <Image src={grubImage}
                                    alt="Install Bootloader"
-                                   className="w-full max-w-xl mb-3 mx-auto"
-                                   width="800" height="507"/>
+                                   className="max-w-xl mb-3 mx-auto"/>
                             <p>Install and configure the GRUB bootloader.</p>
                             <ul className="list-disc ml-5">
                                 <li>Install GRUB and related packages: <code>pacman -S grub</code>.</li>
@@ -171,10 +173,9 @@ export default function ArchPage() {
                         </div>
                         <div className="mb-4">
                             <h3 className="text-left text-2xl font-semibold mb-4">Step 8: Desktop Environment Setup</h3>
-                            <Image src="/images/neofetch.png"
+                            <Image src={neoFetchImage}
                                    alt="Reboot and Post-Installation"
-                                   className="img-fluid mb-3 w-full max-w-2xl mx-auto"
-                                   width="1200" height="900"/>
+                                   className="img-fluid mb-3 w-full max-w-2xl mx-auto"/>
                             <p>In this instance we will be using KDE plasma.</p>
                             <ul className="list-disc ml-5">
                                 <li>Download the necessary packages as well as SDDM: <code>sudo pacman -S plasma

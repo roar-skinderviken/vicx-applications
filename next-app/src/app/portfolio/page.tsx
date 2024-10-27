@@ -1,6 +1,15 @@
 import Hero from "@/components/Hero"
 import Image from "next/image"
 
+import nginxImage from "../../../public/images/nginx.png"
+import tomcatImage from "../../../public/images/tom.png"
+import nodeImage from "../../../public/images/node.png"
+import raspberryImage from "../../../public/images/rasp.png"
+import tuxImage from "../../../public/images/Tux.png"
+import archImage from "../../../public/images/arch.png"
+import mysqlImage from "../../../public/images/mysql.png"
+
+
 export const metadata = {
     title: "Portfolio | VICX"
 }
@@ -33,7 +42,7 @@ export default function PortfolioPage() {
                                     functionalities are included.
                                 </li>
                             </ul>
-                            <Image src="/images/nginx.png" alt="NGINX" width="3000" height="2000"/>
+                            <Image src={nginxImage} alt="NGINX"/>
                         </div>
 
                         <div className="project">
@@ -45,7 +54,7 @@ export default function PortfolioPage() {
                                 <li>Java with databases and simpler programs.</li>
                                 <li>Focused on creating efficient and scalable server-side applications.</li>
                             </ul>
-                            <Image src="/images/tom.png" alt="Backend Development" width="1200" height="855"/>
+                            <Image src={tomcatImage} alt="Backend Development"/>
                         </div>
 
                         <div className="project">
@@ -57,7 +66,7 @@ export default function PortfolioPage() {
                                     operations.
                                 </li>
                             </ul>
-                            <Image src="/images/node.png" alt="Node.js" width="1200" height="734"/>
+                            <Image src={nodeImage} alt="Node.js"/>
                         </div>
 
                         <div className="project">
@@ -74,7 +83,7 @@ export default function PortfolioPage() {
                                     the master node.
                                 </li>
                             </ul>
-                            <Image src="/images/rasp.png" alt="Raspberry Pi" width="800" height="600"/>
+                            <Image src={raspberryImage} alt="Raspberry Pi"/>
                         </div>
 
                         <div className="project">
@@ -91,7 +100,7 @@ export default function PortfolioPage() {
                                     Debian GNU/Linux.
                                 </li>
                             </ul>
-                            <Image src="/images/Tux.png" alt="Tux Penguin" width="265" height="314"/>
+                            <Image src={tuxImage} alt="Tux Penguin"/>
                         </div>
 
                         <div className="project">
@@ -102,7 +111,7 @@ export default function PortfolioPage() {
                                 <li>Desktops used: KDE Plasma 6, GNOME, Hyprland.</li>
                                 <li>Consoles used: Konsole, Kitty, GNOME Terminal and MATE Terminal.</li>
                             </ul>
-                            <Image src="/images/arch.png" alt="Arch" width="1200" height="1200"/>
+                            <Image src={archImage} alt="Arch"/>
                         </div>
 
                         <div className="project">
@@ -111,7 +120,7 @@ export default function PortfolioPage() {
                                 <li>Proficient in database management with MySQL, H2 and SQLite3.</li>
                                 <li>Designing efficient schemas and optimizing query performance.</li>
                             </ul>
-                            <Image src="/images/mysql.png" alt="MySQL" width="2400" height="2400"/>
+                            <Image src={mysqlImage} alt="MySQL"/>
                         </div>
                     </div>
                 </div>
