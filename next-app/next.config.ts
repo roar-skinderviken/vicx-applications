@@ -1,6 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+    output: "standalone",  // Enable standalone output
+
     async headers() {
         return [
             {

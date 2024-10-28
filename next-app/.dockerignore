@@ -1,4 +1,14 @@
 **/*.spec.ts
 **/*.spec.tsx
 build.gradle.kts
+*.md
+.gradle
+.swc
+build
+Dockerfile
+.dockerignore
+node_modules
+npm-debug.log
 README.md
+.next
+.git
