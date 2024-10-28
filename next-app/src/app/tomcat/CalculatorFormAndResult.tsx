@@ -5,8 +5,8 @@ import {FormProvider, useForm} from "react-hook-form"
 import {yupResolver} from "@hookform/resolvers/yup"
 import * as yup from "yup"
 import ValidatedTextInput from "@/components/ValidatedTextInput"
+import {Button} from "flowbite-react"
 import {InferType} from "yup"
-import {Button} from "@nextui-org/button"
 
 // put this in next-app/.env.local
 // NEXT_PUBLIC_TOMCAT_BACKEND_URL=http://localhost:8080/api
@@ -69,15 +69,13 @@ const CalculatorFormAndResult = () => {
                             <input type="hidden" {...register("operation")} />
 
                             <Button
-                                color="secondary"
                                 type="submit"
-                                isDisabled={!formState.isValid}
+                                disabled={!formState.isValid}
                                 onClick={() => methods.setValue("operation", "PLUS")}
                             >Add</Button>
                             <Button
-                                color="secondary"
                                 type="submit"
-                                isDisabled={!formState.isValid}
+                                disabled={!formState.isValid}
                                 onClick={() => methods.setValue("operation", "MINUS")}
                             >Subtract</Button>
                         </div>

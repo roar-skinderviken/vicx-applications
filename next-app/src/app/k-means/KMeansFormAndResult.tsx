@@ -5,8 +5,8 @@ import {FormProvider, useForm} from "react-hook-form"
 import {yupResolver} from "@hookform/resolvers/yup"
 import * as yup from "yup"
 import ValidatedTextInput from "@/components/ValidatedTextInput"
+import {Button} from "flowbite-react"
 import {InferType} from "yup"
-import {Button} from "@nextui-org/button"
 
 // put this in next-app/.env.local
 // NEXT_PUBLIC_KMEANS_BACKEND_URL=http://localhost:8000/k-means
@@ -105,12 +105,10 @@ const KMeansFormAndResult = () => {
                             <ValidatedTextInput label="Fail Score" name="fail_grade"/>
                             <ValidatedTextInput label="Scores (comma separated)" name="grades"/>
                             <ValidatedTextInput label="Max Iterations" name="max_iter" defaultValue="300"/>
-
                             <Button
-                                color="primary"
-                                isDisabled={!formState.isValid}
-                                className="col-span-1 sm:col-span-2 mt-4 w-full"
                                 type="submit"
+                                disabled={!formState.isValid}
+                                className="col-span-1 sm:col-span-2 mt-4 w-full"
                             >Submit</Button>
                         </div>
                     </form>
