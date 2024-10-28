@@ -1,15 +1,18 @@
 "use client"
 
 import {useRef, useState} from "react"
+
 import Image from "next/image"
-import Link from "next/link"
+import {Button} from "@nextui-org/button"
 import {Tabs, TabsRef} from "flowbite-react";
+
 import {CsMapEntry, MapSide, SideAndSmokePlaces, SmokePlace} from "@/constants/mapEntries"
 
 const CS_PAGE_URL = "/cs#maps"
 
 const SelectSmokePlace = ({selectedMap}: { selectedMap: CsMapEntry }) => {
     const {cSide, tSide} = selectedMap
+
     const [sideAndSmokePlaces, setSideAndSmokePlaces] = useState<SideAndSmokePlaces>()
     const tabsRef = useRef<TabsRef>(null)
 
@@ -22,24 +25,26 @@ const SelectSmokePlace = ({selectedMap}: { selectedMap: CsMapEntry }) => {
         <div className="flex flex-col items-center px-4">
             {/* Button row */}
             <div className="flex flex-nowrap space-x-4 mt-2">
-                <button
-                    className="cs-side-button bg-blue-500 hover:bg-blue-600"
-                    disabled={cSide.length < 1}
+                <Button
+                    color="primary"
+                    isDisabled={cSide.length < 1}
                     onClick={() => handleSideButtonClick("C", cSide)}>
                     C-Side
-                </button>
+                </Button>
 
-                <button
-                    className="cs-side-button bg-red-500 hover:bg-red-600"
-                    disabled={tSide.length < 1}
+                <Button
+                    color="danger"
+                    isDisabled={tSide.length < 1}
                     onClick={() => handleSideButtonClick("T", tSide)}>
                     T-Side
-                </button>
+                </Button>
 
-                <Link href={CS_PAGE_URL}
-                      className="bg-gray-200 text-gray-700 py-2 px-4 rounded shadow hover:bg-gray-300 hover:shadow-md whitespace-nowrap">
+                <Button
+                    as="a"
+                    href={CS_PAGE_URL}
+                    color="default">
                     Back to Map Selector
-                </Link>
+                </Button>
             </div>
 
             {sideAndSmokePlaces && (

@@ -21,6 +21,7 @@ html {
 
 .content {
     flex: 1;
+    @apply flex-grow container mx-auto
 }
 
 /* portfolio page */
@@ -121,10 +122,4 @@ html {
     width: 70%;
     margin: auto;
     display: none; /* Hidden until user clicks 'Show Chart' */
-}
-
-/* Counter Strike */
-
-.cs-side-button {
-    @apply text-white py-2 px-4 rounded disabled:bg-gray-400 disabled:cursor-not-allowed whitespace-nowrap
 }

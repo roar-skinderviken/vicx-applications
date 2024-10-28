@@ -5,6 +5,7 @@ import {faGithub, faLinkedinIn} from "@fortawesome/free-brands-svg-icons"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 import VicxNavbar from "@/components/VicxNavbar"
 import {ReactNode} from "react"
+import {Providers} from "./providers";
 
 config.autoAddCss = false
 
@@ -21,9 +22,14 @@ const RootLayout = ({children}: { children: ReactNode }) => {
             <VicxNavbar/>
         </header>
 
-        {children}
+        {/* Stretch the main content */}
+        <Providers>
+            <main className="flex-grow container mx-auto">
+                {children}
+            </main>
+        </Providers>
 
-        <footer className="bg-gray-800 text-white p-4">
+        <footer className="bg-gray-800 text-white p-4 mt-auto">
             <div className="container mx-auto flex justify-between items-center">
                 <p className="text-left">VICX &copy; All rights reserved.</p>
 
