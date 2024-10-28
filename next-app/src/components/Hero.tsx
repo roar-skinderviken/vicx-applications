@@ -1,6 +1,6 @@
 import Image, {StaticImageData} from "next/image"
 
-import logoImage from "../assets/images/logo-no-background.png"
+import logoImage from "@/assets/images/logo-no-background.png"
 
 const DEFAULT_BG_IMAGE_URL = "/api/hero-bg-image"
 

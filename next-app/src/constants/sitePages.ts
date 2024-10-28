@@ -8,15 +8,15 @@ import {
     faTerminal
 } from "@fortawesome/free-solid-svg-icons"
 
-import portfolioImage from "../assets/images/portis.png"
-import tomcatImage from "../assets/images/tom.png"
-import snakeImage from "../assets/images/snake.png"
-import kubernetesImage from "../assets/images/kube.png"
-import archImage from "../assets/images/arch.png"
-import tuxImage from "../assets/images/Tux.png"
-import counterStrikeImage from "../assets/images/counter.png"
-import esportImage from "../assets/images/esl.png"
-import kmeansImage from "../assets/images/kmeans.png"
+import portfolioImage from "@/assets/images/portis.png"
+import tomcatImage from "@/assets/images/tom.png"
+import snakeImage from "@/assets/images/snake.png"
+import kubernetesImage from "@/assets/images/kube.png"
+import archImage from "@/assets/images/arch.png"
+import tuxImage from "@/assets/images/Tux.png"
+import counterStrikeImage from "@/assets/images/counter.png"
+import esportImage from "@/assets/images/esl.png"
+import kmeansImage from "@/assets/images/kmeans.png"
 
 export const SITE_PAGES = [
     {

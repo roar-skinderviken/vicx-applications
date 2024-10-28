@@ -1,6 +1,7 @@
 import {render, screen} from "@testing-library/react";
 import Hero from "@/components/Hero";
-import expectedBackgroundImage from "../../assets/images/cs2back.jpg"
+
+import expectedBackgroundImage from "@/assets/images/cs2back.jpg"
 
 const expectedStyle = (image: string) => `background: url(${image}) center 67%/cover no-repeat`
 

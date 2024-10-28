@@ -4,7 +4,7 @@ import Hero from "@/components/Hero"
 import Image from "next/image"
 import {MAPS} from "@/constants/mapEntries"
 
-import csBackgroundImage from "../../../assets/images/cs2back.jpg"
+import csBackgroundImage from "@/assets/images/cs2back.jpg"
 
 export const dynamicParams = false
 export const revalidate = 3600
