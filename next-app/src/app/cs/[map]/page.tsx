@@ -4,6 +4,8 @@ import Hero from "@/components/Hero"
 import Image from "next/image"
 import {MAPS} from "@/constants/mapEntries"
 
+import csBackgroundImage from "../../../assets/images/cs2back.jpg"
+
 export const dynamicParams = false
 export const revalidate = 3600
 
@@ -31,7 +33,7 @@ const SmokesPage = async ({params}: { params: Promise<{ map: string }> }) => {
             <Hero
                 title="Counter Strike Smokes"
                 lead={`${selectedMap.name} Smoke Places`}
-                backgroundImage="/images/cs2back.jpg"
+                backgroundImage={csBackgroundImage}
             />
 
             <div className="flex flex-col items-center">
