@@ -1,11 +1,13 @@
-import Image from "next/image"
+import Image, {StaticImageData} from "next/image"
 
 import logoImage from "../assets/images/logo-no-background.png"
 
-const Hero = ({title, lead, backgroundImage = "/api/hero-bg-image", isHomePage = false}: {
+const DEFAULT_BG_IMAGE_URL = "/api/hero-bg-image"
+
+const Hero = ({title, lead, backgroundImage, isHomePage = false}: {
     title: string,
     lead: string,
-    backgroundImage?: string,
+    backgroundImage?: StaticImageData,
     isHomePage?: boolean
 }) => {
     const headerElement = isHomePage
@@ -27,7 +29,7 @@ const Hero = ({title, lead, backgroundImage = "/api/hero-bg-image", isHomePage =
         <div
             className="text-white py-16 text-center"
             style={{
-                background: `url(${backgroundImage}) center 67%/cover no-repeat`,
+                background: `url(${backgroundImage?.src || DEFAULT_BG_IMAGE_URL}) center 67%/cover no-repeat`,
                 transition: "background 0.5s ease-in-out",
             }}>
             {headerElement}

@@ -2,6 +2,8 @@ import Hero from "@/components/Hero"
 import Image from "next/image"
 import {MAPS} from "@/constants/mapEntries"
 
+import csBackgroundImage from "../../assets/images/cs2back.jpg"
+
 export const metadata = {
     title: "Counter Strike Smokes | VICX"
 }
@@ -12,7 +14,7 @@ export default function CounterStrikePage() {
             <Hero
                 title="Counter Strike Smokes"
                 lead="Pick a map to get started!"
-                backgroundImage="/images/cs2back.jpg"
+                backgroundImage={csBackgroundImage}
             />
 
             <section id="maps">

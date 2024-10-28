@@ -1,5 +1,6 @@
 import {render, screen} from "@testing-library/react";
 import Hero from "@/components/Hero";
+import expectedBackgroundImage from "../../assets/images/cs2back.jpg"
 
 const expectedStyle = (image: string) => `background: url(${image}) center 67%/cover no-repeat`
 
@@ -46,10 +47,13 @@ describe("Hero", () => {
 
         it("displays provided bg image when provided", () => {
             const {container} =
-                render(<Hero title="Hero Title" lead="Hero Lead" backgroundImage="/some-image.png"/>)
+                render(<Hero
+                    title="Hero Title"
+                    lead="Hero Lead"
+                    backgroundImage={expectedBackgroundImage}/>)
 
             const outerDiv = container.querySelector("div.text-white.py-16.text-center");
-            expect(outerDiv).toHaveStyle(expectedStyle("/some-image.png"))
+            expect(outerDiv).toHaveStyle(expectedStyle(expectedBackgroundImage.src))
         })
     })
 })
