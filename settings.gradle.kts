@@ -1,3 +1,3 @@
-rootProject.name = "spring-react-calculator"
+rootProject.name = "vicx-applications"
 
-include("backend", "frontend", "next-app")
+include("backend-spring-boot", "frontend-vite", "next-app")

@@ -2,7 +2,7 @@
 
 Starte React/Vite utviklingsmiljø
 ```bash
-cd ./frontend
+cd ./frontend-vite
 npm install
 npm run dev
 ```
