@@ -3,24 +3,18 @@
 import {useRef, useState} from "react"
 import Image from "next/image"
 import Link from "next/link"
-import {CsMapEntry} from "@/constants/mapEntries"
 import {Tabs, TabsRef} from "flowbite-react";
+import {CsMapEntry, MapSide, SideAndSmokePlaces, SmokePlace} from "@/constants/mapEntries"
 
-const INITIAL_SMOKE_PLACES = {side: "", places: [""]}
 const CS_PAGE_URL = "/cs#maps"
 
-const createImagePath = (mapName: string, side: string, smokePlace: string) => {
-    const cleanString = (str: string) => str.replace(/\s+/g, '-').toLowerCase()
-    return `/images/smoke-places/${cleanString(mapName)}-${side}-${cleanString(smokePlace)}.jpg`
-}
-
 const SelectSmokePlace = ({selectedMap}: { selectedMap: CsMapEntry }) => {
-    const {ct, t} = selectedMap
-    const [smokePlaces, setSmokePlaces] = useState(INITIAL_SMOKE_PLACES)
+    const {cSide, tSide} = selectedMap
+    const [sideAndSmokePlaces, setSideAndSmokePlaces] = useState<SideAndSmokePlaces>()
     const tabsRef = useRef<TabsRef>(null)
 
-    const handleClick = (side: string, places: string[]) => {
-        setSmokePlaces({side, places})
+    const handleSideButtonClick = (side: MapSide, places: SmokePlace[]) => {
+        setSideAndSmokePlaces({side, places})
         tabsRef.current?.setActiveTab(0)
     }
 
@@ -30,15 +24,15 @@ const SelectSmokePlace = ({selectedMap}: { selectedMap: CsMapEntry }) => {
             <div className="flex flex-nowrap space-x-4 mt-2">
                 <button
                     className="cs-side-button bg-blue-500 hover:bg-blue-600"
-                    disabled={ct.length < 1}
-                    onClick={() => handleClick("ct", ct)}>
+                    disabled={cSide.length < 1}
+                    onClick={() => handleSideButtonClick("C", cSide)}>
                     C-Side
                 </button>
 
                 <button
                     className="cs-side-button bg-red-500 hover:bg-red-600"
-                    disabled={t.length < 1}
-                    onClick={() => handleClick("t", t)}>
+                    disabled={tSide.length < 1}
+                    onClick={() => handleSideButtonClick("T", tSide)}>
                     T-Side
                 </button>
 
@@ -48,10 +42,10 @@ const SelectSmokePlace = ({selectedMap}: { selectedMap: CsMapEntry }) => {
                 </Link>
             </div>
 
-            {smokePlaces.side && (
+            {sideAndSmokePlaces && (
                 <div className="flex flex-col items-center w-full">
                     <h2 className="text-2xl my-6">
-                        {smokePlaces.side === "ct" ? "C-Side" : "T-Side"} Smoke Places
+                        {sideAndSmokePlaces.side}-Side Smoke Places
                     </h2>
 
                     <Tabs
@@ -59,17 +53,14 @@ const SelectSmokePlace = ({selectedMap}: { selectedMap: CsMapEntry }) => {
                         aria-label="Smoke Places"
                         variant="fullWidth"
                         className="w-full">
-                        {smokePlaces.places.map((smokePlace, index) => (
+                        {sideAndSmokePlaces.places.map(({name, image}, index) => (
                             <Tabs.Item
                                 key={index}
                                 className="flex justify-center items-center"
-                                title={smokePlace}>
+                                title={name}>
                                 <Image
-                                    src={createImagePath(selectedMap.name, smokePlaces.side, smokePlace)}
-                                    alt={smokePlace}
-                                    loading="lazy"
-                                    width={1920}
-                                    height={1080}
+                                    src={image}
+                                    alt={name}
                                     className="object-contain w-full"
                                 />
                             </Tabs.Item>

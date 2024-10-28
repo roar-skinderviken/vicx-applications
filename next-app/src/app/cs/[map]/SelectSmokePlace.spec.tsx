@@ -1,34 +1,34 @@
 import {fireEvent, render, screen} from "@testing-library/react"
 import SelectSmokePlace from "@/app/cs/[map]/SelectSmokePlace"
-import {MAPS} from "@/constants/mapEntries";
+import {MAPS, MapSide, SmokePlace} from "@/constants/mapEntries";
 
 const SELECTED_MAP = MAPS[0]
 
-const testSideInteractions = (side: "C-Side" | "T-Side", entries: string[]) => {
-    describe(`${side} Interactions`, () => {
+const testSideInteractions = (side: MapSide, smokePlaces: SmokePlace[]) => {
+    describe(`${side}-Side Interactions`, () => {
         beforeEach(() => {
             render(<SelectSmokePlace selectedMap={SELECTED_MAP}/>)
-            fireEvent.click(screen.getByText(side))
+            fireEvent.click(screen.getByText(`${side}-Side`))
         })
 
-        it(`displays ${side} Smoke Places header when ${side} button is clicked`, () => {
-            expect(screen.queryByText(`${side} Smoke Places`)).toBeInTheDocument()
+        it(`displays ${side}-Side Smoke Places header when ${side}-Side button is clicked`, () => {
+            expect(screen.queryByText(`${side}-Side Smoke Places`)).toBeInTheDocument()
         })
 
-        it(`displays ${side} Smoke Places in tabs`, () => {
-            entries.forEach(entry =>
-                expect(screen.queryByText(entry)).toBeInTheDocument()
+        it(`displays ${side}-Side Smoke Places in tabs`, () => {
+            smokePlaces.forEach(({name}) =>
+                expect(screen.queryByText(name)).toBeInTheDocument()
             )
         })
 
-        it(`displays first smoke place image for ${side}`, () => {
-            expect(screen.queryByAltText(entries[0])).toBeInTheDocument()
+        it(`displays first smoke place image for ${side}-Side`, () => {
+            expect(screen.queryByAltText(smokePlaces[0].name)).toBeInTheDocument()
         })
 
-        it(`displays second smoke place image for ${side} when second tab is clicked`, () => {
-            const secondTab = screen.getByRole("tab", {name: entries[1]})
+        it(`displays second smoke place image for ${side}-Side when second tab is clicked`, () => {
+            const secondTab = screen.getByRole("tab", {name: smokePlaces[1].name})
             fireEvent.click(secondTab)
-            expect(screen.queryByAltText(entries[1])).toBeInTheDocument()
+            expect(screen.queryByAltText(smokePlaces[1].name)).toBeInTheDocument()
         })
     })
 }
@@ -36,7 +36,7 @@ const testSideInteractions = (side: "C-Side" | "T-Side", entries: string[]) => {
 describe('SelectSmokePlace', () => {
     describe('Layout', () => {
         it("displays disabled C-Side button when no C-Side smoke places", () => {
-            render(<SelectSmokePlace selectedMap={{...SELECTED_MAP, ct: []}}/>)
+            render(<SelectSmokePlace selectedMap={{...SELECTED_MAP, cSide: []}}/>)
 
             const cSideButton = screen.queryByText("C-Side")
             expect(cSideButton).toBeInTheDocument()
@@ -49,7 +49,7 @@ describe('SelectSmokePlace', () => {
         })
 
         it("displays disabled T-Side button when no T-Side smoke places", () => {
-            render(<SelectSmokePlace selectedMap={{...SELECTED_MAP, t: []}}/>)
+            render(<SelectSmokePlace selectedMap={{...SELECTED_MAP, tSide: []}}/>)
 
             const tSideButton = screen.queryByText("T-Side")
             expect(tSideButton).toBeInTheDocument()
@@ -72,7 +72,7 @@ describe('SelectSmokePlace', () => {
     })
 
     describe("Interactions", () => {
-        testSideInteractions("C-Side", SELECTED_MAP.ct)
-        testSideInteractions("T-Side", SELECTED_MAP.t)
+        testSideInteractions("C", SELECTED_MAP.cSide)
+        testSideInteractions("T", SELECTED_MAP.tSide)
     })
 })
