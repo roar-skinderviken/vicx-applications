@@ -25,12 +25,10 @@ const kMeansSchema = yup.object({
     grades: yup
         .string()
         .required("Scores are required")
-        .test("is-valid-list", "There should be at least 5 scores", (value) => {
-            return value.split(",").length >= 5
-        })
-        .test("all-numbers", "All scores must be numbers", (value) => {
-            return value.split(",").every(entry => !isNaN(Number(entry)) && entry !== "")
-        }),
+        .test("is-valid-list", "There should be at least 5 scores", (value) =>
+            value.split(",").length >= 5)
+        .test("all-numbers", "All scores must be numbers", (value) =>
+            value.split(",").every(entry => !isNaN(Number(entry)) && entry !== "")),
     max_iter: yup
         .number()
         .typeError("Max Iterations must be a number")
@@ -82,23 +80,21 @@ const KMeansFormAndResult = () => {
             maxIter: formData.max_iter
         }
 
-        try {
-            const response = await fetch(BACKEND_URL, {
-                method: "POST",
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(requestBody)
-            })
-
-            if (!response.ok) {
-                console.error("Error: Network response was not ok")
-                return
-            }
-
-            const data: KMeansResponse = await response.json()
-            setResult(data)
-        } catch (error) {
-            console.error("Error:", error)
+        const fetchConfig = {
+            method: "POST",
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(requestBody)
         }
+
+        fetch(BACKEND_URL, fetchConfig)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok')
+                }
+                return response.json()
+            })
+            .then(data => setResult(data))
+            .catch(error => console.error("Error:", error))
     }
 
     return (
