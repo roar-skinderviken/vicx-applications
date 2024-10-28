@@ -64,14 +64,14 @@ const SelectSmokePlace = ({selectedMap}: { selectedMap: CsMapEntry }) => {
                                 key={index}
                                 className="flex justify-center items-center"
                                 title={smokePlace}>
-                                    <Image
-                                        src={createImagePath(selectedMap.name, smokePlaces.side, smokePlace)}
-                                        alt={smokePlace}
-                                        loading="lazy"
-                                        width={1920}
-                                        height={1080}
-                                        className="object-contain w-full"
-                                    />
+                                <Image
+                                    src={createImagePath(selectedMap.name, smokePlaces.side, smokePlace)}
+                                    alt={smokePlace}
+                                    loading="lazy"
+                                    width={1920}
+                                    height={1080}
+                                    className="object-contain w-full"
+                                />
                             </Tabs.Item>
                         ))}
                     </Tabs>

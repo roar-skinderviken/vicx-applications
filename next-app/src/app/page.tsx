@@ -2,6 +2,7 @@ import {SITE_PAGES} from "@/constants/sitePages"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 import Hero from "@/components/Hero"
 import Image from "next/image"
+import Link from "next/link";
 
 export default function Home() {
     return (
@@ -17,19 +18,17 @@ export default function Home() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     {SITE_PAGES.map((page, index) => (
-                        <a href={page.href}
-                           key={index}
-                           data-testid={`page-link-${index}`}
-                           className="flex items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105 hover:shadow-lg mb-4 p-2"
-                        >
+                        <Link href={page.href}
+                              key={index}
+                              data-testid={`page-link-${index}`}
+                              className="flex items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105 hover:shadow-lg mb-4 p-2">
                             <Image
                                 src={page.image}
                                 alt={page.imgAlt}
-                                className="w-20 max-h-[80px] object-contain"
-                            />
+                                className="w-20 max-h-[80px] object-contain"/>
                             <FontAwesomeIcon icon={page.icon} className="fa-fw mx-2"/>
                             {page.title}
-                        </a>
+                        </Link>
                     ))}
                 </div>
             </div>

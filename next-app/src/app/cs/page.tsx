@@ -3,6 +3,7 @@ import Image from "next/image"
 import {MAPS} from "@/constants/mapEntries"
 
 import csBackgroundImage from "../../assets/images/cs2back.jpg"
+import Link from "next/link";
 
 export const metadata = {
     title: "Counter Strike Smokes | VICX"
@@ -23,15 +24,14 @@ export default function CounterStrikePage() {
                     {MAPS.map(({name, image}, index) => (
                         <div
                             key={index}
-                            className="p-2 flex flex-col items-center transition-transform duration-200 ease-in-out hover:scale-105 hover:shadow-lg rounded-lg"
-                        >
-                            <a href={`/cs/${name}`} className="text-center">
+                            className="p-2 flex flex-col items-center transition-transform duration-200 ease-in-out hover:scale-105 hover:shadow-lg rounded-lg">
+                            <Link href={`/cs/${name}`} className="text-center">
                                 <Image
                                     src={image}
                                     className="my-3 w-32"
                                     alt={name}/>
                                 {name}
-                            </a>
+                            </Link>
                         </div>
                     ))}
                 </div>
