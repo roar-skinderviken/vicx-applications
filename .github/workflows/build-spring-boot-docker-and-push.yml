@@ -7,11 +7,11 @@ on:
     tags:
       - '*'
     paths:
-      - 'backend/**'
+      - 'backend-spring-boot/**'
 
   pull_request:
     paths:
-      - 'backend/**'
+      - 'backend-spring-boot/**'
 
 env:
   REGISTRY: ghcr.io
@@ -70,7 +70,7 @@ jobs:
       - name: Build and push Docker images
         uses: docker/build-push-action@v6
         with:
-          context: ./backend
+          context: ./backend-spring-boot
           platforms: linux/amd64,linux/arm64
           push: true
           provenance: false # to avoid unknown/unknown
