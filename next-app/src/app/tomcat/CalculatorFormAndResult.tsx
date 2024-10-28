@@ -31,7 +31,7 @@ interface CalculatorResult extends CalculatorFormData {
 }
 
 const CalculatorFormAndResult = () => {
-    const [result, setResult] = useState<CalculatorResult | null>(null)
+    const [result, setResult] = useState<CalculatorResult>()
 
     const methods = useForm<CalculatorFormData>({
         resolver: yupResolver(calculatorYupSchema),

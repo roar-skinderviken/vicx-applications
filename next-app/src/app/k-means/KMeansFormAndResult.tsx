@@ -65,7 +65,7 @@ const isErrorResponse = (response: KMeansResponse): response is KMeansErrorRespo
     'error' in response
 
 const KMeansFormAndResult = () => {
-    const [result, setResult] = useState<KMeansResponse | null>(null)
+    const [result, setResult] = useState<KMeansResponse>()
 
     const methods = useForm<KMeansFormData>({
         resolver: yupResolver(kMeansSchema),
