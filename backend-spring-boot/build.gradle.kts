@@ -40,11 +40,11 @@ tasks.jar{
 tasks.register<Copy>("processFrontendResources") {
     val backendTargetDir = project.layout.buildDirectory.dir("resources/main/static")
     val frontendBuildDir =
-        project(":frontend").layout.projectDirectory.dir("dist")
+        project(":frontend-vite").layout.projectDirectory.dir("dist")
 
     group = "Frontend"
     description = "Process frontend resources"
-    dependsOn(":frontend:assembleFrontend")
+    dependsOn(":frontend-vite:assembleFrontend")
 
     from(frontendBuildDir)
     into(backendTargetDir)
