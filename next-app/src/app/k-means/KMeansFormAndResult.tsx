@@ -49,9 +49,7 @@ const gradeToColorMap: Record<Grade, string> = {
 
 type KMeansFormData = InferType<typeof kMeansSchema>
 
-interface KMeansSuccessResponse {
-    [key: number]: Grade
-}
+type KMeansSuccessResponse = Record<number, Grade>
 
 interface KMeansErrorResponse {
     error: string
