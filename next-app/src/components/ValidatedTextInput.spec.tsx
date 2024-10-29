@@ -10,6 +10,7 @@ describe("ValidatedTextInput", () => {
     describe("Layout", () => {
         const mockRegister = jest.fn()
         const mockGetValues = jest.fn()
+        const mockWatch = jest.fn()
         let mockErrors: Record<string, { message?: string }> = {}
 
         beforeEach(() => {
@@ -20,6 +21,7 @@ describe("ValidatedTextInput", () => {
             (useFormContext as jest.Mock).mockReturnValue({
                 register: mockRegister,
                 getValues: mockGetValues,
+                watch: mockWatch,
                 formState: {
                     errors: mockErrors
                 },
