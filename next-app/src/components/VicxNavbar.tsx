@@ -7,7 +7,7 @@ import {SITE_PAGES} from "@/constants/sitePages"
 // see https://flowbite-react.com/docs/components/navbar
 const customTheme = {
     root: {
-        base: "bg-gray-800 md:fixed md:top-0 md:left-0 md:right-0 z-50 px-2 py-2.5 dark:border-gray-700 dark:bg-gray-800 sm:px-4"
+        base: "bg-gray-800 sticky top-0 z-50 px-2 py-2.5 dark:border-gray-700 dark:bg-gray-800 sm:px-4"
     },
     link: {
         active: {
