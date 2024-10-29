@@ -2,7 +2,14 @@
 
 import {Label, TextInput} from "flowbite-react"
 import {useFormContext} from "react-hook-form"
-import {HiPencil, HiCheck, HiExclamationCircle} from "react-icons/hi"
+import {HiCheck, HiExclamationCircle} from "react-icons/hi"
+
+const InvisibleIcon = () => (
+    <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+         style={{visibility: 'hidden'}}>
+        <path d="M0 0h24v24H0z" fill="none"/>
+    </svg>
+)
 
 const ValidatedTextInput = ({name, label, defaultValue}: {
     name: string,
@@ -27,10 +34,11 @@ const ValidatedTextInput = ({name, label, defaultValue}: {
                 rightIcon={
                     errors[name]
                         ? HiExclamationCircle
-                        : value ? HiCheck : HiPencil
+                        : value ? HiCheck : InvisibleIcon
                 }
                 defaultValue={defaultValue}
-                className="block w-full rounded focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                type="text"
+                sizing="md"
                 helperText={errors[name] && (
                     <span className="font-medium">
                         {(errors[name] as { message?: string }).message}
