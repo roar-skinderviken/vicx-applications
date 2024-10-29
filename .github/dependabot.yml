@@ -10,7 +10,7 @@ updates:
 
   - package-ecosystem: npm
     versioning-strategy: increase
-    directory: "/frontend"
+    directory: "/frontend-vite"
     schedule:
       interval: daily
       time: "03:00"
