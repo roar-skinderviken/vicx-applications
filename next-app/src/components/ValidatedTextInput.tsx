@@ -2,7 +2,7 @@
 
 import {Label, TextInput} from "flowbite-react"
 import {useFormContext} from "react-hook-form"
-import {HiCheck, HiExclamationCircle} from "react-icons/hi"
+import {HiPencil, HiCheck, HiExclamationCircle} from "react-icons/hi"
 
 const ValidatedTextInput = ({name, label, defaultValue}: {
     name: string,
@@ -27,7 +27,7 @@ const ValidatedTextInput = ({name, label, defaultValue}: {
                 rightIcon={
                     errors[name]
                         ? HiExclamationCircle
-                        : value && HiCheck
+                        : value ? HiCheck : HiPencil
                 }
                 defaultValue={defaultValue}
                 className="block w-full rounded focus:outline-none focus:ring-2 focus:ring-cyan-500"
