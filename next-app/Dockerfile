@@ -2,7 +2,7 @@
 
 # cd next-app
 # docker build -t next-app .
-# docker run --name next-app -p 3000:3000 next-app:latest
+# docker run -p 3000:3000 next-app
 # docker rm next-app # remove stopped container
 # docker rmi next-app # remove Docker-image
 
@@ -31,20 +31,20 @@ RUN npm run build
 FROM base AS runner
 WORKDIR /app
 
-ENV NODE_ENV=production
+ENV NODE_ENV=production \
+    PORT=3000 \
+    HOSTNAME="0.0.0.0"
+
 # Uncomment the following line in case you want to disable telemetry during runtime.
 # ENV NEXT_TELEMETRY_DISABLED=1
 
-RUN apk add --no-cache wget
-
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
+RUN apk add --no-cache wget && \
+    addgroup --system --gid 1001 nodejs && \
+    adduser --system --uid 1001 nextjs && \
+    mkdir .next &&  \
+    chown nextjs:nodejs .next # Set the correct permission for prerender cache
 
 COPY --from=builder /app/public ./public
-
-# Set the correct permission for prerender cache
-RUN mkdir .next
-RUN chown nextjs:nodejs .next
 
 # Automatically leverage output traces to reduce image size
 # https://nextjs.org/docs/advanced-features/output-file-tracing
@@ -55,9 +55,6 @@ USER nextjs
 
 EXPOSE 3000
 
-ENV PORT=3000
-
 # server.js is created by next build from the standalone output
 # https://nextjs.org/docs/pages/api-reference/next-config-js/output
-ENV HOSTNAME="0.0.0.0"
 CMD ["node", "server.js"]
