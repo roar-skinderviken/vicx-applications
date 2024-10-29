@@ -1,7 +1,7 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from "next"
 
 const nextConfig: NextConfig = {
-    output: "standalone",  // Enable standalone output
+    output: "standalone",
 
     async headers() {
         return [
@@ -78,12 +78,12 @@ const nextConfig: NextConfig = {
                 permanent: true
             },
             {
-                source: "/sample/",
+                source: "/sample",
                 destination: "/tomcat",
                 permanent: true
             }
         ]
     },
-};
+}
 
-export default nextConfig;
+export default nextConfig
