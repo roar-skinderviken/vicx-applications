@@ -9,8 +9,8 @@ const ValidatedTextInput = ({name, label, defaultValue}: {
     label: string,
     defaultValue?: string
 }) => {
-    const { register, watch, getValues, formState: {errors}} = useFormContext()
-    watch(name)
+    const {register, watch, formState: {errors}} = useFormContext()
+    const value = watch(name)
 
     return (
         <div className="flex flex-col">
@@ -27,7 +27,7 @@ const ValidatedTextInput = ({name, label, defaultValue}: {
                 rightIcon={
                     errors[name]
                         ? HiExclamationCircle
-                        : getValues(name) && HiCheck
+                        : value && HiCheck
                 }
                 defaultValue={defaultValue}
                 className="block w-full rounded focus:outline-none focus:ring-2 focus:ring-cyan-500"
