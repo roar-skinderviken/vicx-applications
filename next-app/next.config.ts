@@ -77,6 +77,11 @@ const nextConfig: NextConfig = {
                 destination: "/snake",
                 permanent: true
             },
+            {
+                source: "/sample/",
+                destination: "/tomcat",
+                permanent: true
+            }
         ]
     },
 };
