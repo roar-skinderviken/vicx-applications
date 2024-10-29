@@ -9,14 +9,20 @@ jest.mock("react-hook-form", () => ({
 describe("ValidatedTextInput", () => {
     describe("Layout", () => {
         const mockRegister = jest.fn()
-        const mockErrors: Record<string, { message?: string }> = {}
+        const mockGetValues = jest.fn()
+        let mockErrors: Record<string, { message?: string }> = {}
 
         beforeEach(() => {
-            jest.clearAllMocks();
+            jest.clearAllMocks()
+
+            mockErrors = {};
 
             (useFormContext as jest.Mock).mockReturnValue({
                 register: mockRegister,
-                formState: {errors: mockErrors}
+                getValues: mockGetValues,
+                formState: {
+                    errors: mockErrors
+                },
             })
         })
 
@@ -38,7 +44,7 @@ describe("ValidatedTextInput", () => {
         })
 
         it("applies error styles when there are errors", () => {
-            mockErrors.testInput = { message: 'This field is required' }
+            mockErrors.testInput = {message: "This field is required"}
 
             render(<ValidatedTextInput name="testInput" label="Test Label"/>)
 
@@ -47,11 +53,20 @@ describe("ValidatedTextInput", () => {
         })
 
         it("displays error when there are errors", () => {
-            mockErrors.testInput = { message: 'This field is required' }
+            mockErrors.testInput = {message: "This field is required"}
 
             render(<ValidatedTextInput name="testInput" label="Test Label"/>)
 
             expect(screen.queryByText("This field is required")).toBeInTheDocument()
+            expect(screen.queryByTestId("right-icon")).not.toBeInTheDocument()
+        })
+
+        it("displays green check when touched and no errors", () => {
+            mockGetValues.mockReturnValueOnce({testInput: "Some value"})
+
+            render(<ValidatedTextInput name="testInput" label="Test Label"/>)
+
+            expect(screen.queryByTestId("right-icon")).toBeInTheDocument()
         })
 
         it("displays default value when provided", () => {
