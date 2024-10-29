@@ -9,7 +9,6 @@ jest.mock("react-hook-form", () => ({
 describe("ValidatedTextInput", () => {
     describe("Layout", () => {
         const mockRegister = jest.fn()
-        const mockGetValues = jest.fn()
         const mockWatch = jest.fn()
         let mockErrors: Record<string, { message?: string }> = {}
 
@@ -20,7 +19,6 @@ describe("ValidatedTextInput", () => {
 
             (useFormContext as jest.Mock).mockReturnValue({
                 register: mockRegister,
-                getValues: mockGetValues,
                 watch: mockWatch,
                 formState: {
                     errors: mockErrors
@@ -64,7 +62,7 @@ describe("ValidatedTextInput", () => {
         })
 
         it("displays green check when touched and no errors", () => {
-            mockGetValues.mockReturnValueOnce({testInput: "Some value"})
+            mockWatch.mockReturnValueOnce({testInput: "Some value"})
 
             render(<ValidatedTextInput name="testInput" label="Test Label"/>)
 
