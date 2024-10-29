@@ -58,7 +58,7 @@ describe("ValidatedTextInput", () => {
             render(<ValidatedTextInput name="testInput" label="Test Label"/>)
 
             expect(screen.queryByText("This field is required")).toBeInTheDocument()
-            expect(screen.queryByTestId("right-icon")).not.toBeInTheDocument()
+            expect(screen.queryByTestId("right-icon")).toBeInTheDocument()
         })
 
         it("displays green check when touched and no errors", () => {

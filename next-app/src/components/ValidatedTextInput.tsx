@@ -2,7 +2,7 @@
 
 import {Label, TextInput} from "flowbite-react"
 import {useFormContext} from "react-hook-form"
-import {HiCheck} from "react-icons/hi";
+import {HiCheck, HiExclamationCircle} from "react-icons/hi";
 
 const ValidatedTextInput = ({name, label, defaultValue}: {
     name: string,
@@ -10,6 +10,10 @@ const ValidatedTextInput = ({name, label, defaultValue}: {
     defaultValue?: string
 }) => {
     const {register, getValues, formState: {errors}} = useFormContext()
+
+    const rightIcon = errors[name]
+        ? HiExclamationCircle
+        : getValues(name) && HiCheck
 
     return (
         <div className="flex flex-col">
@@ -23,7 +27,7 @@ const ValidatedTextInput = ({name, label, defaultValue}: {
                 id={name}
                 {...register(name)}
                 color={errors[name] ? "failure" : "success"}
-                rightIcon={getValues(name) && !errors[name] && HiCheck}
+                rightIcon={rightIcon}
                 defaultValue={defaultValue}
                 className="block w-full rounded focus:outline-none focus:ring-2 focus:ring-cyan-500"
                 helperText={errors[name] && (
