@@ -1,4 +1,4 @@
-package no.javatec.calc;
+package no.vicx.backend;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

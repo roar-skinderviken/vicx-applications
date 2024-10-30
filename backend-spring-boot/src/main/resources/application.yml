@@ -1,6 +1,6 @@
 spring:
   application:
-    name: spring-react-calculator
+    name: vicx-backend-spring-boot
 
 management:
   endpoints:

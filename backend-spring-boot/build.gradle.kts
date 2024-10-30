@@ -26,7 +26,7 @@ dependencies {
 }
 
 springBoot {
-    mainClass = "no.javatec.calc.CalculatorApplication"
+    mainClass = "no.vicx.backend.VicxBackendApplication"
 }
 
 tasks.test {

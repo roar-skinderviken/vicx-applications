@@ -1,4 +1,4 @@
-package no.javatec.calc;
+package no.vicx.backend.calculator;
 
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -6,9 +6,8 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class ApiController {
 
-    static final String URL_TEMPLATE = "/api/{firstValue}/{secondValue}/{operation}";
-
     // URL for testing on localhost: http://localhost:8080/api/5/10/PLUS
+    static final String URL_TEMPLATE = "/api/{firstValue}/{secondValue}/{operation}";
 
     private final CalculatorService calculatorService;
 
