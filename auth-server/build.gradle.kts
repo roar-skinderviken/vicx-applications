@@ -25,7 +25,7 @@ dependencies {
 }
 
 springBoot {
-    mainClass = "no.vicx.backend.VicxBackendApplication"
+    mainClass = "no.vicx.authserver.AuthServerApplication"
 }
 
 tasks.test {
