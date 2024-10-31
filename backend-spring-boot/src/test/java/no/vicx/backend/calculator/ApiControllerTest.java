@@ -1,8 +1,5 @@
-package no.javatec.calc;
+package no.vicx.backend.calculator;
 
-import static no.javatec.calc.ApiController.URL_TEMPLATE;
-import static no.javatec.calc.CalculatorOperation.MINUS;
-import static no.javatec.calc.CalculatorOperation.PLUS;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -11,7 +8,7 @@ import static org.mockito.BDDMockito.given;
 
 import java.util.stream.Stream;
 
-import no.javatec.calc.config.SecurityConfig;
+import no.vicx.backend.config.SecurityConfig;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -43,7 +40,7 @@ class ApiControllerTest {
         given(calculatorService.calculate(firstValue, secondValue, operation))
                 .willReturn(expectedResponse);
 
-        var requestBuilder = get(URL_TEMPLATE, firstValue, secondValue, operation).
+        var requestBuilder = get(ApiController.URL_TEMPLATE, firstValue, secondValue, operation).
                 contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(requestBuilder)
@@ -56,7 +53,7 @@ class ApiControllerTest {
 
     @Test
     void givenInvalidOperation_expectBadRequest() throws Exception {
-        var requestBuilder = get(URL_TEMPLATE, 1, 2, "invalid").
+        var requestBuilder = get(ApiController.URL_TEMPLATE, 1, 2, "invalid").
                 contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(requestBuilder)
@@ -65,8 +62,8 @@ class ApiControllerTest {
 
     private static Stream<Arguments> provideValidTestParameters() {
         return Stream.of(
-                Arguments.of(5L, 10L, PLUS, 15L),
-                Arguments.of(10L, 5L, MINUS, 5L)
+                Arguments.of(5L, 10L, CalculatorOperation.PLUS, 15L),
+                Arguments.of(10L, 5L, CalculatorOperation.MINUS, 5L)
         );
     }
 }

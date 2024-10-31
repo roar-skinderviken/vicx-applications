@@ -1,4 +1,4 @@
-package no.javatec.calc;
+package no.vicx.backend.calculator;
 
 public enum CalculatorOperation {
     PLUS,

@@ -1,4 +1,4 @@
-package no.javatec.calc;
+package no.vicx.backend.calculator;
 
 import org.springframework.stereotype.Service;
 

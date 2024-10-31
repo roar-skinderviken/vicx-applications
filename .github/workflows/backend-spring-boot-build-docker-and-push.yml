@@ -1,4 +1,4 @@
-name: Build spring-react-calculator Docker and push
+name: Build backend-spring-boot Docker and push
 
 on:
   push:
@@ -83,31 +83,31 @@ jobs:
             ${{ env.DOCKER_IMAGE }}
             ${{ env.DOCKER_IMAGE }}-gh${{ github.run_id }}
 
-  retag_docker:
-    if: ${{ startsWith(github.ref, 'refs/tags/') }}
-    permissions:
-      contents: read
-      packages: write
-    runs-on: ubuntu-latest
-    steps:
-      - name: Extract repository owner
-        id: extract_repo
-        run: |
-          echo "REPO_OWNER=$(echo "${{ github.repository }}" | cut -d'/' -f1)" >> $GITHUB_ENV
-
-      - name: Set docker image env var
-        run: |
-          echo "DOCKER_IMAGE=${REGISTRY}/${REPO_OWNER}/${APP_NAME}:${TAG}" >> $GITHUB_ENV
-
-      - name: 'Login to GitHub Container Registry'
-        uses: docker/login-action@v3
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{github.actor}}
-          password: ${{secrets.GITHUB_TOKEN}}
-
-      - name: Re-tag docker
-        run: |
-          docker pull ${{ env.DOCKER_IMAGE }}
-          docker tag ${{ env.DOCKER_IMAGE }} ${{ env.REGISTRY }}/${{ env.REPO_OWNER }}/${{ env.APP_NAME }}:${{ github.ref_name }}
-          docker push ${{ env.REGISTRY }}/${{ env.REPO_OWNER }}/${{ env.APP_NAME }} --all-tags
+#  retag_docker:
+#    if: ${{ startsWith(github.ref, 'refs/tags/') }}
+#    permissions:
+#      contents: read
+#      packages: write
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Extract repository owner
+#        id: extract_repo
+#        run: |
+#          echo "REPO_OWNER=$(echo "${{ github.repository }}" | cut -d'/' -f1)" >> $GITHUB_ENV
+#
+#      - name: Set docker image env var
+#        run: |
+#          echo "DOCKER_IMAGE=${REGISTRY}/${REPO_OWNER}/${APP_NAME}:${TAG}" >> $GITHUB_ENV
+#
+#      - name: 'Login to GitHub Container Registry'
+#        uses: docker/login-action@v3
+#        with:
+#          registry: ${{ env.REGISTRY }}
+#          username: ${{github.actor}}
+#          password: ${{secrets.GITHUB_TOKEN}}
+#
+#      - name: Re-tag docker
+#        run: |
+#          docker pull ${{ env.DOCKER_IMAGE }}
+#          docker tag ${{ env.DOCKER_IMAGE }} ${{ env.REGISTRY }}/${{ env.REPO_OWNER }}/${{ env.APP_NAME }}:${{ github.ref_name }}
+#          docker push ${{ env.REGISTRY }}/${{ env.REPO_OWNER }}/${{ env.APP_NAME }} --all-tags

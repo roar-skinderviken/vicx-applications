@@ -1,8 +1,10 @@
 "use client"
 
 import {usePathname} from "next/navigation"
-import {Navbar} from "flowbite-react"
+import {useSession, signIn, signOut} from "next-auth/react"
+import {Dropdown, Navbar} from "flowbite-react"
 import {SITE_PAGES} from "@/constants/sitePages"
+import Link from "next/link"
 
 // see https://flowbite-react.com/docs/components/navbar
 const customTheme = {
@@ -18,11 +20,25 @@ const customTheme = {
 
 const VicxNavbar = () => {
     const pathname = usePathname()
+    const {data: session, status} = useSession()
 
     return <Navbar fluid theme={customTheme}>
         <Navbar.Brand href="/">
             <span className="self-center whitespace-nowrap text-2xl font-semibold text-white">VICX</span>
         </Navbar.Brand>
+        {session && <div className="flex md:order-2">
+            <Dropdown
+                arrowIcon={false}
+                inline
+                label={<span className="text-gray-400">{session.user?.name || ""}</span>}>
+                <Dropdown.Header>
+                    {session.user?.name}
+                </Dropdown.Header>
+                <Dropdown.Item><Link href={"/dashboard"}>Dashboard</Link></Dropdown.Item>
+                <Dropdown.Divider/>
+                <Dropdown.Item onClick={() => signOut()}>Sign out</Dropdown.Item>
+            </Dropdown>
+        </div>}
         <Navbar.Toggle/>
         <Navbar.Collapse>
             <Navbar.Link
@@ -34,6 +50,12 @@ const VicxNavbar = () => {
                     href={href}
                     active={pathname.startsWith(href)}>{title}</Navbar.Link>)
             }
+            {status === "unauthenticated" && (
+                <Navbar.Link
+                    onClick={() => signIn()}
+                    className="cursor-pointer"
+                >Sign in</Navbar.Link>
+            )}
         </Navbar.Collapse>
     </Navbar>
 }
