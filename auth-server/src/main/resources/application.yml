@@ -1,0 +1,37 @@
+server:
+  port: 9000
+
+logging:
+  level:
+    org.springframework.security: trace
+
+spring:
+  application:
+    name: auth-server
+  security:
+    user:
+      name: ${DEFAULT_USERNAME:user1}
+      password: ${DEFAULT_PASSWORD:password1}
+    oauth2:
+      authorizationserver:
+        client:
+          next-app-client:
+            registration:
+              client-id: "next-app-client"
+              client-secret: ${CLIENT_SECRET:{noop}secret}
+              client-authentication-methods:
+                - "client_secret_basic"
+              authorization-grant-types:
+                - "authorization_code"
+                - "refresh_token"
+                - "client_credentials"
+              redirect-uris:
+                - "http://localhost:3000/api/auth/callback/next-app-client"
+              post-logout-redirect-uris:
+                - "http://localhost:3000/"
+              scopes:
+                - "openid"
+                - "profile"
+                - "message.read"
+                - "message.write"
+            require-authorization-consent: true

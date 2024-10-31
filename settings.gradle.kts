@@ -1,3 +1,3 @@
 rootProject.name = "vicx-applications"
 
-include("backend-spring-boot", "frontend-vite", "next-app")
+include("auth-server", "backend-spring-boot", "frontend-vite", "next-app")

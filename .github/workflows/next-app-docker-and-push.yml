@@ -18,7 +18,7 @@ env:
   APP_NAME: next-app
 
 jobs:
-  next_app_run_tests:
+  run_tests:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -36,7 +36,7 @@ jobs:
       - name: Run tests with Gradle
         run: ./gradlew -p next-app runJest --build-cache --info
 
-  next_app_build_and_push_docker:
+  build_and_push_docker:
     needs: next_app_run_tests
     if: ${{ startsWith(github.ref, 'refs/tags/') }}
 

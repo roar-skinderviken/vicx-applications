@@ -18,6 +18,7 @@
     "@hookform/resolvers": "^3.9.1",
     "flowbite-react": "^0.10.2",
     "next": "15.0.2",
+    "next-auth": "^4.24.10",
     "react": "^18",
     "react-dom": "^18",
     "react-fontawesome": "^1.7.1",
