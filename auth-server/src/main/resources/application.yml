@@ -35,3 +35,16 @@ spring:
                 - "message.read"
                 - "message.write"
             require-authorization-consent: true
+
+management:
+  server:
+    port: 8081
+  health:
+    livenessstate:
+      enabled: true
+    readinessState:
+      enabled: true
+  endpoint:
+    health:
+      probes:
+        enabled: true

@@ -3,13 +3,14 @@ spring:
     name: vicx-backend-spring-boot
 
 management:
-  endpoints:
-    web:
-      exposure:
-        include: health, prometheus, info
+  server:
+    port: 8081
+  health:
+    livenessstate:
+      enabled: true
+    readinessState:
+      enabled: true
   endpoint:
-    prometheus:
-      enabled: true
     health:
-      enabled: true
-      show-details: always
+      probes:
+        enabled: true
