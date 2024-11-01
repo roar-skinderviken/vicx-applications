@@ -15,6 +15,15 @@ const nextConfig: NextConfig = {
                 ],
             },
             {
+                source: "/api/auth/(.*)",
+                headers: [
+                    {
+                        key: "Cache-Control",
+                        value: "no-store, max-age=0"
+                    },
+                ],
+            },
+            {
                 source: "/esport",
                 headers: [
                     {
