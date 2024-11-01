@@ -13,7 +13,7 @@ spring:
   security:
     user:
       name: ${DEFAULT_USERNAME:user1}
-      password: ${DEFAULT_PASSWORD:password}
+      password: {noop}${DEFAULT_PASSWORD:password}
     oauth2:
       authorizationserver:
         client:
