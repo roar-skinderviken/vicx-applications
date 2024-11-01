@@ -56,14 +56,19 @@ const authOptions = {
             if (profile) {
                 token.id = profile.sub
                 token.name = profile.name
-                token.picture = profile.image
+                if (!token.picture) {
+                    token.picture = profile.image
+                }
             }
             return token
         },
         async session({session, token}) {
             if (session.user) {
                 session.user.name = token.name || token.sub
-                session.user.image = token.picture
+
+                if (!session.user.image) {
+                    session.user.image = token.picture
+                }
             }
             //console.log("session session", JSON.stringify(session || {}))
             //console.log("Inside session")
