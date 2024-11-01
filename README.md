@@ -28,7 +28,7 @@ http://localhost:3000
 
 ### Start the backend-python (optional, requires Poetry)
 ```shell
-poetry cd backend-python
+cd backend-python
 ```
 ```shell
 poetry run uvicorn src.app:app --reload
