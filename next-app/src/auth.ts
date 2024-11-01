@@ -31,16 +31,31 @@ const springBootProvider: Provider = {
     }
 }
 
-const authOptions= {
+const authOptions = {
     providers: [springBootProvider],
     session: {
         strategy: "jwt"
     },
     callbacks: {
-        session({session, token}) {
+        async jwt({token, account, profile}) {
+            // console.log("jwt token", JSON.stringify(token || {}))
+            // console.log("account", JSON.stringify(account || {}))
+            // console.log("profile", JSON.stringify(profile || {}))
+            // Persist the OAuth access_token and or the user id to the token right after signin
+            if (account) {
+                token.accessToken = account.access_token
+            }
+            if (profile) {
+                token.id = profile.sub
+            }
+            return token
+        },
+        async session({session, token}) {
             if (session.user) {
                 session.user.name = token.sub
             }
+            // console.log("session session", JSON.stringify(session || {}))
+            // console.log("session token", JSON.stringify(token || {}))
             return session
         }
     }
