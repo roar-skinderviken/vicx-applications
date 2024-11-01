@@ -77,6 +77,6 @@ const authOptions = {
  * Helper function to get the session on the server without having to import the authOptions object every single time
  * @returns The session object or null
  */
-const getSession = async () => await getServerSession(authOptions)
+const getSession = async () => getServerSession(authOptions)
 
 export {authOptions, getSession}
