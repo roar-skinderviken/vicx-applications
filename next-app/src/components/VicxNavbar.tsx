@@ -1,13 +1,10 @@
 "use client"
 
 import {usePathname} from "next/navigation"
-import {useSession, signIn, signOut} from "next-auth/react"
-import {Avatar, Dropdown, Navbar} from "flowbite-react"
+import {useSession} from "next-auth/react"
+import {Navbar} from "flowbite-react"
 import {SITE_PAGES} from "@/constants/sitePages"
-import Link from "next/link"
-import fallbackProfileImage from "@/assets/images/profile.png"
-import {faSignInAlt} from "@fortawesome/free-solid-svg-icons"
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
+import AvatarArea from "@/components/AvatarArea";
 
 // see https://flowbite-react.com/docs/components/navbar
 const customTheme = {
@@ -25,61 +22,23 @@ const VicxNavbar = () => {
     const pathname = usePathname()
     const {data: session, status} = useSession()
 
-    let avatarArea = <div className="w-[72px] h-8"/>
-
-    if (status === "unauthenticated") {
-        avatarArea = (
-            <button
-                onClick={() => signIn(undefined, {callbackUrl: '/dashboard', redirect: true})}
-                className="w-[72px] h-8 text-gray-400 hover:bg-gray-50 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white rounded-md md:border-0 md:hover:bg-transparent md:hover:text-cyan-700 md:dark:hover:bg-transparent md:dark:hover:text-white flex items-center justify-center"
-            >
-                <span className="block md:hidden">
-                    <FontAwesomeIcon icon={faSignInAlt} className="text-gray-400 text-[22px]"/>
-                </span>
-                <span className="hidden md:block">Sign in</span>
-            </button>
-        )
-    }
-
-    if (status === "authenticated") {
-        avatarArea = (
-            <Dropdown
-                arrowIcon={false}
-                inline
-                label={
-                    <Avatar
-                        alt="User settings"
-                        img={session.user?.image || fallbackProfileImage.src}
-                        rounded
-                        className="w-[72px] h-8 ps-6"
-                    />
-                }
-            >
-                <Dropdown.Header>
-                    <span className="block text-sm">{session.user?.name}</span>
-                </Dropdown.Header>
-                <Dropdown.Item>
-                <Link href={"/dashboard"}>Dashboard</Link>
-                </Dropdown.Item>
-                <Dropdown.Divider/>
-                <Dropdown.Item onClick={() => signOut({callbackUrl: '/', redirect: true})}>Sign out</Dropdown.Item>
-            </Dropdown>
-        )
-    }
-
     return (
         <Navbar fluid theme={customTheme}>
             <Navbar.Brand href="/">
                 <span className="self-center whitespace-nowrap text-2xl font-semibold text-white">VICX</span>
             </Navbar.Brand>
             <div className="flex md:order-2">
-                {avatarArea}
+                <AvatarArea session={session} status={status}/>
             </div>
             <Navbar.Toggle/>
             <Navbar.Collapse>
                 <Navbar.Link href="/" active={pathname === "/"}>Home</Navbar.Link>
                 {SITE_PAGES.map(({title, href}, index) => (
-                    <Navbar.Link key={index} href={href} active={pathname.startsWith(href)}>{title}</Navbar.Link>
+                    <Navbar.Link
+                        key={index}
+                        href={href}
+                        active={pathname.startsWith(href)}
+                    >{title}</Navbar.Link>
                 ))}
             </Navbar.Collapse>
         </Navbar>
