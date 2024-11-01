@@ -1,9 +1,11 @@
 server:
   port: 9000
+  servlet:
+    context-path: /auth-server
 
 logging:
   level:
-    org.springframework.security: trace
+    org.springframework.security: info
 
 spring:
   application:
