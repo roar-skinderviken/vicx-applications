@@ -1,7 +1,7 @@
 import {getServerSession, NextAuthOptions} from "next-auth"
 import "next-auth/jwt"
 import {Provider} from "next-auth/providers/index"
-import GitHubProvider from "next-auth/providers/github";
+import GitHubProvider from "next-auth/providers/github"
 
 const springBootProvider: Provider = {
     id: "next-app-client",
@@ -56,12 +56,13 @@ const authOptions = {
             }
             if (profile) {
                 token.id = profile.sub
+                token.name = profile.name
             }
             return token
         },
         async session({session, token}) {
             if (session.user) {
-                session.user.name = token.sub
+                session.user.name = token.name || token.sub
             }
             //console.log("session session", JSON.stringify(session || {}))
             //console.log("Inside session")
