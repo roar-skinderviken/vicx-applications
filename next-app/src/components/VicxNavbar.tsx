@@ -27,10 +27,12 @@ const VicxNavbar = () => {
             <Navbar.Brand href="/">
                 <span className="self-center whitespace-nowrap text-2xl font-semibold text-white">VICX</span>
             </Navbar.Brand>
-            <div className="flex md:order-2">
-                <AvatarArea session={session} status={status}/>
+            <div className="flex md:order-2 w-[20%] h-8">
+                <div className="flex items-center justify-end w-full">
+                    <AvatarArea session={session} status={status}/>
+                    <Navbar.Toggle/>
+                </div>
             </div>
-            <Navbar.Toggle/>
             <Navbar.Collapse>
                 <Navbar.Link href="/" active={pathname === "/"}>Home</Navbar.Link>
                 {SITE_PAGES.map(({title, href}, index) => (
