@@ -21,6 +21,10 @@ npm run dev
 Next app will now be available on 
 http://localhost:3000
 
+Username/password for logging in with OAuth:
+- user1
+- password
+
 ### Start the backend-spring-boot (optional)
 ```shell
 ./gradlew -p backend-spring-boot bootRun
