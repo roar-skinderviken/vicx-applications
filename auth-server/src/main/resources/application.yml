@@ -13,14 +13,14 @@ spring:
   security:
     user:
       name: ${DEFAULT_USERNAME:user1}
-      password: ${DEFAULT_PASSWORD:{noop}password}
+      password: "{noop}${DEFAULT_PASSWORD:password}"
     oauth2:
       authorizationserver:
         client:
           next-app-client:
             registration:
               client-id: "next-app-client"
-              client-secret: ${CLIENT_SECRET:secret}
+              client-secret: "{noop}${CLIENT_SECRET:secret}"
               client-authentication-methods:
                 - "client_secret_basic"
               authorization-grant-types:
