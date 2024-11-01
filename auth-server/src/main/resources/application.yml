@@ -20,7 +20,7 @@ spring:
           next-app-client:
             registration:
               client-id: "next-app-client"
-              client-secret: ${CLIENT_SECRET:{noop}secret}
+              client-secret: ${CLIENT_SECRET:secret}
               client-authentication-methods:
                 - "client_secret_basic"
               authorization-grant-types:
