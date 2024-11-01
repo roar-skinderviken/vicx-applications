@@ -31,5 +31,8 @@ http://localhost:3000
 cd backend-python
 ```
 ```shell
+poetry install
+```
+```shell
 poetry run uvicorn src.app:app --reload
 ```
