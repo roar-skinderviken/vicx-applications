@@ -36,7 +36,7 @@ const VicxNavbar = () => {
                 </Dropdown.Header>
                 <Dropdown.Item><Link href={"/dashboard"}>Dashboard</Link></Dropdown.Item>
                 <Dropdown.Divider/>
-                <Dropdown.Item onClick={() => signOut()}>Sign out</Dropdown.Item>
+                <Dropdown.Item onClick={() => signOut({ callbackUrl: '/', redirect:true })}>Sign out</Dropdown.Item>
             </Dropdown>
         </div>}
         <Navbar.Toggle/>
@@ -52,7 +52,7 @@ const VicxNavbar = () => {
             }
             {status === "unauthenticated" && (
                 <Navbar.Link
-                    onClick={() => signIn()}
+                    onClick={() => signIn(undefined, { callbackUrl: '/dashboard', redirect:true })}
                     className="cursor-pointer"
                 >Sign in</Navbar.Link>
             )}
