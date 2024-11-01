@@ -17,7 +17,6 @@ const springBootProvider: Provider = {
         params: {scope: "openid"}
     },
     token: process.env.TOKEN_URL || "http://localhost:9000/oauth2/token",
-    // userinfo: process.env.USERINFO_URL || "http://localhost:9000/userinfo",
     issuer: process.env.ISSUER || "http://localhost:9000",
     jwks_endpoint: process.env.JWKS_ENDPOINT || "http://localhost:9000/oauth2/jwks",
 

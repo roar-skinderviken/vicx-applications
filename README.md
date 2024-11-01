@@ -1,11 +1,35 @@
-# spring-react-calculator
+# Vicx Applications
 
-Starte React/Vite utviklingsmiljø
-```bash
-cd ./frontend-vite
-npm install
+## Getting started
+
+### Start the auth-server on port 9000
+```shell
+./gradlew -p auth-server bootRun
+```
+
+### Start the Next frontend
+```shell
+cd next-app
+```
+```shell
+npm ci
+```
+```shell
 npm run dev
 ```
-Backend må være tilgjengelig på port 8080.
-Frontend vil være tilgjengelig på http://localhost/8081.
 
+Next app will now be available on 
+http://localhost:3000
+
+### Start the backend-spring-boot (optional)
+```shell
+./gradlew -p backend-spring-boot bootRun
+```
+
+### Start the backend-python (optional, requires Poetry)
+```shell
+poetry cd backend-python
+```
+```shell
+poetry run uvicorn src.app:app --reload
+```
