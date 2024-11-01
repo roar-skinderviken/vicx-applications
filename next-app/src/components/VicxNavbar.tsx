@@ -1,11 +1,13 @@
 "use client"
 
-import { usePathname } from "next/navigation"
-import { useSession, signIn, signOut } from "next-auth/react"
-import { Avatar, Dropdown, Navbar } from "flowbite-react"
-import { SITE_PAGES } from "@/constants/sitePages"
+import {usePathname} from "next/navigation"
+import {useSession, signIn, signOut} from "next-auth/react"
+import {Avatar, Dropdown, Navbar} from "flowbite-react"
+import {SITE_PAGES} from "@/constants/sitePages"
 import Link from "next/link"
 import fallbackProfileImage from "@/assets/images/profile.png"
+import {faSignInAlt} from "@fortawesome/free-solid-svg-icons"
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 
 // see https://flowbite-react.com/docs/components/navbar
 const customTheme = {
@@ -21,17 +23,20 @@ const customTheme = {
 
 const VicxNavbar = () => {
     const pathname = usePathname()
-    const { data: session, status } = useSession()
+    const {data: session, status} = useSession()
 
-    let avatarArea = <div className="w-[72px] h-8" />
+    let avatarArea = <div className="w-[72px] h-8"/>
 
     if (status === "unauthenticated") {
         avatarArea = (
             <button
-                onClick={() => signIn(undefined, { callbackUrl: '/dashboard', redirect: true })}
-                className="w-[72px] h-8 text-gray-400 hover:bg-gray-50 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white px-3 rounded-md md:border-0 md:hover:bg-transparent md:hover:text-cyan-700 md:dark:hover:bg-transparent md:dark:hover:text-white flex items-center"
+                onClick={() => signIn(undefined, {callbackUrl: '/dashboard', redirect: true})}
+                className="w-[72px] h-8 text-gray-400 hover:bg-gray-50 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white rounded-md md:border-0 md:hover:bg-transparent md:hover:text-cyan-700 md:dark:hover:bg-transparent md:dark:hover:text-white flex items-center justify-center"
             >
-                Sign in
+                <span className="block md:hidden">
+                    <FontAwesomeIcon icon={faSignInAlt} className="text-gray-400 text-[22px]"/>
+                </span>
+                <span className="hidden md:block">Sign in</span>
             </button>
         )
     }
@@ -54,10 +59,10 @@ const VicxNavbar = () => {
                     <span className="block text-sm">{session.user?.name}</span>
                 </Dropdown.Header>
                 <Dropdown.Item>
-                    <Link href={"/dashboard"}>Dashboard</Link>
+                <Link href={"/dashboard"}>Dashboard</Link>
                 </Dropdown.Item>
-                <Dropdown.Divider />
-                <Dropdown.Item onClick={() => signOut({ callbackUrl: '/', redirect: true })}>Sign out</Dropdown.Item>
+                <Dropdown.Divider/>
+                <Dropdown.Item onClick={() => signOut({callbackUrl: '/', redirect: true})}>Sign out</Dropdown.Item>
             </Dropdown>
         )
     }
@@ -70,10 +75,10 @@ const VicxNavbar = () => {
             <div className="flex md:order-2">
                 {avatarArea}
             </div>
-            <Navbar.Toggle />
+            <Navbar.Toggle/>
             <Navbar.Collapse>
                 <Navbar.Link href="/" active={pathname === "/"}>Home</Navbar.Link>
-                {SITE_PAGES.map(({ title, href }, index) => (
+                {SITE_PAGES.map(({title, href}, index) => (
                     <Navbar.Link key={index} href={href} active={pathname.startsWith(href)}>{title}</Navbar.Link>
                 ))}
             </Navbar.Collapse>
