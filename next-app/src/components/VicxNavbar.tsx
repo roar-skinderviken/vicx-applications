@@ -2,9 +2,10 @@
 
 import {usePathname} from "next/navigation"
 import {useSession, signIn, signOut} from "next-auth/react"
-import {Dropdown, Navbar} from "flowbite-react"
+import {Avatar, Dropdown, Navbar} from "flowbite-react"
 import {SITE_PAGES} from "@/constants/sitePages"
 import Link from "next/link"
+import fallbackProfileImage from "@/assets/images/profile.png"
 
 // see https://flowbite-react.com/docs/components/navbar
 const customTheme = {
@@ -30,9 +31,9 @@ const VicxNavbar = () => {
             <Dropdown
                 arrowIcon={false}
                 inline
-                label={<span className="text-gray-400">{session.user?.name || ""}</span>}>
+                label={<Avatar alt="User settings" img={session.user?.image || fallbackProfileImage.src} rounded />}>
                 <Dropdown.Header>
-                    {session.user?.name}
+                    <span className="block text-sm">{session.user?.name}</span>
                 </Dropdown.Header>
                 <Dropdown.Item><Link href={"/dashboard"}>Dashboard</Link></Dropdown.Item>
                 <Dropdown.Divider/>

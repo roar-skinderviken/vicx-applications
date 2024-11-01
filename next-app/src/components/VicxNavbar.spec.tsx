@@ -39,14 +39,29 @@ describe('VicxNavbar', () => {
             expect(screen.queryByText("Sign in")).toBeInTheDocument()
         })
 
-        it("Displays username in navbar when user is logged in", () => {
+        it("Displays fallback avatar in navbar when user is logged in and image is not provided", () => {
             mockUseSession.mockReturnValue({
-                data: {user: {name: "user1"}},
+                data: {user: {name: "user1", image: ""}},
                 status: "authenticated"
             })
 
             render(<VicxNavbar/>)
-            expect(screen.queryByText("user1")).toBeInTheDocument()
+
+            const avatarImage = screen.queryByAltText("User settings")
+            expect(avatarImage).toBeInTheDocument()
+            expect(avatarImage).toHaveAttribute("src", "/img.jpg")
+        })
+
+        it("Displays avatar in navbar when user is logged in and image is provided", () => {
+            mockUseSession.mockReturnValue({
+                data: {user: {name: "user1", image: "/some-avatar.png"}},
+                status: "authenticated"
+            })
+
+            render(<VicxNavbar/>)
+
+            const avatarImage = screen.queryByAltText("User settings")
+            expect(avatarImage).toHaveAttribute("src", "/some-avatar.png")
         })
 
         it.each(SITE_PAGES.map(({href, title}) => [href, title]))(
@@ -79,7 +94,7 @@ describe('VicxNavbar', () => {
             expect(signIn).toHaveBeenCalled()
         })
 
-        it("expands user dropdown when username is clicked", async () => {
+        it("expands user dropdown when avatar is clicked", async () => {
             mockUseSession.mockReturnValue({
                 data: {user: {name: "user1"}},
                 status: "authenticated"
@@ -87,8 +102,9 @@ describe('VicxNavbar', () => {
 
             render(<VicxNavbar/>)
 
-            await act(async () => fireEvent.click(screen.getByText("user1")))
+            await act(async () => fireEvent.click(screen.getByTestId("flowbite-avatar")))
 
+            expect(screen.queryByText("user1")).toBeInTheDocument()
             expect(screen.queryByText("Dashboard")).toBeInTheDocument()
             expect(screen.queryByText("Sign out")).toBeInTheDocument()
         })
@@ -101,7 +117,7 @@ describe('VicxNavbar', () => {
 
             render(<VicxNavbar/>)
 
-            await act(async () => fireEvent.click(screen.getByText("user1")))
+            await act(async () => fireEvent.click(screen.getByTestId("flowbite-avatar")))
             await act(async () => fireEvent.click(screen.getByText("Sign out")))
 
             expect(signOut).toHaveBeenCalled()
