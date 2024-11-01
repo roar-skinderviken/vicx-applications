@@ -1,6 +1,7 @@
 import {getServerSession, NextAuthOptions} from "next-auth"
 import "next-auth/jwt"
 import {Provider} from "next-auth/providers/index"
+import GitHubProvider from "next-auth/providers/github";
 
 const springBootProvider: Provider = {
     id: "next-app-client",
@@ -31,8 +32,16 @@ const springBootProvider: Provider = {
     }
 }
 
+const providers = [springBootProvider]
+if (process.env.GITHUB_ID) {
+    providers.push(GitHubProvider({
+        clientId: process.env.GITHUB_ID || "",
+        clientSecret: process.env.GITHUB_SECRET || ""
+    }))
+}
+
 const authOptions = {
-    providers: [springBootProvider],
+    providers: providers,
     session: {
         strategy: "jwt"
     },
@@ -54,7 +63,8 @@ const authOptions = {
             if (session.user) {
                 session.user.name = token.sub
             }
-            // console.log("session session", JSON.stringify(session || {}))
+            //console.log("session session", JSON.stringify(session || {}))
+            //console.log("Inside session")
             // console.log("session token", JSON.stringify(token || {}))
             return session
         }
