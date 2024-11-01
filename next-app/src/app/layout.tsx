@@ -5,8 +5,7 @@ import {faGithub, faLinkedinIn} from "@fortawesome/free-brands-svg-icons"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 import VicxNavbar from "@/components/VicxNavbar"
 import {ReactNode} from "react"
-import {getSession} from "@/auth"
-import Providers from "@/components/Providers"
+import AuthContext from "@/components/AuthContext"
 
 config.autoAddCss = false
 
@@ -16,15 +15,13 @@ export const metadata = {
 }
 
 const RootLayout = async ({children}: { children: ReactNode }) => {
-    const session = await getSession()
-
     return (
         <html lang="en">
         <body className="min-h-screen flex flex-col bg-gray-100 antialiased">
-        <Providers session={session}>
+        <AuthContext>
             <VicxNavbar/>
-        </Providers>
-        {children}
+            {children}
+        </AuthContext>
 
         <footer className="bg-gray-800 text-white p-4">
             <div className="container mx-auto flex justify-between items-center">

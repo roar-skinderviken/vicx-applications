@@ -1,13 +1,11 @@
 import Hero from "@/components/Hero"
-import {getSession} from "@/auth";
+import Dashboard from "@/components/Dashboard"
 
 export const metadata = {
     title: "Tomcat | VICX"
 }
 
 export default async function DashboardPage() {
-    const session = await getSession()
-
     return (
         <main className="content">
             <Hero
@@ -16,8 +14,8 @@ export default async function DashboardPage() {
             />
 
             <div className="container mx-auto my-5">
-                <h2 className="text-center text-3xl my-4">Greetings {session && session.user?.name}</h2>
+                <Dashboard/>
             </div>
         </main>
-)
+    )
 }

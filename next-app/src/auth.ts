@@ -1,4 +1,4 @@
-import {getServerSession, NextAuthOptions} from "next-auth"
+import {NextAuthOptions} from "next-auth"
 import "next-auth/jwt"
 import {Provider} from "next-auth/providers/index"
 import GitHubProvider from "next-auth/providers/github"
@@ -73,10 +73,4 @@ const authOptions = {
     }
 } satisfies NextAuthOptions
 
-/**
- * Helper function to get the session on the server without having to import the authOptions object every single time
- * @returns The session object or null
- */
-const getSession = async () => getServerSession(authOptions)
-
-export {authOptions, getSession}
+export {authOptions}
