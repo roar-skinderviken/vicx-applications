@@ -51,7 +51,7 @@ const VicxNavbar = () => {
                         alt="User settings"
                         img={session.user?.image || fallbackProfileImage.src}
                         rounded
-                        className="w-[72px] h-8"
+                        className="w-[72px] h-8 ps-6"
                     />
                 }
             >
