@@ -12,7 +12,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 // see https://flowbite-react.com/docs/components/navbar
 const customTheme = {
     root: {
-        base: "bg-gray-800 sticky top-0 z-50 px-2 py-4 dark:border-gray-700 dark:bg-gray-800 sm:px-4"
+        base: "bg-gray-800 sticky top-0 z-50 px-2 py-3 dark:border-gray-700 dark:bg-gray-800 sm:px-4"
     },
     link: {
         active: {
