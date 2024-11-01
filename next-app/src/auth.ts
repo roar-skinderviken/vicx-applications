@@ -1,4 +1,4 @@
-import {AuthOptions, getServerSession} from "next-auth"
+import {getServerSession, NextAuthOptions} from "next-auth"
 import "next-auth/jwt"
 import {Provider} from "next-auth/providers/index"
 
@@ -31,8 +31,11 @@ const springBootProvider: Provider = {
     }
 }
 
-const authOptions: AuthOptions = {
+const authOptions= {
     providers: [springBootProvider],
+    session: {
+        strategy: "jwt"
+    },
     callbacks: {
         session({session, token}) {
             if (session.user) {
@@ -41,7 +44,7 @@ const authOptions: AuthOptions = {
             return session
         }
     }
-}
+} satisfies NextAuthOptions
 
 /**
  * Helper function to get the session on the server without having to import the authOptions object every single time
