@@ -23,13 +23,13 @@ const VicxNavbar = () => {
     const pathname = usePathname()
     const { data: session, status } = useSession()
 
-    let avatarArea = <div className="w-[72px] h-10" />
+    let avatarArea = <div className="w-[72px] h-8" />
 
     if (status === "unauthenticated") {
         avatarArea = (
             <button
                 onClick={() => signIn(undefined, { callbackUrl: '/dashboard', redirect: true })}
-                className="w-[72px] h-10 text-gray-400 hover:bg-gray-50 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white px-3 py-2 rounded-md md:border-0 md:hover:bg-transparent md:hover:text-cyan-700 md:dark:hover:bg-transparent md:dark:hover:text-white flex items-center"
+                className="w-[72px] h-8 text-gray-400 hover:bg-gray-50 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white px-3 rounded-md md:border-0 md:hover:bg-transparent md:hover:text-cyan-700 md:dark:hover:bg-transparent md:dark:hover:text-white flex items-center"
             >
                 Sign in
             </button>
@@ -46,7 +46,7 @@ const VicxNavbar = () => {
                         alt="User settings"
                         img={session.user?.image || fallbackProfileImage.src}
                         rounded
-                        className="w-[72px] h-10" // Set fixed dimensions using Tailwind CSS
+                        className="w-[72px] h-8"
                     />
                 }
             >
