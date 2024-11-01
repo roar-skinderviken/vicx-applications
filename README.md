@@ -7,7 +7,7 @@
 ./gradlew -p auth-server bootRun
 ```
 
-### Start the Next frontend
+### Start the Next app
 ```shell
 cd next-app
 ```
