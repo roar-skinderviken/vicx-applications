@@ -1,6 +1,6 @@
-import {render, screen} from "@testing-library/react";
-import Home from "@/app/page";
-import {SITE_PAGES} from "@/constants/sitePages";
+import {render, screen} from "@testing-library/react"
+import Home from "@/app/page"
+import {SITE_PAGES} from "@/constants/sitePages"
 
 describe("Home Page", () => {
     describe("Layout", () => {

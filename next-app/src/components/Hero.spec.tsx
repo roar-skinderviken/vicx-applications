@@ -1,5 +1,5 @@
-import {render, screen} from "@testing-library/react";
-import Hero from "@/components/Hero";
+import {render, screen} from "@testing-library/react"
+import Hero from "@/components/Hero"
 
 import expectedBackgroundImage from "@/assets/images/cs2back.jpg"
 
@@ -41,7 +41,7 @@ describe("Hero", () => {
 
         it("displays hero-bg-image as bg image when backgroundImage is not provided", () => {
             const {container} = render(<Hero title="Hero Title" lead="Hero Lead"/>)
-            const outerDiv = container.querySelector("div.text-white.py-16.text-center");
+            const outerDiv = container.querySelector("div.text-white.py-16.text-center")
 
             expect(outerDiv).toHaveStyle(expectedStyle("/api/hero-bg-image"))
         })
@@ -53,7 +53,7 @@ describe("Hero", () => {
                     lead="Hero Lead"
                     backgroundImage={expectedBackgroundImage}/>)
 
-            const outerDiv = container.querySelector("div.text-white.py-16.text-center");
+            const outerDiv = container.querySelector("div.text-white.py-16.text-center")
             expect(outerDiv).toHaveStyle(expectedStyle(expectedBackgroundImage.src))
         })
     })

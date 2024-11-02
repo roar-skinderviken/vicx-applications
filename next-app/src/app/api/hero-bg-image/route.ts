@@ -6,7 +6,7 @@ import {
     JPEG_IMAGE_CONTENT_TYPE,
     PICSUM_IMAGE_URL,
     PICSUM_OPTIONS
-} from "@/constants/picsumConstants";
+} from "@/constants/picsumConstants"
 
 const FALLBACK_IMAGE_PATH = path.join(process.cwd(), 'public', 'images', 'hero-fallback.jpg')
 

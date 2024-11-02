@@ -1,6 +1,6 @@
 import {fireEvent, render, screen} from "@testing-library/react"
 import SelectSmokePlace from "@/app/cs/[map]/SelectSmokePlace"
-import {MAPS, MapSide, SmokePlace} from "@/constants/mapEntries";
+import {MAPS, MapSide, SmokePlace} from "@/constants/mapEntries"
 
 const SELECTED_MAP = MAPS[0]
 

@@ -3,7 +3,7 @@ import Image from "next/image"
 import {MAPS} from "@/constants/mapEntries"
 
 import csBackgroundImage from "@/assets/images/cs2back.jpg"
-import Link from "next/link";
+import Link from "next/link"
 
 export const metadata = {
     title: "Counter Strike Smokes | VICX"

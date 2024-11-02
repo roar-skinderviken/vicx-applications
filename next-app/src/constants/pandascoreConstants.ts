@@ -7,6 +7,6 @@ const CACHE_TIMEOUT_IN_SECS = 30
 export const pandaScoreFetchOptions = (cacheTag: string) => ({
     next: {
         revalidate: CACHE_TIMEOUT_IN_SECS,
-        tags: [cacheTag]
-    }
+        tags: [cacheTag],
+    },
 })
