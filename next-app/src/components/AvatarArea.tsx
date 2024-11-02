@@ -17,23 +17,26 @@ const signInButton = <button
     <span className="hidden md:block whitespace-no-wrap">Sign in</span>
 </button>
 
-const renderSignedInMenu = (session: Session) =>
-    <Dropdown
+const renderSignedInMenu = (session: Session) => {
+    const { image,name,email } = session.user ?? {}
+
+    return <Dropdown
         arrowIcon={false}
         inline
         label={
             <Avatar
                 alt="User settings"
-                img={session.user?.image || fallbackProfileImage.src}
+                img={image || fallbackProfileImage.src}
                 rounded/>}>
         <Dropdown.Header>
-            <span className="block text-sm">{session.user?.name}</span>
-            {session.user?.email && <span className="block truncate text-sm font-medium">{session.user.email}</span>}
+            <span className="block text-sm">{name}</span>
+            {email && <span className="block truncate text-sm font-medium">{email}</span>}
         </Dropdown.Header>
         <Dropdown.Item><Link href={"/dashboard"}>Dashboard</Link></Dropdown.Item>
         <Dropdown.Divider/>
         <Dropdown.Item onClick={() => signOut({callbackUrl: '/', redirect: true})}>Sign out</Dropdown.Item>
     </Dropdown>
+}
 
 const AvatarArea = () => {
     const {data: session, status} = useSession()

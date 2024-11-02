@@ -1,7 +1,7 @@
 import {NextAuthOptions} from "next-auth"
 import "next-auth/jwt"
 import {Provider} from "next-auth/providers/index"
-import GitHubProvider from "next-auth/providers/github"
+import GitHubProvider, {GithubProfile} from "next-auth/providers/github"
 
 const springBootProvider: Provider = {
     id: "next-app-client",
@@ -22,10 +22,9 @@ const springBootProvider: Provider = {
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     profile: (profile: any) => {
-        console.log("profile", profile)
         return {
             id: profile.sub,
-            name: profile.sub
+            name: profile.sub,
         }
     }
 }
@@ -36,20 +35,26 @@ if (process.env.GITHUB_ID) {
         GitHubProvider({
             clientId: process.env.GITHUB_ID || "",
             clientSecret: process.env.GITHUB_SECRET || "",
-            // profile(profile: GithubProfile) {
-            //     return {
-            //         id: profile.id.toString(),
-            //         name: profile.name,
-            //         userName: profile.login,
-            //         email: profile.email,
-            //         image: profile.avatar_url,
-            //     }
-            // },
+            profile(profile: GithubProfile) {
+                return {
+                    id: profile.id.toString(),
+                    name: profile.name,
+                    userName: profile.login,
+                    email: profile.email,
+                    image: profile.avatar_url,
+                }
+            }
         })
     )
 }
 
-const debug = false
+interface DefaultUser {
+    name?: string | null
+    email?: string | null
+    image?: string | null
+    id?: string | null
+    userName?: string | null
+}
 
 const authOptions = {
     providers: providers,
@@ -57,44 +62,24 @@ const authOptions = {
         strategy: "jwt"
     },
     callbacks: {
-        async jwt({token, account, profile, trigger}) {
-            if (debug) {
-                console.log("Start jwt")
-                console.log("jwt token", JSON.stringify(token || {}))
-                console.log("account", JSON.stringify(account || {}))
-                console.log("profile", JSON.stringify(profile || {}))
-            }
-
+        async jwt({token, account, user}) {
             if (account) {
                 token.accessToken = account.access_token
+
+                // login event
+                if (user) {
+                    return {...token, user}
+                }
             }
-
-            if (trigger === "signIn" && profile) {
-                if (debug) console.log("jwt: Inside if-test")
-
-                token.id = profile.sub
-                token.name = profile.name || profile.email || profile.sub
-                token.email = profile.email
-
-                // by some reason, this check is required for picture
-                if (!token.picture) token.picture = profile.image
-            }
-            if (debug) console.log("End jwt")
             return token
         },
 
         async session({session, token}) {
-            if (debug) console.log("Start session")
-            if (session.user) {
-                if (debug) {
-                    console.log("session: Inside if-test")
-                    console.log("token", JSON.stringify(token))
-                }
-                session.user.name = token.name
-                session.user.email = token.email
-                session.user.image = token.picture
-            }
-            if (debug) console.log("End session")
+            session.user = {...session.user, ...(token.user ?? {})}
+
+            const sessionUser: DefaultUser = session.user
+            if (!sessionUser.name) sessionUser.name = sessionUser.userName || sessionUser.id
+
             return session
         }
     }
