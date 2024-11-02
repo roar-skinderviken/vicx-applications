@@ -1,10 +1,9 @@
 "use client"
 
 import {usePathname} from "next/navigation"
-import {useSession} from "next-auth/react"
 import {Navbar} from "flowbite-react"
 import {SITE_PAGES} from "@/constants/sitePages"
-import AvatarArea from "@/components/AvatarArea";
+import AvatarArea from "@/components/AvatarArea"
 
 // see https://flowbite-react.com/docs/components/navbar
 const customTheme = {
@@ -20,7 +19,6 @@ const customTheme = {
 
 const VicxNavbar = () => {
     const pathname = usePathname()
-    const {data: session, status} = useSession()
 
     return (
         <Navbar fluid theme={customTheme}>
@@ -29,7 +27,7 @@ const VicxNavbar = () => {
             </Navbar.Brand>
             <div className="flex md:order-2 w-12 h-8">
                 <div className="flex items-center justify-end w-full">
-                    <AvatarArea session={session} status={status}/>
+                    <AvatarArea/>
                     <Navbar.Toggle/>
                 </div>
             </div>

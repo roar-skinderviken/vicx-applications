@@ -1,12 +1,11 @@
 import {Avatar, Dropdown} from "flowbite-react"
 import {Session} from "next-auth"
 import Link from "next/link"
-import {signIn, signOut} from "next-auth/react"
-
-import fallbackProfileImage from "@/assets/images/profile.png"
+import {signIn, signOut, useSession} from "next-auth/react"
 
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 import {faSignInAlt} from "@fortawesome/free-solid-svg-icons"
+import fallbackProfileImage from "@/assets/images/profile.png"
 
 const signInButton = <button
     onClick={() => signIn(undefined, {callbackUrl: '/dashboard', redirect: true})}
@@ -35,14 +34,14 @@ const renderSignedInMenu = (session: Session) =>
         <Dropdown.Item onClick={() => signOut({callbackUrl: '/', redirect: true})}>Sign out</Dropdown.Item>
     </Dropdown>
 
+const AvatarArea = () => {
+    const {data: session, status} = useSession()
 
-const AvatarArea = ({session, status}: {
-    session: Session | null
-    status: "authenticated" | "unauthenticated" | "loading"
-}) => status === "authenticated" && session
-    ? renderSignedInMenu(session)
-    : status === "unauthenticated"
-        ? signInButton
-        : <></>
+    return status === "authenticated" && session
+        ? renderSignedInMenu(session)
+        : status === "unauthenticated"
+            ? signInButton
+            : <></>
+}
 
 export default AvatarArea
