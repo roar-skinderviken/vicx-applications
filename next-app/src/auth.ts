@@ -74,8 +74,10 @@ const authOptions = {
 
                 token.id = profile.sub
                 token.name = profile.name || profile.email || profile.sub
-                token.picture = profile.image
                 token.email = profile.email
+
+                // by some reason, this check is required for picture
+                if (!token.picture) token.picture = profile.image
             }
             if (debug) console.log("End jwt")
             return token
