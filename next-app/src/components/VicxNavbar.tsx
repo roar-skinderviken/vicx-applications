@@ -3,7 +3,10 @@
 import {usePathname} from "next/navigation"
 import {Navbar} from "flowbite-react"
 import {SITE_PAGES} from "@/constants/sitePages"
-import AvatarArea from "@/components/AvatarArea"
+import SignedInMenu from "@/components/SignedInMenu"
+import {signIn, useSession} from "next-auth/react"
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
+import {faSignInAlt} from "@fortawesome/free-solid-svg-icons"
 
 // see https://flowbite-react.com/docs/components/navbar
 const customTheme = {
@@ -17,8 +20,19 @@ const customTheme = {
     },
 }
 
+const signInButton = <button
+    onClick={() => signIn(undefined, {callbackUrl: '/dashboard', redirect: true})}
+    className="text-gray-400 hover:bg-gray-50 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white rounded-md md:border-0 md:hover:bg-transparent md:hover:text-cyan-700 md:dark:hover:bg-transparent md:dark:hover:text-white flex items-center justify-center"
+>
+    {/* mobile devices */}
+    <span className="block md:hidden"><FontAwesomeIcon icon={faSignInAlt} className="mt-1.5 text-gray-400 text-[22px]"/></span>
+    {/* big-screen devices */}
+    <span className="hidden md:block whitespace-no-wrap">Sign in</span>
+</button>
+
 const VicxNavbar = () => {
     const pathname = usePathname()
+    const {data: session, status} = useSession()
 
     return (
         <Navbar fluid theme={customTheme}>
@@ -28,7 +42,8 @@ const VicxNavbar = () => {
             <div className="flex md:order-2 min-w-12 h-8">
                 <div className="flex items-center justify-end w-full">
                     <div className="flex-shrink-0 me-4 md:me-0">
-                        <AvatarArea/>
+                        {status === "unauthenticated" && signInButton}
+                        {status === "authenticated" && <SignedInMenu session={session}/>}
                     </div>
                     <Navbar.Toggle/>
                 </div>
