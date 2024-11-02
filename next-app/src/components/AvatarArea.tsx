@@ -28,6 +28,7 @@ const renderSignedInMenu = (session: Session) =>
                 rounded/>}>
         <Dropdown.Header>
             <span className="block text-sm">{session.user?.name}</span>
+            {session.user?.email && <span className="block truncate text-sm font-medium">{session.user.email}</span>}
         </Dropdown.Header>
         <Dropdown.Item><Link href={"/dashboard"}>Dashboard</Link></Dropdown.Item>
         <Dropdown.Divider/>

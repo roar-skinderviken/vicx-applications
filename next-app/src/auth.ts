@@ -5,12 +5,12 @@ import GitHubProvider from "next-auth/providers/github"
 
 const springBootProvider: Provider = {
     id: "next-app-client",
+    name: "Vicx OAuth",
     clientId: "next-app-client",
     clientSecret: process.env.OIDC_CLIENT_SECRET || "secret",
-    name: "Spring Boot OAuth",
     version: "2.0",
     type: "oauth",
-    checks: ["state"],
+    checks: ["pkce", "state"],
     idToken: true,
     authorization: {
         url: process.env.AUTHORIZATION_URL || "http://localhost:9000/oauth2/authorize",
@@ -25,19 +25,31 @@ const springBootProvider: Provider = {
         console.log("profile", profile)
         return {
             id: profile.sub,
-            name: profile.name || profile.username,
-            email: profile.email,
+            name: profile.sub
         }
     }
 }
 
 const providers = [springBootProvider]
 if (process.env.GITHUB_ID) {
-    providers.push(GitHubProvider({
-        clientId: process.env.GITHUB_ID || "",
-        clientSecret: process.env.GITHUB_SECRET || ""
-    }))
+    providers.unshift(
+        GitHubProvider({
+            clientId: process.env.GITHUB_ID || "",
+            clientSecret: process.env.GITHUB_SECRET || "",
+            // profile(profile: GithubProfile) {
+            //     return {
+            //         id: profile.id.toString(),
+            //         name: profile.name,
+            //         userName: profile.login,
+            //         email: profile.email,
+            //         image: profile.avatar_url,
+            //     }
+            // },
+        })
+    )
 }
+
+const debug = false
 
 const authOptions = {
     providers: providers,
@@ -45,34 +57,42 @@ const authOptions = {
         strategy: "jwt"
     },
     callbacks: {
-        async jwt({token, account, profile}) {
-            // console.log("jwt token", JSON.stringify(token || {}))
-            // console.log("account", JSON.stringify(account || {}))
-            // console.log("profile", JSON.stringify(profile || {}))
-            // Persist the OAuth access_token and or the user id to the token right after signin
+        async jwt({token, account, profile, trigger}) {
+            if (debug) {
+                console.log("Start jwt")
+                console.log("jwt token", JSON.stringify(token || {}))
+                console.log("account", JSON.stringify(account || {}))
+                console.log("profile", JSON.stringify(profile || {}))
+            }
+
             if (account) {
                 token.accessToken = account.access_token
             }
-            if (profile) {
+
+            if (trigger === "signIn" && profile) {
+                if (debug) console.log("jwt: Inside if-test")
+
                 token.id = profile.sub
-                token.name = profile.name
-                if (!token.picture) {
-                    token.picture = profile.image
-                }
+                token.name = profile.name || profile.email || profile.sub
+                token.picture = profile.image
+                token.email = profile.email
             }
+            if (debug) console.log("End jwt")
             return token
         },
-        async session({session, token}) {
-            if (session.user) {
-                session.user.name = token.name || token.sub
 
-                if (!session.user.image) {
-                    session.user.image = token.picture
+        async session({session, token}) {
+            if (debug) console.log("Start session")
+            if (session.user) {
+                if (debug) {
+                    console.log("session: Inside if-test")
+                    console.log("token", JSON.stringify(token))
                 }
+                session.user.name = token.name
+                session.user.email = token.email
+                session.user.image = token.picture
             }
-            //console.log("session session", JSON.stringify(session || {}))
-            //console.log("Inside session")
-            // console.log("session token", JSON.stringify(token || {}))
+            if (debug) console.log("End session")
             return session
         }
     }
