@@ -25,9 +25,11 @@ const VicxNavbar = () => {
             <Navbar.Brand href="/">
                 <span className="self-center whitespace-nowrap text-2xl font-semibold text-white">VICX</span>
             </Navbar.Brand>
-            <div className="flex md:order-2 w-12 h-8">
+            <div className="flex md:order-2 min-w-12 h-8">
                 <div className="flex items-center justify-end w-full">
-                    <AvatarArea/>
+                    <div className="flex-shrink-0 sm:me-4 md:me-0">
+                        <AvatarArea/>
+                    </div>
                     <Navbar.Toggle/>
                 </div>
             </div>
