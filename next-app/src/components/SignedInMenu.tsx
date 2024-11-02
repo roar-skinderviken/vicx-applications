@@ -22,7 +22,7 @@ const SignedInMenu = ({session}: { session: Session }) => {
         </Dropdown.Header>
         <Dropdown.Item><Link href={"/dashboard"}>Dashboard</Link></Dropdown.Item>
         <Dropdown.Divider/>
-        <Dropdown.Item onClick={() => signOut({callbackUrl: '/', redirect: true})}>Sign out</Dropdown.Item>
+        <Dropdown.Item onClick={async () => await signOut({callbackUrl: '/', redirect: true})}>Sign out</Dropdown.Item>
     </Dropdown>
 }
 
