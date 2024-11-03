@@ -1,35 +1,33 @@
 import {act, fireEvent, render, screen} from "@testing-library/react"
 import {usePathname} from "next/navigation"
 import {SITE_PAGES} from "@/constants/sitePages"
-import VicxNavbar from "@/components/VicxNavbar"
-import {signIn, signOut, useSession} from "next-auth/react"
+import VicxNavbar from "@/components/navbar/VicxNavbar"
+import {signIn, signOut} from "next-auth/react"
+import {useSessionUser} from "@/components/navbar/useSessionUser"
 
 jest.mock("next/navigation", () => ({
     usePathname: jest.fn()
 }))
 
 jest.mock("next-auth/react", () => ({
-    useSession: jest.fn(),
     signIn: jest.fn(),
     signOut: jest.fn()
 }))
 
+jest.mock("@/components/navbar/useSessionUser", () => ({
+    useSessionUser: jest.fn(),
+}))
+
 const mockUsePathname = usePathname as jest.Mock
-const mockUseSession = useSession as jest.Mock
+const mockUseSessionUser = useSessionUser as jest.Mock
 
 const setupUnauthenticated = () => {
-    mockUseSession.mockReturnValue({
-        status: "unauthenticated",
-        data: null
-    })
+    mockUseSessionUser.mockReturnValue({})
     render(<VicxNavbar/>)
 }
 
 const setupAuthenticated = (email?: string, image?: string) => {
-    mockUseSession.mockReturnValue({
-        status: "authenticated",
-        data: {user: {name: "user1", email: email, image: image}}
-    })
+    mockUseSessionUser.mockReturnValue({name: "user1", email: email, image: image})
     render(<VicxNavbar/>)
 }
 

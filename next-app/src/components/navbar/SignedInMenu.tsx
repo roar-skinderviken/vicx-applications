@@ -4,8 +4,7 @@ import {signOut} from "next-auth/react"
 
 import fallbackProfileImage from "@/assets/images/profile.png"
 import {SessionUser} from "@/types/authTypes"
-
-const signOutOptions = {callbackUrl: "/", redirect: true}
+import {signOutOptions} from "@/components/navbar/navbarConstants"
 
 const SignedInMenu = ({user}: { user: SessionUser }) => {
     const {image, name, email} = user

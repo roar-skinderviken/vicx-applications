@@ -1,6 +1,8 @@
 import Hero from "@/components/Hero"
 import Dashboard from "@/components/Dashboard"
 
+export const dynamic = "force-dynamic"
+
 export const metadata = {
     title: "Tomcat | VICX"
 }
