@@ -4,12 +4,12 @@ import {usePathname} from "next/navigation"
 import {Navbar} from "flowbite-react"
 import {SITE_PAGES} from "@/constants/sitePages"
 import SignedInMenu from "@/components/navbar/SignedInMenu"
-import {signIn} from "next-auth/react"
+import {getSession, signIn} from "next-auth/react"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 import {faSignInAlt} from "@fortawesome/free-solid-svg-icons"
-import {SessionUser} from "@/types/authTypes"
 import {navbarTheme, signInOptions} from "@/components/navbar/navbarConstants"
-import {useSessionUser} from "@/components/navbar/useSessionUser"
+import {useEffect, useState} from "react"
+import {SessionUser} from "@/types/authTypes"
 
 const signInButton = (
     <button
@@ -26,9 +26,13 @@ const signInButton = (
         <span className="hidden md:block whitespace-no-wrap">Sign in</span>
     </button>)
 
-const VicxNavbar = ({serverSideUser}: { serverSideUser?: SessionUser }) => {
+const VicxNavbar = () => {
     const pathname = usePathname()
-    const user = useSessionUser(serverSideUser)
+    const [user, setUser] = useState<SessionUser | null>(null)
+
+    useEffect(() => {
+        getSession().then(session => setUser(session?.user ?? {}))
+    }, [])
 
     return (
         <Navbar fluid theme={navbarTheme}>
@@ -38,10 +42,7 @@ const VicxNavbar = ({serverSideUser}: { serverSideUser?: SessionUser }) => {
             <div className="flex md:order-2 min-w-12 h-8">
                 <div className="flex items-center justify-end w-full">
                     <div className="flex-shrink-0 me-4 md:me-0">
-                        {user?.name
-                            ? <SignedInMenu user={user}/>
-                            : signInButton
-                        }
+                        {user && (user?.name ? <SignedInMenu user={user}/> : signInButton)}
                     </div>
                     <Navbar.Toggle/>
                 </div>

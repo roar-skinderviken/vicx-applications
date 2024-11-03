@@ -6,8 +6,6 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 import VicxNavbar from "@/components/navbar/VicxNavbar"
 import {ReactNode} from "react"
 import Providers from "@/app/Providers"
-import {getServerSession} from "next-auth"
-import {authOptions} from "@/auth"
 
 config.autoAddCss = false
 
@@ -17,13 +15,11 @@ export const metadata = {
 }
 
 const RootLayout = async ({children}: { children: ReactNode }) => {
-    const session = await getServerSession(authOptions)
-
     return (
         <html lang="en">
         <body className="min-h-screen flex flex-col bg-gray-100 antialiased">
         <Providers>
-            <VicxNavbar serverSideUser={session?.user}/>
+            <VicxNavbar/>
             {children}
         </Providers>
 
