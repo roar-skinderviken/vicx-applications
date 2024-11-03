@@ -17,35 +17,42 @@ jest.mock("next-auth/react", () => ({
 const mockUsePathname = usePathname as jest.Mock
 const mockUseSession = useSession as jest.Mock
 
+const setupUnauthenticated = () => {
+    mockUseSession.mockReturnValue({
+        status: "unauthenticated",
+        data: null
+    })
+    render(<VicxNavbar/>)
+}
+
+const setupAuthenticated = (email?: string, image?: string) => {
+    mockUseSession.mockReturnValue({
+        status: "authenticated",
+        data: {user: {name: "user1", email: email, image: image}}
+    })
+    render(<VicxNavbar/>)
+}
+
 describe('VicxNavbar', () => {
 
     describe("Layout", () => {
         beforeEach(() => {
             jest.clearAllMocks()
             mockUsePathname.mockReturnValue('/')
-            mockUseSession.mockReturnValue({
-                data: {},
-                status: "unauthenticated"
-            })
         })
 
         it("Displays brand in navbar", () => {
-            render(<VicxNavbar/>)
+            setupUnauthenticated()
             expect(screen.queryByText("VICX")).toBeInTheDocument()
         })
 
         it("Displays signin link in navbar when user is not logged in", () => {
-            render(<VicxNavbar/>)
+            setupUnauthenticated()
             expect(screen.queryByText("Sign in")).toBeInTheDocument()
         })
 
         it("Displays fallback avatar in navbar when user is logged in and image is not provided", () => {
-            mockUseSession.mockReturnValue({
-                data: {user: {name: "user1", image: ""}},
-                status: "authenticated"
-            })
-
-            render(<VicxNavbar/>)
+            setupAuthenticated()
 
             const avatarImage = screen.queryByAltText("User settings")
             expect(avatarImage).toBeInTheDocument()
@@ -53,12 +60,7 @@ describe('VicxNavbar', () => {
         })
 
         it("Displays avatar in navbar when user is logged in and image is provided", () => {
-            mockUseSession.mockReturnValue({
-                data: {user: {name: "user1", image: "/some-avatar.png"}},
-                status: "authenticated"
-            })
-
-            render(<VicxNavbar/>)
+            setupAuthenticated(undefined, "/some-avatar.png")
 
             const avatarImage = screen.queryByAltText("User settings")
             expect(avatarImage).toHaveAttribute("src", "/some-avatar.png")
@@ -69,7 +71,7 @@ describe('VicxNavbar', () => {
             (href, title) => {
                 mockUsePathname.mockReturnValue(href)
 
-                render(<VicxNavbar/>)
+                setupUnauthenticated()
 
                 const pageLink = screen.queryByText(title)
                 expect(pageLink).toBeInTheDocument()
@@ -82,25 +84,15 @@ describe('VicxNavbar', () => {
         beforeEach(() => mockUsePathname.mockReturnValue('/'))
 
         it("calls signIn when signIn link is clicked", () => {
-            mockUseSession.mockReturnValue({
-                data: {user: {name: "user1"}},
-                status: "unauthenticated"
-            })
-
-            render(<VicxNavbar/>)
+            setupUnauthenticated()
 
             fireEvent.click(screen.getByText("Sign in"))
 
             expect(signIn).toHaveBeenCalled()
         })
 
-        it("expands user dropdown when avatar is clicked", async () => {
-            mockUseSession.mockReturnValue({
-                data: {user: {name: "user1"}},
-                status: "authenticated"
-            })
-
-            render(<VicxNavbar/>)
+        it("expands user dropdown with userinfo when avatar is clicked", async () => {
+            setupAuthenticated()
 
             await act(async () => fireEvent.click(screen.getByTestId("flowbite-avatar")))
 
@@ -109,13 +101,16 @@ describe('VicxNavbar', () => {
             expect(screen.queryByText("Sign out")).toBeInTheDocument()
         })
 
-        it("calls signOut when signOut is clicked", async () => {
-            mockUseSession.mockReturnValue({
-                data: {user: {name: "user1"}},
-                status: "authenticated"
-            })
+        it("displays email address in dropdown when user has email", async () => {
+            setupAuthenticated("user1@example.com")
 
-            render(<VicxNavbar/>)
+            await act(async () => fireEvent.click(screen.getByTestId("flowbite-avatar")))
+
+            expect(screen.queryByText("user1@example.com")).toBeInTheDocument()
+        })
+
+        it("calls signOut when signOut is clicked", async () => {
+            setupAuthenticated()
 
             await act(async () => fireEvent.click(screen.getByTestId("flowbite-avatar")))
             await act(async () => fireEvent.click(screen.getByText("Sign out")))

@@ -20,19 +20,27 @@ const customTheme = {
     },
 }
 
-const signInButton = <button
-    onClick={async () => await signIn(undefined, {callbackUrl: '/dashboard', redirect: true})}
-    className="text-gray-400 hover:bg-gray-50 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white rounded-md md:border-0 md:hover:bg-transparent md:hover:text-cyan-700 md:dark:hover:bg-transparent md:dark:hover:text-white flex items-center justify-center"
->
-    {/* mobile devices */}
-    <span className="block md:hidden"><FontAwesomeIcon icon={faSignInAlt} className="mt-1.5 text-gray-400 text-[22px]"/></span>
-    {/* big-screen devices */}
-    <span className="hidden md:block whitespace-no-wrap">Sign in</span>
-</button>
+const signInOptions = {callbackUrl: '/dashboard', redirect: true}
+
+const signInButton = (
+    <button
+        onClick={
+            async () => await signIn(undefined, signInOptions)
+        }
+        className="text-gray-400 hover:bg-gray-50 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white rounded-md md:border-0 md:hover:bg-transparent md:hover:text-cyan-700 md:dark:hover:bg-transparent md:dark:hover:text-white flex items-center justify-center"
+    >
+        {/* mobile devices */}
+        <span className="block md:hidden">
+            <FontAwesomeIcon icon={faSignInAlt} className="mt-1.5 text-gray-400 text-[22px]"/>
+        </span>
+        {/* big-screen devices */}
+        <span className="hidden md:block whitespace-no-wrap">Sign in</span>
+    </button>)
 
 const VicxNavbar = () => {
     const pathname = usePathname()
     const {data: session, status} = useSession()
+    const user = session?.user
 
     return (
         <Navbar fluid theme={customTheme}>
@@ -43,7 +51,7 @@ const VicxNavbar = () => {
                 <div className="flex items-center justify-end w-full">
                     <div className="flex-shrink-0 me-4 md:me-0">
                         {status === "unauthenticated" && signInButton}
-                        {status === "authenticated" && <SignedInMenu session={session}/>}
+                        {status === "authenticated" && user && <SignedInMenu user={user}/>}
                     </div>
                     <Navbar.Toggle/>
                 </div>

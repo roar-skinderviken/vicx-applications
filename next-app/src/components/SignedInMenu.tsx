@@ -1,12 +1,14 @@
 import {Avatar, Dropdown} from "flowbite-react"
-import {Session} from "next-auth"
 import Link from "next/link"
 import {signOut} from "next-auth/react"
 
 import fallbackProfileImage from "@/assets/images/profile.png"
+import {SessionUser} from "@/types/authTypes"
 
-const SignedInMenu = ({session}: { session: Session }) => {
-    const {image, name, email} = session.user ?? {}
+const signOutOptions = {callbackUrl: "/", redirect: true}
+
+const SignedInMenu = ({user}: { user: SessionUser }) => {
+    const {image, name, email} = user
 
     return <Dropdown
         arrowIcon={false}
@@ -22,7 +24,9 @@ const SignedInMenu = ({session}: { session: Session }) => {
         </Dropdown.Header>
         <Dropdown.Item><Link href={"/dashboard"}>Dashboard</Link></Dropdown.Item>
         <Dropdown.Divider/>
-        <Dropdown.Item onClick={async () => await signOut({callbackUrl: '/', redirect: true})}>Sign out</Dropdown.Item>
+        <Dropdown.Item onClick={
+            async () => await signOut(signOutOptions)
+        }>Sign out</Dropdown.Item>
     </Dropdown>
 }
 

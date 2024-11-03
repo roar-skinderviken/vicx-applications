@@ -2,7 +2,6 @@ import {NextAuthOptions} from "next-auth"
 import "next-auth/jwt"
 import {Provider} from "next-auth/providers/index"
 import GitHubProvider, {GithubProfile} from "next-auth/providers/github"
-import {ExtendedUser} from "@/types/authTypes"
 
 const springBootProvider: Provider = {
     id: "next-app-client",
@@ -39,7 +38,7 @@ if (process.env.GITHUB_ID) {
             profile(profile: GithubProfile) {
                 return {
                     id: profile.id.toString(),
-                    name: profile.name,
+                    name: profile.name || profile.login, // if user has not registered name
                     userName: profile.login,
                     email: profile.email,
                     image: profile.avatar_url,
@@ -69,10 +68,6 @@ const authOptions = {
 
         async session({session, token}) {
             session.user = {...session.user, ...(token.user ?? {})}
-
-            const sessionUser: ExtendedUser = session.user
-            if (!sessionUser.name) sessionUser.name = sessionUser.userName || sessionUser.id
-
             return session
         }
     }
