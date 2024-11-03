@@ -5,7 +5,6 @@ import {faGithub, faLinkedinIn} from "@fortawesome/free-brands-svg-icons"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 import VicxNavbar from "@/components/navbar/VicxNavbar"
 import {ReactNode} from "react"
-import Providers from "@/app/Providers"
 
 config.autoAddCss = false
 
@@ -18,10 +17,8 @@ const RootLayout = async ({children}: { children: ReactNode }) => {
     return (
         <html lang="en">
         <body className="min-h-screen flex flex-col bg-gray-100 antialiased">
-        <Providers>
-            <VicxNavbar/>
-            {children}
-        </Providers>
+        <VicxNavbar/>
+        {children}
 
         <footer className="bg-gray-800 text-white p-4">
             <div className="container mx-auto flex justify-between items-center">
