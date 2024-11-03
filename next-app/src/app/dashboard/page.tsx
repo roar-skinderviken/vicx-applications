@@ -1,5 +1,6 @@
 import Hero from "@/components/Hero"
-import Dashboard from "@/components/Dashboard"
+import {getServerSession} from "next-auth"
+import {authOptions} from "@/auth"
 
 export const dynamic = "force-dynamic"
 
@@ -8,6 +9,8 @@ export const metadata = {
 }
 
 export default async function DashboardPage() {
+    const session = await getServerSession(authOptions)
+
     return (
         <main className="content">
             <Hero
@@ -16,7 +19,7 @@ export default async function DashboardPage() {
             />
 
             <div className="container mx-auto my-5">
-                <Dashboard/>
+                <h2 className="text-center text-3xl my-4">Greetings {session && session.user?.name}</h2>
             </div>
         </main>
     )

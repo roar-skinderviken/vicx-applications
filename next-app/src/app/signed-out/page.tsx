@@ -1,5 +1,7 @@
 import Hero from "@/components/Hero"
 import Link from "next/link"
+import {getServerSession} from "next-auth"
+import {authOptions} from "@/auth"
 
 export const dynamic = "force-dynamic"
 
@@ -8,6 +10,8 @@ export const metadata = {
 }
 
 export default async function DashboardPage() {
+    await getServerSession(authOptions) // for refreshing state
+
     return (
         <main className="content">
             <Hero
