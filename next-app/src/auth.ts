@@ -1,7 +1,7 @@
 import {NextAuthOptions, Session} from "next-auth"
 import "next-auth/jwt"
 import {JWT} from "next-auth/jwt";
-import {githubProvider, springBootProvider} from "@/authProviders";
+import {githubProvider, NEXT_APP_PROVIDER, springBootProvider} from "@/authProviders";
 
 async function refreshAccessToken(token: JWT) {
     try {
@@ -26,8 +26,6 @@ async function refreshAccessToken(token: JWT) {
             // noinspection ExceptionCaughtLocallyJS
             throw refreshedTokens
         }
-
-        console.log("Response access token", refreshedTokens)
 
         return {
             ...token,
@@ -59,7 +57,16 @@ const authOptions = {
         async jwt({token, user, account}) {
             // Initial sign in
             if (account && user) {
+                if (account.provider !== NEXT_APP_PROVIDER) {
+                    return {
+                        ...token,
+                        provider: account.provider,
+                        user
+                    }
+                }
+
                 return {
+                    provider: account.provider,
                     accessToken: account.accessToken,
                     accessTokenExpires: Date.now() + Number(account.expires_in) * 1000,
                     refreshToken: account.refresh_token,
@@ -68,7 +75,7 @@ const authOptions = {
             }
 
             // Return previous token if the access token has not expired yet
-            if (Date.now() < Number(token.accessTokenExpires)) {
+            if (token.provider !== NEXT_APP_PROVIDER || Date.now() < Number(token.accessTokenExpires)) {
                 return token
             }
 
@@ -79,6 +86,7 @@ const authOptions = {
             if (token) {
                 return {
                     ...session,
+                    provider: token.provider,
                     user: token.user,
                     accessToken: token.accessToken,
                     error: token.error

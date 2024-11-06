@@ -1,6 +1,9 @@
 import {Provider} from "next-auth/providers/index";
 import GitHubProvider, {GithubProfile} from "next-auth/providers/github";
 
+export const NEXT_APP_PROVIDER = "next-app-client"
+export const GITHUB_PROVIDER = "github"
+
 export const githubProvider = GitHubProvider({
     clientId: process.env.GITHUB_ID || "",
     clientSecret: process.env.GITHUB_SECRET || "",
@@ -16,7 +19,7 @@ export const githubProvider = GitHubProvider({
 })
 
 export const springBootProvider: Provider = {
-    id: "next-app-client",
+    id: NEXT_APP_PROVIDER,
     name: "Vicx OAuth",
     clientId: "next-app-client",
     clientSecret: process.env.OIDC_CLIENT_SECRET || "secret",
