@@ -2,7 +2,7 @@ import {NextRequest, NextResponse} from "next/server"
 import {getServerSession} from "next-auth"
 import {authOptions} from "@/auth"
 
-const BACKEND_BASE_URL = process.env.TOMCAT_BACKEND_SECURED_URL || "http://localhost:8080/api-secured/calculator"
+const BACKEND_BASE_URL = process.env.TOMCAT_BACKEND_SECURED_URL || "/backend-spring-boot/api-secured/calculator"
 
 export async function GET(request: NextRequest) {
     const {searchParams} = new URL(request.url)
