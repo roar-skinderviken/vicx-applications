@@ -25,6 +25,7 @@ export default function Home() {
                             <Image
                                 src={page.image}
                                 alt={page.imgAlt}
+                                priority={true}
                                 className="w-20 max-h-[80px] object-contain"/>
                             <FontAwesomeIcon icon={page.icon} className="fa-fw mx-2"/>
                             {page.title}
