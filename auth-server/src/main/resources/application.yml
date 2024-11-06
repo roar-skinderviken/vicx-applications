@@ -7,13 +7,15 @@ logging:
   level:
     org.springframework.security: debug
 
+app-user:
+  name: ${DEFAULT_USERNAME:user1}
+  password: "{noop}${DEFAULT_PASSWORD:password}"
+
 spring:
   application:
     name: auth-server
   security:
-    user:
-      name: ${DEFAULT_USERNAME:user1}
-      password: "{noop}${DEFAULT_PASSWORD:password}"
+    #    user:
     oauth2:
       authorizationserver:
         client:

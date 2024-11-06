@@ -10,11 +10,11 @@ import org.springframework.stereotype.Component;
 public class StartupLogger implements CommandLineRunner {
     private static final Logger logger = LoggerFactory.getLogger(StartupLogger.class);
 
-    @Value("${spring.security.user.name}")
+    @Value("${app-user.name}")
     private String username;
 
     @Override
     public void run(String... args) {
-        logger.info("Property value: {}", username);
+        logger.info("Username: {}", username);
     }
 }
