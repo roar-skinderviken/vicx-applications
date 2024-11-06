@@ -76,7 +76,7 @@ const authOptions = {
                 }
             }
 
-            const expiresInSeconds = Math.floor((Number(token.accessTokenExpires) - Date.now())/ 1000)
+            const expiresInSeconds = Math.floor((Number(token.accessTokenExpires) - Date.now()) / 1000)
             console.debug("Access token expires in:", expiresInSeconds)
 
             // Return previous token if the access token has not expired yet
