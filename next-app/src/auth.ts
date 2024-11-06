@@ -27,10 +27,12 @@ async function refreshAccessToken(token: JWT) {
             throw refreshedTokens
         }
 
+        console.log("Access token refreshed, expires in", refreshedTokens.expires_in)
+
         return {
             ...token,
             accessToken: refreshedTokens.access_token,
-            accessTokenExpires: Date.now() + refreshedTokens.expires_in * 1000,
+            accessTokenExpires: Date.now() + Number(refreshedTokens.expires_in) * 1000,
             refreshToken: refreshedTokens.refresh_token ?? token.refreshToken, // Fall back to old refresh token
         }
     } catch (error) {
@@ -74,8 +76,11 @@ const authOptions = {
                 }
             }
 
+            const expiresInSeconds = Math.floor((Number(token.accessTokenExpires) - Date.now())/ 1000)
+            console.debug("Access token expires in:", expiresInSeconds)
+
             // Return previous token if the access token has not expired yet
-            if (token.provider !== NEXT_APP_PROVIDER || Date.now() < Number(token.accessTokenExpires)) {
+            if (token.provider !== NEXT_APP_PROVIDER || expiresInSeconds > 10) {
                 return token
             }
 
