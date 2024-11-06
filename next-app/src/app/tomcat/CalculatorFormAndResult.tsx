@@ -7,11 +7,10 @@ import * as yup from "yup"
 import ValidatedTextInput from "@/components/ValidatedTextInput"
 import {Button} from "flowbite-react"
 import {InferType} from "yup"
-import {fetchData} from "@/utils/fetchUtils";
 
 // put this in next-app/.env.local
 // NEXT_PUBLIC_TOMCAT_BACKEND_URL=http://localhost:8080/api
-const BACKEND_BASE_URL = process.env.NEXT_PUBLIC_TOMCAT_BACKEND_URL || "/backend-spring-boot/api"
+const BACKEND_BASE_URL = process.env.NEXT_PUBLIC_TOMCAT_BACKEND_URL || "/backend-spring-boot/api/calculator"
 
 const calculatorYupSchema = yup.object({
     firstValue: yup
@@ -46,9 +45,18 @@ const CalculatorFormAndResult = ({useSecureEndpoint = false}: { useSecureEndpoin
 
     const onSubmit = async (formData: CalculatorFormData) => {
         const {firstValue, secondValue, operation} = formData
-        const requestUrl = `${BACKEND_BASE_URL}${useSecureEndpoint ? "-secured" : ""}/${firstValue}/${secondValue}/${operation}`
 
-        fetchData<CalculatorResult>(requestUrl, useSecureEndpoint)
+        const requestUrl = useSecureEndpoint
+            ? `/api/calculator?first=${firstValue}&second=${secondValue}&operation=${operation}`
+            : `${BACKEND_BASE_URL}/${firstValue}/${secondValue}/${operation}`
+
+        fetch(requestUrl)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok')
+                }
+                return response.json()
+            })
             .then(data => setResult(data))
             .catch(error => console.error("Error:", error))
     }

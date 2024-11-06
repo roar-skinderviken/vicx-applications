@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 public class ApiController {
 
     // URL for testing on localhost: http://localhost:8080/api/5/10/PLUS
-    static final String URL_TEMPLATE = "/api/{firstValue}/{secondValue}/{operation}";
+    static final String URL_TEMPLATE = "/api/calculator/{firstValue}/{secondValue}/{operation}";
 
     private final CalculatorService calculatorService;
 

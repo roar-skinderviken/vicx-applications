@@ -9,8 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class SecuredApiController {
 
-    // URL for testing on localhost: http://localhost:8080/api-secured/5/10/PLUS
-    static final String URL_TEMPLATE = "/api-secured/{firstValue}/{secondValue}/{operation}";
+    static final String URL_TEMPLATE = "/api-secured/calculator/{firstValue}/{secondValue}/{operation}";
 
     private final CalculatorService calculatorService;
 

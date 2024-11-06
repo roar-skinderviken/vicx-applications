@@ -13,8 +13,6 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    public static final String X_ACCESS_TOKEN = "X-Access-Token";
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(authorize -> authorize
@@ -24,7 +22,6 @@ public class SecurityConfig {
                         .anyRequest().denyAll()
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2
-                        .bearerTokenResolver(new CookieBearerResolver(X_ACCESS_TOKEN))
                         .jwt(Customizer.withDefaults())
                 );
 
