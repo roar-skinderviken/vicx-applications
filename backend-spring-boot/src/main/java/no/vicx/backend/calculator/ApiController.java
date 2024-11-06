@@ -6,8 +6,10 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class ApiController {
 
-    // URL for testing on localhost: http://localhost:8080/api/5/10/PLUS
-    static final String URL_TEMPLATE = "/api/calculator/{firstValue}/{secondValue}/{operation}";
+    // URL for testing on localhost: http://localhost:8080/api/calculator/5/10/PLUS
+    private static final String CALC_TEMPLATE = "/calculator/{firstValue}/{secondValue}/{operation}";
+    static final String URL_TEMPLATE = "/api" + CALC_TEMPLATE;
+    static final String SECURED_URL_TEMPLATE = "/api-secured" + CALC_TEMPLATE;
 
     private final CalculatorService calculatorService;
 
@@ -16,7 +18,7 @@ public class ApiController {
     }
 
     @RequestMapping(
-            value = URL_TEMPLATE,
+            value = {URL_TEMPLATE,SECURED_URL_TEMPLATE},
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public CalcVm index(
