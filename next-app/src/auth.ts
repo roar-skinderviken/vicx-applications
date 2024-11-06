@@ -1,53 +1,53 @@
-import {NextAuthOptions} from "next-auth"
+import {NextAuthOptions, Session} from "next-auth"
 import "next-auth/jwt"
-import {Provider} from "next-auth/providers/index"
-import GitHubProvider, {GithubProfile} from "next-auth/providers/github"
-import {cookies} from "next/headers"
-import {ACCESS_TOKEN_COOKIE, REFRESH_TOKEN_COOKIE} from "@/constants/cookieConstants";
+import {JWT} from "next-auth/jwt";
+import {githubProvider, springBootProvider} from "@/authProviders";
 
-const springBootProvider: Provider = {
-    id: "next-app-client",
-    name: "Vicx OAuth",
-    clientId: "next-app-client",
-    clientSecret: process.env.OIDC_CLIENT_SECRET || "secret",
-    version: "2.0",
-    type: "oauth",
-    checks: ["pkce", "state"],
-    idToken: true,
-    authorization: {
-        url: process.env.AUTHORIZATION_URL || "http://localhost:9000/oauth2/authorize",
-        params: {scope: "openid"}
-    },
-    token: process.env.TOKEN_URL || "http://localhost:9000/oauth2/token",
-    issuer: process.env.ISSUER || "http://localhost:9000",
-    jwks_endpoint: process.env.JWKS_ENDPOINT || "http://localhost:9000/oauth2/jwks",
+async function refreshAccessToken(token: JWT) {
+    try {
+        const url = process.env.TOKEN_URL || "http://localhost:9000/auth-server/oauth2/token"
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    profile: (profile: any) => {
+        const response = await fetch(url, {
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+            },
+            method: "POST",
+            body: new URLSearchParams({
+                client_id: "next-app-client",
+                client_secret: process.env.OIDC_CLIENT_SECRET || "secret",
+                grant_type: "refresh_token",
+                refresh_token: token.refreshToken,
+            } as Record<string, string>).toString()
+        })
+
+        const refreshedTokens = await response.json()
+
+        if (!response.ok) {
+            // noinspection ExceptionCaughtLocallyJS
+            throw refreshedTokens
+        }
+
+        console.log("Response access token", refreshedTokens)
+
         return {
-            id: profile.sub,
-            name: profile.sub,
+            ...token,
+            accessToken: refreshedTokens.access_token,
+            accessTokenExpires: Date.now() + refreshedTokens.expires_in * 1000,
+            refreshToken: refreshedTokens.refresh_token ?? token.refreshToken, // Fall back to old refresh token
+        }
+    } catch (error) {
+        console.log(error)
+
+        return {
+            ...token,
+            error: "RefreshAccessTokenError",
         }
     }
 }
 
 const providers = [springBootProvider]
 if (process.env.GITHUB_ID) {
-    providers.unshift(
-        GitHubProvider({
-            clientId: process.env.GITHUB_ID || "",
-            clientSecret: process.env.GITHUB_SECRET || "",
-            profile(profile: GithubProfile) {
-                return {
-                    id: profile.id.toString(),
-                    name: profile.name || profile.login, // if user has not registered name
-                    userName: profile.login,
-                    email: profile.email,
-                    image: profile.avatar_url,
-                }
-            }
-        })
-    )
+    providers.unshift(githubProvider)
 }
 
 const authOptions = {
@@ -56,39 +56,36 @@ const authOptions = {
         strategy: "jwt"
     },
     callbacks: {
-        async jwt({token, account, user}) {
-            if (account) {
-                // login event
-                if (user) {
-
-                    const maxAge = Number(account.expires_at) - Math.floor(Date.now() / 1000)
-
-                    const theCookies = await cookies()
-                    theCookies.set({
-                        name: ACCESS_TOKEN_COOKIE,
-                        value: `${account.access_token}`,
-                        httpOnly: true,
-                        maxAge: 10, //maxAge, // TODO
-                        sameSite: "strict",
-                        //secure: true
-                    });
-                    theCookies.set({
-                        name: REFRESH_TOKEN_COOKIE,
-                        value: JSON.stringify(account.refresh_token),
-                        httpOnly: true,
-                        maxAge: 3600, // TODO
-                        sameSite: "strict",
-                        //secure: true
-                    });
+        async jwt({token, user, account}) {
+            // Initial sign in
+            if (account && user) {
+                return {
+                    accessToken: account.accessToken,
+                    accessTokenExpires: Date.now() + Number(account.expires_in) * 1000,
+                    refreshToken: account.refresh_token,
+                    user,
                 }
             }
-            return token
-        },
 
+            // Return previous token if the access token has not expired yet
+            if (Date.now() < Number(token.accessTokenExpires)) {
+                return token
+            }
+
+            // Access token has expired, try to update it
+            return refreshAccessToken(token)
+        },
         async session({session, token}) {
-            session.user = {...session.user, ...(token.user ?? {})}
+            if (token) {
+                return {
+                    ...session,
+                    user: token.user,
+                    accessToken: token.accessToken,
+                    error: token.error
+                } as Session
+            }
             return session
-        }
+        },
     }
 } satisfies NextAuthOptions
 
