@@ -1,7 +1,7 @@
 import {NextAuthOptions, Session} from "next-auth"
 import "next-auth/jwt"
-import {JWT} from "next-auth/jwt";
-import {githubProvider, NEXT_APP_PROVIDER, springBootProvider} from "@/authProviders";
+import {JWT} from "next-auth/jwt"
+import {githubProvider, NEXT_APP_PROVIDER, springBootProvider} from "@/authProviders"
 
 async function refreshAccessToken(token: JWT) {
     try {

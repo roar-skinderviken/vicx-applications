@@ -1,5 +1,5 @@
-import {Provider} from "next-auth/providers/index";
-import GitHubProvider, {GithubProfile} from "next-auth/providers/github";
+import {Provider} from "next-auth/providers/index"
+import GitHubProvider, {GithubProfile} from "next-auth/providers/github"
 
 export const NEXT_APP_PROVIDER = "next-app-client"
 export const GITHUB_PROVIDER = "github"

@@ -12,7 +12,8 @@ export async function GET(request: NextRequest) {
     const operation = searchParams.get("operation")
 
     const session = await getServerSession(authOptions)
-    // @ts-ignore
+
+    // @ts-expect-error Because accessToken is not a prop of session
     const accessToken = session?.accessToken
 
     if (!accessToken) {

@@ -1,7 +1,7 @@
 import Hero from "@/components/Hero"
 import {getServerSession} from "next-auth"
 import {authOptions} from "@/auth"
-import CalculatorFormAndResult from "@/app/tomcat/CalculatorFormAndResult";
+import CalculatorFormAndResult from "@/app/tomcat/CalculatorFormAndResult"
 
 export const dynamic = "force-dynamic"
 
