@@ -5,7 +5,7 @@ server:
 
 logging:
   level:
-    org.springframework.security: info
+    org.springframework.security: debug
 
 spring:
   application:

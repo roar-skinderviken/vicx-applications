@@ -7,6 +7,7 @@ import * as yup from "yup"
 import ValidatedTextInput from "@/components/ValidatedTextInput"
 import {Button} from "flowbite-react"
 import {InferType} from "yup"
+import {fetchData} from "@/utils/fetchUtils";
 
 // put this in next-app/.env.local
 // NEXT_PUBLIC_TOMCAT_BACKEND_URL=http://localhost:8080/api
@@ -30,7 +31,7 @@ interface CalculatorResult extends CalculatorFormData {
     result: number
 }
 
-const CalculatorFormAndResult = () => {
+const CalculatorFormAndResult = ({useSecureEndpoint = false}: { useSecureEndpoint?: boolean }) => {
     const [result, setResult] = useState<CalculatorResult>()
 
     const methods = useForm<CalculatorFormData>({
@@ -43,16 +44,11 @@ const CalculatorFormAndResult = () => {
 
     const {handleSubmit, formState, register} = methods
 
-    const onSubmit = (formData: CalculatorFormData) => {
+    const onSubmit = async (formData: CalculatorFormData) => {
         const {firstValue, secondValue, operation} = formData
+        const requestUrl = `${BACKEND_BASE_URL}${useSecureEndpoint ? "-secured" : ""}/${firstValue}/${secondValue}/${operation}`
 
-        fetch(`${BACKEND_BASE_URL}/${firstValue}/${secondValue}/${operation}`)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok')
-                }
-                return response.json()
-            })
+        fetchData<CalculatorResult>(requestUrl, useSecureEndpoint)
             .then(data => setResult(data))
             .catch(error => console.error("Error:", error))
     }

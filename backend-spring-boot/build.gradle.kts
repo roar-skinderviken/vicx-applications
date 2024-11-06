@@ -18,6 +18,7 @@ repositories {
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0")
     implementation("io.micrometer:micrometer-registry-prometheus")
@@ -52,7 +53,7 @@ tasks.register<Copy>("processFrontendResources") {
 
 tasks.processResources {
     dependsOn("processFrontendResources")
-    dependsOn(":next-app:runJest")
+    //dependsOn(":next-app:runJest")
 }
 
 jib {

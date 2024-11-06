@@ -2,7 +2,15 @@
 
 # cd next-app
 # docker build -t next-app .
-# docker run -p 3000:3000 next-app
+#docker run -e OIDC_CLIENT_SECRET=secret \
+#           -e NEXTAUTH_SECRET=secret \
+#           -e NEXTAUTH_URL=http://localhost:3000/api/auth \
+#           -e AUTHORIZATION_URL=http://localhost:9000/auth-server/oauth2/authorize \
+#           -e TOKEN_URL=http://localhost:9000/auth-server/oauth2/token \
+#           -e ISSUER=http://localhost:9000/auth-server \
+#           -e JWKS_ENDPOINT=http://localhost:9000/auth-server/oauth2/jwks \
+#           -e API_KEY=CjLyJNKiUGdP3G-g2s0E4DWygmRQKM0moeOgYP2fpMaLkUdojpM \
+#           -p 3000:3000 next-app
 # docker rm next-app # remove stopped container
 # docker rmi next-app # remove Docker-image
 

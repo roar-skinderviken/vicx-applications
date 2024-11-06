@@ -2,6 +2,8 @@ import {NextAuthOptions} from "next-auth"
 import "next-auth/jwt"
 import {Provider} from "next-auth/providers/index"
 import GitHubProvider, {GithubProfile} from "next-auth/providers/github"
+import {cookies} from "next/headers"
+import {ACCESS_TOKEN_COOKIE, REFRESH_TOKEN_COOKIE} from "@/constants/cookieConstants";
 
 const springBootProvider: Provider = {
     id: "next-app-client",
@@ -56,11 +58,28 @@ const authOptions = {
     callbacks: {
         async jwt({token, account, user}) {
             if (account) {
-                token.accessToken = account.access_token
-
                 // login event
                 if (user) {
-                    return {...token, user}
+
+                    const maxAge = Number(account.expires_at) - Math.floor(Date.now() / 1000)
+
+                    const theCookies = await cookies()
+                    theCookies.set({
+                        name: ACCESS_TOKEN_COOKIE,
+                        value: `${account.access_token}`,
+                        httpOnly: true,
+                        maxAge: 10, //maxAge, // TODO
+                        sameSite: "strict",
+                        //secure: true
+                    });
+                    theCookies.set({
+                        name: REFRESH_TOKEN_COOKIE,
+                        value: JSON.stringify(account.refresh_token),
+                        httpOnly: true,
+                        maxAge: 3600, // TODO
+                        sameSite: "strict",
+                        //secure: true
+                    });
                 }
             }
             return token
