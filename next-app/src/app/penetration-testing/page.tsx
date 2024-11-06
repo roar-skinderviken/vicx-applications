@@ -24,6 +24,7 @@ export default function PenetrationTestingPage() {
                         <div className="mb-10">
                             <Image src={tuxImage}
                                    alt="Prepare Installation Media"
+                                   priority={true}
                                    className="mx-auto mb-5"/>
                             <h3 className="text-3xl font-semibold mb-4 text-left">Distros</h3>
                             <p className="text-sm mb-6">

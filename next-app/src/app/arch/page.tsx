@@ -31,6 +31,7 @@ export default function ArchPage() {
                                 Media</h3>
                             <Image src={blackArchImage}
                                    alt="Prepare Installation Media"
+                                   priority={true}
                                    className="w-full max-w-xs mb-3 mx-auto"/>
                             <p>Download the Arch Linux ISO and create a bootable USB drive.</p>
                             <ul className="list-disc ml-5">
