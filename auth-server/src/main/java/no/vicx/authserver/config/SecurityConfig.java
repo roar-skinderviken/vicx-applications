@@ -1,4 +1,4 @@
-package no.vicx.authserver;
+package no.vicx.authserver.config;
 
 import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
 import org.springframework.boot.actuate.health.HealthEndpoint;

@@ -10,7 +10,7 @@ import {InferType} from "yup"
 
 // put this in next-app/.env.local
 // NEXT_PUBLIC_TOMCAT_BACKEND_URL=http://localhost:8080/api
-const BACKEND_BASE_URL = process.env.NEXT_PUBLIC_TOMCAT_BACKEND_URL || "/backend-spring-boot/api"
+const BACKEND_BASE_URL = process.env.NEXT_PUBLIC_TOMCAT_BACKEND_URL || "/backend-spring-boot/api/calculator"
 
 const calculatorYupSchema = yup.object({
     firstValue: yup
@@ -30,7 +30,7 @@ interface CalculatorResult extends CalculatorFormData {
     result: number
 }
 
-const CalculatorFormAndResult = () => {
+const CalculatorFormAndResult = ({useSecureEndpoint = false}: { useSecureEndpoint?: boolean }) => {
     const [result, setResult] = useState<CalculatorResult>()
 
     const methods = useForm<CalculatorFormData>({
@@ -43,10 +43,14 @@ const CalculatorFormAndResult = () => {
 
     const {handleSubmit, formState, register} = methods
 
-    const onSubmit = (formData: CalculatorFormData) => {
+    const onSubmit = async (formData: CalculatorFormData) => {
         const {firstValue, secondValue, operation} = formData
 
-        fetch(`${BACKEND_BASE_URL}/${firstValue}/${secondValue}/${operation}`)
+        const requestUrl = useSecureEndpoint
+            ? `/api/calculator?first=${firstValue}&second=${secondValue}&operation=${operation}`
+            : `${BACKEND_BASE_URL}/${firstValue}/${secondValue}/${operation}`
+
+        fetch(requestUrl)
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Network response was not ok')

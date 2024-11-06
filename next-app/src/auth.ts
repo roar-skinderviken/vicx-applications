@@ -1,51 +1,53 @@
-import {NextAuthOptions} from "next-auth"
+import {NextAuthOptions, Session} from "next-auth"
 import "next-auth/jwt"
-import {Provider} from "next-auth/providers/index"
-import GitHubProvider, {GithubProfile} from "next-auth/providers/github"
+import {JWT} from "next-auth/jwt"
+import {githubProvider, NEXT_APP_PROVIDER, springBootProvider} from "@/authProviders"
 
-const springBootProvider: Provider = {
-    id: "next-app-client",
-    name: "Vicx OAuth",
-    clientId: "next-app-client",
-    clientSecret: process.env.OIDC_CLIENT_SECRET || "secret",
-    version: "2.0",
-    type: "oauth",
-    checks: ["pkce", "state"],
-    idToken: true,
-    authorization: {
-        url: process.env.AUTHORIZATION_URL || "http://localhost:9000/oauth2/authorize",
-        params: {scope: "openid"}
-    },
-    token: process.env.TOKEN_URL || "http://localhost:9000/oauth2/token",
-    issuer: process.env.ISSUER || "http://localhost:9000",
-    jwks_endpoint: process.env.JWKS_ENDPOINT || "http://localhost:9000/oauth2/jwks",
+async function refreshAccessToken(token: JWT) {
+    try {
+        const url = process.env.TOKEN_URL || "http://localhost:9000/auth-server/oauth2/token"
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    profile: (profile: any) => {
+        const response = await fetch(url, {
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+            },
+            method: "POST",
+            body: new URLSearchParams({
+                client_id: "next-app-client",
+                client_secret: process.env.OIDC_CLIENT_SECRET || "secret",
+                grant_type: "refresh_token",
+                refresh_token: token.refreshToken,
+            } as Record<string, string>).toString()
+        })
+
+        const refreshedTokens = await response.json()
+
+        if (!response.ok) {
+            // noinspection ExceptionCaughtLocallyJS
+            throw refreshedTokens
+        }
+
+        console.log("Access token refreshed, expires in", refreshedTokens.expires_in)
+
         return {
-            id: profile.sub,
-            name: profile.sub,
+            ...token,
+            accessToken: refreshedTokens.access_token,
+            accessTokenExpires: Date.now() + Number(refreshedTokens.expires_in) * 1000,
+            refreshToken: refreshedTokens.refresh_token ?? token.refreshToken, // Fall back to old refresh token
+        }
+    } catch (error) {
+        console.log(error)
+
+        return {
+            ...token,
+            error: "RefreshAccessTokenError",
         }
     }
 }
 
 const providers = [springBootProvider]
 if (process.env.GITHUB_ID) {
-    providers.unshift(
-        GitHubProvider({
-            clientId: process.env.GITHUB_ID || "",
-            clientSecret: process.env.GITHUB_SECRET || "",
-            profile(profile: GithubProfile) {
-                return {
-                    id: profile.id.toString(),
-                    name: profile.name || profile.login, // if user has not registered name
-                    userName: profile.login,
-                    email: profile.email,
-                    image: profile.avatar_url,
-                }
-            }
-        })
-    )
+    providers.unshift(githubProvider)
 }
 
 const authOptions = {
@@ -54,22 +56,49 @@ const authOptions = {
         strategy: "jwt"
     },
     callbacks: {
-        async jwt({token, account, user}) {
-            if (account) {
-                token.accessToken = account.access_token
+        async jwt({token, user, account}) {
+            // Initial sign in
+            if (account && user) {
+                if (account.provider !== NEXT_APP_PROVIDER) {
+                    return {
+                        ...token,
+                        provider: account.provider,
+                        user
+                    }
+                }
 
-                // login event
-                if (user) {
-                    return {...token, user}
+                return {
+                    provider: account.provider,
+                    accessToken: account.accessToken,
+                    accessTokenExpires: Date.now() + Number(account.expires_in) * 1000,
+                    refreshToken: account.refresh_token,
+                    user,
                 }
             }
-            return token
-        },
 
+            const expiresInSeconds = Math.floor((Number(token.accessTokenExpires) - Date.now())/ 1000)
+            console.debug("Access token expires in:", expiresInSeconds)
+
+            // Return previous token if the access token has not expired yet
+            if (token.provider !== NEXT_APP_PROVIDER || expiresInSeconds > 10) {
+                return token
+            }
+
+            // Access token has expired, try to update it
+            return refreshAccessToken(token)
+        },
         async session({session, token}) {
-            session.user = {...session.user, ...(token.user ?? {})}
+            if (token) {
+                return {
+                    ...session,
+                    provider: token.provider,
+                    user: token.user,
+                    accessToken: token.accessToken,
+                    error: token.error
+                } as Session
+            }
             return session
-        }
+        },
     }
 } satisfies NextAuthOptions
 
