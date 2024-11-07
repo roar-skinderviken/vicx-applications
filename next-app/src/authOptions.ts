@@ -103,4 +103,4 @@ const authOptions = {
     }
 } satisfies NextAuthOptions
 
-export {authOptions}
+export default authOptions

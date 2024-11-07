@@ -1,6 +1,6 @@
 import Hero from "@/components/Hero"
 import {getServerSession} from "next-auth"
-import {authOptions} from "@/auth"
+import authOptions from "@/authOptions"
 
 export const dynamic = "force-dynamic"
 

@@ -1,6 +1,6 @@
 import {NextRequest, NextResponse} from "next/server"
 import {getServerSession} from "next-auth"
-import {authOptions} from "@/auth"
+import authOptions from "@/authOptions"
 
 const BACKEND_BASE_URL = process.env.TOMCAT_BACKEND_SECURED_URL || "http://localhost:8080/api-secured/calculator"
 
