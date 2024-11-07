@@ -15,7 +15,6 @@ spring:
   application:
     name: auth-server
   security:
-    #    user:
     oauth2:
       authorizationserver:
         client:
@@ -39,6 +38,7 @@ spring:
                 - "profile"
                 - "message.read"
                 - "message.write"
+
             require-authorization-consent: true
 
 management:

@@ -9,7 +9,9 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 import {faSignInAlt} from "@fortawesome/free-solid-svg-icons"
 import {navbarTheme, signInOptions} from "@/components/navbar/navbarConstants"
 import {useEffect, useState} from "react"
-import {SessionUser} from "@/types/authTypes"
+import {CustomSession, SessionUser} from "@/types/authTypes"
+
+const EMPTY_USER: SessionUser = {id: ""}
 
 const signInButton = (
     <button
@@ -31,7 +33,7 @@ const VicxNavbar = () => {
     const [user, setUser] = useState<SessionUser | null>(null)
 
     useEffect(() => {
-        getSession().then(session => setUser(session?.user ?? {}))
+        getSession().then(session => setUser((session as CustomSession)?.user ?? EMPTY_USER))
     }, [])
 
     return (
@@ -42,7 +44,7 @@ const VicxNavbar = () => {
             <div className="flex md:order-2 min-w-12 h-8">
                 <div className="flex items-center justify-end w-full">
                     <div className="flex-shrink-0 me-4 md:me-0">
-                        {user && (user?.name ? <SignedInMenu user={user}/> : signInButton)}
+                        {user && (user.name ? <SignedInMenu user={user}/> : signInButton)}
                     </div>
                     <Navbar.Toggle/>
                 </div>

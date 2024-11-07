@@ -1,5 +1,14 @@
 import {act, fireEvent, render, screen} from "@testing-library/react"
-import CalculatorFormAndResult from "@/app/tomcat/CalculatorFormAndResult"
+import CalculatorFormAndResult, {CALC_BACKEND_BASE_URL} from "@/app/tomcat/CalculatorFormAndResult"
+import {getSession} from "next-auth/react"
+import {CustomSession} from "@/types/authTypes"
+import clearAllMocks = jest.clearAllMocks
+
+jest.mock("next-auth/react", () => ({
+    getSession: jest.fn()
+}))
+
+const mockGetSession = getSession as jest.Mock
 
 const changeEvent = (content: string) => ({target: {value: content}})
 
@@ -11,6 +20,17 @@ const changeInputValue = async (label: string, value: string) => {
 const setupForSubmit = async () => {
     await changeInputValue("First Value", "1")
     await changeInputValue("Second Value", "2")
+}
+
+const sessionUser = (roles: string[]) => ({
+    id: "1",
+    name: "user1",
+    roles: roles
+})
+
+const validSession: CustomSession = {
+    expires: Date.now().toString(),
+    user: sessionUser(["ROLE_USER"])
 }
 
 const validAddResponse = {
@@ -81,23 +101,73 @@ describe("CalculatorFormAndResult", () => {
     })
 
     describe("Submit button interactions", () => {
+        const userNotLoggedInBackendUrl = (firstValue: number, secondValue: number, operation: string) =>
+            `${CALC_BACKEND_BASE_URL}/${firstValue}/${secondValue}/${operation}`
+
+        const userLoggedInBackendUrl = (firstValue: number, secondValue: number, operation: string) =>
+            `/api/calculator?first=${firstValue}&second=${secondValue}&operation=${operation}`
+
         beforeEach(async () => {
+            clearAllMocks()
+            mockGetSession.mockResolvedValue(null)
             render(<CalculatorFormAndResult/>)
             await setupForSubmit()
         })
 
-        it("displays add result when API returns valid response", async () => {
+        it("displays add result when API returns valid response, user not logged in", async () => {
             fetchMock.mockResponseOnce(JSON.stringify(validAddResponse))
+
             await act(() => fireEvent.click(screen.getByRole("button", {name: "Add"})))
 
             expect(screen.queryByText("1 + 2 = 3")).toBeInTheDocument()
+            expect(fetchMock).toHaveBeenCalledWith(
+                userNotLoggedInBackendUrl(1, 2, "PLUS"))
+        })
+
+        it("calls Next route API endpoint with add when user has role 'ROLE_USER'", async () => {
+            fetchMock.mockResponseOnce(JSON.stringify(validAddResponse))
+            mockGetSession.mockResolvedValueOnce(validSession)
+
+            await act(() => fireEvent.click(screen.getByRole("button", {name: "Add"})))
+
+            expect(fetchMock).toHaveBeenCalledWith(
+                userLoggedInBackendUrl(1, 2, "PLUS"))
         })
 
         it("displays subtract result when API returns valid response", async () => {
             fetchMock.mockResponseOnce(JSON.stringify(validSubtractResponse))
+
             await act(() => fireEvent.click(screen.getByRole("button", {name: "Subtract"})))
 
             expect(screen.queryByText("1 - 2 = -1")).toBeInTheDocument()
+            expect(fetchMock).toHaveBeenCalledWith(
+                userNotLoggedInBackendUrl(1, 2, "MINUS"))
+        })
+
+        it("calls Next route API endpoint with subtract when user has role 'ROLE_USER'", async () => {
+            fetchMock.mockResponseOnce(JSON.stringify(validSubtractResponse))
+            mockGetSession.mockResolvedValueOnce(validSession)
+
+            await act(() => fireEvent.click(screen.getByRole("button", {name: "Subtract"})))
+
+            expect(screen.queryByText("1 - 2 = -1")).toBeInTheDocument()
+            expect(fetchMock).toHaveBeenCalledWith(
+                userLoggedInBackendUrl(1, 2, "MINUS"))
+        })
+
+        it("calls backend API endpoint when user is missing role 'ROLE_USER'", async () => {
+            fetchMock.mockResponseOnce(JSON.stringify(validSubtractResponse))
+
+            mockGetSession.mockResolvedValueOnce({
+                ...validSession,
+                user: sessionUser([]),
+            })
+
+            await act(() => fireEvent.click(screen.getByRole("button", {name: "Subtract"})))
+
+            expect(screen.queryByText("1 - 2 = -1")).toBeInTheDocument()
+            expect(fetchMock).toHaveBeenCalledWith(
+                userNotLoggedInBackendUrl(1, 2, "MINUS"))
         })
     })
 })

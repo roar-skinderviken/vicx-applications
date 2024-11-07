@@ -1,7 +1,7 @@
 import {NextAuthOptions, Session} from "next-auth"
 import "next-auth/jwt"
 import {JWT} from "next-auth/jwt"
-import {githubProvider, NEXT_APP_PROVIDER, springBootProvider} from "@/authProviders"
+import {githubProvider, DEFAULT_APP_PROVIDER_ID, springBootProvider} from "@/constants/authProviders"
 
 async function refreshAccessToken(token: JWT) {
     try {
@@ -32,7 +32,7 @@ async function refreshAccessToken(token: JWT) {
         return {
             ...token,
             accessToken: refreshedTokens.access_token,
-            accessTokenExpires: Date.now() + Number(refreshedTokens.expires_in) * 1000,
+            accessTokenExpires: Date.now() + (Number(refreshedTokens.expires_in) * 1000),
             refreshToken: refreshedTokens.refresh_token ?? token.refreshToken, // Fall back to old refresh token
         }
     } catch (error) {
@@ -53,13 +53,14 @@ if (process.env.GITHUB_ID) {
 const authOptions = {
     providers: providers,
     session: {
-        strategy: "jwt"
+        strategy: "jwt",
+        maxAge: 1000 * 60 * 55, // 55 minutes
     },
     callbacks: {
         async jwt({token, user, account}) {
             // Initial sign in
             if (account && user) {
-                if (account.provider !== NEXT_APP_PROVIDER) {
+                if (account.provider !== DEFAULT_APP_PROVIDER_ID) {
                     return {
                         ...token,
                         provider: account.provider,
@@ -80,7 +81,7 @@ const authOptions = {
             console.debug("Access token expires in:", expiresInSeconds)
 
             // Return previous token if the access token has not expired yet
-            if (token.provider !== NEXT_APP_PROVIDER || expiresInSeconds > 10) {
+            if (token.provider !== DEFAULT_APP_PROVIDER_ID || expiresInSeconds > 10) {
                 return token
             }
 
@@ -91,8 +92,8 @@ const authOptions = {
             if (token) {
                 return {
                     ...session,
-                    provider: token.provider,
                     user: token.user,
+                    provider: token.provider,
                     accessToken: token.accessToken,
                     error: token.error
                 } as Session

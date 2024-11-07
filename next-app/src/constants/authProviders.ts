@@ -1,17 +1,18 @@
 import {Provider} from "next-auth/providers/index"
 import GitHubProvider, {GithubProfile} from "next-auth/providers/github"
 
-export const NEXT_APP_PROVIDER = "next-app-client"
-export const GITHUB_PROVIDER = "github"
+export const DEFAULT_APP_PROVIDER_ID = "next-app-client"
+export const GITHUB_PROVIDER_ID = "github"
 
 export const githubProvider = GitHubProvider({
+    id: GITHUB_PROVIDER_ID,
     clientId: process.env.GITHUB_ID || "",
     clientSecret: process.env.GITHUB_SECRET || "",
     profile(profile: GithubProfile) {
         return {
             id: profile.id.toString(),
             name: profile.name || profile.login, // if user has not registered name
-            userName: profile.login,
+            roles: [],
             email: profile.email,
             image: profile.avatar_url,
         }
@@ -19,7 +20,7 @@ export const githubProvider = GitHubProvider({
 })
 
 export const springBootProvider: Provider = {
-    id: NEXT_APP_PROVIDER,
+    id: DEFAULT_APP_PROVIDER_ID,
     name: "Vicx OAuth",
     clientId: "next-app-client",
     clientSecret: process.env.OIDC_CLIENT_SECRET || "secret",
@@ -40,6 +41,7 @@ export const springBootProvider: Provider = {
         return {
             id: profile.sub,
             name: profile.sub,
+            roles: profile.roles,
         }
     }
 }

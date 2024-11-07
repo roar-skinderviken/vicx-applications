@@ -7,10 +7,13 @@ import * as yup from "yup"
 import ValidatedTextInput from "@/components/ValidatedTextInput"
 import {Button} from "flowbite-react"
 import {InferType} from "yup"
+import {getSession} from "next-auth/react"
+import {CustomSession} from "@/types/authTypes"
+import {hasRole} from "@/utils/authUtils"
 
 // put this in next-app/.env.local
 // NEXT_PUBLIC_TOMCAT_BACKEND_URL=http://localhost:8080/api
-const BACKEND_BASE_URL = process.env.NEXT_PUBLIC_TOMCAT_BACKEND_URL || "/backend-spring-boot/api/calculator"
+export const CALC_BACKEND_BASE_URL = process.env.NEXT_PUBLIC_TOMCAT_BACKEND_URL || "/backend-spring-boot/api/calculator"
 
 const calculatorYupSchema = yup.object({
     firstValue: yup
@@ -30,7 +33,7 @@ interface CalculatorResult extends CalculatorFormData {
     result: number
 }
 
-const CalculatorFormAndResult = ({useSecureEndpoint = false}: { useSecureEndpoint?: boolean }) => {
+const CalculatorFormAndResult = () => {
     const [result, setResult] = useState<CalculatorResult>()
 
     const methods = useForm<CalculatorFormData>({
@@ -46,11 +49,13 @@ const CalculatorFormAndResult = ({useSecureEndpoint = false}: { useSecureEndpoin
     const onSubmit = async (formData: CalculatorFormData) => {
         const {firstValue, secondValue, operation} = formData
 
-        const requestUrl = useSecureEndpoint
-            ? `/api/calculator?first=${firstValue}&second=${secondValue}&operation=${operation}`
-            : `${BACKEND_BASE_URL}/${firstValue}/${secondValue}/${operation}`
-
-        fetch(requestUrl)
+        getSession()
+            .then(session => (session as CustomSession)?.user)
+            .then(sessionUser => hasRole("ROLE_USER", sessionUser)
+                ? `/api/calculator?first=${firstValue}&second=${secondValue}&operation=${operation}`
+                : `${CALC_BACKEND_BASE_URL}/${firstValue}/${secondValue}/${operation}`
+            )
+            .then(url => fetch(url))
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Network response was not ok')
