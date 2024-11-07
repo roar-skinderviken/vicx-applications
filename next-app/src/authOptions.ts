@@ -54,7 +54,7 @@ const authOptions = {
     providers: providers,
     session: {
         strategy: "jwt",
-        maxAge: 1000 * 60 * 55, // 55 minutes
+        maxAge: 60 * 55, // 55 minutes
     },
     callbacks: {
         async jwt({token, user, account}) {
