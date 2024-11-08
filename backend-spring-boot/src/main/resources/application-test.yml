@@ -1,0 +1,10 @@
+logging:
+  level:
+    root: DEBUG
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/user_db
+    username: test
+    password: test
+    driver-class-name: org.postgresql.Driver

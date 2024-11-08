@@ -1,15 +1,18 @@
 package no.vicx.backend.calculator;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import no.vicx.backend.calculator.vm.CalcVm;
+import no.vicx.backend.calculator.vm.CalculatorOperation;
 import org.springframework.http.MediaType;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Optional;
 
 @RestController
-public class ApiController {
-    private static final Logger LOG = LoggerFactory.getLogger(ApiController.class);
-
+public class CalculatorController {
     // URL for testing on localhost: http://localhost:8080/api/calculator/5/10/PLUS
     private static final String CALC_TEMPLATE = "/calculator/{firstValue}/{secondValue}/{operation}";
     static final String URL_TEMPLATE = "/api" + CALC_TEMPLATE;
@@ -17,7 +20,9 @@ public class ApiController {
 
     private final CalculatorService calculatorService;
 
-    public ApiController(CalculatorService calculatorService) {
+    public CalculatorController(
+            CalculatorService calculatorService
+    ) {
         this.calculatorService = calculatorService;
     }
 
@@ -31,10 +36,13 @@ public class ApiController {
             @PathVariable CalculatorOperation operation,
             JwtAuthenticationToken token
     ) {
-        if (token != null) {
-            LOG.info("Calling calculator with credentials: {}", token.getName());
-        }
-
-        return calculatorService.calculate(firstValue, secondValue, operation);
+        return calculatorService.calculate(
+                firstValue,
+                secondValue,
+                operation,
+                Optional.ofNullable(token)
+                        .map(JwtAuthenticationToken::getName)
+                        .orElse(null)
+        );
     }
 }
