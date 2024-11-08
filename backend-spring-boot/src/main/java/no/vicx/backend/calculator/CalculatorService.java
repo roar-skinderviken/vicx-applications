@@ -1,5 +1,6 @@
 package no.vicx.backend.calculator;
 
+import jakarta.transaction.Transactional;
 import no.vicx.backend.calculator.repository.CalculatorEntity;
 import no.vicx.backend.calculator.repository.CalculatorRepository;
 import no.vicx.backend.calculator.vm.CalcVm;
@@ -7,6 +8,7 @@ import no.vicx.backend.calculator.vm.CalculatorOperation;
 import org.springframework.stereotype.Service;
 
 @Service
+@Transactional
 public class CalculatorService {
 
     private final CalculatorRepository calculatorRepository;
