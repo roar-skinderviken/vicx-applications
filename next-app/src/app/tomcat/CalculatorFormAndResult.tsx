@@ -31,6 +31,9 @@ type CalculatorFormData = InferType<typeof calculatorYupSchema>
 
 interface CalculatorResult extends CalculatorFormData {
     result: number
+    username?: string
+    createdAt: Date
+    previousResults?: CalculatorResult[]
 }
 
 const CalculatorFormAndResult = () => {
@@ -93,11 +96,55 @@ const CalculatorFormAndResult = () => {
             </div>
 
             {result && (
-                <div className="mt-6 p-4 bg-gray-100 rounded shadow-md">
-                    <h2 className="text-lg font-bold text-gray-700">Result</h2>
-                    <p className="text-base text-gray-600 mt-2">
-                        {result.firstValue} {result.operation === 'PLUS' ? '+' : '-'} {result.secondValue} = {result.result}
-                    </p>
+                <div className="mt-6 p-6 bg-gray-50 border rounded-lg shadow-sm">
+                    <h2 className="text-xl font-semibold text-gray-800 text-center flex items-center justify-center gap-2">
+                        <span className="text-green-500">✓</span>
+                        Calculation Result
+                    </h2>
+                    <div className="mt-4 flex justify-center items-baseline text-3xl font-bold text-gray-700 ">
+                        <span>{result.firstValue}</span>
+                        <span className="mx-2 text-gray-500">
+                            {result.operation === 'PLUS' ? '+' : '-'}
+                        </span>
+                        <span>{result.secondValue}</span>
+                        <span className="mx-2 text-gray-500">=</span>
+                        <span className="text-green-600">{result.result}</span>
+                    </div>
+
+                    {result.previousResults && result.previousResults.length > 0 && (
+                        <div className="mt-8">
+                            <h3 className="text-md font-semibold text-gray-700 text-center">
+                                Previous results on this server
+                            </h3>
+                            <table className="min-w-full bg-white mt-2 border border-gray-300">
+                                <thead>
+                                <tr>
+                                    <th className="py-2 px-4 border-b text-left text-gray-700">Calculation</th>
+                                    <th className="py-2 px-4 border-b text-left text-gray-700">User</th>
+                                    <th className="py-2 px-4 border-b text-left text-gray-700">Date</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {result.previousResults.map((prevResult, index) => (
+                                    <tr key={index} className="hover:bg-gray-50">
+                                        <td className="py-2 px-4 border-b text-gray-600 text-left">
+                                            {prevResult.firstValue} {prevResult.operation === 'PLUS' ? '+' : '-'} {prevResult.secondValue} = {prevResult.result}
+                                        </td>
+                                        <td className="py-2 px-4 border-b text-gray-600 text-left">
+                                            {prevResult.username || "Anonymous"}
+                                        </td>
+                                        <td className="py-2 px-4 border-b text-gray-600 text-left">
+                                            {new Intl.DateTimeFormat('en-US', {
+                                                dateStyle: 'medium',
+                                                timeStyle: 'short'
+                                            }).format(new Date(prevResult.createdAt))}
+                                        </td>
+                                    </tr>
+                                ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    )}
                 </div>
             )}
         </div>

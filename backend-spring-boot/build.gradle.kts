@@ -21,6 +21,15 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0")
+
+    implementation(project(":database"))
+    runtimeOnly("com.h2database:h2")
+    runtimeOnly("org.flywaydb:flyway-core")
+    testImplementation("org.testcontainers:postgresql")
+    testImplementation("org.springframework.boot:spring-boot-testcontainers")
+    testRuntimeOnly("org.flywaydb:flyway-database-postgresql")
+    testRuntimeOnly("org.postgresql:postgresql")
+
     implementation("io.micrometer:micrometer-registry-prometheus")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
@@ -32,9 +41,10 @@ springBoot {
 
 tasks.test {
     useJUnitPlatform()
+    systemProperty("spring.profiles.active", "test")
 }
 
-tasks.jar{
+tasks.jar {
     enabled = false
 }
 
@@ -54,21 +64,4 @@ tasks.register<Copy>("processFrontendResources") {
 tasks.processResources {
     dependsOn("processFrontendResources")
     //dependsOn(":next-app:runJest")
-}
-
-jib {
-    from {
-        image = "bellsoft/liberica-openjdk-alpine:21"
-        platforms {
-            platform {
-                os = "linux"
-                architecture = "arm64"
-            }
-            platform {
-                os = "linux"
-                architecture = "amd64"
-            }
-        }
-    }
-    container { creationTime = "USE_CURRENT_TIMESTAMP" }
 }
