@@ -46,6 +46,24 @@ const validSubtractResponse = {
     result: -1
 }
 
+const dateInTests = new Date()
+
+const formattedDateInTest = new Intl.DateTimeFormat('en-US', {
+    dateStyle: 'medium',
+    timeStyle: 'short'
+}).format(dateInTests)
+
+const previousResult = {
+    ...validAddResponse,
+    username: "user1",
+    createdAt: dateInTests
+}
+
+const validResponseWithPreviousResults = {
+    ...validAddResponse,
+    previousResults: [previousResult]
+}
+
 describe("CalculatorFormAndResult", () => {
     describe("Layout", () => {
         beforeEach(() => render(<CalculatorFormAndResult/>))
@@ -101,6 +119,12 @@ describe("CalculatorFormAndResult", () => {
     })
 
     describe("Submit button interactions", () => {
+        const expectSpanValuesToBeInTheDocument = (values: string[]) => {
+            values.forEach((value) => {
+                expect(screen.queryByText(value)?.closest("span")).toBeInTheDocument()
+            })
+        }
+
         const userNotLoggedInBackendUrl = (firstValue: number, secondValue: number, operation: string) =>
             `${CALC_BACKEND_BASE_URL}/${firstValue}/${secondValue}/${operation}`
 
@@ -119,7 +143,7 @@ describe("CalculatorFormAndResult", () => {
 
             await act(() => fireEvent.click(screen.getByRole("button", {name: "Add"})))
 
-            expect(screen.queryByText("1 + 2 = 3")).toBeInTheDocument()
+            expectSpanValuesToBeInTheDocument(["1", "+", "2", "=", "3"])
             expect(fetchMock).toHaveBeenCalledWith(
                 userNotLoggedInBackendUrl(1, 2, "PLUS"))
         })
@@ -139,7 +163,7 @@ describe("CalculatorFormAndResult", () => {
 
             await act(() => fireEvent.click(screen.getByRole("button", {name: "Subtract"})))
 
-            expect(screen.queryByText("1 - 2 = -1")).toBeInTheDocument()
+            expectSpanValuesToBeInTheDocument(["1", "-", "2", "=", "-1"])
             expect(fetchMock).toHaveBeenCalledWith(
                 userNotLoggedInBackendUrl(1, 2, "MINUS"))
         })
@@ -150,7 +174,7 @@ describe("CalculatorFormAndResult", () => {
 
             await act(() => fireEvent.click(screen.getByRole("button", {name: "Subtract"})))
 
-            expect(screen.queryByText("1 - 2 = -1")).toBeInTheDocument()
+            expectSpanValuesToBeInTheDocument(["1", "-", "2", "=", "-1"])
             expect(fetchMock).toHaveBeenCalledWith(
                 userLoggedInBackendUrl(1, 2, "MINUS"))
         })
@@ -165,9 +189,20 @@ describe("CalculatorFormAndResult", () => {
 
             await act(() => fireEvent.click(screen.getByRole("button", {name: "Subtract"})))
 
-            expect(screen.queryByText("1 - 2 = -1")).toBeInTheDocument()
+            expectSpanValuesToBeInTheDocument(["1", "-", "2", "=", "-1"])
             expect(fetchMock).toHaveBeenCalledWith(
                 userNotLoggedInBackendUrl(1, 2, "MINUS"))
+        })
+
+        it("displays previous results when returned by API", async () => {
+            fetchMock.mockResponseOnce(JSON.stringify(validResponseWithPreviousResults))
+
+            await act(() => fireEvent.click(screen.getByRole("button", {name: "Subtract"})))
+
+            expect(screen.queryByRole("heading", {level: 3})).toHaveTextContent("Previous results on this server")
+
+            expect(screen.queryByText(previousResult.username)).toBeInTheDocument()
+            expect(screen.queryByText(formattedDateInTest)).toBeInTheDocument()
         })
     })
 })
