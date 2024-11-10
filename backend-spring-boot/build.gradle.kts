@@ -23,6 +23,7 @@ dependencies {
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0")
 
     implementation(project(":database"))
+    implementation("org.springframework.boot:spring-boot-starter-validation")
     runtimeOnly("com.h2database:h2")
     runtimeOnly("org.flywaydb:flyway-core")
     testImplementation("org.testcontainers:postgresql")

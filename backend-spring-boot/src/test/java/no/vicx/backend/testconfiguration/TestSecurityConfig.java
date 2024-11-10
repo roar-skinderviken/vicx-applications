@@ -7,20 +7,25 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Map;
 
 @TestConfiguration
 public class TestSecurityConfig {
 
+    public static final Jwt JWT_IN_TEST = new Jwt(
+            "token",
+            Instant.now(),
+            Instant.now().plusSeconds(30),
+            Map.of("alg", "none"),
+            Map.of(
+                    "sub", "user1",
+                    "roles", List.of("ROLE_USER"))
+    );
+
     @Primary
     @Bean
     public JwtDecoder jwtDecoder() {
-        return token ->  new Jwt(
-                "token",
-                Instant.now(),
-                Instant.now().plusSeconds(30),
-                Map.of("alg", "none"),
-                Map.of("sub", "user1")
-        );
+        return token -> JWT_IN_TEST;
     }
 }
