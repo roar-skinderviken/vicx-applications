@@ -1,5 +1,8 @@
 import {act, fireEvent, render, screen} from "@testing-library/react"
-import CalculatorFormAndResult, {CALC_BACKEND_BASE_URL} from "@/app/tomcat/CalculatorFormAndResult"
+import CalculatorFormAndResult, {
+    CALC_BACKEND_BASE_URL,
+    CALC_NEXT_BACKEND_URL
+} from "@/app/tomcat/CalculatorFormAndResult"
 import {getSession} from "next-auth/react"
 import {CustomSession} from "@/types/authTypes"
 import clearAllMocks = jest.clearAllMocks
@@ -59,10 +62,19 @@ const previousResult = {
     createdAt: dateInTests
 }
 
-const validResponseWithPreviousResults = {
-    ...validAddResponse,
-    previousResults: [previousResult]
+const createValidRequest = (firstValue: number, secondValue: number, operation: string) => {
+    return {
+        body: JSON.stringify({
+            operation,
+            secondValue,
+            firstValue,
+        }),
+        headers: {"Content-Type": "application/json"},
+        method: "POST",
+    }
 }
+
+const validPreviousResultsResponse = [previousResult]
 
 describe("CalculatorFormAndResult", () => {
     describe("Layout", () => {
@@ -125,11 +137,29 @@ describe("CalculatorFormAndResult", () => {
             })
         }
 
-        const userNotLoggedInBackendUrl = (firstValue: number, secondValue: number, operation: string) =>
-            `${CALC_BACKEND_BASE_URL}/${firstValue}/${secondValue}/${operation}`
+        const runCalculationTest = async (operation: "PLUS" | "MINUS", authenticated: boolean = false) => {
+            const isAddition = operation === "PLUS"
 
-        const userLoggedInBackendUrl = (firstValue: number, secondValue: number, operation: string) =>
-            `/api/calculator?first=${firstValue}&second=${secondValue}&operation=${operation}`
+            const response = isAddition ? validAddResponse : validSubtractResponse
+            const buttonName = isAddition ? "Add" : "Subtract"
+            const expectedSign = isAddition ? "+" : "-"
+            const expectedResult = isAddition ? "3" : "-1"
+
+            if (authenticated) mockGetSession.mockResolvedValueOnce(validSession)
+
+            fetchMock
+                .mockResponseOnce(JSON.stringify(response))
+                .mockResponseOnce(JSON.stringify(validPreviousResultsResponse))
+
+            await act(() => fireEvent.click(screen.getByRole("button", { name: buttonName })))
+
+            expectSpanValuesToBeInTheDocument(["1", expectedSign, "2", "=", expectedResult])
+
+            // Verify API calls
+            const backendUrl = authenticated ? CALC_NEXT_BACKEND_URL : CALC_BACKEND_BASE_URL
+            expect(fetchMock).toHaveBeenCalledWith(backendUrl, createValidRequest(1, 2, operation))
+            expect(fetchMock).toHaveBeenCalledWith(CALC_BACKEND_BASE_URL)
+        }
 
         beforeEach(async () => {
             clearAllMocks()
@@ -139,65 +169,23 @@ describe("CalculatorFormAndResult", () => {
         })
 
         it("displays add result when API returns valid response, user not logged in", async () => {
-            fetchMock.mockResponseOnce(JSON.stringify(validAddResponse))
-
-            await act(() => fireEvent.click(screen.getByRole("button", {name: "Add"})))
-
-            expectSpanValuesToBeInTheDocument(["1", "+", "2", "=", "3"])
-            expect(fetchMock).toHaveBeenCalledWith(
-                userNotLoggedInBackendUrl(1, 2, "PLUS"))
+            await runCalculationTest("PLUS")
         })
 
         it("calls Next route API endpoint with add when user has role 'ROLE_USER'", async () => {
-            fetchMock.mockResponseOnce(JSON.stringify(validAddResponse))
-            mockGetSession.mockResolvedValueOnce(validSession)
-
-            await act(() => fireEvent.click(screen.getByRole("button", {name: "Add"})))
-
-            expect(fetchMock).toHaveBeenCalledWith(
-                userLoggedInBackendUrl(1, 2, "PLUS"))
+            await runCalculationTest("PLUS", true)
         })
 
         it("displays subtract result when API returns valid response", async () => {
-            fetchMock.mockResponseOnce(JSON.stringify(validSubtractResponse))
-
-            await act(() => fireEvent.click(screen.getByRole("button", {name: "Subtract"})))
-
-            expectSpanValuesToBeInTheDocument(["1", "-", "2", "=", "-1"])
-            expect(fetchMock).toHaveBeenCalledWith(
-                userNotLoggedInBackendUrl(1, 2, "MINUS"))
+            await runCalculationTest("MINUS")
         })
 
         it("calls Next route API endpoint with subtract when user has role 'ROLE_USER'", async () => {
-            fetchMock.mockResponseOnce(JSON.stringify(validSubtractResponse))
-            mockGetSession.mockResolvedValueOnce(validSession)
-
-            await act(() => fireEvent.click(screen.getByRole("button", {name: "Subtract"})))
-
-            expectSpanValuesToBeInTheDocument(["1", "-", "2", "=", "-1"])
-            expect(fetchMock).toHaveBeenCalledWith(
-                userLoggedInBackendUrl(1, 2, "MINUS"))
-        })
-
-        it("calls backend API endpoint when user is missing role 'ROLE_USER'", async () => {
-            fetchMock.mockResponseOnce(JSON.stringify(validSubtractResponse))
-
-            mockGetSession.mockResolvedValueOnce({
-                ...validSession,
-                user: sessionUser([]),
-            })
-
-            await act(() => fireEvent.click(screen.getByRole("button", {name: "Subtract"})))
-
-            expectSpanValuesToBeInTheDocument(["1", "-", "2", "=", "-1"])
-            expect(fetchMock).toHaveBeenCalledWith(
-                userNotLoggedInBackendUrl(1, 2, "MINUS"))
+            await runCalculationTest("MINUS", true)
         })
 
         it("displays previous results when returned by API", async () => {
-            fetchMock.mockResponseOnce(JSON.stringify(validResponseWithPreviousResults))
-
-            await act(() => fireEvent.click(screen.getByRole("button", {name: "Subtract"})))
+            await runCalculationTest("MINUS", true)
 
             expect(screen.queryByRole("heading", {level: 3})).toHaveTextContent("Previous results on this server")
 

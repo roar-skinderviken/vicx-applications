@@ -11,8 +11,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 
-import java.util.stream.IntStream;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -33,7 +31,20 @@ class CalculatorRepositoryTest {
     }
 
     @Test
-    void whenEntityIsSaved_expectEntityInDatabase() {
+    void findAllByOrderByIdDesc_givenTwoItemsInDatabase_expectResultToBeOrderedDescending() {
+        entityManager.persist(createValidEntity());
+        entityManager.persist(createValidEntity());
+
+        var result = sut.findAllByOrderByIdDesc();
+
+        var first = result.getFirst();
+        var last = result.getLast();
+
+        assertTrue(first.getId() > last.getId());
+    }
+
+    @Test
+    void save_givenValidEntity_expectEntityToBeSaved() {
         var expected = createValidEntity();
 
         sut.save(expected);
@@ -44,7 +55,7 @@ class CalculatorRepositoryTest {
     }
 
     @Test
-    void givenEntityInDatabase_whenFindById_expectResult() {
+    void findById_givenEntityInDatabase_expectResult() {
         var expected = createValidEntity();
 
         entityManager.persist(expected);
@@ -56,7 +67,7 @@ class CalculatorRepositoryTest {
     }
 
     @Test
-    void givenEntityInDatabaseWithUsername_whenFindById_expectEntityWithUsername() {
+    void findById_givenEntityInDatabaseWithUsername_expectEntityWithUsername() {
         var expected = createValidEntity("user1");
 
         entityManager.persist(expected);
@@ -68,27 +79,14 @@ class CalculatorRepositoryTest {
     }
 
     @Test
-    void givenSingleEntityInDatabase_whenFindByIdNotOrderByIdAsc_expectEmptyResult() {
-        var entityToInsert = createValidEntity();
-        entityManager.persist(entityToInsert);
+    void findAllIdsByUsername_givenDataInDatabase_expectResult() {
+        entityManager.persist(createValidEntity("user1"));
 
-        var result = sut.findByIdNotOrderByIdDesc(entityToInsert.getId());
+        var result = sut.findAllIdsByUsername("user1");
 
-        assertTrue(result.isEmpty());
+        assertEquals(1, result.size());
     }
-
-    @Test
-    void givenThreeEntitiesInDatabase_whenFindByIdNotOrderByIdAsc_expectResultWithSizeOfTwo() {
-        IntStream.rangeClosed(1, 3)
-                .mapToObj(it -> createValidEntity())
-                .forEach(it -> entityManager.persist(it));
-
-        var result = sut.findByIdNotOrderByIdDesc(3L);
-
-        assertEquals(2, result.size());
-        assertEquals(2, result.getFirst().getId());
-    }
-
+    
     private static CalculatorEntity createValidEntity(String username) {
         return new CalculatorEntity(
                 1, 2, CalculatorOperation.PLUS, 3, username);

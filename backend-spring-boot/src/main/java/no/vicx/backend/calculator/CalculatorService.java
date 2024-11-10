@@ -4,8 +4,10 @@ import jakarta.transaction.Transactional;
 import no.vicx.backend.calculator.repository.CalculatorEntity;
 import no.vicx.backend.calculator.repository.CalculatorRepository;
 import no.vicx.backend.calculator.vm.CalcVm;
-import no.vicx.backend.calculator.vm.CalculatorOperation;
+import no.vicx.backend.calculator.vm.CalculatorRequestVm;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @Transactional
@@ -17,28 +19,34 @@ public class CalculatorService {
         this.calculatorRepository = calculatorRepository;
     }
 
+    public List<CalcVm> getAllCalculations() {
+        return calculatorRepository.findAllByOrderByIdDesc()
+                .stream()
+                .map(CalcVm::fromEntity)
+                .toList();
+    }
+
+    public void deleteByIds(List<Long> ids) {
+        calculatorRepository.deleteByIdIn(ids);
+    }
+
     public CalcVm calculate(
-            long firstValue,
-            long secondValue,
-            CalculatorOperation operation,
+            CalculatorRequestVm calculatorRequestVm,
             String username) {
 
-        var result = switch (operation) {
-            case PLUS -> firstValue + secondValue;
-            case MINUS -> firstValue - secondValue;
+        var result = switch (calculatorRequestVm.operation()) {
+            case PLUS -> calculatorRequestVm.firstValue() + calculatorRequestVm.secondValue();
+            case MINUS -> calculatorRequestVm.firstValue() - calculatorRequestVm.secondValue();
         };
 
         var savedEntity = calculatorRepository.save(
                 new CalculatorEntity(
-                        firstValue,
-                        secondValue,
-                        operation,
+                        calculatorRequestVm.firstValue(),
+                        calculatorRequestVm.secondValue(),
+                        calculatorRequestVm.operation(),
                         result,
                         username));
 
-        var historicalCalculation =
-                calculatorRepository.findByIdNotOrderByIdDesc(savedEntity.getId());
-
-        return CalcVm.fromEntity(savedEntity, historicalCalculation);
+        return CalcVm.fromEntity(savedEntity);
     }
 }

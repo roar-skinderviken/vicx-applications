@@ -2,9 +2,10 @@ package no.vicx.backend.calculator;
 
 import no.vicx.backend.calculator.repository.CalculatorEntity;
 import no.vicx.backend.calculator.repository.CalculatorRepository;
-import no.vicx.backend.calculator.vm.CalcVm;
 import no.vicx.backend.calculator.vm.CalculatorOperation;
+import no.vicx.backend.calculator.vm.CalculatorRequestVm;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -32,10 +33,19 @@ class CalculatorServiceTest {
         openMocks(this);
     }
 
+    @Test
+    void deleteByIds_givenNonEmptyList_expectRepositoryToBeInvoked() {
+        var idsToDelete = Collections.singletonList(1L);
+
+        sut.deleteByIds(idsToDelete);
+
+        verify(calculatorRepository, times(1)).deleteByIdIn(idsToDelete);
+    }
+
     @ParameterizedTest
     @MethodSource("provideTestParameters")
     void calculate_bothOperations_savesAndReturnsResult(
-            int firstValue, int secondValue, CalculatorOperation operation
+            Long firstValue, Long secondValue, CalculatorOperation operation
     ) {
         // Arrange
         var username = "user1";
@@ -45,21 +55,24 @@ class CalculatorServiceTest {
         savedEntity.setId(entityId);
 
         when(calculatorRepository.save(any(CalculatorEntity.class))).thenReturn(savedEntity);
-        when(calculatorRepository.findByIdNotOrderByIdDesc(entityId)).thenReturn(Collections.emptyList());
+
+        var requestBody = new CalculatorRequestVm(
+                firstValue,
+                secondValue,
+                operation);
 
         // Act
-        CalcVm result = sut.calculate(firstValue, secondValue, operation, username);
+        var calcVm = sut.calculate(requestBody, username);
 
         // Assert
-        assertEquals(expectedResult, result.result());
+        assertEquals(expectedResult, calcVm.result());
         verify(calculatorRepository, times(1)).save(any(CalculatorEntity.class));
-        verify(calculatorRepository, times(1)).findByIdNotOrderByIdDesc(entityId);
     }
 
     private static Stream<Arguments> provideTestParameters() {
         return Stream.of(
-                Arguments.of(5, 10, CalculatorOperation.PLUS),
-                Arguments.of(10, 5, CalculatorOperation.MINUS)
+                Arguments.of(5L, 10L, CalculatorOperation.PLUS),
+                Arguments.of(10L, 5L, CalculatorOperation.MINUS)
         );
     }
 }

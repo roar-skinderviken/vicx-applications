@@ -1,6 +1,6 @@
 "use client"
 
-import {useState} from "react"
+import {useCallback, useState} from "react"
 import {FormProvider, useForm} from "react-hook-form"
 import {yupResolver} from "@hookform/resolvers/yup"
 import * as yup from "yup"
@@ -10,10 +10,12 @@ import {InferType} from "yup"
 import {getSession} from "next-auth/react"
 import {CustomSession} from "@/types/authTypes"
 import {hasRole} from "@/utils/authUtils"
+import PreviousCalculations from "@/app/tomcat/PreviousCalculations"
 
 // put this in next-app/.env.local
 // NEXT_PUBLIC_TOMCAT_BACKEND_URL=http://localhost:8080/api
-export const CALC_BACKEND_BASE_URL = process.env.NEXT_PUBLIC_TOMCAT_BACKEND_URL || "/backend-spring-boot/api/calculator"
+export const CALC_BACKEND_BASE_URL = process.env.NEXT_PUBLIC_CALCULATOR_BACKEND_URL || "/backend-spring-boot/api/calculator"
+export const CALC_NEXT_BACKEND_URL = "/api/calculator"
 
 const calculatorYupSchema = yup.object({
     firstValue: yup
@@ -29,15 +31,17 @@ const calculatorYupSchema = yup.object({
 
 type CalculatorFormData = InferType<typeof calculatorYupSchema>
 
-interface CalculatorResult extends CalculatorFormData {
+export interface CalculationResult extends CalculatorFormData {
+    id: number
     result: number
     username?: string
     createdAt: Date
-    previousResults?: CalculatorResult[]
 }
 
 const CalculatorFormAndResult = () => {
-    const [result, setResult] = useState<CalculatorResult>()
+    const [result, setResult] = useState<CalculationResult>()
+    const [username, setUsername] = useState<string>()
+    const [previousResults, setPreviousResults] = useState<CalculationResult[]>([])
 
     const methods = useForm<CalculatorFormData>({
         resolver: yupResolver(calculatorYupSchema),
@@ -49,16 +53,54 @@ const CalculatorFormAndResult = () => {
 
     const {handleSubmit, formState, register} = methods
 
-    const onSubmit = async (formData: CalculatorFormData) => {
-        const {firstValue, secondValue, operation} = formData
+    const fetchPreviousCalculations = () => {
+        fetch(CALC_BACKEND_BASE_URL)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok')
+                }
+                return response.json()
+            })
+            .then(data => setPreviousResults(data))
+            .catch(error => console.error("Error:", error))
+    }
 
+    const onDeleteCallback = useCallback((idsToDelete: number[]) => {
         getSession()
             .then(session => (session as CustomSession)?.user)
-            .then(sessionUser => hasRole("ROLE_USER", sessionUser)
-                ? `/api/calculator?first=${firstValue}&second=${secondValue}&operation=${operation}`
-                : `${CALC_BACKEND_BASE_URL}/${firstValue}/${secondValue}/${operation}`
+            .then(sessionUser => {
+                    const hasUserRole = hasRole("ROLE_USER", sessionUser)
+                    if (!hasUserRole) {
+                        throw new Error('User not allowed to perform this operation')
+                    }
+                    return CALC_NEXT_BACKEND_URL
+                }
             )
-            .then(url => fetch(url))
+            .then(url => fetch(url, {method: "DELETE", body: JSON.stringify(idsToDelete)}))
+            .then(() => fetchPreviousCalculations())
+
+    }, [])
+
+    const onSubmit = async (formData: CalculatorFormData) => {
+        getSession()
+            .then(session => (session as CustomSession)?.user)
+            .then(sessionUser => {
+                    const hasUserRole = hasRole("ROLE_USER", sessionUser)
+                    if (hasUserRole) {
+                        setUsername(sessionUser.name || undefined)
+                    }
+
+                    return hasUserRole ? CALC_NEXT_BACKEND_URL : CALC_BACKEND_BASE_URL
+                }
+            )
+            .then(url => fetch(
+                url,
+                {
+                    method: "POST",
+                    body: JSON.stringify(formData),
+                    headers: {'Content-Type': 'application/json'}
+                }
+            ))
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Network response was not ok')
@@ -67,6 +109,7 @@ const CalculatorFormAndResult = () => {
             })
             .then(data => setResult(data))
             .catch(error => console.error("Error:", error))
+            .then(() => fetchPreviousCalculations())
     }
 
     return (
@@ -111,39 +154,12 @@ const CalculatorFormAndResult = () => {
                         <span className="text-green-600">{result.result}</span>
                     </div>
 
-                    {result.previousResults && result.previousResults.length > 0 && (
-                        <div className="mt-8">
-                            <h3 className="text-md font-semibold text-gray-700 text-center">
-                                Previous results on this server
-                            </h3>
-                            <table className="min-w-full bg-white mt-2 border border-gray-300">
-                                <thead>
-                                <tr>
-                                    <th className="py-2 px-4 border-b text-left text-gray-700">Calculation</th>
-                                    <th className="py-2 px-4 border-b text-left text-gray-700">User</th>
-                                    <th className="py-2 px-4 border-b text-left text-gray-700">Date</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                {result.previousResults.map((prevResult, index) => (
-                                    <tr key={index} className="hover:bg-gray-50">
-                                        <td className="py-2 px-4 border-b text-gray-600 text-left">
-                                            {prevResult.firstValue} {prevResult.operation === 'PLUS' ? '+' : '-'} {prevResult.secondValue} = {prevResult.result}
-                                        </td>
-                                        <td className="py-2 px-4 border-b text-gray-600 text-left">
-                                            {prevResult.username || "Anonymous"}
-                                        </td>
-                                        <td className="py-2 px-4 border-b text-gray-600 text-left">
-                                            {new Intl.DateTimeFormat('en-US', {
-                                                dateStyle: 'medium',
-                                                timeStyle: 'short'
-                                            }).format(new Date(prevResult.createdAt))}
-                                        </td>
-                                    </tr>
-                                ))}
-                                </tbody>
-                            </table>
-                        </div>
+                    {previousResults.length > 0 && (
+                        <PreviousCalculations
+                            username={username}
+                            calculations={previousResults}
+                            onDelete={onDeleteCallback}
+                        />
                     )}
                 </div>
             )}

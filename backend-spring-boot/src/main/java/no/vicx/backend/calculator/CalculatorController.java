@@ -1,48 +1,59 @@
 package no.vicx.backend.calculator;
 
+import jakarta.validation.Valid;
 import no.vicx.backend.calculator.vm.CalcVm;
-import no.vicx.backend.calculator.vm.CalculatorOperation;
+import no.vicx.backend.calculator.vm.CalculatorRequestVm;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Optional;
 
+@RequestMapping("/api/calculator")
 @RestController
 public class CalculatorController {
-    // URL for testing on localhost: http://localhost:8080/api/calculator/5/10/PLUS
-    private static final String CALC_TEMPLATE = "/calculator/{firstValue}/{secondValue}/{operation}";
-    static final String URL_TEMPLATE = "/api" + CALC_TEMPLATE;
-    static final String SECURED_URL_TEMPLATE = "/api-secured" + CALC_TEMPLATE;
 
     private final CalculatorService calculatorService;
 
-    public CalculatorController(
-            CalculatorService calculatorService
-    ) {
+    public CalculatorController(CalculatorService calculatorService) {
         this.calculatorService = calculatorService;
     }
 
     @RequestMapping(
-            value = {URL_TEMPLATE, SECURED_URL_TEMPLATE},
-            method = RequestMethod.GET,
+            method = RequestMethod.DELETE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("@calculatorSecurityService.isAllowedToDelete(#ids, authentication)")
+    public ResponseEntity<Void> deleteByIds(
+            @RequestBody List<Long> ids) {
+        calculatorService.deleteByIds(ids);
+        return ResponseEntity.noContent().build();
+    }
+
+    @RequestMapping(
+            method = RequestMethod.POST,
+            consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public CalcVm index(
-            @PathVariable long firstValue,
-            @PathVariable long secondValue,
-            @PathVariable CalculatorOperation operation,
-            JwtAuthenticationToken token
-    ) {
+    public CalcVm calculateAndReturnResult(
+            @Valid @RequestBody CalculatorRequestVm request,
+            JwtAuthenticationToken authentication) {
         return calculatorService.calculate(
-                firstValue,
-                secondValue,
-                operation,
-                Optional.ofNullable(token)
+                request,
+                Optional.ofNullable(authentication)
                         .map(JwtAuthenticationToken::getName)
                         .orElse(null)
         );
+    }
+
+    @RequestMapping(
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<CalcVm> index() {
+        return calculatorService.getAllCalculations();
     }
 }

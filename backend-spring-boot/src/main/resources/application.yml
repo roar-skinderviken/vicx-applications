@@ -24,8 +24,14 @@ spring:
     password:
     driver-class-name: org.h2.Driver
   jpa:
+    open-in-view: false
     hibernate.ddl-auto: none
     show-sql: true
+    properties:
+      jakarta:
+        persistence:
+          validation:
+            mode: none
   flyway:
     enabled: true
     locations: classpath:db/migration

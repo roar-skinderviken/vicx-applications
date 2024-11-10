@@ -1,33 +1,30 @@
 import {NextRequest, NextResponse} from "next/server"
 import {getServerSession} from "next-auth"
 import authOptions from "@/authOptions"
+import {CustomSession} from "@/types/authTypes"
 
-const BACKEND_BASE_URL = process.env.TOMCAT_BACKEND_SECURED_URL || "http://localhost:8080/api-secured/calculator"
+const BACKEND_BASE_URL = process.env.NEXT_PUBLIC_CALCULATOR_BACKEND_URL || "/backend-spring-boot/api/calculator"
 
-export async function GET(request: NextRequest) {
-    const {searchParams} = new URL(request.url)
-
-    const firstValue = searchParams.get("first")
-    const secondValue = searchParams.get("second")
-    const operation = searchParams.get("operation")
-
-    const session = await getServerSession(authOptions)
-
-    // @ts-expect-error Because accessToken is not a prop of session
+export async function POST(request: NextRequest) {
+    const session = (await getServerSession(authOptions)) as CustomSession | null
     const accessToken = session?.accessToken
 
     if (!accessToken) {
         return NextResponse.json({message: "Unauthorized"}, {status: 401})
     }
 
-    const url = `${BACKEND_BASE_URL}/${firstValue}/${secondValue}/${operation}`
+    const fetchOptions = {
+        method: "POST",
+        headers: {
+            "Authorization": `Bearer ${accessToken}`,
+            'Content-Type': 'application/json'
+        },
+        body: request.body,
+        duplex: "half"
+    }
 
     try {
-        // Make a request to the Spring Boot OAuth2 token endpoint to refresh the token
-        const response = await fetch(
-            url,
-            {headers: {"Authorization": `Bearer ${accessToken}`}}
-        )
+        const response = await fetch(BACKEND_BASE_URL, fetchOptions)
 
         if (!response.ok) {
             return NextResponse.json(
@@ -41,5 +38,32 @@ export async function GET(request: NextRequest) {
     } catch (error) {
         console.error("Error fetching calculator result:", error)
         return NextResponse.json({message: "Internal server error"}, {status: 500})
+    }
+}
+
+export async function DELETE(request: NextRequest) {
+    const session = (await getServerSession(authOptions)) as CustomSession | null
+    const accessToken = session?.accessToken
+
+    if (!accessToken) {
+        return NextResponse.json({message: "Unauthorized"}, {status: 401})
+    }
+
+    const fetchOptions = {
+        method: "DELETE",
+        headers: {
+            "Authorization": `Bearer ${accessToken}`,
+            'Content-Type': 'application/json'
+        },
+        body: request.body,
+        duplex: "half"
+    }
+
+    try {
+        const response = await fetch(BACKEND_BASE_URL, fetchOptions)
+        return new NextResponse(null, {status: response.status})
+    } catch (error) {
+        console.error("Error deleting calculation entries: ", error)
+        return new NextResponse(null, {status: 500})
     }
 }
