@@ -1,4 +1,4 @@
-import {act, fireEvent, render, screen} from "@testing-library/react"
+import {act, fireEvent, render, screen, waitFor} from "@testing-library/react"
 import CalculatorFormAndResult, {
     CALC_BACKEND_BASE_URL,
     CALC_NEXT_BACKEND_URL
@@ -6,6 +6,8 @@ import CalculatorFormAndResult, {
 import {getSession} from "next-auth/react"
 import {CustomSession} from "@/types/authTypes"
 import clearAllMocks = jest.clearAllMocks
+
+const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
 jest.mock("next-auth/react", () => ({
     getSession: jest.fn()
@@ -140,7 +142,7 @@ describe("CalculatorFormAndResult", () => {
         const runCalculationTest = async (operation: "PLUS" | "MINUS", authenticated: boolean = false) => {
             const isAddition = operation === "PLUS"
 
-            const response = isAddition ? validAddResponse : validSubtractResponse
+            const validResponse = isAddition ? validAddResponse : validSubtractResponse
             const buttonName = isAddition ? "Add" : "Subtract"
             const expectedSign = isAddition ? "+" : "-"
             const expectedResult = isAddition ? "3" : "-1"
@@ -148,10 +150,22 @@ describe("CalculatorFormAndResult", () => {
             if (authenticated) mockGetSession.mockResolvedValueOnce(validSession)
 
             fetchMock
-                .mockResponseOnce(JSON.stringify(response))
+                .mockResponseOnce(async () => {
+                    await delay(100)
+                    return {
+                        body: JSON.stringify(validResponse),
+                        status: 200,
+                    }
+                })
                 .mockResponseOnce(JSON.stringify(validPreviousResultsResponse))
 
-            await act(() => fireEvent.click(screen.getByRole("button", { name: buttonName })))
+            await act(() => fireEvent.click(screen.getByRole("button", {name: buttonName})))
+
+            expect(screen.queryByText("Loading...")).toBeInTheDocument()
+
+            await waitFor(() => {
+                expect(screen.queryByText("Loading...")).not.toBeInTheDocument()
+            })
 
             expectSpanValuesToBeInTheDocument(["1", expectedSign, "2", "=", expectedResult])
 

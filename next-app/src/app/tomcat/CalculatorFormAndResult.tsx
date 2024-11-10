@@ -5,12 +5,12 @@ import {FormProvider, useForm} from "react-hook-form"
 import {yupResolver} from "@hookform/resolvers/yup"
 import * as yup from "yup"
 import ValidatedTextInput from "@/components/ValidatedTextInput"
-import {Button} from "flowbite-react"
 import {InferType} from "yup"
 import {getSession} from "next-auth/react"
 import {CustomSession} from "@/types/authTypes"
 import {hasRole} from "@/utils/authUtils"
 import PreviousCalculations from "@/app/tomcat/PreviousCalculations"
+import SubmitButtonWithSpinner from "@/app/tomcat/SubmitButtonWithSpinner"
 
 // put this in next-app/.env.local
 // NEXT_PUBLIC_TOMCAT_BACKEND_URL=http://localhost:8080/api
@@ -42,6 +42,7 @@ const CalculatorFormAndResult = () => {
     const [result, setResult] = useState<CalculationResult>()
     const [username, setUsername] = useState<string>()
     const [previousResults, setPreviousResults] = useState<CalculationResult[]>([])
+    const [isLoading, setIsLoading] = useState<boolean>(false)
 
     const methods = useForm<CalculatorFormData>({
         resolver: yupResolver(calculatorYupSchema),
@@ -51,7 +52,8 @@ const CalculatorFormAndResult = () => {
         },
     })
 
-    const {handleSubmit, formState, register} = methods
+    const {handleSubmit, formState, register, watch} = methods
+    const operationFromForm = watch("operation")
 
     const fetchPreviousCalculations = () => {
         fetch(CALC_BACKEND_BASE_URL)
@@ -78,10 +80,12 @@ const CalculatorFormAndResult = () => {
             )
             .then(url => fetch(url, {method: "DELETE", body: JSON.stringify(idsToDelete)}))
             .then(() => fetchPreviousCalculations())
-
     }, [])
 
     const onSubmit = async (formData: CalculatorFormData) => {
+        setIsLoading(true)
+        setResult(undefined)
+
         getSession()
             .then(session => (session as CustomSession)?.user)
             .then(sessionUser => {
@@ -110,6 +114,7 @@ const CalculatorFormAndResult = () => {
             .then(data => setResult(data))
             .catch(error => console.error("Error:", error))
             .then(() => fetchPreviousCalculations())
+            .finally(() => setIsLoading(false))
     }
 
     return (
@@ -123,16 +128,17 @@ const CalculatorFormAndResult = () => {
 
                             <input type="hidden" {...register("operation")} />
 
-                            <Button
-                                type="submit"
-                                disabled={!formState.isValid}
-                                onClick={() => methods.setValue("operation", "PLUS")}
-                            >Add</Button>
-                            <Button
-                                type="submit"
-                                disabled={!formState.isValid}
-                                onClick={() => methods.setValue("operation", "MINUS")}
-                            >Subtract</Button>
+                            <SubmitButtonWithSpinner
+                                disabled={!formState.isValid || isLoading}
+                                buttonText="Add"
+                                isLoading={isLoading && "PLUS" === operationFromForm}
+                                onButtonClick={() => methods.setValue("operation", "PLUS")}/>
+
+                            <SubmitButtonWithSpinner
+                                disabled={!formState.isValid || isLoading}
+                                buttonText="Subtract"
+                                isLoading={isLoading && "MINUS" === operationFromForm}
+                                onButtonClick={() => methods.setValue("operation", "MINUS")}/>
                         </div>
                     </form>
                 </FormProvider>
