@@ -29,9 +29,9 @@ const PreviousCalculations = (
     }) => {
     const [selectedItems, setSelectedItems] = useState<number[]>([])
 
-    useEffect(()=> setSelectedItems([]),[calculations])
+    useEffect(() => setSelectedItems([]), [calculations])
 
-    const isAllSelected = calculations
+    const isAllSelected = selectedItems.length > 0 && calculations
         .filter(it => it.username === username)
         .every(it => selectedItems.includes(it.id))
 
@@ -77,21 +77,16 @@ const PreviousCalculations = (
                     <Table.Head>
                         {username && (
                             <Table.HeadCell className="p-4 flex items-center space-x-2">
-                                {calculations.some(it => it.username === username) && (
-                                    <>
-                                        <Checkbox
-                                            id="selectAll"
-                                            checked={isAllSelected}
-                                            value={1}
-                                            data-testid="select-all-checkbox"
-                                            onChange={handleSelectAllChange}
-                                        />
-                                        <Label
-                                            htmlFor="selectAll"
-                                            className="text-sm text-gray-500 dark:text-gray-400"
-                                        >Select all</Label>
-                                    </>
-                                )}
+                                <Checkbox
+                                    id="selectAll"
+                                    checked={isAllSelected}
+                                    disabled={!calculations.some(it => it.username === username)}
+                                    onChange={handleSelectAllChange}
+                                />
+                                <Label
+                                    htmlFor="selectAll"
+                                    className="text-sm text-gray-500 dark:text-gray-400"
+                                >Select all</Label>
                             </Table.HeadCell>
                         )}
                         <Table.HeadCell>Calculation</Table.HeadCell>

@@ -59,12 +59,12 @@ describe("PreviousCalculations", () => {
             expect(screen.queryByText("Date")).toBeInTheDocument()
         })
 
-        it("hides 'Select all' checkbox when there is no items to select", () => {
+        it("disables 'Select all' checkbox when there is no items to select", () => {
             render(<PreviousCalculations
                 username="user1"
                 calculations={[createValidCalculation("user2")]}/>)
 
-            expect(screen.queryByText("Select all")).not.toBeInTheDocument()
+            expect(screen.queryByLabelText("Select all")).toBeDisabled()
         })
 
         it("displays 'Select all' checkbox when there are items to select", () => {
@@ -146,7 +146,7 @@ describe("PreviousCalculations", () => {
         })
 
         it("displays checkbox as checked when 'Select all' is checked", async () => {
-            const selectAllCheckbox = screen.getByTestId("select-all-checkbox")
+            const selectAllCheckbox = screen.getByLabelText("Select all")
 
             fireEvent.click(selectAllCheckbox)
 
@@ -156,16 +156,16 @@ describe("PreviousCalculations", () => {
         it("displays 'Select all' checkbox as checked when all items are checked", async () => {
             fireEvent.click(checkbox)
 
-            expect(screen.getByTestId("select-all-checkbox")).toBeChecked()
+            expect(screen.getByLabelText("Select all")).toBeChecked()
         })
 
         it("displays 'Select all' checkbox as unchecked when not all items are checked", async () => {
-            const selectAllCheckbox = screen.getByTestId("select-all-checkbox")
+            const selectAllCheckbox = screen.getByLabelText("Select all")
 
             fireEvent.click(selectAllCheckbox)
             fireEvent.click(checkbox)
 
-            expect(screen.getByTestId("select-all-checkbox")).not.toBeChecked()
+            expect(selectAllCheckbox).not.toBeChecked()
         })
 
         it("enables the 'Delete selected' button when selected items", async () => {
