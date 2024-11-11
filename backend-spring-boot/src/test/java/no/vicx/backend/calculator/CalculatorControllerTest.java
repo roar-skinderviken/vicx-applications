@@ -14,6 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -43,7 +46,7 @@ class CalculatorControllerTest {
 
     @Test
     void get_expectListOfCalculations() throws Exception {
-        var expectedResponse = List.of(new CalcVm(
+        var calcVmList = List.of(new CalcVm(
                 1L,
                 1,
                 2,
@@ -52,21 +55,33 @@ class CalculatorControllerTest {
                 "user1",
                 NOW));
 
-        given(calculatorService.getAllCalculations())
-                .willReturn(expectedResponse);
+        given(calculatorService.getAllCalculations(Pageable.ofSize(10)))
+                .willReturn(
+                        new PageImpl<>(calcVmList,
+                                PageRequest.of(0, 10),
+                                calcVmList.size()));
 
         var requestBuilder =
                 get("/api/calculator").accept(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id", is(1)))
-                .andExpect(jsonPath("$[0].firstValue", is(1)))
-                .andExpect(jsonPath("$[0].secondValue", is(2)))
-                .andExpect(jsonPath("$[0].operation", is(CalculatorOperation.PLUS.toString())))
-                .andExpect(jsonPath("$[0].result", is(3)))
-                .andExpect(jsonPath("$[0].username", is("user1")))
-                .andExpect(jsonPath("$[0].createdAt", is(NOW.toString())));
+                .andExpect(jsonPath("$.totalPages", is(1)))
+                .andExpect(jsonPath("$.totalElements", is(1)))
+                .andExpect(jsonPath("$.first", is(true)))
+                .andExpect(jsonPath("$.size", is(10)))
+                .andExpect(jsonPath("$.last", is(true)))
+                .andExpect(jsonPath("$.number", is(0)))
+                .andExpect(jsonPath("$.pageable.pageNumber", is(0)))
+                .andExpect(jsonPath("$.pageable.pageSize", is(10)))
+                .andExpect(jsonPath("$.content[0]").exists())
+                .andExpect(jsonPath("$.content[0].id", is(1)))
+                .andExpect(jsonPath("$.content[0].firstValue", is(1)))
+                .andExpect(jsonPath("$.content[0].secondValue", is(2)))
+                .andExpect(jsonPath("$.content[0].operation", is(CalculatorOperation.PLUS.toString())))
+                .andExpect(jsonPath("$.content[0].result", is(3)))
+                .andExpect(jsonPath("$.content[0].username", is("user1")))
+                .andExpect(jsonPath("$.content[0].createdAt", is(NOW.toString())));
     }
 
     @ParameterizedTest

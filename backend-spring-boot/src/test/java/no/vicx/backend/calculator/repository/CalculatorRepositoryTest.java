@@ -10,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.PageRequest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -35,12 +36,23 @@ class CalculatorRepositoryTest {
         entityManager.persist(createValidEntity());
         entityManager.persist(createValidEntity());
 
-        var result = sut.findAllByOrderByIdDesc();
+        var result = sut.findAllByOrderByIdDesc(PageRequest.of(0, 10));
 
-        var first = result.getFirst();
-        var last = result.getLast();
+        var first = result.getContent().getFirst();
+        var last = result.getContent().getLast();
 
         assertTrue(first.getId() > last.getId());
+    }
+
+    @Test
+    void findAllByOrderByIdDesc_givenThreeItemsInDatabase_expectResultWithTwoElements() {
+        entityManager.persist(createValidEntity());
+        entityManager.persist(createValidEntity());
+        entityManager.persist(createValidEntity());
+
+        var result = sut.findAllByOrderByIdDesc(PageRequest.of(0, 2));
+
+        assertEquals(2, result.getContent().size());
     }
 
     @Test
