@@ -23,7 +23,7 @@
     "react": "^18",
     "react-dom": "^18",
     "react-fontawesome": "^1.7.1",
-    "react-hook-form": "^7.53.1",
+    "react-hook-form": "^7.53.2",
     "yup": "^1.4.0"
   },
   "devDependencies": {
