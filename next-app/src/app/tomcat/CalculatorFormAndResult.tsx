@@ -42,6 +42,8 @@ const CalculatorFormAndResult = () => {
     const [result, setResult] = useState<CalculationResult>()
     const [username, setUsername] = useState<string>()
     const [previousResults, setPreviousResults] = useState<CalculationResult[]>([])
+    const [currentPreviousResultPage, setCurrentPreviousResultPage] = useState(0)
+    const [hasMorePreviousResults, setHasMorePreviousResults] = useState(false)
     const [isLoading, setIsLoading] = useState<boolean>(false)
 
     const methods = useForm<CalculatorFormData>({
@@ -55,19 +57,29 @@ const CalculatorFormAndResult = () => {
     const {handleSubmit, formState, register, watch} = methods
     const operationFromForm = watch("operation")
 
-    const fetchPreviousCalculations = () => {
-        fetch(CALC_BACKEND_BASE_URL)
+    const fetchPreviousCalculations = (pageNumber: number) => {
+        fetch(`${CALC_BACKEND_BASE_URL}?page=${pageNumber}`)
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Network response was not ok')
                 }
                 return response.json()
             })
-            .then(data => setPreviousResults(data))
+            .then(data => {
+                setHasMorePreviousResults(!data.last)
+                setPreviousResults(prev => [...prev, ...data.content])
+            })
             .catch(error => console.error("Error:", error))
     }
 
+    const onFetchMore = () => {
+        fetchPreviousCalculations(currentPreviousResultPage + 1)
+        setCurrentPreviousResultPage(prev => prev + 1)
+    }
+
     const onDeleteCallback = useCallback((idsToDelete: number[]) => {
+        setCurrentPreviousResultPage(0)
+        setPreviousResults([])
         getSession()
             .then(session => (session as CustomSession)?.user)
             .then(sessionUser => {
@@ -79,12 +91,14 @@ const CalculatorFormAndResult = () => {
                 }
             )
             .then(url => fetch(url, {method: "DELETE", body: JSON.stringify(idsToDelete)}))
-            .then(() => fetchPreviousCalculations())
+            .then(() => fetchPreviousCalculations(0))
     }, [])
 
     const onSubmit = async (formData: CalculatorFormData) => {
         setIsLoading(true)
         setResult(undefined)
+        setCurrentPreviousResultPage(0)
+        setPreviousResults([])
 
         getSession()
             .then(session => (session as CustomSession)?.user)
@@ -113,7 +127,7 @@ const CalculatorFormAndResult = () => {
             })
             .then(data => setResult(data))
             .catch(error => console.error("Error:", error))
-            .then(() => fetchPreviousCalculations())
+            .then(() => fetchPreviousCalculations(0))
             .finally(() => setIsLoading(false))
     }
 
@@ -165,6 +179,8 @@ const CalculatorFormAndResult = () => {
                             username={username}
                             calculations={previousResults}
                             onDelete={onDeleteCallback}
+                            hasMorePages={hasMorePreviousResults}
+                            onFetchMore={onFetchMore}
                         />
                     )}
                 </div>

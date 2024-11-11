@@ -27,8 +27,6 @@ async function refreshAccessToken(token: JWT) {
             throw refreshedTokens
         }
 
-        console.log("Access token refreshed, expires in", refreshedTokens.expires_in)
-
         return {
             ...token,
             accessToken: refreshedTokens.access_token,

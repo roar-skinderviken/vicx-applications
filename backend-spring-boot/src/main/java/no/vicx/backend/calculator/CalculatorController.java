@@ -3,6 +3,8 @@ package no.vicx.backend.calculator;
 import jakarta.validation.Valid;
 import no.vicx.backend.calculator.vm.CalcVm;
 import no.vicx.backend.calculator.vm.CalculatorRequestVm;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -53,7 +55,7 @@ public class CalculatorController {
     @RequestMapping(
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<CalcVm> index() {
-        return calculatorService.getAllCalculations();
+    public Page<CalcVm> index(Pageable pageable) {
+        return calculatorService.getAllCalculations(pageable);
     }
 }

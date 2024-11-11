@@ -119,6 +119,16 @@ describe("PreviousCalculations", () => {
 
             expect(screen.queryByTestId("checkbox-1")).toBeInTheDocument()
         })
+
+        it("displays 'Fetch More' button when hasMorePages is true", () => {
+            render(<PreviousCalculations
+                username="user1"
+                hasMorePages={true}
+                calculations={[createValidCalculation("user1")]}/>
+            )
+
+            expect(screen.queryByText("Fetch More")).toBeInTheDocument()
+        })
     })
 
     describe("Checkbox interactions", () => {
@@ -179,7 +189,10 @@ describe("PreviousCalculations", () => {
 
     describe("Button interactions", () => {
         let deleteSelectedButton: HTMLInputElement
+        let fetchMoreButton: HTMLInputElement
+
         const mockOnDelete = jest.fn()
+        const mockOnFetchMore = jest.fn()
 
         beforeEach(() => {
             resetAllMocks()
@@ -187,10 +200,13 @@ describe("PreviousCalculations", () => {
                     username="user1"
                     calculations={[createValidCalculation("user1")]}
                     onDelete={mockOnDelete}
+                    hasMorePages={true}
+                    onFetchMore={mockOnFetchMore}
                 />
             )
             fireEvent.click(screen.getByTestId("checkbox-1"))
-            deleteSelectedButton = screen.getByRole("button")
+            deleteSelectedButton = screen.getAllByRole("button")[0] as HTMLInputElement
+            fetchMoreButton = screen.getAllByRole("button")[1] as HTMLInputElement
         })
 
         it("calls onDeleteItems callback when 'Delete selected' is clicked", () => {
@@ -201,6 +217,18 @@ describe("PreviousCalculations", () => {
 
         it("displays spinner when 'Delete selected' is clicked", () => {
             fireEvent.click(deleteSelectedButton)
+
+            expect(screen.queryByText("Loading...")).toBeInTheDocument()
+        })
+
+        it("calls onFetchMore callback when 'Fetch More' is clicked", () => {
+            fireEvent.click(fetchMoreButton)
+
+            expect(mockOnFetchMore).toHaveBeenCalled()
+        })
+
+        it("displays spinner when 'Fetch More' is clicked", () => {
+            fireEvent.click(fetchMoreButton)
 
             expect(screen.queryByText("Loading...")).toBeInTheDocument()
         })

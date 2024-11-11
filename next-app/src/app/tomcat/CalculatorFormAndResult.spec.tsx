@@ -42,17 +42,21 @@ const validSubtractResponse = {
     result: -1
 }
 
-const dateInTests = new Date()
-
-const formattedDateInTest = new Intl.DateTimeFormat('en-US', {
-    dateStyle: 'medium',
-    timeStyle: 'short'
-}).format(dateInTests)
-
 const previousResult = {
-    ...validAddResponse,
-    username: "user1",
-    createdAt: dateInTests
+    content: [{
+        id: 49,
+        firstValue: 1,
+        secondValue: 12,
+        operation: "PLUS",
+        result: 13,
+        username: "user1",
+        createdAt: "2024-11-11T21:17:16.748138"
+    }],
+    pageable: {
+        pageNumber: 0,
+        pageSize: 10,
+    },
+    last: false
 }
 
 const createValidRequest = (firstValue: number, secondValue: number, operation: string) => {
@@ -66,8 +70,6 @@ const createValidRequest = (firstValue: number, secondValue: number, operation: 
         method: "POST",
     }
 }
-
-const validPreviousResultsResponse = [previousResult]
 
 describe("CalculatorFormAndResult", () => {
     describe("Layout", () => {
@@ -142,21 +144,22 @@ describe("CalculatorFormAndResult", () => {
 
             fetchMock
                 .mockResponseOnce(async () => await delayedResponse(JSON.stringify(validResponse), 100))
-                .mockResponseOnce(JSON.stringify(validPreviousResultsResponse))
+                .mockResponseOnce(JSON.stringify(previousResult))
 
-            await act(() => fireEvent.click(screen.getByRole("button", {name: buttonName})))
+            const button = screen.getByRole("button", {name: buttonName})
+            await act(() => fireEvent.click(button))
 
-            expect(screen.queryByText("Loading...")).toBeInTheDocument()
+            expect(button).toHaveTextContent("Loading...")
 
             await waitFor(() =>
-                expect(screen.queryByText("Loading...")).not.toBeInTheDocument())
+                expect(button).not.toHaveTextContent("Loading..."))
 
             expectSpanValuesToBeInTheDocument(["1", expectedSign, "2", "=", expectedResult])
 
             // Verify API calls
             const backendUrl = authenticated ? CALC_NEXT_BACKEND_URL : CALC_BACKEND_BASE_URL
             expect(fetchMock).toHaveBeenCalledWith(backendUrl, createValidRequest(1, 2, operation))
-            expect(fetchMock).toHaveBeenCalledWith(CALC_BACKEND_BASE_URL)
+            expect(fetchMock).toHaveBeenCalledWith(`${CALC_BACKEND_BASE_URL}?page=0`)
         }
 
         beforeEach(async () => {
@@ -187,16 +190,15 @@ describe("CalculatorFormAndResult", () => {
 
             expect(screen.queryByRole("heading", {level: 3})).toHaveTextContent("Previous results on this server")
 
-            expect(screen.queryByText(previousResult.username)).toBeInTheDocument()
-            expect(screen.queryByText(formattedDateInTest)).toBeInTheDocument()
+            expect(screen.queryByText(previousResult.content[0].username)).toBeInTheDocument()
         })
 
         it("hides previous calculation result when resubmitting form", async () => {
             fetchMock
                 .mockResponseOnce(JSON.stringify(validAddResponse))
-                .mockResponseOnce(JSON.stringify(validPreviousResultsResponse))
+                .mockResponseOnce(JSON.stringify(previousResult))
                 .mockResponseOnce(async () => await delayedResponse(JSON.stringify(validAddResponse), 100))
-                .mockResponseOnce(JSON.stringify(validPreviousResultsResponse))
+                .mockResponseOnce(JSON.stringify(previousResult))
 
             await act(() => fireEvent.click(screen.getByRole("button", {name: "Add"})))
             await act(() => fireEvent.click(screen.getByRole("button", {name: "Subtract"})))

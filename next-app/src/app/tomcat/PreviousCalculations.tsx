@@ -21,19 +21,26 @@ const PreviousCalculations = (
     {
         calculations,
         username,
+        hasMorePages = false,
         onDelete = () => {
+        },
+        onFetchMore = () => {
         }
     }: {
         calculations: CalculationResult[],
         username?: string,
+        hasMorePages?: boolean
         onDelete?: (idsToDelete: number[]) => void
+        onFetchMore?: () => void
     }) => {
     const [selectedItems, setSelectedItems] = useState<number[]>([])
-    const [isLoading, setIsLoading] = useState(false)
+    const [isLoadingDeleteItems, setIsLoadingDeleteItems] = useState(false)
+    const [isLoadingFetchNore, setIsLoadingFetchNore] = useState(false)
 
     useEffect(() => {
         setSelectedItems([])
-        setIsLoading(false)
+        setIsLoadingFetchNore(false)
+        setIsLoadingDeleteItems(false)
     }, [calculations])
 
     const isAllSelected = selectedItems.length > 0 && calculations
@@ -72,10 +79,10 @@ const PreviousCalculations = (
                     <SubmitButtonWithSpinner
                         buttonText="Delete selected"
                         type="button"
-                        isLoading={isLoading}
+                        isLoading={isLoadingDeleteItems}
                         disabled={!selectedItems.length}
                         onClick={() => {
-                            setIsLoading(true)
+                            setIsLoadingDeleteItems(true)
                             onDelete(selectedItems)
                         }}
                         className="sm:absolute sm:left-4"
@@ -131,6 +138,21 @@ const PreviousCalculations = (
                     </Table.Body>
                 </Table>
             </div>
+
+            {hasMorePages && (
+                <div className="flex justify-center mt-4">
+                    <SubmitButtonWithSpinner
+                        buttonText="Fetch More"
+                        type="button"
+                        isLoading={isLoadingFetchNore}
+                        onClick={() => {
+                            setIsLoadingFetchNore(true)
+                            onFetchMore()
+                        }}
+                        className="flex items-center space-x-2"
+                        size="sm"/>
+                </div>
+            )}
         </div>
     )
 }
