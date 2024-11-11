@@ -6,8 +6,14 @@ import CalculatorFormAndResult, {
 import {getSession} from "next-auth/react"
 import {CustomSession} from "@/types/authTypes"
 import clearAllMocks = jest.clearAllMocks
+import {MockResponseInit} from "jest-fetch-mock"
 
-const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
+const delayedResponse = (body: string, delayInMillis: number, status: number = 200) =>
+    new Promise<MockResponseInit>(resolve =>
+        setTimeout(
+            () => resolve({body, status}),
+            delayInMillis)
+    )
 
 jest.mock("next-auth/react", () => ({
     getSession: jest.fn()
@@ -150,13 +156,7 @@ describe("CalculatorFormAndResult", () => {
             if (authenticated) mockGetSession.mockResolvedValueOnce(validSession)
 
             fetchMock
-                .mockResponseOnce(async () => {
-                    await delay(100)
-                    return {
-                        body: JSON.stringify(validResponse),
-                        status: 200,
-                    }
-                })
+                .mockResponseOnce(async () => await delayedResponse(JSON.stringify(validResponse), 100))
                 .mockResponseOnce(JSON.stringify(validPreviousResultsResponse))
 
             await act(() => fireEvent.click(screen.getByRole("button", {name: buttonName})))
