@@ -1,4 +1,4 @@
-import SubmitButtonWithSpinner from "@/app/tomcat/SubmitButtonWithSpinner"
+import SubmitButtonWithSpinner from "@/components/SubmitButtonWithSpinner"
 import {fireEvent, render, screen} from "@testing-library/react"
 
 const mockOnClick = jest.fn()

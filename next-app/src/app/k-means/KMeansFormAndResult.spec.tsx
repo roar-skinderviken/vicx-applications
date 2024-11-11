@@ -1,13 +1,6 @@
-import {act, fireEvent, render, screen} from "@testing-library/react"
+import {act, fireEvent, render, screen, waitFor} from "@testing-library/react"
 import KMeansFormAndResult from "@/app/k-means/KMeansFormAndResult"
-
-
-const changeEvent = (content: string) => ({target: {value: content}})
-
-const changeInputValue = async (label: string, value: string) => {
-    const input = screen.getByLabelText(label)
-    await act(() => fireEvent.change(input, changeEvent(value)))
-}
+import {changeInputValue, delayedResponse} from "@/testUtils"
 
 const setupForSubmit = async () => {
     await changeInputValue("Max Score", "111")
@@ -122,23 +115,60 @@ describe("KMeansFormAndResult", () => {
 
     describe("Submit button interactions", () => {
         beforeEach(async () => {
+            fetchMock.resetMocks()
             render(<KMeansFormAndResult/>)
             await setupForSubmit()
         })
 
+        it("displays spinner when data is loading", async () => {
+            fetchMock.mockResponseOnce(
+                async () => await delayedResponse(JSON.stringify(validResponse), 100))
+
+            await act(() => fireEvent.click(screen.getByRole("button")))
+
+            expect(screen.queryByText("Loading...")).toBeInTheDocument()
+        })
+
         it("displays error message when API returns an error", async () => {
             fetchMock.mockResponseOnce(JSON.stringify(errorResponse))
+
             await act(() => fireEvent.click(screen.getByRole("button")))
+
             expect(screen.queryByText(errorResponse.error)).toBeInTheDocument()
         })
 
         it("displays result when API returns valid response", async () => {
             fetchMock.mockResponseOnce(JSON.stringify(validResponse))
+
             await act(() => fireEvent.click(screen.getByRole("button")))
 
             Object.entries(validResponse).forEach(([score, grade]) => {
                 expect(screen.queryByText(`Score: ${score}, Grade: ${grade}`)).toBeInTheDocument()
             })
+        })
+
+        it("hides previous result when resubmitting form", async () => {
+            const secondResponse = {
+                ...validResponse,
+                111: "B"
+            }
+
+            fetchMock
+                .mockResponseOnce(JSON.stringify(validResponse))
+                .mockResponseOnce(
+                    async () => await delayedResponse(JSON.stringify(secondResponse), 100))
+
+            await act(() => fireEvent.click(screen.getByRole("button")))
+            await act(() => fireEvent.click(screen.getByRole("button")))
+
+            Object.entries(validResponse).forEach(([score, grade]) => {
+                expect(screen.queryByText(`Score: ${score}, Grade: ${grade}`)).not.toBeInTheDocument()
+            })
+
+            await waitFor(() =>
+                Object.entries(secondResponse).forEach(([score, grade]) => {
+                    expect(screen.queryByText(`Score: ${score}, Grade: ${grade}`)).toBeInTheDocument()
+                }))
         })
     })
 })

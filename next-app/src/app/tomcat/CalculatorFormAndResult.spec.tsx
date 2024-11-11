@@ -5,28 +5,13 @@ import CalculatorFormAndResult, {
 } from "@/app/tomcat/CalculatorFormAndResult"
 import {getSession} from "next-auth/react"
 import {CustomSession} from "@/types/authTypes"
-import clearAllMocks = jest.clearAllMocks
-import {MockResponseInit} from "jest-fetch-mock"
-
-const delayedResponse = (body: string, delayInMillis: number, status: number = 200) =>
-    new Promise<MockResponseInit>(resolve =>
-        setTimeout(
-            () => resolve({body, status}),
-            delayInMillis)
-    )
+import {changeInputValue, delayedResponse} from "@/testUtils"
 
 jest.mock("next-auth/react", () => ({
     getSession: jest.fn()
 }))
 
 const mockGetSession = getSession as jest.Mock
-
-const changeEvent = (content: string) => ({target: {value: content}})
-
-const changeInputValue = async (label: string, value: string) => {
-    const input = screen.getByLabelText(label)
-    await act(() => fireEvent.change(input, changeEvent(value)))
-}
 
 const setupForSubmit = async () => {
     await changeInputValue("First Value", "1")
@@ -163,9 +148,8 @@ describe("CalculatorFormAndResult", () => {
 
             expect(screen.queryByText("Loading...")).toBeInTheDocument()
 
-            await waitFor(() => {
-                expect(screen.queryByText("Loading...")).not.toBeInTheDocument()
-            })
+            await waitFor(() =>
+                expect(screen.queryByText("Loading...")).not.toBeInTheDocument())
 
             expectSpanValuesToBeInTheDocument(["1", expectedSign, "2", "=", expectedResult])
 
@@ -176,7 +160,7 @@ describe("CalculatorFormAndResult", () => {
         }
 
         beforeEach(async () => {
-            clearAllMocks()
+            fetchMock.resetMocks()
             mockGetSession.mockResolvedValue(null)
             render(<CalculatorFormAndResult/>)
             await setupForSubmit()
@@ -198,13 +182,29 @@ describe("CalculatorFormAndResult", () => {
             await runCalculationTest("MINUS", true)
         })
 
-        it("displays previous results when returned by API", async () => {
+        it("displays list of previous results when returned by API", async () => {
             await runCalculationTest("MINUS", true)
 
             expect(screen.queryByRole("heading", {level: 3})).toHaveTextContent("Previous results on this server")
 
             expect(screen.queryByText(previousResult.username)).toBeInTheDocument()
             expect(screen.queryByText(formattedDateInTest)).toBeInTheDocument()
+        })
+
+        it("hides previous calculation result when resubmitting form", async () => {
+            fetchMock
+                .mockResponseOnce(JSON.stringify(validAddResponse))
+                .mockResponseOnce(JSON.stringify(validPreviousResultsResponse))
+                .mockResponseOnce(async () => await delayedResponse(JSON.stringify(validAddResponse), 100))
+                .mockResponseOnce(JSON.stringify(validPreviousResultsResponse))
+
+            await act(() => fireEvent.click(screen.getByRole("button", {name: "Add"})))
+            await act(() => fireEvent.click(screen.getByRole("button", {name: "Subtract"})))
+
+            expect(screen.queryByText("Calculation Result")).not.toBeInTheDocument()
+
+            await waitFor(() =>
+                expect(screen.queryByText("Calculation Result")).toBeInTheDocument())
         })
     })
 })

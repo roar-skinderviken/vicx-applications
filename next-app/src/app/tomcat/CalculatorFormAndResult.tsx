@@ -10,7 +10,7 @@ import {getSession} from "next-auth/react"
 import {CustomSession} from "@/types/authTypes"
 import {hasRole} from "@/utils/authUtils"
 import PreviousCalculations from "@/app/tomcat/PreviousCalculations"
-import SubmitButtonWithSpinner from "@/app/tomcat/SubmitButtonWithSpinner"
+import SubmitButtonWithSpinner from "@/components/SubmitButtonWithSpinner"
 
 // put this in next-app/.env.local
 // NEXT_PUBLIC_TOMCAT_BACKEND_URL=http://localhost:8080/api

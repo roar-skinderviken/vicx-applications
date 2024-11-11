@@ -5,31 +5,31 @@ import {FormProvider, useForm} from "react-hook-form"
 import {yupResolver} from "@hookform/resolvers/yup"
 import * as yup from "yup"
 import ValidatedTextInput from "@/components/ValidatedTextInput"
-import {Button} from "flowbite-react"
 import {InferType} from "yup"
+import SubmitButtonWithSpinner from "@/components/SubmitButtonWithSpinner"
 
 // put this in next-app/.env.local
 // NEXT_PUBLIC_KMEANS_BACKEND_URL=http://localhost:8000/k-means
 const BACKEND_URL = process.env.NEXT_PUBLIC_KMEANS_BACKEND_URL || "/backend-python/k-means"
 
 const kMeansSchema = yup.object({
-    max_score: yup
+    maxScore: yup
         .number()
         .typeError("Max Score must be a number")
         .min(10, "Max Score must be greater than 10")
         .max(1000, "Max Score must be less than 1000"),
-    fail_grade: yup
+    failScore: yup
         .number()
         .typeError("Fail Score must be a number")
         .min(0, "Fail Score must be equal or greater than 0"),
-    grades: yup
+    scores: yup
         .string()
         .required("Scores are required")
         .test("is-valid-list", "There should be at least 5 scores", (value) =>
             value.split(",").length >= 5)
         .test("all-numbers", "All scores must be numbers", (value) =>
             value.split(",").every(entry => !isNaN(Number(entry)) && entry !== "")),
-    max_iter: yup
+    maxIter: yup
         .number()
         .typeError("Max Iterations must be a number")
         .min(1, "Max Iterations must be greater than 0")
@@ -61,6 +61,7 @@ const isErrorResponse = (response: KMeansResponse): response is KMeansErrorRespo
     'error' in response
 
 const KMeansFormAndResult = () => {
+    const [isLoading, setIsLoading] = useState<boolean>(false)
     const [result, setResult] = useState<KMeansResponse>()
 
     const methods = useForm<KMeansFormData>({
@@ -71,11 +72,12 @@ const KMeansFormAndResult = () => {
     const {handleSubmit, formState} = methods
 
     const onSubmit = async (formData: KMeansFormData) => {
+        setIsLoading(true)
+        setResult(undefined)
+
         const requestBody = {
-            maxScore: formData.max_score,
-            failScore: formData.fail_grade,
-            scores: formData.grades.split(',').map(Number),
-            maxIter: formData.max_iter
+            ...formData,
+            scores: formData.scores.split(',').map(Number)
         }
 
         const fetchConfig = {
@@ -93,6 +95,7 @@ const KMeansFormAndResult = () => {
             })
             .then(data => setResult(data))
             .catch(error => console.error("Error:", error))
+            .finally(() => setIsLoading(false))
     }
 
     return (
@@ -101,15 +104,16 @@ const KMeansFormAndResult = () => {
                 <FormProvider {...methods}>
                     <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4 max-w-md">
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <ValidatedTextInput label="Max Score" name="max_score"/>
-                            <ValidatedTextInput label="Fail Score" name="fail_grade"/>
-                            <ValidatedTextInput label="Scores (comma separated)" name="grades"/>
-                            <ValidatedTextInput label="Max Iterations" name="max_iter" defaultValue="300"/>
-                            <Button
-                                type="submit"
-                                disabled={!formState.isValid}
+                            <ValidatedTextInput label="Max Score" name="maxScore"/>
+                            <ValidatedTextInput label="Fail Score" name="failScore"/>
+                            <ValidatedTextInput label="Scores (comma separated)" name="scores"/>
+                            <ValidatedTextInput label="Max Iterations" name="maxIter" defaultValue="300"/>
+                            <SubmitButtonWithSpinner
+                                disabled={!formState.isValid || isLoading}
+                                buttonText="Submit"
+                                isLoading={isLoading}
                                 className="col-span-1 sm:col-span-2 mt-4 w-full"
-                            >Submit</Button>
+                            />
                         </div>
                     </form>
                 </FormProvider>
