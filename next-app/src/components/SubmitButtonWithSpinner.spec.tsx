@@ -38,6 +38,17 @@ describe("SubmitButtonWithSpinner", () => {
             renderComponent(undefined, true)
             expect(screen.queryByRole("button")).toHaveTextContent("Loading...")
         })
+
+        it("renders with className when className is provided", () => {
+            render(<SubmitButtonWithSpinner
+                buttonText="Add"
+                disabled={false}
+                isLoading={false}
+                className="some-class"
+            />)
+
+            expect(screen.queryByRole("button")).toHaveClass("some-class")
+        })
     })
 
     describe("Button interactions", () => {
