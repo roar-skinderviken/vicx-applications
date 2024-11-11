@@ -58,18 +58,21 @@ const PreviousCalculations = (
 
     return (
         <div className="mt-8">
-            <div className="relative flex items-center justify-center mb-3">
+            <div className="relative flex flex-col md:flex-row items-center md:justify-center mb-3">
+                <h3 className="text-md font-semibold text-gray-700 mb-2 md:mb-0">
+                    Previous results on this server
+                </h3>
+
                 {username && (
                     <Button
-                        className="absolute left-4"
+                        className="sm:absolute sm:left-4"
                         size="sm"
                         disabled={!selectedItems.length}
                         onClick={() => onDelete(selectedItems)}
-                    >Delete selected</Button>
+                    >
+                        Delete selected
+                    </Button>
                 )}
-                <h3 className="text-md font-semibold text-gray-700">
-                    Previous results on this server
-                </h3>
             </div>
 
             <div className="overflow-x-auto">
@@ -85,7 +88,7 @@ const PreviousCalculations = (
                                 />
                                 <Label
                                     htmlFor="selectAll"
-                                    className="text-sm text-gray-500 dark:text-gray-400"
+                                    className="text-sm text-gray-500 dark:text-gray-400 hidden sm:inline"
                                 >Select all</Label>
                             </Table.HeadCell>
                         )}
