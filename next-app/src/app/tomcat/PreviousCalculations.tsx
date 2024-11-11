@@ -1,8 +1,9 @@
 "use client"
 
-import {Button, Checkbox, Label, Table} from "flowbite-react"
+import {Checkbox, Label, Table} from "flowbite-react"
 import {CalculationResult} from "@/app/tomcat/CalculatorFormAndResult"
 import {ChangeEvent, useEffect, useState} from "react"
+import SubmitButtonWithSpinner from "@/components/SubmitButtonWithSpinner"
 
 export const formatDate = (date: Date) =>
     new Intl.DateTimeFormat('en-US', {
@@ -28,8 +29,12 @@ const PreviousCalculations = (
         onDelete?: (idsToDelete: number[]) => void
     }) => {
     const [selectedItems, setSelectedItems] = useState<number[]>([])
+    const [isLoading, setIsLoading] = useState(false)
 
-    useEffect(() => setSelectedItems([]), [calculations])
+    useEffect(() => {
+        setSelectedItems([])
+        setIsLoading(false)
+    }, [calculations])
 
     const isAllSelected = selectedItems.length > 0 && calculations
         .filter(it => it.username === username)
@@ -64,14 +69,17 @@ const PreviousCalculations = (
                 </h3>
 
                 {username && (
-                    <Button
-                        className="sm:absolute sm:left-4"
-                        size="sm"
+                    <SubmitButtonWithSpinner
+                        buttonText="Delete selected"
+                        type="button"
+                        isLoading={isLoading}
                         disabled={!selectedItems.length}
-                        onClick={() => onDelete(selectedItems)}
-                    >
-                        Delete selected
-                    </Button>
+                        onClick={() => {
+                            setIsLoading(true)
+                            onDelete(selectedItems)
+                        }}
+                        className="sm:absolute sm:left-4"
+                        size="sm"/>
                 )}
             </div>
 

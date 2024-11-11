@@ -4,21 +4,23 @@ import {ButtonHTMLAttributes} from "react"
 const SubmitButtonWithSpinner = (
     {
         buttonText,
-        disabled,
         isLoading,
-        onButtonClick = () => {
+        disabled = false,
+        type = "submit",
+        size,
+        onClick = () => {
         },
         ...rest
     }: {
         buttonText: string
-        disabled: boolean
         isLoading: boolean
-        onButtonClick?: () => void
+        size?: "xs" | "sm" | "lg" | "xl"
     } & ButtonHTMLAttributes<HTMLButtonElement>) => (
     <Button
-        type="submit"
-        disabled={disabled}
-        onClick={onButtonClick}
+        type={type}
+        size={size}
+        disabled={disabled || isLoading}
+        onClick={onClick}
         {...rest}>
         {isLoading
             ? <>

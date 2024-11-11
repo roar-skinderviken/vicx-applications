@@ -109,7 +109,7 @@ const KMeansFormAndResult = () => {
                             <ValidatedTextInput label="Scores (comma separated)" name="scores"/>
                             <ValidatedTextInput label="Max Iterations" name="maxIter" defaultValue="300"/>
                             <SubmitButtonWithSpinner
-                                disabled={!formState.isValid || isLoading}
+                                disabled={!formState.isValid}
                                 buttonText="Submit"
                                 isLoading={isLoading}
                                 className="col-span-1 sm:col-span-2 mt-4 w-full"

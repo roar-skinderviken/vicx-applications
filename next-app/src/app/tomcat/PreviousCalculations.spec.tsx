@@ -184,9 +184,9 @@ describe("PreviousCalculations", () => {
         beforeEach(() => {
             resetAllMocks()
             render(<PreviousCalculations
-                username="user1"
-                calculations={[createValidCalculation("user1")]}
-                onDelete={mockOnDelete}
+                    username="user1"
+                    calculations={[createValidCalculation("user1")]}
+                    onDelete={mockOnDelete}
                 />
             )
             fireEvent.click(screen.getByTestId("checkbox-1"))
@@ -197,6 +197,12 @@ describe("PreviousCalculations", () => {
             fireEvent.click(deleteSelectedButton)
 
             expect(mockOnDelete).toHaveBeenCalledWith([1])
+        })
+
+        it("displays spinner when 'Delete selected' is clicked", () => {
+            fireEvent.click(deleteSelectedButton)
+
+            expect(screen.queryByText("Loading...")).toBeInTheDocument()
         })
     })
 })

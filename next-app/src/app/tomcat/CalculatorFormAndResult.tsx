@@ -129,16 +129,16 @@ const CalculatorFormAndResult = () => {
                             <input type="hidden" {...register("operation")} />
 
                             <SubmitButtonWithSpinner
-                                disabled={!formState.isValid || isLoading}
+                                disabled={!formState.isValid}
                                 buttonText="Add"
                                 isLoading={isLoading && "PLUS" === operationFromForm}
-                                onButtonClick={() => methods.setValue("operation", "PLUS")}/>
+                                onClick={() => methods.setValue("operation", "PLUS")}/>
 
                             <SubmitButtonWithSpinner
-                                disabled={!formState.isValid || isLoading}
+                                disabled={!formState.isValid}
                                 buttonText="Subtract"
                                 isLoading={isLoading && "MINUS" === operationFromForm}
-                                onButtonClick={() => methods.setValue("operation", "MINUS")}/>
+                                onClick={() => methods.setValue("operation", "MINUS")}/>
                         </div>
                     </form>
                 </FormProvider>

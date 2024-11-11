@@ -8,7 +8,7 @@ const renderComponent = (disabled: boolean = false, isLoading: boolean = false) 
         buttonText="Add"
         disabled={disabled}
         isLoading={isLoading}
-        onButtonClick={mockOnClick}
+        onClick={mockOnClick}
     />)
 }
 
@@ -17,6 +17,17 @@ describe("SubmitButtonWithSpinner", () => {
         it("renders button with type submit", () => {
             renderComponent()
             expect(screen.queryByRole("button")).toHaveProperty("type", "submit")
+        })
+
+        it("renders button with type button", () => {
+            render(<SubmitButtonWithSpinner
+                buttonText="Add"
+                disabled={false}
+                isLoading={false}
+                type={"button"}
+            />)
+
+            expect(screen.queryByRole("button")).toHaveProperty("type", "button")
         })
 
         it("renders enabled button when disabled is provided as false", () => {
