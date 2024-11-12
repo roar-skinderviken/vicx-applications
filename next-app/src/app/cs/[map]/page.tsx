@@ -9,8 +9,21 @@ import csBackgroundImage from "@/assets/images/cs2back.jpg"
 export const dynamicParams = false
 export const revalidate = 3600
 
-export const metadata = {
-    title: "Counter Strike Smokes | VICX"
+export async function generateMetadata({params}: { params: Promise<{ map: string }> }) {
+    const {map} = await params
+    const selectedMap = MAPS.find((currentMap) => currentMap.name === map)
+
+    if (!selectedMap) {
+        return {
+            title: "Map Not Found | VICX",
+            description: "The specified map could not be found. Check out other Counter Strike smokes.",
+        }
+    }
+
+    return {
+        title: `${selectedMap.name} Smoke Places | VICX`,
+        description: `Discover the best smoke places for ${selectedMap.name} in Counter Strike.`,
+    }
 }
 
 export async function generateStaticParams() {
