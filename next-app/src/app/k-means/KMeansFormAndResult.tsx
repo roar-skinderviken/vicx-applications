@@ -6,7 +6,7 @@ import {yupResolver} from "@hookform/resolvers/yup"
 import * as yup from "yup"
 import ValidatedTextInput from "@/components/ValidatedTextInput"
 import {InferType} from "yup"
-import SubmitButtonWithSpinner from "@/components/SubmitButtonWithSpinner"
+import ButtonWithSpinner from "@/components/ButtonWithSpinner"
 
 // put this in next-app/.env.local
 // NEXT_PUBLIC_KMEANS_BACKEND_URL=http://localhost:8000/k-means
@@ -108,7 +108,7 @@ const KMeansFormAndResult = () => {
                             <ValidatedTextInput label="Fail Score" name="failScore"/>
                             <ValidatedTextInput label="Scores (comma separated)" name="scores"/>
                             <ValidatedTextInput label="Max Iterations" name="maxIter" defaultValue="300"/>
-                            <SubmitButtonWithSpinner
+                            <ButtonWithSpinner
                                 disabled={!formState.isValid}
                                 buttonText="Submit"
                                 isLoading={isLoading}

@@ -3,7 +3,7 @@
 import {Checkbox, Label, Table} from "flowbite-react"
 import {CalculationResult} from "@/app/tomcat/CalculatorFormAndResult"
 import {ChangeEvent, useEffect, useState} from "react"
-import SubmitButtonWithSpinner from "@/components/SubmitButtonWithSpinner"
+import ButtonWithSpinner from "@/components/ButtonWithSpinner"
 
 export const formatDate = (date: Date) =>
     new Intl.DateTimeFormat('en-US', {
@@ -76,7 +76,7 @@ const PreviousCalculations = (
                 </h3>
 
                 {username && (
-                    <SubmitButtonWithSpinner
+                    <ButtonWithSpinner
                         buttonText="Delete selected"
                         type="button"
                         isLoading={isLoadingDeleteItems}
@@ -141,8 +141,8 @@ const PreviousCalculations = (
 
             {hasMorePages && (
                 <div className="flex justify-center mt-4">
-                    <SubmitButtonWithSpinner
-                        buttonText="Fetch More"
+                    <ButtonWithSpinner
+                        buttonText="Fetch more"
                         type="button"
                         isLoading={isLoadingFetchNore}
                         onClick={() => {

@@ -1,10 +1,10 @@
-import SubmitButtonWithSpinner from "@/components/SubmitButtonWithSpinner"
+import ButtonWithSpinner from "@/components/ButtonWithSpinner"
 import {fireEvent, render, screen} from "@testing-library/react"
 
 const mockOnClick = jest.fn()
 
 const renderComponent = (disabled: boolean = false, isLoading: boolean = false) => {
-    render(<SubmitButtonWithSpinner
+    render(<ButtonWithSpinner
         buttonText="Add"
         disabled={disabled}
         isLoading={isLoading}
@@ -20,7 +20,7 @@ describe("SubmitButtonWithSpinner", () => {
         })
 
         it("renders button with type button", () => {
-            render(<SubmitButtonWithSpinner
+            render(<ButtonWithSpinner
                 buttonText="Add"
                 disabled={false}
                 isLoading={false}
@@ -51,7 +51,7 @@ describe("SubmitButtonWithSpinner", () => {
         })
 
         it("renders with className when className is provided", () => {
-            render(<SubmitButtonWithSpinner
+            render(<ButtonWithSpinner
                 buttonText="Add"
                 disabled={false}
                 isLoading={false}

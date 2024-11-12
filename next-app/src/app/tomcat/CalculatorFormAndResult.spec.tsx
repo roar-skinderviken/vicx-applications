@@ -134,9 +134,8 @@ describe("CalculatorFormAndResult", () => {
 
         const runCalculationTest = async (operation: "PLUS" | "MINUS", authenticated: boolean = false) => {
             const isAddition = operation === "PLUS"
-
             const validResponse = isAddition ? validAddResponse : validSubtractResponse
-            const buttonName = isAddition ? "Add" : "Subtract"
+
             const expectedSign = isAddition ? "+" : "-"
             const expectedResult = isAddition ? "3" : "-1"
 
@@ -146,10 +145,16 @@ describe("CalculatorFormAndResult", () => {
                 .mockResponseOnce(async () => await delayedResponse(JSON.stringify(validResponse), 100))
                 .mockResponseOnce(JSON.stringify(previousResult))
 
-            const button = screen.getByRole("button", {name: buttonName})
+            const button = screen.getByRole("button", {name: isAddition ? "Add" : "Subtract"})
+            const otherButton = screen.getByRole("button", {name: isAddition ? "Subtract" : "Add"})
+
             await act(() => fireEvent.click(button))
 
             expect(button).toHaveTextContent("Loading...")
+            expect(otherButton).not.toHaveTextContent("Loading...")
+
+            expect(button).toBeDisabled()
+            expect(otherButton).toBeDisabled()
 
             await waitFor(() =>
                 expect(button).not.toHaveTextContent("Loading..."))

@@ -10,7 +10,7 @@ import {getSession} from "next-auth/react"
 import {CustomSession} from "@/types/authTypes"
 import {hasRole} from "@/utils/authUtils"
 import PreviousCalculations from "@/app/tomcat/PreviousCalculations"
-import SubmitButtonWithSpinner from "@/components/SubmitButtonWithSpinner"
+import ButtonWithSpinner from "@/components/ButtonWithSpinner"
 
 // put this in next-app/.env.local
 // NEXT_PUBLIC_TOMCAT_BACKEND_URL=http://localhost:8080/api
@@ -142,14 +142,14 @@ const CalculatorFormAndResult = () => {
 
                             <input type="hidden" {...register("operation")} />
 
-                            <SubmitButtonWithSpinner
-                                disabled={!formState.isValid}
+                            <ButtonWithSpinner
+                                disabled={!formState.isValid || isLoading}
                                 buttonText="Add"
                                 isLoading={isLoading && "PLUS" === operationFromForm}
                                 onClick={() => methods.setValue("operation", "PLUS")}/>
 
-                            <SubmitButtonWithSpinner
-                                disabled={!formState.isValid}
+                            <ButtonWithSpinner
+                                disabled={!formState.isValid || isLoading}
                                 buttonText="Subtract"
                                 isLoading={isLoading && "MINUS" === operationFromForm}
                                 onClick={() => methods.setValue("operation", "MINUS")}/>

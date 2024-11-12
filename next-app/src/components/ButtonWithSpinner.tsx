@@ -1,7 +1,7 @@
 import {Button, Spinner} from "flowbite-react"
 import {ButtonHTMLAttributes} from "react"
 
-const SubmitButtonWithSpinner = (
+const ButtonWithSpinner = (
     {
         buttonText,
         isLoading,
@@ -32,4 +32,4 @@ const SubmitButtonWithSpinner = (
     </Button>
 )
 
-export default SubmitButtonWithSpinner
+export default ButtonWithSpinner

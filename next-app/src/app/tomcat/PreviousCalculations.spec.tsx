@@ -120,14 +120,14 @@ describe("PreviousCalculations", () => {
             expect(screen.queryByTestId("checkbox-1")).toBeInTheDocument()
         })
 
-        it("displays 'Fetch More' button when hasMorePages is true", () => {
+        it("displays 'Fetch more' button when hasMorePages is true", () => {
             render(<PreviousCalculations
                 username="user1"
                 hasMorePages={true}
                 calculations={[createValidCalculation("user1")]}/>
             )
 
-            expect(screen.queryByText("Fetch More")).toBeInTheDocument()
+            expect(screen.queryByText("Fetch more")).toBeInTheDocument()
         })
     })
 
@@ -205,8 +205,8 @@ describe("PreviousCalculations", () => {
                 />
             )
             fireEvent.click(screen.getByTestId("checkbox-1"))
-            deleteSelectedButton = screen.getAllByRole("button")[0] as HTMLInputElement
-            fetchMoreButton = screen.getAllByRole("button")[1] as HTMLInputElement
+            deleteSelectedButton = screen.getByRole("button", {name: "Delete selected"})
+            fetchMoreButton = screen.getByRole("button", {name: "Fetch more"})
         })
 
         it("calls onDeleteItems callback when 'Delete selected' is clicked", () => {
@@ -221,13 +221,13 @@ describe("PreviousCalculations", () => {
             expect(screen.queryByText("Loading...")).toBeInTheDocument()
         })
 
-        it("calls onFetchMore callback when 'Fetch More' is clicked", () => {
+        it("calls onFetchMore callback when 'Fetch more' is clicked", () => {
             fireEvent.click(fetchMoreButton)
 
             expect(mockOnFetchMore).toHaveBeenCalled()
         })
 
-        it("displays spinner when 'Fetch More' is clicked", () => {
+        it("displays spinner when 'Fetch more' is clicked", () => {
             fireEvent.click(fetchMoreButton)
 
             expect(screen.queryByText("Loading...")).toBeInTheDocument()
