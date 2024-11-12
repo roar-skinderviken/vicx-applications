@@ -10,3 +10,4 @@ CREATE TABLE calc_entry
 );
 
 CREATE INDEX idx_calc_entry_id_desc ON calc_entry (id DESC);
+CREATE INDEX idx_username ON calc_entry (username);
