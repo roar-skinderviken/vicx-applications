@@ -8,3 +8,5 @@ CREATE TABLE calc_entry
     username     VARCHAR(255) NULL,
     created_at   TIMESTAMP  NOT NULL
 );
+
+CREATE INDEX idx_calc_entry_id_desc ON calc_entry (id DESC);

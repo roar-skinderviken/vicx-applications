@@ -19,14 +19,14 @@ spring:
       enabled: false
       path: /h2-console
   datasource:
-    url: jdbc:h2:mem:testdb
+    url: jdbc:h2:mem:testdb;CACHE_SIZE=2048
     username: sa
     password:
     driver-class-name: org.h2.Driver
   jpa:
     open-in-view: false
     hibernate.ddl-auto: none
-    show-sql: true
+    show-sql: false
     properties:
       jakarta:
         persistence:
