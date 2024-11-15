@@ -1,10 +1,10 @@
-server:
-  tomcat:
-    accept-count: 3
-    max-connections: 3
-    threads:
-      max: 3
-      min-spare: 1
+#server:
+#  tomcat:
+#    accept-count: 3
+#    max-connections: 3
+#    threads:
+#      max: 3
+#      min-spare: 1
 
 logging:
   level:
@@ -13,8 +13,6 @@ logging:
 spring:
   application:
     name: vicx-backend-spring-boot
-  main:
-    lazy-initialization: true
 
   # for adding GitHub as well:
   # https://docs.spring.io/spring-security/reference/reactive/oauth2/resource-server/multitenancy.html
