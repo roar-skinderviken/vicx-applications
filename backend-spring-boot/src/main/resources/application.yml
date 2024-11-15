@@ -14,7 +14,7 @@ spring:
   application:
     name: vicx-backend-spring-boot
   main:
-    lazy-initialization:
+    lazy-initialization: true
 
   # for adding GitHub as well:
   # https://docs.spring.io/spring-security/reference/reactive/oauth2/resource-server/multitenancy.html
