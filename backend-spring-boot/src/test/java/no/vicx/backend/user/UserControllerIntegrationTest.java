@@ -38,10 +38,8 @@ class UserControllerIntegrationTest {
     void getUser_authenticated_expectOk() {
         when(userService.getUserByUserName("user1")).thenReturn(VALID_VICX_USER);
 
-        var headers = new HttpHeaders();
-        headers.set(HttpHeaders.AUTHORIZATION, "Bearer token");
-
-        var httpEntity = new HttpEntity<>(headers);
+        var httpEntity = new HttpEntity<>(
+                createHttpHeaders(false, MediaType.APPLICATION_JSON_VALUE));
 
         var response = restTemplate.exchange(
                 "/api/user/user1",
@@ -68,13 +66,12 @@ class UserControllerIntegrationTest {
     void putUser_authenticated_expectOk() {
         when(userService.updateUser(any())).thenReturn(VALID_VICX_USER);
 
-        var headers = new HttpHeaders();
-        headers.set(HttpHeaders.AUTHORIZATION, "Bearer token");
-
         var response = restTemplate.exchange(
                 "/api/user",
                 HttpMethod.PUT,
-                new HttpEntity<>(VALID_USER_VM, headers),
+                new HttpEntity<>(
+                        VALID_USER_VM,
+                        createHttpHeaders(true, MediaType.APPLICATION_JSON_VALUE)),
                 UserVm.class);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -83,16 +80,15 @@ class UserControllerIntegrationTest {
 
     @Test
     void putUser_givenUsernameForOtherUser_expectForbidden() {
-        var headers = new HttpHeaders();
-        headers.set(HttpHeaders.AUTHORIZATION, "Bearer token");
-
         var user = createUserVm(
                 "user2", "P4ssword", "user@example.com", "The User");
 
         var response = restTemplate.exchange(
                 "/api/user",
                 HttpMethod.PUT,
-                new HttpEntity<>(user, headers),
+                new HttpEntity<>(
+                        user,
+                        createHttpHeaders(true, null)),
                 String.class);
 
         assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
@@ -103,13 +99,12 @@ class UserControllerIntegrationTest {
     void putUser_givenInvalidUser_expectBadRequest(
             UserVm userVm, String fieldName, String expectedMessage
     ) {
-        var headers = new HttpHeaders();
-        headers.set(HttpHeaders.AUTHORIZATION, "Bearer token");
-
         var response = restTemplate.exchange(
                 "/api/user",
                 HttpMethod.PUT,
-                new HttpEntity<>(userVm, headers),
+                new HttpEntity<>(
+                        userVm,
+                        createHttpHeaders(true, null)),
                 ApiError.class);
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
@@ -117,5 +112,19 @@ class UserControllerIntegrationTest {
         var apiError = response.getBody();
         assertNotNull(apiError);
         assertEquals(expectedMessage, apiError.validationErrors().get(fieldName));
+    }
+
+    HttpHeaders createHttpHeaders(
+            boolean includeContentType,
+            String acceptType
+    ) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set(HttpHeaders.AUTHORIZATION, "Bearer token");
+
+        if (includeContentType) headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
+
+        if (acceptType != null) headers.set(HttpHeaders.CONTENT_TYPE, acceptType);
+
+        return headers;
     }
 }

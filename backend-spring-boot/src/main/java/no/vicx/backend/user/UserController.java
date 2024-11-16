@@ -38,7 +38,7 @@ public class UserController {
 
     @PutMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.TEXT_PLAIN_VALUE)
+            produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("#userVm.username == authentication.getName()")
     UserVm updateUser(@Valid @RequestBody UserVm userVm) {
         return UserVm.fromVicxUser(userService.updateUser(userVm));
