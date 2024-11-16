@@ -1,7 +1,8 @@
-package no.vicx.database.user;
+package no.vicx.backend.user.validation;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
+import no.vicx.database.user.UserRepository;
 
 public class UniqueUsernameValidator implements ConstraintValidator<UniqueUsername, String> {
 

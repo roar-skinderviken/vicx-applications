@@ -1,10 +1,6 @@
 package no.vicx.database.user;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
 
 @Entity(name = "vicx_user")
 public class VicxUser {
@@ -13,22 +9,12 @@ public class VicxUser {
     private Long id;
 
     @Column(unique = true)
-    @NotNull(message = "{vicx.constraints.username.NotNull.message}")
-    @Size(min = 4, max = 255)
-    @UniqueUsername(message = "{vicx.constraints.username.UniqueUsername.message}")
     private String username;
 
-    @NotNull
-    @Size(min = 4, max = 255)
     private String name;
 
-    @NotNull
-    @Size(min = 8, max = 255)
-    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).*$", message = "{vicx.constraints.Pattern.message}")
     private String password;
 
-    @NotNull
-    @Email
     private String email;
 
     private String image;

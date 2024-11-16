@@ -7,13 +7,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class CalculatorSecurityService {
-
-    private final CalculatorRepository calculatorRepository;
-
-    public CalculatorSecurityService(CalculatorRepository calculatorRepository) {
-        this.calculatorRepository = calculatorRepository;
-    }
+public record CalculatorSecurityService(CalculatorRepository calculatorRepository) {
 
     public boolean isAllowedToDelete(final List<Long> ids, JwtAuthenticationToken authentication) {
         var idsFromDatabase = calculatorRepository.findAllIdsByUsername(authentication.getName());

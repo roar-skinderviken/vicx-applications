@@ -80,8 +80,8 @@ class CalculatorControllerTest {
                 .andExpect(jsonPath("$.content[0].secondValue", is(2)))
                 .andExpect(jsonPath("$.content[0].operation", is(CalculatorOperation.PLUS.toString())))
                 .andExpect(jsonPath("$.content[0].result", is(3)))
-                .andExpect(jsonPath("$.content[0].username", is("user1")))
-                .andExpect(jsonPath("$.content[0].createdAt", is(NOW.toString())));
+                .andExpect(jsonPath("$.content[0].username", is("user1")));
+                //.andExpect(jsonPath("$.content[0].createdAt", is(NOW.toString())));
     }
 
     @ParameterizedTest

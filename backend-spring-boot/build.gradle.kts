@@ -23,6 +23,8 @@ dependencies {
     //implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0")
     runtimeOnly("dev.akkinoc.spring.boot:logback-access-spring-boot-starter:4.3.2")
 
+    implementation("org.apache.tika:tika-core:2.9.2")
+
     implementation(project(":database"))
     implementation("org.springframework.boot:spring-boot-starter-validation")
     runtimeOnly("com.h2database:h2")
@@ -32,7 +34,6 @@ dependencies {
     testRuntimeOnly("org.flywaydb:flyway-database-postgresql")
     testRuntimeOnly("org.postgresql:postgresql")
 
-    implementation("io.micrometer:micrometer-registry-prometheus")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }

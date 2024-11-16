@@ -1,7 +1,6 @@
 package no.vicx.backend.calculator.repository;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import no.vicx.backend.calculator.vm.CalculatorOperation;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -18,7 +17,6 @@ public class CalculatorEntity {
 
     private long secondValue;
 
-    @NotNull
     private CalculatorOperation operation;
 
     private long result;
@@ -27,7 +25,6 @@ public class CalculatorEntity {
 
     @CreationTimestamp
     @Column(updatable = false)
-    @NotNull
     private LocalDateTime createdAt;
 
     /**
