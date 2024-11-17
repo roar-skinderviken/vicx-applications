@@ -9,12 +9,14 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Constraint(validatedBy = ProfileImageValidator.class)
-@Target(ElementType.FIELD)
+@Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ProfileImage {
 
     String message() default "{vicx.constraints.image.ProfileImage.default.message}";
+
     String invalidFileTypeMessage() default "{vicx.constraints.image.ProfileImage.type.message}";
+
     String invalidSizeMessage() default "{vicx.constraints.image.ProfileImage.size.message}";
 
     Class<?>[] groups() default {};

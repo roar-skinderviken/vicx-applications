@@ -4,7 +4,6 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import no.vicx.backend.user.validation.ProfileImage;
 import no.vicx.backend.user.validation.UniqueUsername;
 import no.vicx.database.user.VicxUser;
 
@@ -25,10 +24,7 @@ public record UserVm(
 
         @NotNull
         @Size(min = 4, max = 255)
-        String name,
-
-        @ProfileImage
-        String image
+        String name
 ) {
     public VicxUser toNewVicxUser() {
         var user = new VicxUser();
@@ -36,8 +32,6 @@ public record UserVm(
         user.setPassword(password);
         user.setEmail(email);
         user.setName(name);
-        user.setImage(image);
-
         return user;
     }
 
@@ -46,7 +40,7 @@ public record UserVm(
                 user.getUsername(),
                 null,
                 user.getEmail(),
-                user.getName(),
-                user.getImage());
+                user.getName()
+        );
     }
 }

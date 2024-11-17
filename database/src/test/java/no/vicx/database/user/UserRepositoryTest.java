@@ -7,9 +7,12 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.dao.DataIntegrityViolationException;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import java.io.IOException;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -28,7 +31,7 @@ class UserRepositoryTest {
     }
 
     @Test
-    void whenUserIsSaved_thenUserExistsInDatabase() {
+    void save_givenValidUser_expectUserInDatabase() {
         var user = createValidUser();
 
         var savedUser = sut.save(user);
@@ -39,27 +42,70 @@ class UserRepositoryTest {
         assertEquals(user.getUsername(), userInDb.getUsername());
         assertEquals(user.getPassword(), userInDb.getPassword());
         assertEquals(user.getEmail(), userInDb.getEmail());
-        assertEquals(user.getImage(), userInDb.getImage());
     }
 
     @Test
-    void givenUserInDatabase_whenFindById_expectUser() {
+    void save_givenDuplicateUser_expectException() {
+        sut.save(createValidUser());
+
+        var duplicateUser = createValidUser();
+        duplicateUser.setUsername("User1");
+        assertThrows(DataIntegrityViolationException.class, () -> sut.save(duplicateUser));
+    }
+
+    @Test
+    void save_givenValidUserWithImage_expectUserWithImageInDatabase() throws IOException {
+        var user = createValidUser();
+        user.setUserImage(createUserImage());
+        var savedUser = sut.save(user);
+
+        var userInDb = entityManager.find(VicxUser.class, savedUser.getId());
+        assertEquals(user.getUserImage().getContentType(), userInDb.getUserImage().getContentType());
+    }
+
+    @Test
+    void save_givenExistingUserWithImageInDb_expectUserWithoutImageAfterSave() throws IOException {
+        var user = createValidUser();
+        user.setUserImage(createUserImage());
+        entityManager.persist(user);
+        assertEquals(1, getImageCountInDb());
+
+        var savedUser = sut.findByUsername(user.getUsername())
+                .map(userInDb -> {
+                    assertNotNull(userInDb.getUserImage());
+                    userInDb.setUserImage(null);
+                    return sut.save(userInDb);
+                }).orElseThrow();
+
+        assertNull(savedUser.getUserImage());
+        assertEquals(0, getImageCountInDb());
+    }
+
+    @Test
+    void findById_givenUserInDatabase_expectUser() {
         var user = createValidUser();
         entityManager.persist(user);
 
         var userInDb = sut.findById(user.getId());
-
         assertTrue(userInDb.isPresent());
     }
 
     @Test
-    void givenUserInDatabase_whenFindByUsername_expectUser() {
+    void findByUsername_givenUserInDatabase_expectUser() {
         var user = createValidUser();
         entityManager.persist(user);
 
         var userInDb = sut.findByUsername(user.getUsername());
-
         assertTrue(userInDb.isPresent());
+
+        var upperCaseUser = sut.findByUsername(user.getUsername().toUpperCase());
+        assertTrue(upperCaseUser.isPresent());
+    }
+
+    Long getImageCountInDb() {
+        return (Long) entityManager.getEntityManager()
+                .createNativeQuery("SELECT COUNT(1) FROM user_image")
+                .getSingleResult();
     }
 
     static VicxUser createValidUser() {
@@ -68,7 +114,16 @@ class UserRepositoryTest {
         user.setName("Foo Bar");
         user.setEmail("user1@vicx.no");
         user.setPassword("password1");
-        user.setImage("some base64-encoded image");
         return user;
+    }
+
+    static UserImage createUserImage() throws IOException {
+        var userImage = new UserImage();
+        userImage.setContentType("image/png");
+
+        var imageResource = new ClassPathResource("profile.png");
+        userImage.setImageData(imageResource.getContentAsByteArray());
+
+        return userImage;
     }
 }

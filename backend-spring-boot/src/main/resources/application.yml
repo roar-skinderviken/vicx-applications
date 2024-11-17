@@ -1,16 +1,12 @@
-#server:
-#  tomcat:
-#    accept-count: 3
-#    max-connections: 3
-#    threads:
-#      max: 3
-#      min-spare: 1
-
 logging:
   level:
     root: INFO
 
 spring:
+  servlet:
+    multipart:
+      enabled: true
+
   application:
     name: vicx-backend-spring-boot
 
@@ -31,15 +27,12 @@ spring:
     username: sa
     password:
     driver-class-name: org.h2.Driver
+
   jpa:
     open-in-view: false
-    hibernate.ddl-auto: none
+    hibernate.ddl-auto: create
     show-sql: false
-    properties:
-      jakarta:
-        persistence:
-          validation:
-            mode: none
+
   data:
     web:
       pageable:
@@ -47,8 +40,7 @@ spring:
         max-page-size: 100
 
   flyway:
-    enabled: true
-    locations: classpath:db/migration
+    enabled: false
 
 management:
   server:

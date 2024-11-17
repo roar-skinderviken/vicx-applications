@@ -3,15 +3,15 @@ package no.vicx.backend.user.validation;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import org.apache.tika.Tika;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Base64;
+import java.io.IOException;
 import java.util.List;
 
-public class ProfileImageValidator implements ConstraintValidator<ProfileImage, String> {
+public class ProfileImageValidator implements ConstraintValidator<ProfileImage, MultipartFile> {
 
     private static final List<String> ALLOWED_FILETYPES = List.of("image/png", "image/jpeg");
     private static final Tika TIKA = new Tika();
-    private static final Base64.Decoder BASE64_DECODER = Base64.getDecoder();
 
     private long maxFileSize;
     private String invalidFileTypeMessage;
@@ -25,29 +25,28 @@ public class ProfileImageValidator implements ConstraintValidator<ProfileImage, 
     }
 
     @Override
-    public boolean isValid(String value, ConstraintValidatorContext context) {
+    public boolean isValid(MultipartFile file, ConstraintValidatorContext context) {
         // Null or empty check upfront
-        if (value == null || value.isEmpty()) {
+        if (file == null) {
             return true;
-        }
-
-        byte[] decodedBytes;
-        try {
-            decodedBytes = BASE64_DECODER.decode(value);
-        } catch (IllegalArgumentException e) {
-            return false;
         }
 
         context.disableDefaultConstraintViolation();
 
         // Size check: Ensure the file is within the allowed size limit
-        if (decodedBytes.length > maxFileSize) {
+        if (file.getSize() > maxFileSize) {
             return setValidationError(invalidSizeMessage, context);
         }
 
         // Validate file type
-        if (!ALLOWED_FILETYPES.contains(TIKA.detect(decodedBytes))) {
-            return setValidationError(invalidFileTypeMessage, context);
+        try {
+            String mimeType = TIKA.detect(file.getBytes());
+            if (!ALLOWED_FILETYPES.contains(mimeType)) {
+                return setValidationError(invalidFileTypeMessage, context);
+            }
+        } catch (IOException e) {
+            // Handle error if file type detection fails
+            return setValidationError("Unable to detect file type", context);
         }
 
         // If both size and type are valid

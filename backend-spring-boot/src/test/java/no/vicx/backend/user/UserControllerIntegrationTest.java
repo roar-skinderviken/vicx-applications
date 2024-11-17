@@ -36,7 +36,8 @@ class UserControllerIntegrationTest {
 
     @Test
     void getUser_authenticated_expectOk() {
-        when(userService.getUserByUserName("user1")).thenReturn(VALID_VICX_USER);
+        var validUser = createValidUser();
+        when(userService.getUserByUserName("user1")).thenReturn(validUser);
 
         var httpEntity = new HttpEntity<>(
                 createHttpHeaders(false, MediaType.APPLICATION_JSON_VALUE));
@@ -48,7 +49,7 @@ class UserControllerIntegrationTest {
                 UserVm.class);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertUserVm(VALID_VICX_USER, response.getBody());
+        assertUserVm(validUser, response.getBody());
     }
 
     @Test
@@ -56,7 +57,7 @@ class UserControllerIntegrationTest {
         var response = restTemplate.exchange(
                 "/api/user",
                 HttpMethod.PUT,
-                new HttpEntity<>(VALID_USER_VM),
+                new HttpEntity<>(createValidUserVm()),
                 String.class);
 
         assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
@@ -64,18 +65,21 @@ class UserControllerIntegrationTest {
 
     @Test
     void putUser_authenticated_expectOk() {
-        when(userService.updateUser(any())).thenReturn(VALID_VICX_USER);
+        var validUserVm = createValidUserVm();
+        var validUser = validUserVm.toNewVicxUser();
+
+        when(userService.updateUser(any())).thenReturn(validUser);
 
         var response = restTemplate.exchange(
                 "/api/user",
                 HttpMethod.PUT,
                 new HttpEntity<>(
-                        VALID_USER_VM,
+                        validUserVm,
                         createHttpHeaders(true, MediaType.APPLICATION_JSON_VALUE)),
                 UserVm.class);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertUserVm(VALID_VICX_USER, response.getBody());
+        assertUserVm(validUser, response.getBody());
     }
 
     @Test

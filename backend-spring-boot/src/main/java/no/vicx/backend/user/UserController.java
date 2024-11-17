@@ -1,18 +1,22 @@
 package no.vicx.backend.user;
 
 import jakarta.validation.Valid;
+import no.vicx.backend.user.validation.ProfileImage;
 import no.vicx.backend.user.vm.UserVm;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.net.URI;
 
 @RestController
 @RequestMapping("/api/user")
+@Validated
 public class UserController {
-
     private final UserService userService;
 
     public UserController(UserService userService) {
@@ -20,10 +24,13 @@ public class UserController {
     }
 
     @PostMapping(
-            consumes = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
             produces = MediaType.TEXT_PLAIN_VALUE)
-    ResponseEntity<String> createUser(@Valid @RequestBody UserVm userVm) {
-        var createdUser = userService.createUser(userVm.toNewVicxUser());
+    public ResponseEntity<String> createUser(
+            @Valid UserVm userVm,
+            @ProfileImage MultipartFile image) throws IOException {
+
+        var createdUser = userService.createUser(userVm, image);
 
         return ResponseEntity
                 .created(URI.create("/api/user/" + createdUser.getId()))

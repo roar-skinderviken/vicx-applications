@@ -11,13 +11,24 @@ const InvisibleIcon = () => (
     </svg>
 )
 
-const ValidatedTextInput = ({name, label, defaultValue}: {
-    name: string,
-    label: string,
+const ValidatedTextInput = ({name, label, defaultValue, type = "text", errorMessage}: {
+    name: string
+    label: string
     defaultValue?: string
+    type?: string,
+    errorMessage?: string
 }) => {
     const {register, watch, formState: {errors}} = useFormContext()
     const value = watch(name)
+
+    let helperText
+
+    if (errorMessage) {
+        helperText = <span className="font-medium text-left block">{errorMessage}</span>
+    } else if (errors[name]) {
+        const yupValidationErrorMessage = (errors[name] as { message?: string }).message
+        helperText = <span className="font-medium text-left block">{yupValidationErrorMessage}</span>
+    }
 
     return (
         <div className="flex flex-col">
@@ -32,18 +43,14 @@ const ValidatedTextInput = ({name, label, defaultValue}: {
                 {...register(name)}
                 color={errors[name] ? "failure" : "success"}
                 rightIcon={
-                    errors[name]
+                    helperText
                         ? HiExclamationCircle
                         : value ? HiCheck : InvisibleIcon
                 }
                 defaultValue={defaultValue}
-                type="text"
+                type={type}
                 sizing="md"
-                helperText={errors[name] && (
-                    <span className="font-medium">
-                        {(errors[name] as { message?: string }).message}
-                    </span>
-                )}
+                helperText={helperText}
             />
         </div>
     )

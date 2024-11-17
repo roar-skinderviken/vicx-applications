@@ -3,10 +3,14 @@ package no.vicx.backend.user;
 import jakarta.transaction.Transactional;
 import no.vicx.backend.error.NotFoundException;
 import no.vicx.backend.user.vm.UserVm;
+import no.vicx.database.user.UserImage;
 import no.vicx.database.user.UserRepository;
 import no.vicx.database.user.VicxUser;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @Transactional
 @Service
@@ -20,7 +24,17 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public VicxUser createUser(VicxUser user) {
+    public VicxUser createUser(UserVm userVm, MultipartFile image) throws IOException {
+        var user = userVm.toNewVicxUser();
+
+        if (image != null && !image.isEmpty()) {
+            UserImage userImage = new UserImage();
+            userImage.setContentType(image.getContentType());
+            userImage.setImageData(image.getBytes());
+
+            user.setUserImage(userImage);
+        }
+
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
@@ -36,7 +50,6 @@ public class UserService {
         userInDb.setPassword(passwordEncoder.encode(userVm.password()));
         userInDb.setName(userVm.name());
         userInDb.setEmail(userVm.email());
-        userInDb.setImage(userVm.image());
 
         return userRepository.save(userInDb);
     }

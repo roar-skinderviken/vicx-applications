@@ -8,16 +8,22 @@ public class VicxUser {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true)
+    @Column(name = "username", unique = true)
     private String username;
 
+    @Column(name = "name")
     private String name;
 
+    @Column(name = "password")
     private String password;
 
+    @Column(name = "email")
     private String email;
 
-    private String image;
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private UserImage userImage;
+
+    // getters/setters
 
     public Long getId() {
         return id;
@@ -59,11 +65,14 @@ public class VicxUser {
         this.email = email;
     }
 
-    public String getImage() {
-        return image;
+    public UserImage getUserImage() {
+        return userImage;
     }
 
-    public void setImage(String image) {
-        this.image = image;
+    public void setUserImage(UserImage userImage) {
+        if (userImage != null) {
+            userImage.setUser(this);
+        }
+        this.userImage = userImage;
     }
 }

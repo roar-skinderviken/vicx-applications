@@ -1,15 +1,12 @@
 package no.vicx.backend.user;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.vicx.backend.config.SecurityConfig;
 import no.vicx.backend.error.ApiError;
 import no.vicx.backend.user.vm.UserVm;
 import no.vicx.database.user.UserRepository;
-import no.vicx.database.user.VicxUser;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,17 +16,17 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 import static no.vicx.backend.user.UserTestUtils.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(UserController.class)
@@ -49,23 +46,30 @@ class UserControllerTest {
     UserRepository userRepository;
 
     @ParameterizedTest
-    @MethodSource("validUserVmProvider")
-    void postUser_givenValidUser_expectCreated(UserVm userVm) throws Exception {
-        var validVicxUser = userVm.toNewVicxUser();
+    @MethodSource("no.vicx.backend.user.UserTestUtils#mockMultipartFileProvider")
+    void postUser_givenValidUser_expectCreated(MockMultipartFile imageFile) throws Exception {
+        var validUserVm = createValidUserVm();
+        var validVicxUser = validUserVm.toNewVicxUser();
         validVicxUser.setId(42L);
 
-        when(userService.createUser(any())).thenReturn(validVicxUser);
+        when(userService.createUser(any(), any())).thenReturn(validVicxUser);
 
-        mockMvc.perform(createRequestBuilder(userVm))
+        mockMvc.perform(createMultipartRequest(validUserVm, imageFile))
                 .andExpect(status().isCreated())
                 .andExpect(header().string(HttpHeaders.LOCATION, "/api/user/" + validVicxUser.getId()))
                 .andExpect(content().string("User created successfully."));
 
-        var captor = ArgumentCaptor.forClass(VicxUser.class);
-        verify(userService, times(1)).createUser(captor.capture());
+        var userCaptor = ArgumentCaptor.forClass(UserVm.class);
+        var imageCaptor = ArgumentCaptor.forClass(MultipartFile.class);
+        verify(userService, times(1)).createUser(userCaptor.capture(), imageCaptor.capture());
 
-        var capturedUser = captor.getValue();
-        assertEquals(validVicxUser.getUsername(), capturedUser.getUsername());
+        var capturedUser = userCaptor.getValue();
+        assertEquals(validVicxUser.getUsername(), capturedUser.username());
+
+        var capturedImage = imageCaptor.getValue();
+        if (capturedImage != null) {
+            assertEquals(imageFile.getOriginalFilename(), capturedImage.getOriginalFilename());
+        }
     }
 
     @ParameterizedTest
@@ -73,37 +77,51 @@ class UserControllerTest {
     void postUser_givenInvalidUser_expectBadRequest(
             UserVm userVm, String fieldName, String expectedMessage) throws Exception {
 
-        var apiError = performBadRequest(userVm);
+        var apiError = performBadRequest(userVm, null);
+        assertEquals(expectedMessage, apiError.validationErrors().get(fieldName));
+    }
+
+    @ParameterizedTest
+    @MethodSource("no.vicx.backend.user.UserTestUtils#invalidImageProvider")
+    void postUser_givenInvalidImage_expectBadRequest(
+            MockMultipartFile imageFile, String fieldName, String expectedMessage) throws Exception {
+
+        var apiError = performBadRequest(createValidUserVm(), imageFile);
         assertEquals(expectedMessage, apiError.validationErrors().get(fieldName));
     }
 
     @Test
     void postUser_givenDuplicateUsername_expectBadRequest() throws Exception {
-        when(userRepository.findByUsername(any())).thenReturn(Optional.of(VALID_VICX_USER));
+        when(userRepository.findByUsername(any())).thenReturn(Optional.of(createValidUser()));
 
-        var apiError = performBadRequest(VALID_USER_VM);
+        var apiError = performBadRequest(createValidUserVm(), null);
 
         assertEquals(HttpStatus.BAD_REQUEST.value(), apiError.status());
         assertEquals("validation error", apiError.message());
         assertEquals("This name is in use", apiError.validationErrors().get("username"));
     }
 
-    static Stream<Arguments> validUserVmProvider() throws IOException {
-        return Stream.of(
-                Arguments.of(createUserVm(readFileToBase64("profile.png"))),
-                Arguments.of(createUserVm(null)),
-                Arguments.of(createUserVm(""))
-        );
+    MockHttpServletRequestBuilder createMultipartRequest(
+            UserVm userVm, MockMultipartFile imageFile) {
+
+        var builder = multipart("/api/user");
+
+        if (imageFile != null) {
+            builder.file(imageFile);
+        }
+
+        builder
+                .param("username", userVm.username())
+                .param("password", userVm.password())
+                .param("email", userVm.email())
+                .param("name", userVm.name());
+
+        return builder.contentType(MediaType.MULTIPART_FORM_DATA);
     }
 
-    MockHttpServletRequestBuilder createRequestBuilder(UserVm userVm) throws JsonProcessingException {
-        return post("/api/user")
-                .content(objectMapper.writeValueAsString(userVm))
-                .contentType(MediaType.APPLICATION_JSON);
-    }
-
-    ApiError performBadRequest(UserVm userVm) throws Exception {
-        var result = mockMvc.perform(createRequestBuilder(userVm))
+    ApiError performBadRequest(
+            UserVm userVm, MockMultipartFile imageFile) throws Exception {
+        var result = mockMvc.perform(createMultipartRequest(userVm, imageFile))
                 .andExpect(status().isBadRequest())
                 .andReturn();
 
