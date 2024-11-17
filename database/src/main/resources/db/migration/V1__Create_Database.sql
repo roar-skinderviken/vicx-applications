@@ -10,8 +10,7 @@ CREATE UNIQUE INDEX unique_username_ci ON vicx_user (LOWER(username));
 
 CREATE TABLE user_image
 (
-    id           SERIAL PRIMARY KEY,
-    user_id      INT         NOT NULL,
+    user_id      INT PRIMARY KEY,
     content_type VARCHAR(16) NOT NULL,
     image_data   BYTEA       NOT NULL,
     CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES vicx_user (id)

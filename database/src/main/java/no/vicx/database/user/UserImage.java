@@ -6,11 +6,12 @@ import jakarta.persistence.*;
 public class UserImage {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
     private Long id;
 
     @OneToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @MapsId
+    @JoinColumn(name = "user_id")
     private VicxUser user;
 
     @Column(name = "content_type")

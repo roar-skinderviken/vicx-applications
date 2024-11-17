@@ -21,6 +21,7 @@ public class VicxUser {
     private String email;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @PrimaryKeyJoinColumn
     private UserImage userImage;
 
     // getters/setters
