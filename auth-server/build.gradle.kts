@@ -17,8 +17,9 @@ repositories {
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-oauth2-authorization-server")
-    implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
+    runtimeOnly("dev.akkinoc.spring.boot:logback-access-spring-boot-starter:4.3.2")
+
     testImplementation("net.sourceforge.htmlunit:htmlunit")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")
