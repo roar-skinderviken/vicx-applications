@@ -4,6 +4,7 @@ import no.vicx.database.calculator.CalcEntry;
 import no.vicx.database.calculator.CalculatorRepository;
 import no.vicx.database.calculator.CalculatorOperation;
 import no.vicx.backend.calculator.vm.CalculatorRequestVm;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -28,9 +29,16 @@ class CalculatorServiceTest {
     @InjectMocks
     CalculatorService sut;
 
+    AutoCloseable openMocks;
+
     @BeforeEach
     void setUp() {
-        openMocks(this);
+        openMocks = openMocks(this);
+    }
+
+    @AfterEach
+    void tearDown() throws Exception {
+        openMocks.close();
     }
 
     @Test

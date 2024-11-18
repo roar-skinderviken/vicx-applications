@@ -3,6 +3,7 @@ package no.vicx.backend.user;
 import no.vicx.backend.error.NotFoundException;
 import no.vicx.database.user.UserRepository;
 import no.vicx.database.user.VicxUser;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -16,7 +17,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.io.IOException;
 import java.util.Optional;
 
-import static no.vicx.backend.user.UserTestUtils.*;
+import static no.vicx.backend.user.UserTestUtils.createValidUser;
+import static no.vicx.backend.user.UserTestUtils.createValidUserVm;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.openMocks;
@@ -32,9 +34,16 @@ class UserServiceTest {
     @InjectMocks
     UserService sut;
 
+    AutoCloseable openMocks;
+
     @BeforeEach
     void setUp() {
-        openMocks(this);
+        openMocks = openMocks(this);
+    }
+
+    @AfterEach
+    void tearDown() throws Exception {
+        openMocks.close();
     }
 
     @ParameterizedTest
