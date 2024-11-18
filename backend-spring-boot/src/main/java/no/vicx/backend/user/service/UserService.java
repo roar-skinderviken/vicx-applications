@@ -1,4 +1,4 @@
-package no.vicx.backend.user;
+package no.vicx.backend.user.service;
 
 import no.vicx.backend.error.NotFoundException;
 import no.vicx.backend.user.vm.UserVm;

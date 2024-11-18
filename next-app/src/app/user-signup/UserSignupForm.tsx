@@ -1,7 +1,7 @@
 "use client"
 
 import Image from "next/image"
-import {useEffect, useState} from "react"
+import React, {useEffect, useState} from "react"
 import {FormProvider, useForm} from "react-hook-form"
 import {yupResolver} from "@hookform/resolvers/yup"
 import * as yup from "yup"
@@ -9,6 +9,9 @@ import {InferType} from "yup"
 import ValidatedTextInput from "@/components/ValidatedTextInput"
 import ButtonWithSpinner from "@/components/ButtonWithSpinner"
 import {FileInput, Label} from "flowbite-react"
+
+// @ts-expect-error by some reason
+import ReCAPTCHA from "react-google-recaptcha"
 
 import fallbackProfileImage from "@/assets/images/profile.png"
 import {signIn} from "next-auth/react"
@@ -18,6 +21,7 @@ import {DEFAULT_APP_PROVIDER_ID} from "@/constants/authProviders"
 // put this in next-app/.env.local
 // NEXT_PUBLIC_USER_BACKEND_URL=http://localhost:8080/api/user
 const BACKEND_URL = process.env.NEXT_PUBLIC_USER_BACKEND_URL || "/backend-spring-boot/api/user"
+const RECAPTCHA_SITE_KEY = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY
 
 const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/
 
@@ -73,8 +77,11 @@ const UserSignupSchema = yup.object({
                     ? file.size < 51_201
                     : true
             }
-        )
+        ),
 
+    reCaptchaToken: yup
+        .string()
+        .required("Please verify that you're not a robot")
 })
 
 type UserSignupFormData = InferType<typeof UserSignupSchema>
@@ -97,7 +104,8 @@ const UserSignupForm = () => {
             errors,
         },
         register,
-        watch
+        watch,
+        trigger
     } = methods
 
     const watchedFile = watch("image")
@@ -126,6 +134,8 @@ const UserSignupForm = () => {
         multipartFormData.append("name", formData.name)
         multipartFormData.append("email", formData.email)
         multipartFormData.append("password", formData.password)
+        multipartFormData.append("recaptchaToken", formData.reCaptchaToken)
+
         if (formData.image?.[0]) {
             multipartFormData.append("image", formData.image?.[0])
         }
@@ -188,6 +198,8 @@ const UserSignupForm = () => {
             <div className="flex justify-center w-full mt-4">
                 <FormProvider {...methods}>
                     <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4 w-full max-w-lg">
+                        <input type="hidden" {...register("reCaptchaToken")} />
+
                         <ValidatedTextInput
                             label="Username"
                             errorMessage={validationErrors?.username}
@@ -220,6 +232,21 @@ const UserSignupForm = () => {
                                 }
                             />
                         </div>
+
+                        <ReCAPTCHA
+                            sitekey={RECAPTCHA_SITE_KEY}
+                            onChange={async (token: string) => {
+                                setValidationErrors(undefined)
+                                methods.setValue("reCaptchaToken", token)
+                                await trigger('reCaptchaToken')
+                            }}
+                        />
+
+                        {validationErrors?.recaptchaToken && (
+                            <div style={{color: 'red', marginTop: '10px'}}>
+                                {validationErrors.recaptchaToken}
+                            </div>
+                        )}
 
                         <ButtonWithSpinner
                             disabled={!formState.isValid}

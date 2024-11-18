@@ -1,6 +1,7 @@
 package no.vicx.backend.user;
 
 import jakarta.validation.Valid;
+import no.vicx.backend.user.service.UserService;
 import no.vicx.backend.user.validation.ProfileImage;
 import no.vicx.backend.user.vm.UserVm;
 import org.springframework.http.MediaType;
@@ -28,7 +29,11 @@ public class UserController {
             produces = MediaType.TEXT_PLAIN_VALUE)
     public ResponseEntity<String> createUser(
             @Valid UserVm userVm,
-            @ProfileImage MultipartFile image) throws IOException {
+            @ProfileImage(
+                    invalidFileTypeMessage = "{vicx.constraints.ProfileImage.type.message}",
+                    invalidSizeMessage = "{vicx.constraints.ProfileImage.size.message}"
+            )
+            MultipartFile image) throws IOException {
 
         var createdUser = userService.createUser(userVm, image);
 

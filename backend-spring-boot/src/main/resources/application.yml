@@ -2,6 +2,9 @@ logging:
   level:
     root: INFO
 
+recaptcha:
+  secret: 6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe # dev secret
+
 spring:
   servlet:
     multipart:

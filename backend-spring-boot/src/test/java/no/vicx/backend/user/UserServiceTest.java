@@ -1,6 +1,7 @@
 package no.vicx.backend.user;
 
 import no.vicx.backend.error.NotFoundException;
+import no.vicx.backend.user.service.UserService;
 import no.vicx.database.user.UserRepository;
 import no.vicx.database.user.VicxUser;
 import org.junit.jupiter.api.AfterEach;

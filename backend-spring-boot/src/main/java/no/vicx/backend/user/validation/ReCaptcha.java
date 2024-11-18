@@ -8,19 +8,13 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Constraint(validatedBy = ProfileImageValidator.class)
-@Target(ElementType.PARAMETER)
+@Constraint(validatedBy = ReCaptchaValidator.class)
+@Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ProfileImage {
+public @interface ReCaptcha {
     String message() default "";
-
-    String invalidFileTypeMessage() default "";
-
-    String invalidSizeMessage() default "";
 
     Class<?>[] groups() default {};
 
     Class<? extends Payload>[] payload() default {};
-
-    long maxFileSize() default 50 * 1024; // Default: 50KB
 }

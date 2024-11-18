@@ -2,7 +2,10 @@ package no.vicx.backend.user;
 
 import no.vicx.backend.error.ApiError;
 import no.vicx.backend.testconfiguration.TestSecurityConfig;
+import no.vicx.backend.user.service.RecaptchaService;
+import no.vicx.backend.user.service.UserService;
 import no.vicx.backend.user.vm.UserVm;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -14,7 +17,8 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.*;
 
 import static no.vicx.backend.user.UserTestUtils.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -27,6 +31,14 @@ class UserControllerIntegrationTest {
 
     @MockBean
     UserService userService;
+
+    @MockBean
+    RecaptchaService recaptchaService;
+
+    @BeforeEach
+    void setUp() {
+        when(recaptchaService.verifyToken(any())).thenReturn(true);
+    }
 
     @Test
     void getUser_notAuthenticated_expectUnauthorized() {
@@ -85,7 +97,7 @@ class UserControllerIntegrationTest {
     @Test
     void putUser_givenUsernameForOtherUser_expectForbidden() {
         var user = createUserVm(
-                "user2", "P4ssword", "user@example.com", "The User");
+                "user2", "P4ssword", "user@example.com", "The User", "mock-token");
 
         var response = restTemplate.exchange(
                 "/api/user",

@@ -3,8 +3,11 @@ package no.vicx.backend.user;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.vicx.backend.config.SecurityConfig;
 import no.vicx.backend.error.ApiError;
+import no.vicx.backend.user.service.RecaptchaService;
+import no.vicx.backend.user.service.UserService;
 import no.vicx.backend.user.vm.UserVm;
 import no.vicx.database.user.UserRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -23,7 +26,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Optional;
 
-import static no.vicx.backend.user.UserTestUtils.*;
+import static no.vicx.backend.user.UserTestUtils.createValidUser;
+import static no.vicx.backend.user.UserTestUtils.createValidUserVm;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
@@ -40,10 +44,18 @@ class UserControllerTest {
     ObjectMapper objectMapper;
 
     @MockBean
+    RecaptchaService recaptchaService;
+
+    @MockBean
     UserService userService;
 
     @MockBean
     UserRepository userRepository;
+
+    @BeforeEach
+    void setUp() {
+        when(recaptchaService.verifyToken(any())).thenReturn(true);
+    }
 
     @ParameterizedTest
     @MethodSource("no.vicx.backend.user.UserTestUtils#mockMultipartFileProvider")
@@ -81,6 +93,15 @@ class UserControllerTest {
         assertEquals(expectedMessage, apiError.validationErrors().get(fieldName));
     }
 
+    @Test
+    void postUser_GivenInvalidReCaptcha_expectBadRequest() throws Exception {
+        when(recaptchaService.verifyToken(any())).thenReturn(false);
+
+        var apiError = performBadRequest(createValidUserVm(), null);
+
+        assertEquals("Invalid reCaptcha, please try again", apiError.validationErrors().get("recaptchaToken"));
+    }
+
     @ParameterizedTest
     @MethodSource("no.vicx.backend.user.UserTestUtils#invalidImageProvider")
     void postUser_givenInvalidImage_expectBadRequest(
@@ -114,7 +135,8 @@ class UserControllerTest {
                 .param("username", userVm.username())
                 .param("password", userVm.password())
                 .param("email", userVm.email())
-                .param("name", userVm.name());
+                .param("name", userVm.name())
+                .param("recaptchaToken", userVm.recaptchaToken());
 
         return builder.contentType(MediaType.MULTIPART_FORM_DATA);
     }

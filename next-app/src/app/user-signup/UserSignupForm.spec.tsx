@@ -2,7 +2,12 @@ import {act, fireEvent, render, screen} from "@testing-library/react"
 import UserSignupForm from "./UserSignupForm"
 import {changeInputValue, delayedResponse} from "@/testUtils"
 
-const errorResponse = {validationErrors: {username: "This name is in use"}}
+const errorResponse = {
+    validationErrors: {
+        username: "This name is in use",
+        recaptchaToken: "Invalid reCaptcha, please try again"
+    }
+}
 
 const setupForSubmit = async () => {
     await changeInputValue("Username", "User1")
@@ -10,7 +15,24 @@ const setupForSubmit = async () => {
     await changeInputValue("Email", "john@example.com")
     await changeInputValue("Password", "P4ssword")
     await changeInputValue("Repeat Password", "P4ssword")
+    await act(() => fireEvent.click(screen.getByTestId("recaptcha-checkbox")))
 }
+
+jest.mock("react-google-recaptcha", () => {
+    const MockReCAPTCHA = ({onChange}: { onChange: (token: string | null) => void }) => (
+        <div>
+            <input
+                type="checkbox"
+                data-testid="recaptcha-checkbox"
+                onClick={() => onChange("mock-token")}
+            />
+            Mock ReCAPTCHA
+        </div>
+    )
+
+    MockReCAPTCHA.displayName = "MockReCAPTCHA"
+    return MockReCAPTCHA
+})
 
 describe("UserSignupForm", () => {
 
@@ -49,6 +71,10 @@ describe("UserSignupForm", () => {
             const repeatPasswordInput = screen.queryByLabelText("Repeat Password")
             expect(repeatPasswordInput).toBeInTheDocument()
             expect(repeatPasswordInput).toHaveProperty("type", "password")
+        })
+
+        it("has reCaptcha", () => {
+            expect(screen.queryByText("Mock ReCAPTCHA")).toBeInTheDocument()
         })
 
         it("has submit button", () => {
@@ -194,6 +220,26 @@ describe("UserSignupForm", () => {
             await changeInputValue("Username", "User2")
 
             expect(screen.queryByText(errorResponse.validationErrors.username)).not.toBeInTheDocument()
+        })
+
+        it("displays backend validation error when reCAPTCHA error", async () => {
+            fetchMock.mockResponseOnce(JSON.stringify(errorResponse), {status: 400})
+
+            await act(() => fireEvent.click(screen.getByRole("button")))
+
+            expect(screen.queryByText(errorResponse.validationErrors.recaptchaToken)).toBeInTheDocument()
+        })
+
+        it("removes backend validation error when user edits reCAPTCHA", async () => {
+            fetchMock.mockResponseOnce(JSON.stringify(errorResponse), {status: 400})
+
+            await act(() => fireEvent.click(screen.getByRole("button")))
+
+            expect(screen.queryByText(errorResponse.validationErrors.recaptchaToken)).toBeInTheDocument()
+
+            await act(() => fireEvent.click(screen.getByTestId("recaptcha-checkbox")))
+
+            expect(screen.queryByText(errorResponse.validationErrors.recaptchaToken)).not.toBeInTheDocument()
         })
     })
 })

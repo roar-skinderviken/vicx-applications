@@ -1,9 +1,7 @@
 package no.vicx.backend.user.vm;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
+import no.vicx.backend.user.validation.ReCaptcha;
 import no.vicx.backend.user.validation.UniqueUsername;
 import no.vicx.database.user.VicxUser;
 
@@ -24,7 +22,11 @@ public record UserVm(
 
         @NotNull
         @Size(min = 4, max = 255)
-        String name
+        String name,
+
+        @NotBlank(message = "{vicx.constraints.ReCaptcha.NotBlank.message}")
+        @ReCaptcha(message = "{vicx.constraints.ReCaptcha.message}")
+        String recaptchaToken
 ) {
     public VicxUser toNewVicxUser() {
         var user = new VicxUser();
@@ -40,7 +42,8 @@ public record UserVm(
                 user.getUsername(),
                 null,
                 user.getEmail(),
-                user.getName()
+                user.getName(),
+                null
         );
     }
 }
