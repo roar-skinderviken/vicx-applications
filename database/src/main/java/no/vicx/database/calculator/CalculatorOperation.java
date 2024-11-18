@@ -1,4 +1,4 @@
-package no.vicx.backend.calculator.vm;
+package no.vicx.database.calculator;
 
 public enum CalculatorOperation {
     PLUS,

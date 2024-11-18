@@ -1,6 +1,7 @@
 package no.vicx.backend.calculator;
 
-import no.vicx.backend.calculator.repository.CalculatorRepository;
+import no.vicx.database.calculator.CalculatorRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -25,12 +26,19 @@ class CalculatorSecurityServiceTest {
     @InjectMocks
     CalculatorSecurityService sut;
 
+    AutoCloseable openMocks;
+
     @BeforeEach
     void setUp() {
-        openMocks(this);
+        openMocks = openMocks(this);
 
         when(calculatorRepository.findAllIdsByUsername(anyString()))
                 .thenReturn(Set.of(1L));
+    }
+
+    @AfterEach
+    void tearDown() throws Exception {
+        openMocks.close();
     }
 
     @Test

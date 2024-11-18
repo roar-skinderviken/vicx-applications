@@ -1,37 +1,30 @@
 package no.vicx.database.user;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
 
-@Entity(name = "vicx_user")
+@Entity
 public class VicxUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true)
-    @NotNull(message = "{vicx.constraints.username.NotNull.message}")
-    @Size(min = 4, max = 255)
-    @UniqueUsername(message = "{vicx.constraints.username.UniqueUsername.message}")
+    @Column(name = "username", unique = true)
     private String username;
 
-    @NotNull
-    @Size(min = 4, max = 255)
+    @Column(name = "name")
     private String name;
 
-    @NotNull
-    @Size(min = 8, max = 255)
-    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).*$", message = "{vicx.constraints.Pattern.message}")
+    @Column(name = "password")
     private String password;
 
-    @NotNull
-    @Email
+    @Column(name = "email")
     private String email;
 
-    private String image;
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @PrimaryKeyJoinColumn
+    private UserImage userImage;
+
+    // getters/setters
 
     public Long getId() {
         return id;
@@ -73,11 +66,14 @@ public class VicxUser {
         this.email = email;
     }
 
-    public String getImage() {
-        return image;
+    public UserImage getUserImage() {
+        return userImage;
     }
 
-    public void setImage(String image) {
-        this.image = image;
+    public void setUserImage(UserImage userImage) {
+        if (userImage != null) {
+            userImage.setUser(this);
+        }
+        this.userImage = userImage;
     }
 }

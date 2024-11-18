@@ -9,16 +9,15 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
 
 @RequestMapping("/api/calculator")
 @RestController
+@Validated
 public class CalculatorController {
 
     private final CalculatorService calculatorService;
@@ -27,9 +26,7 @@ public class CalculatorController {
         this.calculatorService = calculatorService;
     }
 
-    @RequestMapping(
-            method = RequestMethod.DELETE,
-            consumes = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("@calculatorSecurityService.isAllowedToDelete(#ids, authentication)")
     public ResponseEntity<Void> deleteByIds(
             @RequestBody List<Long> ids) {
@@ -37,8 +34,7 @@ public class CalculatorController {
         return ResponseEntity.noContent().build();
     }
 
-    @RequestMapping(
-            method = RequestMethod.POST,
+    @PostMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public CalcVm calculateAndReturnResult(
@@ -52,9 +48,7 @@ public class CalculatorController {
         );
     }
 
-    @RequestMapping(
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public Page<CalcVm> index(Pageable pageable) {
         return calculatorService.getAllCalculations(pageable);
     }

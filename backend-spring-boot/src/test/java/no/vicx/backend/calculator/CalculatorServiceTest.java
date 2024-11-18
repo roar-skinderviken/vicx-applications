@@ -1,9 +1,10 @@
 package no.vicx.backend.calculator;
 
-import no.vicx.backend.calculator.repository.CalculatorEntity;
-import no.vicx.backend.calculator.repository.CalculatorRepository;
-import no.vicx.backend.calculator.vm.CalculatorOperation;
+import no.vicx.database.calculator.CalcEntry;
+import no.vicx.database.calculator.CalculatorRepository;
+import no.vicx.database.calculator.CalculatorOperation;
 import no.vicx.backend.calculator.vm.CalculatorRequestVm;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -28,9 +29,16 @@ class CalculatorServiceTest {
     @InjectMocks
     CalculatorService sut;
 
+    AutoCloseable openMocks;
+
     @BeforeEach
     void setUp() {
-        openMocks(this);
+        openMocks = openMocks(this);
+    }
+
+    @AfterEach
+    void tearDown() throws Exception {
+        openMocks.close();
     }
 
     @Test
@@ -51,10 +59,10 @@ class CalculatorServiceTest {
         var username = "user1";
         var entityId = 1L;
         long expectedResult = firstValue + secondValue;
-        var savedEntity = new CalculatorEntity(firstValue, secondValue, operation, expectedResult, username);
+        var savedEntity = new CalcEntry(firstValue, secondValue, operation, expectedResult, username);
         savedEntity.setId(entityId);
 
-        when(calculatorRepository.save(any(CalculatorEntity.class))).thenReturn(savedEntity);
+        when(calculatorRepository.save(any(CalcEntry.class))).thenReturn(savedEntity);
 
         var requestBody = new CalculatorRequestVm(
                 firstValue,
@@ -66,7 +74,7 @@ class CalculatorServiceTest {
 
         // Assert
         assertEquals(expectedResult, calcVm.result());
-        verify(calculatorRepository, times(1)).save(any(CalculatorEntity.class));
+        verify(calculatorRepository, times(1)).save(any(CalcEntry.class));
     }
 
     private static Stream<Arguments> provideTestParameters() {
