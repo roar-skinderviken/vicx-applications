@@ -28,12 +28,14 @@ const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/
 const UserSignupSchema = yup.object({
     username: yup
         .string()
+        .trim()
         .required("Username is required")
         .min(4, ({min}) => `It must have a minimum of ${min} characters`)
         .max(255, ({max}) => `It must have a maximum of ${max} characters`),
 
     name: yup
         .string()
+        .trim()
         .required("Name is required")
         .min(4, ({min}) => `It must have a minimum of ${min} characters`)
         .max(255, ({max}) => `It must have a maximum of ${max} characters`),
