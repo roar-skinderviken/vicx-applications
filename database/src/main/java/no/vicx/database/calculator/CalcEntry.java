@@ -1,13 +1,12 @@
-package no.vicx.backend.calculator.repository;
+package no.vicx.database.calculator;
 
 import jakarta.persistence.*;
-import no.vicx.backend.calculator.vm.CalculatorOperation;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
-@Entity(name = "calc_entry")
-public class CalculatorEntity {
+@Entity
+public class CalcEntry {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,7 +29,7 @@ public class CalculatorEntity {
     /**
      * Default constructor.
      */
-    public CalculatorEntity() {
+    public CalcEntry() {
     }
 
     /**
@@ -42,7 +41,7 @@ public class CalculatorEntity {
      * @param result result
      * @param username username
      */
-    public CalculatorEntity(
+    public CalcEntry(
             long firstValue,
             long secondValue,
             CalculatorOperation operation,

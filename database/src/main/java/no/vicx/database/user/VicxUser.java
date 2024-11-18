@@ -2,7 +2,7 @@ package no.vicx.database.user;
 
 import jakarta.persistence.*;
 
-@Entity(name = "vicx_user")
+@Entity
 public class VicxUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

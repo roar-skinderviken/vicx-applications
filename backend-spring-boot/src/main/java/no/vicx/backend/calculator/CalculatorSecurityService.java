@@ -1,6 +1,6 @@
 package no.vicx.backend.calculator;
 
-import no.vicx.backend.calculator.repository.CalculatorRepository;
+import no.vicx.database.calculator.CalculatorRepository;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
 

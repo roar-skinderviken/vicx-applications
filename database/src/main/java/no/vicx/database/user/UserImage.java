@@ -2,7 +2,7 @@ package no.vicx.database.user;
 
 import jakarta.persistence.*;
 
-@Entity(name = "user_image")
+@Entity
 public class UserImage {
 
     @Id

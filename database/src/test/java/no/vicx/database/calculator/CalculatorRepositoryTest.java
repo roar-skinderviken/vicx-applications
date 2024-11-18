@@ -1,8 +1,6 @@
-package no.vicx.backend.calculator.repository;
+package no.vicx.database.calculator;
 
-import no.vicx.backend.calculator.vm.CalculatorOperation;
-import no.vicx.backend.config.RepositoryConfiguration;
-import no.vicx.backend.testconfiguration.PostgresTestContainerConfig;
+import no.vicx.database.PostgresTestContainerConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,15 +9,13 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.test.context.ActiveProfiles;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@ActiveProfiles("test-postgres")
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@Import({PostgresTestContainerConfig.class, RepositoryConfiguration.class})
+@Import(PostgresTestContainerConfig.class)
 class CalculatorRepositoryTest {
 
     @Autowired
@@ -63,7 +59,7 @@ class CalculatorRepositoryTest {
 
         sut.save(expected);
 
-        var actual = entityManager.find(CalculatorEntity.class, expected.getId());
+        var actual = entityManager.find(CalcEntry.class, expected.getId());
 
         assertEquals(expected, actual);
     }
@@ -101,12 +97,12 @@ class CalculatorRepositoryTest {
         assertEquals(1, result.size());
     }
     
-    private static CalculatorEntity createValidEntity(String username) {
-        return new CalculatorEntity(
+    private static CalcEntry createValidEntity(String username) {
+        return new CalcEntry(
                 1, 2, CalculatorOperation.PLUS, 3, username);
     }
 
-    private static CalculatorEntity createValidEntity() {
+    private static CalcEntry createValidEntity() {
         return createValidEntity(null);
     }
 }

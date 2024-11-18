@@ -1,6 +1,5 @@
 package no.vicx.backend.user;
 
-import jakarta.transaction.Transactional;
 import no.vicx.backend.error.NotFoundException;
 import no.vicx.backend.user.vm.UserVm;
 import no.vicx.database.user.UserImage;
@@ -8,6 +7,7 @@ import no.vicx.database.user.UserRepository;
 import no.vicx.database.user.VicxUser;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;

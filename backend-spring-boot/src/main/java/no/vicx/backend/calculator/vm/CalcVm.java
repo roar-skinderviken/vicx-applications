@@ -1,6 +1,7 @@
 package no.vicx.backend.calculator.vm;
 
-import no.vicx.backend.calculator.repository.CalculatorEntity;
+import no.vicx.database.calculator.CalcEntry;
+import no.vicx.database.calculator.CalculatorOperation;
 
 import java.time.LocalDateTime;
 
@@ -13,7 +14,7 @@ public record CalcVm(
         String username,
         LocalDateTime createdAt
 ) {
-    public static CalcVm fromEntity(CalculatorEntity entity) {
+    public static CalcVm fromEntity(CalcEntry entity) {
         return new CalcVm(
                 entity.getId(),
                 entity.getFirstValue(),

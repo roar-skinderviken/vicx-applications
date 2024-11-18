@@ -7,11 +7,12 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.dao.DataIntegrityViolationException;
 
 import java.io.IOException;
 
+import static no.vicx.database.user.RepositoryTestUtils.createUserImage;
+import static no.vicx.database.user.RepositoryTestUtils.createValidUser;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
@@ -104,26 +105,7 @@ class UserRepositoryTest {
 
     Long getImageCountInDb() {
         return (Long) entityManager.getEntityManager()
-                .createNativeQuery("SELECT COUNT(1) FROM user_image")
+                .createQuery("SELECT COUNT(1) FROM UserImage")
                 .getSingleResult();
-    }
-
-    static VicxUser createValidUser() {
-        var user = new VicxUser();
-        user.setUsername("user1");
-        user.setName("Foo Bar");
-        user.setEmail("user1@vicx.no");
-        user.setPassword("password1");
-        return user;
-    }
-
-    static UserImage createUserImage() throws IOException {
-        var userImage = new UserImage();
-        userImage.setContentType("image/png");
-
-        var imageResource = new ClassPathResource("profile.png");
-        userImage.setImageData(imageResource.getContentAsByteArray());
-
-        return userImage;
     }
 }

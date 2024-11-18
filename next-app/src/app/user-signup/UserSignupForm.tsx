@@ -230,25 +230,6 @@ const UserSignupForm = () => {
                     </form>
                 </FormProvider>
             </div>
-            {/*
-            {result && (
-                <div className="m-4">
-                    {isErrorResponse(result) ? (
-                        <div
-                            className="text-red-600 font-bold text-xl bg-red-100 border border-red-400 rounded p-4 mx-4">
-                            {result.error}
-                        </div>
-                    ) : (
-                        Object.entries((result as KMeansSuccessResponse)).map(([score, grade], index) =>
-                            <div
-                                key={index}
-                                className={`mt-2 p-2 rounded text-white ${gradeToColorMap[(grade as Grade)]}`}
-                            >Score: {score}, Grade: {grade}</div>
-                        )
-                    )}
-                </div>
-            )}
-*/}
         </div>
     )
 }

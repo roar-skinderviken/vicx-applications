@@ -35,6 +35,7 @@ public class SecurityConfig {
                         .requestMatchers(EndpointRequest.to(HealthEndpoint.class)).permitAll()
                         .requestMatchers(HttpMethod.DELETE, "/api/**").hasRole("USER")
                         .requestMatchers(HttpMethod.POST, "/api/calculator").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/user").hasRole("USER")
                         .requestMatchers(HttpMethod.POST, "/api/user").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/**").hasRole("USER")
                         .requestMatchers(HttpMethod.GET, "/api/**").permitAll()

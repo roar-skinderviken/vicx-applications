@@ -6,6 +6,6 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<VicxUser, Long> {
-    @Query("SELECT u FROM vicx_user u WHERE LOWER(u.username) = LOWER(:username)")
+    @Query("SELECT u FROM VicxUser u WHERE LOWER(u.username) = LOWER(:username)")
     Optional<VicxUser> findByUsername(String username);
 }

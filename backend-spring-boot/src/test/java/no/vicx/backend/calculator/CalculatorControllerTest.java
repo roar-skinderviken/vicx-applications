@@ -2,7 +2,7 @@ package no.vicx.backend.calculator;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.vicx.backend.calculator.vm.CalcVm;
-import no.vicx.backend.calculator.vm.CalculatorOperation;
+import no.vicx.database.calculator.CalculatorOperation;
 import no.vicx.backend.calculator.vm.CalculatorRequestVm;
 import no.vicx.backend.config.SecurityConfig;
 import no.vicx.backend.testconfiguration.TestSecurityConfig;

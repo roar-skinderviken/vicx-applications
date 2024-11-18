@@ -1,13 +1,13 @@
 package no.vicx.backend.calculator;
 
-import jakarta.transaction.Transactional;
-import no.vicx.backend.calculator.repository.CalculatorEntity;
-import no.vicx.backend.calculator.repository.CalculatorRepository;
+import no.vicx.database.calculator.CalcEntry;
+import no.vicx.database.calculator.CalculatorRepository;
 import no.vicx.backend.calculator.vm.CalcVm;
 import no.vicx.backend.calculator.vm.CalculatorRequestVm;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -40,7 +40,7 @@ public class CalculatorService {
         };
 
         var savedEntity = calculatorRepository.save(
-                new CalculatorEntity(
+                new CalcEntry(
                         calculatorRequestVm.firstValue(),
                         calculatorRequestVm.secondValue(),
                         calculatorRequestVm.operation(),
