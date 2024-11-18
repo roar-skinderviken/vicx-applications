@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>combined</pattern>
+<!--            <pattern>{"host": "%h", "remoteUser": "%u", "timestamp": "%t", "request": "%r", "status": %s, "size": %b, "referer": "%i{Referer}", "userAgent": "%i{User-Agent}, "latency": "%D"}</pattern>-->
+        </encoder>
+    </appender>
+    <appender-ref ref="console"/>
+</configuration>
