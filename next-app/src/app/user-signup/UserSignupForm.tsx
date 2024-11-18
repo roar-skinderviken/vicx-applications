@@ -21,7 +21,7 @@ import {DEFAULT_APP_PROVIDER_ID} from "@/constants/authProviders"
 // put this in next-app/.env.local
 // NEXT_PUBLIC_USER_BACKEND_URL=http://localhost:8080/api/user
 const BACKEND_URL = process.env.NEXT_PUBLIC_USER_BACKEND_URL || "/backend-spring-boot/api/user"
-const RECAPTCHA_SITE_KEY = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY
+const RECAPTCHA_SITE_KEY = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" // dev key
 
 const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/
 
