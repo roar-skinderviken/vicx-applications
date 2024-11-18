@@ -224,7 +224,6 @@ const UserSignupForm = () => {
                             <FileInput
                                 id="image"
                                 {...register("image")}
-                                //onChange={handleFileChange}
                                 sizing="md"
                                 helperText={
                                     errors.image && (
@@ -235,26 +234,28 @@ const UserSignupForm = () => {
                             />
                         </div>
 
-                        <ReCAPTCHA
-                            sitekey={RECAPTCHA_SITE_KEY}
-                            onChange={async (token: string) => {
-                                setValidationErrors(undefined)
-                                methods.setValue("reCaptchaToken", token)
-                                await trigger('reCaptchaToken')
-                            }}
-                        />
+                        <div className="flex flex-col items-center">
+                            <ReCAPTCHA
+                                sitekey={RECAPTCHA_SITE_KEY}
+                                onChange={async (token: string) => {
+                                    setValidationErrors(undefined)
+                                    methods.setValue("reCaptchaToken", token)
+                                    await trigger('reCaptchaToken')
+                                }}
+                            />
 
-                        {validationErrors?.recaptchaToken && (
-                            <div style={{color: 'red', marginTop: '10px'}}>
-                                {validationErrors.recaptchaToken}
-                            </div>
-                        )}
+                            {validationErrors?.recaptchaToken && (
+                                <div style={{color: 'red', marginTop: '10px'}}>
+                                    {validationErrors.recaptchaToken}
+                                </div>
+                            )}
+                        </div>
 
                         <ButtonWithSpinner
                             disabled={!formState.isValid}
                             buttonText="Submit"
                             isLoading={isLoading}
-                            className="col-span-1 mt-4 w-full"
+                            className="col-span-1 mt-2 w-full"
                         />
                     </form>
                 </FormProvider>
