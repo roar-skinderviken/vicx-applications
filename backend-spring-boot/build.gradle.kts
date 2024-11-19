@@ -23,7 +23,7 @@ dependencies {
     //implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0")
     runtimeOnly("dev.akkinoc.spring.boot:logback-access-spring-boot-starter:4.3.2")
 
-    implementation("org.apache.tika:tika-core:2.9.2")
+    implementation("org.apache.tika:tika-core:3.0.0")
 
     implementation(project(":database"))
     implementation("org.springframework.boot:spring-boot-starter-validation")
