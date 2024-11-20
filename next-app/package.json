@@ -12,9 +12,9 @@
     "test:watch": "jest --watch"
   },
   "dependencies": {
-    "@fortawesome/fontawesome-svg-core": "^6.7.0",
-    "@fortawesome/free-brands-svg-icons": "^6.7.0",
-    "@fortawesome/free-solid-svg-icons": "^6.7.0",
+    "@fortawesome/fontawesome-svg-core": "^6.7.1",
+    "@fortawesome/free-brands-svg-icons": "^6.7.1",
+    "@fortawesome/free-solid-svg-icons": "^6.7.1",
     "@fortawesome/react-fontawesome": "^0.2.2",
     "@hookform/resolvers": "^3.9.1",
     "flowbite-react": "^0.10.2",
