@@ -33,12 +33,18 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(EndpointRequest.to(HealthEndpoint.class)).permitAll()
-                        .requestMatchers(HttpMethod.DELETE, "/api/**").hasRole("USER")
+
                         .requestMatchers(HttpMethod.POST, "/api/calculator").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/user").hasRole("USER")
+
                         .requestMatchers(HttpMethod.POST, "/api/user").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/**").hasRole("USER")
+
                         .requestMatchers(HttpMethod.GET, "/api/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/user").hasRole("USER")
+                        .requestMatchers(HttpMethod.GET, "/api/user/image").hasRole("USER")
+
+                        .requestMatchers(HttpMethod.DELETE, "/api/**").hasRole("USER")
+
                         .requestMatchers("/error").permitAll()
                         .anyRequest().authenticated()
                 )
