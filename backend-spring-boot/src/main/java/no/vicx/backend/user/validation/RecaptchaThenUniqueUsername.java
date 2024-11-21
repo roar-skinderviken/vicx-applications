@@ -8,11 +8,14 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Constraint(validatedBy = UniqueUsernameValidator.class)
-@Target(ElementType.FIELD)
+@Constraint(validatedBy = RecaptchaThenUniqueUsernameValidator.class)
+@Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface UniqueUsername {
+public @interface RecaptchaThenUniqueUsername {
     String message() default "";
+    String recaptchaMessage() default "";
+    int usernameMinLength() default 0;
+    String uniqueUsernameMessage() default "";
 
     Class<?>[] groups() default {};
 

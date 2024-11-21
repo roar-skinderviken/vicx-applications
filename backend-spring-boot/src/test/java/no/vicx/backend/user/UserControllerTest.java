@@ -99,16 +99,9 @@ class UserControllerTest {
 
         var apiError = performBadRequest(createValidUserVm(), null);
 
-        assertEquals("Invalid reCaptcha, please try again", apiError.validationErrors().get("recaptchaToken"));
-    }
+        assertEquals("Invalid reCAPTCHA, please try again", apiError.validationErrors().get("recaptchaToken"));
 
-    @ParameterizedTest
-    @MethodSource("no.vicx.backend.user.UserTestUtils#invalidImageProvider")
-    void postUser_givenInvalidImage_expectBadRequest(
-            MockMultipartFile imageFile, String fieldName, String expectedMessage) throws Exception {
-
-        var apiError = performBadRequest(createValidUserVm(), imageFile);
-        assertEquals(expectedMessage, apiError.validationErrors().get(fieldName));
+        verify(userRepository, never()).findByUsername(anyString());
     }
 
     @Test
@@ -120,6 +113,17 @@ class UserControllerTest {
         assertEquals(HttpStatus.BAD_REQUEST.value(), apiError.status());
         assertEquals("validation error", apiError.message());
         assertEquals("This name is in use", apiError.validationErrors().get("username"));
+
+        verify(recaptchaService, times(1)).verifyToken(anyString());
+    }
+
+    @ParameterizedTest
+    @MethodSource("no.vicx.backend.user.UserTestUtils#invalidImageProvider")
+    void postUser_givenInvalidImage_expectBadRequest(
+            MockMultipartFile imageFile, String fieldName, String expectedMessage) throws Exception {
+
+        var apiError = performBadRequest(createValidUserVm(), imageFile);
+        assertEquals(expectedMessage, apiError.validationErrors().get(fieldName));
     }
 
     MockHttpServletRequestBuilder createMultipartRequest(

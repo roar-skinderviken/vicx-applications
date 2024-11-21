@@ -85,7 +85,11 @@ public final class UserTestUtils {
         return Stream.of(
                 Arguments.of(
                         createUserVm(null, "P4ssword", "user@example.com", "The User", "mock-token"),
-                        "username", "Username cannot be null"
+                        "username", "Username cannot be null or blank"
+                ),
+                Arguments.of(
+                        createUserVm(" ".repeat(4), "P4ssword", "user@example.com", "The User", "mock-token"),
+                        "username", "Username cannot be null or blank"
                 ),
                 Arguments.of(
                         createUserVm("a", "P4ssword", "user@example.com", "The User", "mock-token"),
@@ -137,15 +141,15 @@ public final class UserTestUtils {
 
                 Arguments.of(
                         createUserVm("user1", "P4ssword", "user@example.com", "The User", null),
-                        "recaptchaToken", "reCaptcha cannot be null or blank"
+                        "recaptchaToken", "reCAPTCHA cannot be null or blank"
                 ),
                 Arguments.of(
                         createUserVm("user1", "P4ssword", "user@example.com", "The User", ""),
-                        "recaptchaToken", "reCaptcha cannot be null or blank"
+                        "recaptchaToken", "reCAPTCHA cannot be null or blank"
                 ),
                 Arguments.of(
                         createUserVm("user1", "P4ssword", "user@example.com", "The User", "  "),
-                        "recaptchaToken", "reCaptcha cannot be null or blank"
+                        "recaptchaToken", "reCAPTCHA cannot be null or blank"
                 )
         );
     }
