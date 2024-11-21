@@ -22,7 +22,8 @@ public class RecaptchaService {
     public boolean verifyToken(String token) {
         var url = String.format("%s?secret=%s&response=%s", RECAPTCHA_VERIFY_URL, recaptchaSecret, token);
 
-        var responseMono = webClient.post()
+        var responseMono = webClient
+                .post()
                 .uri(url)
                 .retrieve()
                 .bodyToMono(RecaptchaResponseVm.class);
