@@ -22,14 +22,12 @@ dependencyManagement {
 
 dependencies {
     api("org.springframework.boot:spring-boot-starter-data-jpa")
-    compileOnly("org.springframework.boot:spring-boot-starter-validation")
-    runtimeOnly("org.flywaydb:flyway-database-postgresql")
-    runtimeOnly("org.postgresql:postgresql")
+    testCompileOnly("org.springframework.boot:spring-boot-starter-validation")
+    testRuntimeOnly("org.flywaydb:flyway-database-postgresql")
+    testRuntimeOnly("org.postgresql:postgresql")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.boot:spring-boot-testcontainers")
     testImplementation("org.testcontainers:postgresql")
-    //testImplementation("org.testcontainers:junit-jupiter")
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
 tasks.withType<JavaCompile> {
@@ -39,7 +37,3 @@ tasks.withType<JavaCompile> {
 tasks.test {
     useJUnitPlatform()
 }
-
-//tasks.jar{
-//    enabled = false
-//}

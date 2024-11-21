@@ -8,13 +8,13 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class StartupLogger implements CommandLineRunner {
-    private static final Logger logger = LoggerFactory.getLogger(StartupLogger.class);
+    private static final Logger LOG = LoggerFactory.getLogger(StartupLogger.class);
 
     @Value("${app-user.name}")
     private String username;
 
     @Override
     public void run(String... args) {
-        logger.info("Username: {}", username);
+        LOG.info("Username: {}", username);
     }
 }

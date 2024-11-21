@@ -21,10 +21,6 @@ spring:
         jwt:
           issuer-uri: ${ISSUER_URI:http://localhost:9000/auth-server}
 
-  h2:
-    console:
-      enabled: false
-      path: /h2-console
   datasource:
     url: jdbc:h2:mem:testdb;CACHE_SIZE=2048
     username: sa
@@ -35,6 +31,11 @@ spring:
     open-in-view: false
     hibernate.ddl-auto: create
     show-sql: false
+
+  h2:
+    console:
+      enabled: false
+      path: /h2-console
 
   data:
     web:

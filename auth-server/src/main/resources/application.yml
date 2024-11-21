@@ -5,41 +5,37 @@ server:
 
 logging:
   level:
-    org.springframework.security: info
+    org.springframework.security: DEBUG
 
 app-user:
   name: ${DEFAULT_USERNAME:user1}
-  password: "{noop}${DEFAULT_PASSWORD:password}"
+  password: "${DEFAULT_PASSWORD:password}"
+
+oauth:
+  client-id: "next-app-client"
+  client-secret: ${CLIENT_SECRET:secret}
+  redirect-uri: ${REDIRECT_URI:http://localhost:3000/api/auth/callback/next-app-client}
+  post-logout-redirect-uri:  ${POST_LOGOUT_REDIRECT_URI:http://localhost:3000/}
 
 spring:
   application:
     name: auth-server
-  security:
-    oauth2:
-      authorizationserver:
-        client:
-          next-app-client:
-            registration:
-              client-id: "next-app-client"
-              client-secret: "{noop}${CLIENT_SECRET:secret}"
-              client-authentication-methods:
-                - "client_secret_basic"
-                - "client_secret_post"
-              authorization-grant-types:
-                - "authorization_code"
-                - "refresh_token"
-                - "client_credentials"
-              redirect-uris:
-                - ${REDIRECT_URI:http://localhost:3000/api/auth/callback/next-app-client}
-              post-logout-redirect-uris:
-                - ${POST_LOGOUT_REDIRECT_URI:http://localhost:3000/}
-              scopes:
-                - "openid"
-                - "profile"
-                - "message.read"
-                - "message.write"
 
-            require-authorization-consent: true
+  datasource:
+    url: jdbc:h2:mem:testdb;CACHE_SIZE=2048
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+
+  jpa:
+    open-in-view: false
+    hibernate.ddl-auto: create
+    show-sql: false
+
+  h2:
+    console:
+      enabled: false
+      path: /h2-console
 
 management:
   server:

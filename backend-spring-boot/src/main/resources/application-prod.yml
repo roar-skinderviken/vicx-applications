@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/test_db
-    username: test
-    password: test
+    url: ${DATASOURCE_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -10,12 +10,6 @@ spring:
     show-sql: true
     properties:
       hibernate.default_schema: vicx
-
-  data:
-    web:
-      pageable:
-        default-page-size: 10
-        max-page-size: 100
 
   flyway:
     enabled: true

@@ -20,22 +20,17 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-webflux")
-    //implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0")
+    implementation("org.springframework.boot:spring-boot-starter-validation")
     runtimeOnly("dev.akkinoc.spring.boot:logback-access-spring-boot-starter:4.3.2")
 
     implementation("org.apache.tika:tika-core:3.0.0")
 
     implementation(project(":database"))
-    implementation("org.springframework.boot:spring-boot-starter-validation")
     runtimeOnly("com.h2database:h2")
-    runtimeOnly("org.flywaydb:flyway-core")
-    testImplementation("org.testcontainers:postgresql")
-    testImplementation("org.springframework.boot:spring-boot-testcontainers")
-    testRuntimeOnly("org.flywaydb:flyway-database-postgresql")
-    testRuntimeOnly("org.postgresql:postgresql")
+    runtimeOnly("org.flywaydb:flyway-database-postgresql")
+    runtimeOnly("org.postgresql:postgresql")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
 springBoot {

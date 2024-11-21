@@ -30,7 +30,7 @@ export const springBootProvider: Provider = {
     idToken: true,
     authorization: {
         url: process.env.AUTHORIZATION_URL || "http://localhost:9000/oauth2/authorize",
-        params: {scope: "openid"}
+        params: {scope: "openid profile"}
     },
     token: process.env.TOKEN_URL || "http://localhost:9000/oauth2/token",
     issuer: process.env.ISSUER || "http://localhost:9000",
@@ -40,8 +40,10 @@ export const springBootProvider: Provider = {
     profile: (profile: any) => {
         return {
             id: profile.sub,
-            name: profile.sub,
+            name: profile.name || profile.sub, // if user has not registered name
+            email: profile.email,
             roles: profile.roles,
+            // image: TODO,
         }
     }
 }

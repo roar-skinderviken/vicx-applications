@@ -20,6 +20,10 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     runtimeOnly("dev.akkinoc.spring.boot:logback-access-spring-boot-starter:4.3.2")
 
+    implementation(project(":database"))
+    runtimeOnly("com.h2database:h2")
+    runtimeOnly("org.postgresql:postgresql")
+
     testImplementation("net.sourceforge.htmlunit:htmlunit")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")
