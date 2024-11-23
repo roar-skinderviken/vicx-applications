@@ -8,16 +8,19 @@ import java.util.Collection;
 public class CustomUserDetails extends User {
     private final String name;
     private final String email;
+    private final boolean hasImage;
 
     public CustomUserDetails(
             String username,
             String password,
             Collection<? extends GrantedAuthority> authorities,
             String name,
-            String email) {
+            String email,
+            boolean hasImage) {
         super(username, password, authorities);
         this.name = name;
         this.email = email;
+        this.hasImage = hasImage;
     }
 
     public String getName() {
@@ -26,5 +29,9 @@ public class CustomUserDetails extends User {
 
     public String getEmail() {
         return email;
+    }
+
+    public boolean hasImage() {
+        return hasImage;
     }
 }

@@ -1,11 +1,12 @@
 import {act, fireEvent, render, screen} from "@testing-library/react"
-import {usePathname} from "next/navigation"
+import {redirect, usePathname} from "next/navigation"
 import {SITE_PAGES} from "@/constants/sitePages"
 import VicxNavbar from "@/components/navbar/VicxNavbar"
 import {getSession, signIn, signOut} from "next-auth/react"
 
 jest.mock("next/navigation", () => ({
-    usePathname: jest.fn()
+    usePathname: jest.fn(),
+    redirect: jest.fn()
 }))
 
 jest.mock("next-auth/react", () => ({
@@ -35,17 +36,22 @@ describe('VicxNavbar', () => {
             mockUsePathname.mockReturnValue('/')
         })
 
-        it("Displays brand in navbar", async () => {
+        it("has brand in navbar", async () => {
             await setupUnauthenticated()
             expect(screen.queryByText("VICX")).toBeInTheDocument()
         })
 
-        it("Displays signin link in navbar when user is not logged in", async () => {
+        it("has register link in navbar when user is not logged in", async () => {
             await setupUnauthenticated()
-            expect(screen.queryByText("Sign in")).toBeInTheDocument()
+            expect(screen.queryByText("Register")).toBeInTheDocument()
         })
 
-        it("Displays fallback avatar in navbar when user is logged in and image is not provided", async () => {
+        it("has login link in navbar when user is not logged in", async () => {
+            await setupUnauthenticated()
+            expect(screen.queryByText("Log in")).toBeInTheDocument()
+        })
+
+        it("has fallback avatar in navbar when user is logged in and image is not provided", async () => {
             await setupAuthenticated()
 
             const avatarImage = screen.queryByAltText("User settings")
@@ -53,7 +59,7 @@ describe('VicxNavbar', () => {
             expect(avatarImage).toHaveAttribute("src", "/img.jpg")
         })
 
-        it("Displays avatar in navbar when user is logged in and image is provided", async () => {
+        it("has avatar in navbar when user is logged in and image is provided", async () => {
             await setupAuthenticated(undefined, "/some-avatar.png")
 
             const avatarImage = screen.queryByAltText("User settings")
@@ -61,7 +67,7 @@ describe('VicxNavbar', () => {
         })
 
         it.each(SITE_PAGES.map(({href, title}) => [href, title]))(
-            "Displays highlighted page link for pathname '%s' with title '%s'",
+            "has highlighted page link for pathname '%s' with title '%s'",
             async (href, title) => {
                 mockUsePathname.mockReturnValue(href)
 
@@ -77,10 +83,18 @@ describe('VicxNavbar', () => {
     describe("Interactions", () => {
         beforeEach(() => mockUsePathname.mockReturnValue('/'))
 
-        it("calls signIn when signIn link is clicked", async () => {
+        it("calls redirect when register link is clicked", async () => {
             await setupUnauthenticated()
 
-            fireEvent.click(screen.getByText("Sign in"))
+            fireEvent.click(screen.getByText("Register"))
+
+            expect(redirect).toHaveBeenCalledWith("/user/register")
+        })
+
+        it("calls signIn when login link is clicked", async () => {
+            await setupUnauthenticated()
+
+            fireEvent.click(screen.getByText("Log in"))
 
             expect(signIn).toHaveBeenCalled()
         })
@@ -95,7 +109,7 @@ describe('VicxNavbar', () => {
             expect(screen.queryByText("Sign out")).toBeInTheDocument()
         })
 
-        it("displays email address in dropdown when user has email", async () => {
+        it("has email address in dropdown when user has email", async () => {
             await setupAuthenticated("user1@example.com")
 
             await act(async () => fireEvent.click(screen.getByTestId("flowbite-avatar")))

@@ -15,7 +15,7 @@ oauth:
   client-id: "next-app-client"
   client-secret: ${CLIENT_SECRET:secret}
   redirect-uri: ${REDIRECT_URI:http://localhost:3000/api/auth/callback/next-app-client}
-  post-logout-redirect-uri:  ${POST_LOGOUT_REDIRECT_URI:http://localhost:3000/}
+  post-logout-redirect-uri: ${POST_LOGOUT_REDIRECT_URI:http://localhost:3000/}
 
 spring:
   application:

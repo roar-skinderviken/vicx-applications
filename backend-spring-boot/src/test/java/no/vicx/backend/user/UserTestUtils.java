@@ -85,11 +85,11 @@ public final class UserTestUtils {
         return Stream.of(
                 Arguments.of(
                         createUserVm(null, "P4ssword", "user@example.com", "The User", "mock-token"),
-                        "username", "Username cannot be null or blank"
+                        "username", "Username cannot be null"
                 ),
                 Arguments.of(
                         createUserVm(" ".repeat(4), "P4ssword", "user@example.com", "The User", "mock-token"),
-                        "username", "Username cannot be null or blank"
+                        "username", "Username can only contain letters, numbers, hyphens, and underscores"
                 ),
                 Arguments.of(
                         createUserVm("a", "P4ssword", "user@example.com", "The User", "mock-token"),
@@ -98,6 +98,14 @@ public final class UserTestUtils {
                 Arguments.of(
                         createUserVm("a".repeat(256), "P4ssword", "user@example.com", "The User", "mock-token"),
                         "username", "It must have minimum 4 and maximum 255 characters"
+                ),
+                Arguments.of(
+                        createUserVm("John Doe", "P4ssword", "user@example.com", "The User", "mock-token"),
+                        "username", "Username can only contain letters, numbers, hyphens, and underscores"
+                ),
+                Arguments.of(
+                        createUserVm("John:Doe", "P4ssword", "user@example.com", "The User", "mock-token"),
+                        "username", "Username can only contain letters, numbers, hyphens, and underscores"
                 ),
 
                 Arguments.of(

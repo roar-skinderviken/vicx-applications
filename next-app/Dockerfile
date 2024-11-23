@@ -2,7 +2,7 @@
 
 # cd next-app
 # docker build -t next-app .
-#docker run -e OIDC_CLIENT_SECRET=secret \
+#docker run -e OAUTH_CLIENT_SECRET=secret \
 #           -e NEXTAUTH_SECRET=secret \
 #           -e NEXTAUTH_URL=http://localhost:3000/api/auth \
 #           -e AUTHORIZATION_URL=http://localhost:9000/auth-server/oauth2/authorize \

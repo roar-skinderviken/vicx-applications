@@ -23,6 +23,7 @@ public class DefaultUserConfig {
                 passwordEncoder.encode(password),
                 List.of(new SimpleGrantedAuthority("ROLE_USER")),
                 "John Doe",
-                "user@example.com");
+                "user@example.com",
+                false);
     }
 }

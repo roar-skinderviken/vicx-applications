@@ -5,16 +5,17 @@
 ### Create next-app/.env.local
 Should have the following content
 ```
+OAUTH_CLIENT_SECRET=secret
+OAUTH_BASE_URL=http://localhost:9000/auth-server
+NEXTAUTH_SECRET=secret
+USER_IMAGE_BACKEND_URL=http://localhost:8080/api/user/image
+RECAPTCHA_SITE_KEY=6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI
 NEXT_PUBLIC_KMEANS_BACKEND_URL=http://localhost:8000/k-means
 NEXT_PUBLIC_CALCULATOR_BACKEND_URL=http://localhost:8080/api/calculator
-OIDC_CLIENT_SECRET=secret
-NEXTAUTH_SECRET=secret
-NEXTAUTH_URL=http://localhost:3000/api/auth
-AUTHORIZATION_URL=http://localhost:9000/auth-server/oauth2/authorize
-TOKEN_URL=http://localhost:9000/auth-server/oauth2/token
-ISSUER=http://localhost:9000/auth-server
-JWKS_ENDPOINT=http://localhost:9000/auth-server/oauth2/jwks
+NEXT_PUBLIC_USER_BACKEND_URL=http://localhost:8080/api/user
 ```
+Value for `RECAPTCHA_SITE_KEY` is a dev value. 
+
 
 ### Start the auth-server on port 9000
 ```shell

@@ -37,7 +37,7 @@ jest.mock("react-google-recaptcha", () => {
 describe("UserSignupForm", () => {
 
     describe("Layout", () => {
-        beforeEach(() => render(<UserSignupForm/>))
+        beforeEach(() => render(<UserSignupForm reCaptchaSiteKey="recaptcha-site-key"/>))
 
         it("has fallback profile image", () => {
             expect(screen.queryByAltText("Profile Image")).toBeInTheDocument()
@@ -85,7 +85,7 @@ describe("UserSignupForm", () => {
     })
 
     describe("Input interactions", () => {
-        beforeEach(() => render(<UserSignupForm/>))
+        beforeEach(() => render(<UserSignupForm reCaptchaSiteKey="recaptcha-site-key"/>))
 
         it("displays required validation error message given blank username", async () => {
             await changeInputValue("Username", "a")
@@ -99,6 +99,14 @@ describe("UserSignupForm", () => {
         it("displays validation error message given too long username", async () => {
             await changeInputValue("Username", "a".repeat(256))
             expect(screen.queryByText("It must have a maximum of 255 characters")).toBeInTheDocument()
+        })
+        it("displays validation error message given username with blank", async () => {
+            await changeInputValue("Username", "John Doe")
+            expect(screen.queryByText("Username can only contain letters, numbers, hyphens, and underscores")).toBeInTheDocument()
+        })
+        it("displays validation error message given username with ':'", async () => {
+            await changeInputValue("Username", "some:user")
+            expect(screen.queryByText("Username can only contain letters, numbers, hyphens, and underscores")).toBeInTheDocument()
         })
 
         it("displays required validation error message given blank name", async () => {
@@ -180,7 +188,7 @@ describe("UserSignupForm", () => {
 
     describe("Button interactions", () => {
         beforeEach(async () => {
-            render(<UserSignupForm/>)
+            render(<UserSignupForm reCaptchaSiteKey="recaptcha-site-key"/>)
             await setupForSubmit()
         })
 

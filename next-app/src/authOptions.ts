@@ -14,7 +14,7 @@ async function refreshAccessToken(token: JWT) {
             method: "POST",
             body: new URLSearchParams({
                 client_id: "next-app-client",
-                client_secret: process.env.OIDC_CLIENT_SECRET || "secret",
+                client_secret: process.env.OAUTH_CLIENT_SECRET || "secret",
                 grant_type: "refresh_token",
                 refresh_token: token.refreshToken,
             } as Record<string, string>).toString()
