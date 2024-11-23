@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.util.List;
+import java.util.Collections;
 
 @Configuration
 public class DefaultUserConfig {
@@ -24,7 +24,7 @@ public class DefaultUserConfig {
         return new CustomUserDetails(
                 username,
                 passwordEncoder.encode(password),
-                List.of(new SimpleGrantedAuthority("ROLE_USER")),
+                Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")),
                 "John Doe",
                 "user@example.com",
                 false);
