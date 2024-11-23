@@ -28,7 +28,7 @@ public class UserController {
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
             produces = MediaType.TEXT_PLAIN_VALUE)
     public ResponseEntity<String> createUser(
-            @Valid UserVm userVm,
+            @Validated UserVm userVm,
             @ProfileImage(
                     invalidFileTypeMessage = "{vicx.constraints.ProfileImage.type.message}",
                     invalidSizeMessage = "{vicx.constraints.ProfileImage.size.message}"
