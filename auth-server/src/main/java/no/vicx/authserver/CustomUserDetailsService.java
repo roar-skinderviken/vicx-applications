@@ -3,7 +3,7 @@ package no.vicx.authserver;
 import no.vicx.database.user.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Lookup;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,16 +19,12 @@ public class CustomUserDetailsService implements UserDetailsService {
     private static final Logger LOG = LoggerFactory.getLogger(CustomUserDetailsService.class);
 
     private final UserRepository userRepository;
-    private final UserDetails defaultUserDetails;
 
     @Value("${app-user.name}")
     private String defaultUsername;
 
-    public CustomUserDetailsService(
-            UserRepository userRepository,
-            @Qualifier("defaultUserDetails") CustomUserDetails defaultUserDetails) {
+    public CustomUserDetailsService(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.defaultUserDetails = defaultUserDetails;
     }
 
     @Override
@@ -36,7 +32,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         if (username.equalsIgnoreCase(defaultUsername)) {
             // for localhost testing
             LOG.info("Using default user");
-            return defaultUserDetails;
+            return getDefaultUserDetails();
         }
 
         return userRepository
@@ -50,5 +46,10 @@ public class CustomUserDetailsService implements UserDetailsService {
                         it.getUserImage() != null)
                 )
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    }
+
+    @Lookup("defaultUserDetails")
+    protected CustomUserDetails getDefaultUserDetails() {
+        return null;
     }
 }
