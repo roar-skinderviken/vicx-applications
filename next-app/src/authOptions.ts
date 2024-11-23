@@ -3,11 +3,11 @@ import "next-auth/jwt"
 import {JWT} from "next-auth/jwt"
 import {githubProvider, DEFAULT_APP_PROVIDER_ID, springBootProvider} from "@/constants/authProviders"
 
+const OAUTH_BASE_URL = process.env.OAUTH_BASE_URL || "http://localhost:9000/auth-server"
+
 async function refreshAccessToken(token: JWT) {
     try {
-        const url = process.env.TOKEN_URL || "http://localhost:9000/auth-server/oauth2/token"
-
-        const response = await fetch(url, {
+        const response = await fetch(`${OAUTH_BASE_URL}/oauth2/token`, {
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded",
             },
