@@ -3,7 +3,8 @@ import {getServerSession} from "next-auth"
 import authOptions from "@/authOptions"
 import {CustomSession} from "@/types/authTypes"
 
-const BACKEND_BASE_URL = process.env.USER_IMAGE_BACKEND_URL || "/backend-spring-boot/api/user/image"
+const SPRING_BACKEND_BASE_URL = process.env.SPRING_BACKEND_BASE_URL || ""
+const IMAGE_BACKEND_URL = `${SPRING_BACKEND_BASE_URL}/api/user/image`
 
 const buildResponse = (contentType: string, buffer: Buffer) => new Response(
     buffer,
@@ -26,7 +27,7 @@ export async function GET() {
     }
 
     try {
-        const response = await fetch(`${BACKEND_BASE_URL}/${session.user?.id}`, fetchOptions)
+        const response = await fetch(`${IMAGE_BACKEND_URL}/${session.user?.id}`, fetchOptions)
 
         if (!response.ok) {
             console.error("Failed to fetch image from backend:", response.statusText)

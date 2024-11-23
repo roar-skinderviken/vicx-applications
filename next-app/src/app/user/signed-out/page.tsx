@@ -1,6 +1,8 @@
 import Hero from "@/components/Hero"
 import Link from "next/link"
 
+export const dynamic = "force-dynamic"
+
 export const metadata = {
     title: "Signed out | VICX"
 }
