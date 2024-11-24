@@ -26,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Optional;
 
+import static no.vicx.backend.user.UserController.USER_CREATED_BODY_TEXT;
 import static no.vicx.backend.user.UserTestUtils.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
@@ -66,8 +67,8 @@ class UserControllerTest {
 
         mockMvc.perform(createMultipartRequest(VALID_USER_VM, imageFile))
                 .andExpect(status().isCreated())
-                .andExpect(header().string(HttpHeaders.LOCATION, "/api/user/" + validVicxUser.getId()))
-                .andExpect(content().string("User created successfully."));
+                .andExpect(header().string(HttpHeaders.LOCATION, "/api/user/" + validVicxUser.getUsername()))
+                .andExpect(content().string(USER_CREATED_BODY_TEXT));
 
         var userCaptor = ArgumentCaptor.forClass(UserVm.class);
         var imageCaptor = ArgumentCaptor.forClass(MultipartFile.class);
@@ -80,6 +81,10 @@ class UserControllerTest {
         if (capturedImage != null) {
             assertEquals(imageFile.getOriginalFilename(), capturedImage.getOriginalFilename());
         }
+
+        // make sure RecaptchaThenUniqueUsername validator is executed just once
+        verify(recaptchaService, times(1)).verifyToken(anyString());
+        verify(userRepository, times(1)).findByUsername(anyString());
     }
 
     @ParameterizedTest
