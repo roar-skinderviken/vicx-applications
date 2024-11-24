@@ -5,7 +5,7 @@ import {changeInputValue, delayedResponse} from "@/testUtils"
 const errorResponse = {
     validationErrors: {
         username: "This name is in use",
-        recaptchaToken: "Invalid reCaptcha, please try again"
+        recaptchaToken: "Invalid reCAPTCHA, please wait to token expires and try again"
     }
 }
 

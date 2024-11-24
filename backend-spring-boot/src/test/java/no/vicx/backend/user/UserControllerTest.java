@@ -102,7 +102,7 @@ class UserControllerTest {
 
         var apiError = performBadRequest(VALID_USER_VM, null);
 
-        assertEquals("Invalid reCAPTCHA, please try again", apiError.validationErrors().get("recaptchaToken"));
+        assertEquals("Invalid reCAPTCHA, please wait to token expires and try again", apiError.validationErrors().get("recaptchaToken"));
 
         verify(userRepository, never()).findByUsername(anyString());
     }
