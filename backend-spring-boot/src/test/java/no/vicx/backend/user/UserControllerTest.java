@@ -26,8 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Optional;
 
-import static no.vicx.backend.user.UserTestUtils.createValidUser;
-import static no.vicx.backend.user.UserTestUtils.createValidUserVm;
+import static no.vicx.backend.user.UserTestUtils.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
@@ -60,13 +59,12 @@ class UserControllerTest {
     @ParameterizedTest
     @MethodSource("no.vicx.backend.user.UserTestUtils#mockMultipartFileProvider")
     void postUser_givenValidUser_expectCreated(MockMultipartFile imageFile) throws Exception {
-        var validUserVm = createValidUserVm();
-        var validVicxUser = validUserVm.toNewVicxUser();
+        var validVicxUser = VALID_USER_VM.toNewVicxUser();
         validVicxUser.setId(42L);
 
         when(userService.createUser(any(), any())).thenReturn(validVicxUser);
 
-        mockMvc.perform(createMultipartRequest(validUserVm, imageFile))
+        mockMvc.perform(createMultipartRequest(VALID_USER_VM, imageFile))
                 .andExpect(status().isCreated())
                 .andExpect(header().string(HttpHeaders.LOCATION, "/api/user/" + validVicxUser.getId()))
                 .andExpect(content().string("User created successfully."));
@@ -97,7 +95,7 @@ class UserControllerTest {
     void postUser_GivenInvalidReCaptcha_expectBadRequest() throws Exception {
         when(recaptchaService.verifyToken(any())).thenReturn(false);
 
-        var apiError = performBadRequest(createValidUserVm(), null);
+        var apiError = performBadRequest(VALID_USER_VM, null);
 
         assertEquals("Invalid reCAPTCHA, please try again", apiError.validationErrors().get("recaptchaToken"));
 
@@ -106,9 +104,9 @@ class UserControllerTest {
 
     @Test
     void postUser_givenDuplicateUsername_expectBadRequest() throws Exception {
-        when(userRepository.findByUsername(any())).thenReturn(Optional.of(createValidUser()));
+        when(userRepository.findByUsername(any())).thenReturn(Optional.of(VALID_USER_VM.toNewVicxUser()));
 
-        var apiError = performBadRequest(createValidUserVm(), null);
+        var apiError = performBadRequest(VALID_USER_VM, null);
 
         assertEquals(HttpStatus.BAD_REQUEST.value(), apiError.status());
         assertEquals("validation error", apiError.message());
@@ -122,7 +120,7 @@ class UserControllerTest {
     void postUser_givenInvalidImage_expectBadRequest(
             MockMultipartFile imageFile, String fieldName, String expectedMessage) throws Exception {
 
-        var apiError = performBadRequest(createValidUserVm(), imageFile);
+        var apiError = performBadRequest(VALID_USER_VM, imageFile);
         assertEquals(expectedMessage, apiError.validationErrors().get(fieldName));
     }
 
@@ -135,22 +133,23 @@ class UserControllerTest {
             builder.file(imageFile);
         }
 
-        builder
+        return builder
                 .param("username", userVm.username())
                 .param("password", userVm.password())
                 .param("email", userVm.email())
                 .param("name", userVm.name())
-                .param("recaptchaToken", userVm.recaptchaToken());
-
-        return builder.contentType(MediaType.MULTIPART_FORM_DATA);
+                .param("recaptchaToken", userVm.recaptchaToken())
+                .contentType(MediaType.MULTIPART_FORM_DATA); // not required, just for clarity
     }
 
     ApiError performBadRequest(
             UserVm userVm, MockMultipartFile imageFile) throws Exception {
-        var result = mockMvc.perform(createMultipartRequest(userVm, imageFile))
+        var jsonResponse = mockMvc.perform(createMultipartRequest(userVm, imageFile))
                 .andExpect(status().isBadRequest())
-                .andReturn();
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
 
-        return objectMapper.readValue(result.getResponse().getContentAsString(), ApiError.class);
+        return objectMapper.readValue(jsonResponse, ApiError.class);
     }
 }
