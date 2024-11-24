@@ -1,16 +1,12 @@
 package no.vicx.backend.user.service;
 
 import no.vicx.backend.user.vm.RecaptchaResponseVm;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 @Service
 public class RecaptchaService {
-    public static final Logger LOG = LoggerFactory.getLogger(RecaptchaService.class);
-
     private static final String RECAPTCHA_VERIFY_URL = "https://www.google.com/recaptcha/api/siteverify";
 
     @Value("${recaptcha.secret}")
@@ -32,9 +28,6 @@ public class RecaptchaService {
                 .bodyToMono(RecaptchaResponseVm.class);
 
         var response = responseMono.block();
-
-        LOG.info("Recaptcha response: {}", response);
-
         return response != null && response.success();
     }
 }

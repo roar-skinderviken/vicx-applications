@@ -28,6 +28,12 @@ public class UserController {
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
             produces = MediaType.TEXT_PLAIN_VALUE)
     public ResponseEntity<String> createUser(
+            @SuppressWarnings("DanglingJavadoc")
+            /**
+             * NOTE: When using {@link jakarta.validation.Valid}, class-level validator
+             * {@link no.vicx.backend.user.validation.RecaptchaThenUniqueUsername}
+             * will run twice and fail reCAPTCHA validation on second run.
+             */
             @Validated UserVm userVm,
             @ProfileImage(
                     invalidFileTypeMessage = "{vicx.constraints.ProfileImage.type.message}",
