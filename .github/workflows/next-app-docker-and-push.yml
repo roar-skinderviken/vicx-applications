@@ -34,7 +34,7 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
 
       - name: Run tests with Gradle
-        run: ./gradlew -p next-app runJest --build-cache --info
+        run: ./gradlew -p next-app check --build-cache --info
 
   build_and_push_docker:
     needs: run_tests

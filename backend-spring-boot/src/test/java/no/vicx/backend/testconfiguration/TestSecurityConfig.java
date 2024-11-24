@@ -7,7 +7,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 
 import java.time.Instant;
-import java.util.List;
+import java.util.Collections;
 import java.util.Map;
 
 @TestConfiguration
@@ -20,7 +20,7 @@ public class TestSecurityConfig {
             Map.of("alg", "none"),
             Map.of(
                     "sub", "user1",
-                    "roles", List.of("ROLE_USER"))
+                    "roles", Collections.singletonList("ROLE_USER"))
     );
 
     @Primary

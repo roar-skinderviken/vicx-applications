@@ -1,5 +1,5 @@
-export const signOutOptions = {callbackUrl: "/signed-out", redirect: true}
-export const signInOptions = {callbackUrl: '/dashboard', redirect: true}
+export const signInOptions = {callbackUrl: '/user/dashboard', redirect: true}
+export const signOutOptions = {callbackUrl: "/user/signed-out", redirect: true}
 
 // see https://flowbite-react.com/docs/components/navbar
 export const navbarTheme = {

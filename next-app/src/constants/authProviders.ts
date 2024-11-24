@@ -19,22 +19,23 @@ export const githubProvider = GitHubProvider({
     }
 })
 
+const OAUTH_BASE_URL = process.env.OAUTH_BASE_URL || "http://localhost:9000/auth-server"
+
 export const springBootProvider: Provider = {
     id: DEFAULT_APP_PROVIDER_ID,
     name: "Vicx OAuth",
     clientId: "next-app-client",
-    clientSecret: process.env.OIDC_CLIENT_SECRET || "secret",
-    version: "2.0",
+    clientSecret: process.env.OAUTH_CLIENT_SECRET || "secret",
     type: "oauth",
-    checks: ["pkce", "state"],
     idToken: true,
+    wellKnown: `${OAUTH_BASE_URL}/.well-known/openid-configuration`,
     authorization: {
-        url: process.env.AUTHORIZATION_URL || "http://localhost:9000/oauth2/authorize",
-        params: {scope: "openid profile"}
+        url: `${OAUTH_BASE_URL}/oauth2/authorize`,
+        params: {scope: "openid profile email"}
     },
-    token: process.env.TOKEN_URL || "http://localhost:9000/oauth2/token",
-    issuer: process.env.ISSUER || "http://localhost:9000",
-    jwks_endpoint: process.env.JWKS_ENDPOINT || "http://localhost:9000/oauth2/jwks",
+
+    // this exists as well
+    // "http://localhost:9000/auth-server/.well-known/oauth-authorization-server",
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     profile: (profile: any) => {
@@ -42,8 +43,8 @@ export const springBootProvider: Provider = {
             id: profile.sub,
             name: profile.name || profile.sub, // if user has not registered name
             email: profile.email,
-            roles: profile.roles,
-            // image: TODO,
+            image: profile.image && `/user/image?${profile.sub}`,
+            roles: profile.roles
         }
     }
 }

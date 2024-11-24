@@ -21,7 +21,7 @@ const SignedInMenu = ({user}: { user: SessionUser }) => {
             <span className="block text-sm">{name}</span>
             {email && <span className="block truncate text-sm font-medium">{email}</span>}
         </Dropdown.Header>
-        <Dropdown.Item><Link href={"/dashboard"}>Dashboard</Link></Dropdown.Item>
+        <Dropdown.Item><Link href={"/user/dashboard"}>Dashboard</Link></Dropdown.Item>
         <Dropdown.Divider/>
         <Dropdown.Item onClick={
             async () => await signOut(signOutOptions)

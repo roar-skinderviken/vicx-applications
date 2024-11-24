@@ -1,5 +1,7 @@
 import Hero from "@/components/Hero"
-import UserSignupForm from "@/app/user-signup/UserSignupForm"
+import UserSignupForm from "@/app/user/register/UserSignupForm"
+
+export const dynamic = "force-dynamic"
 
 export const metadata = {
     title: "Sign Up | VICX"
@@ -13,7 +15,7 @@ export default function KMeansPage() {
                 lead="Create a new account"
             />
 
-            <UserSignupForm/>
+            <UserSignupForm reCaptchaSiteKey={process.env.RECAPTCHA_SITE_KEY as string}/>
         </main>
     )
 }

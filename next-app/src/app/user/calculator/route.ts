@@ -3,7 +3,8 @@ import {getServerSession} from "next-auth"
 import authOptions from "@/authOptions"
 import {CustomSession} from "@/types/authTypes"
 
-const BACKEND_BASE_URL = process.env.NEXT_PUBLIC_CALCULATOR_BACKEND_URL || "/backend-spring-boot/api/calculator"
+const SPRING_BACKEND_BASE_URL = process.env.SPRING_BACKEND_BASE_URL || ""
+const BACKEND_BASE_URL = `${SPRING_BACKEND_BASE_URL}/api/calculator`
 
 export async function POST(request: NextRequest) {
     const session = (await getServerSession(authOptions)) as CustomSession | null

@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.oauth2.core.oidc.OidcScopes;
 import org.springframework.security.oauth2.server.authorization.token.JwtEncodingContext;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
 
@@ -13,10 +14,10 @@ import java.util.stream.Collectors;
 @Configuration
 public class JwtCustomizerConfig {
 
-    public static final String PROFILE_SCOPE = "profile";
-    public static final String ROLES_CLAIM = "roles";
-    public static final String NAME_CLAIM = "name";
-    public static final String EMAIL_CLAIM = "email";
+    private static final String ROLES_CLAIM = "roles";
+    private static final String NAME_CLAIM = "name";
+    private static final String IMAGE_CLAIM = "image";
+    private static final String EMAIL_CLAIM = "email";
 
     @Bean
     public OAuth2TokenCustomizer<JwtEncodingContext> jwtCustomizer() {
@@ -28,11 +29,17 @@ public class JwtCustomizerConfig {
 
                 context.getClaims().claim(ROLES_CLAIM, authorities);
 
-                if (authentication.getPrincipal() instanceof CustomUserDetails customUserDetails
-                        && context.getAuthorizedScopes().contains(PROFILE_SCOPE)) {
+                if (authentication.getPrincipal() instanceof CustomUserDetails customUserDetails) {
+                    if (context.getAuthorizedScopes().contains(OidcScopes.PROFILE)) {
+                        context.getClaims().claim(NAME_CLAIM, customUserDetails.getName());
+                        if (customUserDetails.hasImage()) {
+                            context.getClaims().claim(IMAGE_CLAIM, customUserDetails.getName());
+                        }
+                    }
 
-                    context.getClaims().claim(NAME_CLAIM, customUserDetails.getName());
-                    context.getClaims().claim(EMAIL_CLAIM, customUserDetails.getEmail());
+                    if (context.getAuthorizedScopes().contains(OidcScopes.EMAIL)) {
+                        context.getClaims().claim(EMAIL_CLAIM, customUserDetails.getEmail());
+                    }
                 }
             }
         };

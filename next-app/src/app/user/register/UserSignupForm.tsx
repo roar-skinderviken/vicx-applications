@@ -4,7 +4,6 @@ import Image from "next/image"
 import React, {useEffect, useState} from "react"
 import {FormProvider, useForm} from "react-hook-form"
 import {yupResolver} from "@hookform/resolvers/yup"
-import * as yup from "yup"
 import {InferType} from "yup"
 import ValidatedTextInput from "@/components/ValidatedTextInput"
 import ButtonWithSpinner from "@/components/ButtonWithSpinner"
@@ -17,85 +16,22 @@ import fallbackProfileImage from "@/assets/images/profile.png"
 import {signIn} from "next-auth/react"
 import {signInOptions} from "@/components/navbar/navbarConstants"
 import {DEFAULT_APP_PROVIDER_ID} from "@/constants/authProviders"
+import {UserRegistrationSchema} from "@/app/user/register/userRegistrationSchema"
 
 // put this in next-app/.env.local
 // NEXT_PUBLIC_USER_BACKEND_URL=http://localhost:8080/api/user
 const BACKEND_URL = process.env.NEXT_PUBLIC_USER_BACKEND_URL || "/backend-spring-boot/api/user"
-const RECAPTCHA_SITE_KEY = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" // dev key
 
-const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/
+type UserSignupFormData = InferType<typeof UserRegistrationSchema>
 
-const UserSignupSchema = yup.object({
-    username: yup
-        .string()
-        .trim()
-        .required("Username is required")
-        .min(4, ({min}) => `It must have a minimum of ${min} characters`)
-        .max(255, ({max}) => `It must have a maximum of ${max} characters`),
-
-    name: yup
-        .string()
-        .trim()
-        .required("Name is required")
-        .min(4, ({min}) => `It must have a minimum of ${min} characters`)
-        .max(255, ({max}) => `It must have a maximum of ${max} characters`),
-
-    email: yup
-        .string()
-        .required("Email is required")
-        .email("Please enter a valid email address"),
-
-    password: yup
-        .string()
-        .required("Password is required")
-        .min(8, ({min}) => `It must have a minimum of ${min} characters`)
-        .max(255, ({max}) => `It must have a maximum of ${max} characters`)
-        .matches(
-            passwordRegex,
-            "Password must have at least one uppercase, one lowercase letter, and one number"
-        ),
-
-    repeat_password: yup
-        .string()
-        .required("Please confirm password")
-        .oneOf([yup.ref('password')], "Passwords must match"),
-
-    image: yup.mixed<FileList>()
-        .test(
-            "file-type",
-            "Only PNG and JPG files are allowed",
-            (files: FileList | undefined) => {
-                const file = files?.[0]
-                return file
-                    ? ["image/png", "image/jpeg"].includes(file.type)
-                    : true
-            })
-        .test(
-            "file-size",
-            "File size exceeds the maximum allowed size of 51200 bytes",
-            (files: FileList | undefined) => {
-                const file = files?.[0]
-                return file
-                    ? file.size < 51_201
-                    : true
-            }
-        ),
-
-    reCaptchaToken: yup
-        .string()
-        .required("Please verify that you're not a robot")
-})
-
-type UserSignupFormData = InferType<typeof UserSignupSchema>
-
-const UserSignupForm = () => {
+const UserSignupForm = ({reCaptchaSiteKey}: { reCaptchaSiteKey: string }) => {
     const [profileImage, setProfileImage] = useState<string | undefined>(undefined)
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const [result, setResult] = useState<string>()
     const [validationErrors, setValidationErrors] = useState<Record<string, string>>()
 
     const methods = useForm<UserSignupFormData>({
-        resolver: yupResolver(UserSignupSchema),
+        resolver: yupResolver(UserRegistrationSchema),
         mode: "onChange"
     })
 
@@ -236,7 +172,7 @@ const UserSignupForm = () => {
 
                         <div className="flex flex-col items-center">
                             <ReCAPTCHA
-                                sitekey={RECAPTCHA_SITE_KEY}
+                                sitekey={reCaptchaSiteKey}
                                 onChange={async (token: string) => {
                                     setValidationErrors(undefined)
                                     methods.setValue("reCaptchaToken", token)

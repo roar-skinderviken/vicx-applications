@@ -10,14 +10,14 @@ import {
 
 const FALLBACK_IMAGE_PATH = path.join(process.cwd(), 'public', 'images', 'hero-fallback.jpg')
 
+const buildFallbackResponse = () => {
+    return buildResponse(fs.readFileSync(FALLBACK_IMAGE_PATH))
+}
+
 const buildResponse = (buffer: Buffer) => new Response(
     buffer,
     {headers: {"Content-Type": JPEG_IMAGE_CONTENT_TYPE}}
 )
-
-const buildFallbackResponse = () => {
-    return buildResponse(fs.readFileSync(FALLBACK_IMAGE_PATH))
-}
 
 export async function GET() {
     try {

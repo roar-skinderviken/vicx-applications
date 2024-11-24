@@ -7,7 +7,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 @Service
 public class RecaptchaService {
-
     private static final String RECAPTCHA_VERIFY_URL = "https://www.google.com/recaptcha/api/siteverify";
 
     @Value("${recaptcha.secret}")

@@ -13,9 +13,9 @@ import PreviousCalculations from "@/app/tomcat/PreviousCalculations"
 import ButtonWithSpinner from "@/components/ButtonWithSpinner"
 
 // put this in next-app/.env.local
-// NEXT_PUBLIC_TOMCAT_BACKEND_URL=http://localhost:8080/api
+// NEXT_PUBLIC_CALCULATOR_BACKEND_URL=http://localhost:8080/api/calculator
 export const CALC_BACKEND_BASE_URL = process.env.NEXT_PUBLIC_CALCULATOR_BACKEND_URL || "/backend-spring-boot/api/calculator"
-export const CALC_NEXT_BACKEND_URL = "/api/calculator"
+export const CALC_NEXT_BACKEND_URL = "/user/calculator"
 
 const calculatorYupSchema = yup.object({
     firstValue: yup
@@ -105,7 +105,7 @@ const CalculatorFormAndResult = () => {
             .then(sessionUser => {
                     const hasUserRole = hasRole("ROLE_USER", sessionUser)
                     if (hasUserRole) {
-                        setUsername(sessionUser.name || undefined)
+                        setUsername(sessionUser.id || undefined)
                     }
 
                     return hasUserRole ? CALC_NEXT_BACKEND_URL : CALC_BACKEND_BASE_URL

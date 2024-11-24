@@ -2,10 +2,10 @@ package no.vicx.backend.calculator;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.vicx.backend.calculator.vm.CalcVm;
-import no.vicx.database.calculator.CalculatorOperation;
 import no.vicx.backend.calculator.vm.CalculatorRequestVm;
 import no.vicx.backend.config.SecurityConfig;
 import no.vicx.backend.testconfiguration.TestSecurityConfig;
+import no.vicx.database.calculator.CalculatorOperation;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -22,7 +22,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Collections;
 import java.util.stream.Stream;
 
 import static org.hamcrest.Matchers.is;
@@ -46,7 +46,7 @@ class CalculatorControllerTest {
 
     @Test
     void get_expectListOfCalculations() throws Exception {
-        var calcVmList = List.of(new CalcVm(
+        var calcVmList = Collections.singletonList(new CalcVm(
                 1L,
                 1,
                 2,

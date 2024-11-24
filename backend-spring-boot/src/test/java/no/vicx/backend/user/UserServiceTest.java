@@ -18,8 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.io.IOException;
 import java.util.Optional;
 
-import static no.vicx.backend.user.UserTestUtils.createValidUser;
-import static no.vicx.backend.user.UserTestUtils.createValidUserVm;
+import static no.vicx.backend.user.UserTestUtils.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.openMocks;
@@ -50,7 +49,7 @@ class UserServiceTest {
     @ParameterizedTest
     @MethodSource("no.vicx.backend.user.UserTestUtils#mockMultipartFileProvider")
     void createUser_givenValidUser_shouldCreateUserInDatabase(MockMultipartFile imageFile) throws IOException {
-        var userVmInTest = createValidUserVm();
+        var userVmInTest = VALID_USER_VM;
         var expectedUser = userVmInTest.toNewVicxUser();
         expectedUser.setPassword("encoded");
 
@@ -83,7 +82,7 @@ class UserServiceTest {
 
     @Test
     void getUser_givenExistingUser_expectUser() {
-        var userInTest = createValidUser();
+        var userInTest = VALID_USER_VM.toNewVicxUser();
 
         when(userRepository.findByUsername("user1")).thenReturn(Optional.of(userInTest));
 
@@ -94,7 +93,7 @@ class UserServiceTest {
 
     @Test
     void updateUser_givenExistingUser_shouldUpdateUserInDatabase() {
-        var userVmInTest = createValidUserVm();
+        var userVmInTest = VALID_USER_VM;
         var userInTest = userVmInTest.toNewVicxUser();
 
         when(passwordEncoder.encode("P4ssword")).thenReturn("encoded");

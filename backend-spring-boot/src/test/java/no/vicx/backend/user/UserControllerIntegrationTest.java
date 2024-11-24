@@ -48,7 +48,7 @@ class UserControllerIntegrationTest {
 
     @Test
     void getUser_authenticated_expectOk() {
-        var validUser = createValidUser();
+        var validUser = VALID_USER_VM.toNewVicxUser();
         when(userService.getUserByUserName("user1")).thenReturn(validUser);
 
         var httpEntity = new HttpEntity<>(
@@ -69,7 +69,7 @@ class UserControllerIntegrationTest {
         var response = restTemplate.exchange(
                 "/api/user",
                 HttpMethod.PUT,
-                new HttpEntity<>(createValidUserVm()),
+                new HttpEntity<>(VALID_USER_VM),
                 String.class);
 
         assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
@@ -77,8 +77,7 @@ class UserControllerIntegrationTest {
 
     @Test
     void putUser_authenticated_expectOk() {
-        var validUserVm = createValidUserVm();
-        var validUser = validUserVm.toNewVicxUser();
+        var validUser = VALID_USER_VM.toNewVicxUser();
 
         when(userService.updateUser(any())).thenReturn(validUser);
 
@@ -86,7 +85,7 @@ class UserControllerIntegrationTest {
                 "/api/user",
                 HttpMethod.PUT,
                 new HttpEntity<>(
-                        validUserVm,
+                        VALID_USER_VM,
                         createHttpHeaders(true, MediaType.APPLICATION_JSON_VALUE)),
                 UserVm.class);
 
@@ -96,8 +95,9 @@ class UserControllerIntegrationTest {
 
     @Test
     void putUser_givenUsernameForOtherUser_expectForbidden() {
-        var user = createUserVm(
-                "user2", "P4ssword", "user@example.com", "The User", "mock-token");
+        var user = new UserVm(
+                "user2", "P4ssword", "user@example.com",
+                "The User", "mock-token");
 
         var response = restTemplate.exchange(
                 "/api/user",
