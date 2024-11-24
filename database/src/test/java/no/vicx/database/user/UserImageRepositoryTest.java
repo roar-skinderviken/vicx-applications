@@ -14,7 +14,7 @@ import static no.vicx.database.user.RepositoryTestUtils.createValidUser;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@AutoConfigureTestDatabase
 @Import(no.vicx.database.PostgresTestContainerConfig.class)
 class UserImageRepositoryTest {
 

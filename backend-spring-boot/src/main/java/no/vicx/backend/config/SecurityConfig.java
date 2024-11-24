@@ -52,7 +52,7 @@ public class SecurityConfig {
                         .jwt(jwt -> jwt.jwtAuthenticationConverter(new FusedClaimConverter()))
                 )
                 .headers(headers -> {
-                            headers.permissionsPolicy(permissions ->
+                            headers.permissionsPolicyHeader(permissions ->
                                     permissions.policy("geolocation=(), microphone=(), camera=()"));
 
                             headers.contentSecurityPolicy(policyConfig ->

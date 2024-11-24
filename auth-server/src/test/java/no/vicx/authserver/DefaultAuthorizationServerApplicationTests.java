@@ -15,15 +15,14 @@
  */
 package no.vicx.authserver;
 
-import com.gargoylesoftware.htmlunit.Page;
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.WebResponse;
-import com.gargoylesoftware.htmlunit.html.HtmlButton;
-import com.gargoylesoftware.htmlunit.html.HtmlElement;
-import com.gargoylesoftware.htmlunit.html.HtmlInput;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import org.htmlunit.Page;
+import org.htmlunit.WebClient;
+import org.htmlunit.WebResponse;
+import org.htmlunit.html.HtmlButton;
+import org.htmlunit.html.HtmlElement;
+import org.htmlunit.html.HtmlInput;
+import org.htmlunit.html.HtmlPage;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,8 +66,8 @@ public class DefaultAuthorizationServerApplicationTests {
         this.webClient.getCookieManager().clearCookies();    // log out
     }
 
+    //@Disabled("Flaky test, passes when running alone, else it fails")
     @Test
-    @Disabled("Flaky test, passes when running alone, else it fails")
     public void whenLoginSuccessfulThenDisplayNotFoundError() throws IOException {
         HtmlPage page = this.webClient.getPage("/");
 
