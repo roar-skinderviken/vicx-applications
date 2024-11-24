@@ -14,7 +14,7 @@ tasks.register<NpmTask>("installDependencies") {
     args.set(listOf("ci"))
 }
 
-tasks.register<NpmTask>("runJest") {
+tasks.register<NpmTask>("check") {
     dependsOn("installDependencies")
     args.set(listOf("run", "test"))
 }
