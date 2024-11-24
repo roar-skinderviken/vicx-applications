@@ -11,12 +11,13 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.*;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
-import static no.vicx.backend.user.UserTestUtils.*;
+import static no.vicx.backend.user.UserTestUtils.VALID_USER_VM;
+import static no.vicx.backend.user.UserTestUtils.assertUserVm;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
@@ -29,10 +30,10 @@ class UserControllerIntegrationTest {
     @Autowired
     TestRestTemplate restTemplate;
 
-    @MockBean
+    @MockitoBean
     UserService userService;
 
-    @MockBean
+    @MockitoBean
     RecaptchaService recaptchaService;
 
     @BeforeEach
