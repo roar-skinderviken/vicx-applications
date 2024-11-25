@@ -14,7 +14,6 @@ tasks.register<NpmTask>("installDependencies") {
     args.set(listOf("ci"))
 }
 
-/*
 tasks.register<NpmTask>("lint") {
     dependsOn("installDependencies")
     args.set(listOf("run", "lint"))
@@ -23,4 +22,4 @@ tasks.register<NpmTask>("lint") {
 tasks.register<NpmTask>("check") {
     dependsOn("lint")
     args.set(listOf("run", "test"))
-}*/
+}
