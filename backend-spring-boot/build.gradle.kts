@@ -23,9 +23,9 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-cache")
     runtimeOnly("com.github.ben-manes.caffeine:caffeine")
-    runtimeOnly("dev.akkinoc.spring.boot:logback-access-spring-boot-starter:4.4.0")
+    runtimeOnly(libs.logback.access.spring.boot.starter)
 
-    implementation("org.apache.tika:tika-core:3.0.0")
+    implementation(libs.tika.core)
 
     implementation(project(":database"))
     runtimeOnly("com.h2database:h2")

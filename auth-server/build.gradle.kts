@@ -18,7 +18,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-oauth2-authorization-server")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
-    runtimeOnly("dev.akkinoc.spring.boot:logback-access-spring-boot-starter:4.4.0")
+    runtimeOnly(libs.logback.access.spring.boot.starter)
 
     implementation(project(":database"))
     runtimeOnly("com.h2database:h2")
