@@ -8,16 +8,9 @@ import org.springframework.security.oauth2.jwt.JwtException;
 import java.util.Arrays;
 import java.util.Base64;
 
-public class CompositeJwtDecoder implements JwtDecoder {
-    private final JwtDecoder nimbusJwtDecoder;
-    private final GitHubJwtFromOpaqueProducer gitHubJwtFromOpaqueProducer;
-
-    public CompositeJwtDecoder(
-            JwtDecoder nimbusJwtDecoder,
-            GitHubJwtFromOpaqueProducer gitHubJwtFromOpaqueProducer) {
-        this.nimbusJwtDecoder = nimbusJwtDecoder;
-        this.gitHubJwtFromOpaqueProducer = gitHubJwtFromOpaqueProducer;
-    }
+public record CompositeJwtDecoder(
+        JwtDecoder nimbusJwtDecoder,
+        GitHubJwtFromOpaqueProducer gitHubJwtFromOpaqueProducer) implements JwtDecoder {
 
     @Override
     public Jwt decode(String token) throws JwtException {
