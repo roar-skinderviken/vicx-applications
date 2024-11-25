@@ -13,8 +13,12 @@ import java.util.Map;
 @TestConfiguration
 public class TestSecurityConfig {
 
+    public static final String VALID_JWT_STRING = "eyJhbGciOiAiSFMyNTYiLCAidHlwIjogIkpXVCJ9" +
+            ".eyJzdWIiOiAiMTIzNDU2Nzg5MCIsICJuYW1lIjogIkpvaG4gRG9lIiwgImlhdCI6IDE1MTYyMzkwMjJ9" +
+            ".aGVsbG9fc2lnbmF0dXJlX2Jhc2U2NA==";
+
     public static final Jwt JWT_IN_TEST = new Jwt(
-            "token",
+            VALID_JWT_STRING,
             Instant.now(),
             Instant.now().plusSeconds(30),
             Map.of("alg", "none"),

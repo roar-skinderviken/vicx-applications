@@ -10,9 +10,9 @@ export const githubProvider = GitHubProvider({
     clientSecret: process.env.GITHUB_SECRET || "",
     profile(profile: GithubProfile) {
         return {
-            id: profile.id.toString(),
+            id: profile.login,
             name: profile.name || profile.login, // if user has not registered name
-            roles: [],
+            roles: ["ROLE_GITHUB_USER"],
             email: profile.email,
             image: profile.avatar_url,
         }

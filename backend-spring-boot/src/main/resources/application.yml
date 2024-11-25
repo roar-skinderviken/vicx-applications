@@ -5,21 +5,22 @@ logging:
 recaptcha:
   secret: ${RECAPTCHA_SECRET:6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe} # dev secret
 
+auth-server:
+  issuer-uri: ${ISSUER_URI:http://localhost:9000/auth-server}
+
 spring:
   servlet:
     multipart:
       enabled: true
 
+  cache:
+    cache-names: GITHUB_TOKENS
+    type: caffeine
+    caffeine:
+      spec: maximumSize=1000,expireAfterWrite=3600s
+
   application:
     name: vicx-backend-spring-boot
-
-  # for adding GitHub as well:
-  # https://docs.spring.io/spring-security/reference/reactive/oauth2/resource-server/multitenancy.html
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: ${ISSUER_URI:http://localhost:9000/auth-server}
 
   datasource:
     url: jdbc:h2:mem:testdb;CACHE_SIZE=2048

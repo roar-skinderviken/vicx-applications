@@ -123,7 +123,6 @@ class CalculatorControllerTest {
                 .andExpect(jsonPath("$.operation", is(operation.toString())))
                 .andExpect(jsonPath("$.result", is(result)))
                 .andExpect(jsonPath("$.username", is(username)));
-                //.andExpect(jsonPath("$.createdAt", is(NOW.toString())));
     }
 
     @ParameterizedTest

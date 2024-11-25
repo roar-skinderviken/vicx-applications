@@ -1,5 +1,6 @@
 package no.vicx.backend.config;
 
+import no.vicx.backend.jwt.FusedClaimConverter;
 import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
 import org.springframework.boot.actuate.health.HealthEndpoint;
 import org.springframework.context.annotation.Bean;
@@ -35,6 +36,7 @@ public class SecurityConfig {
                         .requestMatchers(EndpointRequest.to(HealthEndpoint.class)).permitAll()
 
                         .requestMatchers(HttpMethod.POST, "/api/calculator").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/api/calculator").hasAnyRole("USER", "GITHUB_USER")
 
                         .requestMatchers(HttpMethod.POST, "/api/user").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/**").hasRole("USER")

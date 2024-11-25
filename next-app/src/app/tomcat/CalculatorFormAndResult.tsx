@@ -8,7 +8,7 @@ import ValidatedTextInput from "@/components/ValidatedTextInput"
 import {InferType} from "yup"
 import {getSession} from "next-auth/react"
 import {CustomSession} from "@/types/authTypes"
-import {hasRole} from "@/utils/authUtils"
+import {hasOneOfRoles} from "@/utils/authUtils"
 import PreviousCalculations from "@/app/tomcat/PreviousCalculations"
 import ButtonWithSpinner from "@/components/ButtonWithSpinner"
 
@@ -83,7 +83,7 @@ const CalculatorFormAndResult = () => {
         getSession()
             .then(session => (session as CustomSession)?.user)
             .then(sessionUser => {
-                    const hasUserRole = hasRole("ROLE_USER", sessionUser)
+                    const hasUserRole = hasOneOfRoles(["ROLE_USER", "ROLE_GITHUB_USER"], sessionUser)
                     if (!hasUserRole) {
                         throw new Error('User not allowed to perform this operation')
                     }
@@ -103,7 +103,7 @@ const CalculatorFormAndResult = () => {
         getSession()
             .then(session => (session as CustomSession)?.user)
             .then(sessionUser => {
-                    const hasUserRole = hasRole("ROLE_USER", sessionUser)
+                    const hasUserRole = hasOneOfRoles(["ROLE_USER", "ROLE_GITHUB_USER"], sessionUser)
                     if (hasUserRole) {
                         setUsername(sessionUser.id || undefined)
                     }

@@ -1,9 +1,4 @@
-package no.vicx.backend.config;
-
-import java.util.Collection;
-import java.util.stream.Collectors;
-import java.util.Collections;
-import java.util.stream.Stream;
+package no.vicx.backend.jwt;
 
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.lang.NonNull;
@@ -13,6 +8,11 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * This is a custom converter to extract all entries of two Jwt claims "scope" and "role". All
