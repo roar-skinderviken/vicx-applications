@@ -39,11 +39,6 @@ springBoot {
     mainClass = "no.vicx.backend.VicxBackendApplication"
 }
 
-tasks.test {
-    useJUnitPlatform()
-    systemProperty("spring.profiles.active", "test")
-}
-
 tasks.jar {
     enabled = false
 }
