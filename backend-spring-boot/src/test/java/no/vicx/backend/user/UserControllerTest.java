@@ -3,6 +3,7 @@ package no.vicx.backend.user;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.vicx.backend.config.SecurityConfig;
 import no.vicx.backend.error.ApiError;
+import no.vicx.backend.testconfiguration.TestSecurityConfig;
 import no.vicx.backend.user.service.RecaptchaService;
 import no.vicx.backend.user.service.UserService;
 import no.vicx.backend.user.vm.UserVm;
@@ -34,7 +35,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(UserController.class)
-@Import(SecurityConfig.class)
+@Import({SecurityConfig.class, TestSecurityConfig.class})
 class UserControllerTest {
 
     @Autowired

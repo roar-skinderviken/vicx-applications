@@ -62,6 +62,7 @@ const authOptions = {
                     return {
                         ...token,
                         provider: account.provider,
+                        accessToken: account.access_token,
                         user
                     }
                 }
