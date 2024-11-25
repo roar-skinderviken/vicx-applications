@@ -34,10 +34,18 @@ springBoot {
     mainClass = "no.vicx.authserver.AuthServerApplication"
 }
 
-tasks.test {
-    useJUnitPlatform()
-}
-
 tasks.jar {
     enabled = false
+}
+
+// https://javadoc.io/doc/org.mockito/mockito-core/latest/org/mockito/Mockito.html#0.3
+val mockitoAgent = configurations.create("mockitoAgent")
+
+dependencies {
+    testImplementation(libs.mockito)
+    mockitoAgent(libs.mockito) { isTransitive = false }
+}
+
+tasks.test {
+    jvmArgs("-javaagent:${mockitoAgent.asPath}")
 }
