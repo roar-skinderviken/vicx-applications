@@ -35,7 +35,7 @@ public record CompositeJwtDecoder(
 
     static boolean isValidBase64(String part) {
         try {
-            return Base64.getDecoder().decode(part) != null;
+            return Base64.getUrlDecoder().decode(part) != null;
         } catch (IllegalArgumentException e) {
             return false;
         }

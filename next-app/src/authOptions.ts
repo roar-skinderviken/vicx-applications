@@ -69,7 +69,7 @@ const authOptions = {
 
                 return {
                     provider: account.provider,
-                    accessToken: account.accessToken,
+                    accessToken: account.access_token,
                     accessTokenExpires: Date.now() + Number(account.expires_in) * 1000,
                     refreshToken: account.refresh_token,
                     user,
