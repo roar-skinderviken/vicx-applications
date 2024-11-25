@@ -23,7 +23,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-cache")
     runtimeOnly("com.github.ben-manes.caffeine:caffeine")
-    runtimeOnly("dev.akkinoc.spring.boot:logback-access-spring-boot-starter:4.3.2")
+    runtimeOnly("dev.akkinoc.spring.boot:logback-access-spring-boot-starter:4.4.0")
 
     implementation("org.apache.tika:tika-core:3.0.0")
 
