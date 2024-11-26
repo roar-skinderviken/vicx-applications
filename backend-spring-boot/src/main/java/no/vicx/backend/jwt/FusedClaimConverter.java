@@ -21,6 +21,7 @@ import java.util.stream.Stream;
  * implementation is based on: <a href="https://stackoverflow.com/a/58234971/13805480">...</a>
  */
 public class FusedClaimConverter implements Converter<Jwt, AbstractAuthenticationToken> {
+    static final String ROLE_PREFIX = "ROLE_";
 
     // The fused converter internally fuses the outputs of two converters.
     // One component is the default converter (extracting scp/scope claim information).
@@ -57,10 +58,15 @@ public class FusedClaimConverter implements Converter<Jwt, AbstractAuthenticatio
      * @return collection of granted authorities extracted from the jwt.
      */
     private static Collection<? extends GrantedAuthority> extractRoles(final Jwt jwt) {
-        // specify here whatever additional jwt claim you wish to convert to authority
         Collection<String> roles = jwt.getClaim("roles");
-        return (roles != null)
-                ? roles.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toSet())
-                : Collections.emptySet();
+
+        if (roles == null) {
+            return Collections.emptySet();
+        }
+
+        return roles.stream()
+                .map(it -> it.startsWith(ROLE_PREFIX) ? it : ROLE_PREFIX + it)
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toSet());
     }
 }
