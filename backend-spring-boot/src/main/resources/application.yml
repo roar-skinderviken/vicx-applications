@@ -2,6 +2,11 @@ logging:
   level:
     root: INFO
 
+app:
+  calculator:
+    rate: 300_000 # every 5 minutes
+    max-age: PT24H
+
 recaptcha:
   secret: ${RECAPTCHA_SECRET:6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe} # dev secret
 

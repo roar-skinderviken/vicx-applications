@@ -46,8 +46,8 @@ class UserImageRepositoryTest {
         assertEquals(0, getImageCountInDb());
     }
 
-    Long getImageCountInDb() {
-        return (Long) entityManager.getEntityManager()
+    long getImageCountInDb() {
+        return (long) entityManager.getEntityManager()
                 .createQuery("SELECT COUNT(1) FROM UserImage")
                 .getSingleResult();
     }

@@ -103,8 +103,8 @@ class UserRepositoryTest {
         assertTrue(upperCaseUser.isPresent());
     }
 
-    Long getImageCountInDb() {
-        return (Long) entityManager.getEntityManager()
+    long getImageCountInDb() {
+        return (long) entityManager.getEntityManager()
                 .createQuery("SELECT COUNT(1) FROM UserImage")
                 .getSingleResult();
     }

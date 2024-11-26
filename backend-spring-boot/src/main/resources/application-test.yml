@@ -1,3 +1,8 @@
+app:
+  calculator:
+    rate: 5_000 # every 5 seconds
+    max-age: PT1S
+
 spring:
   cache:
     cache-names: GITHUB_TOKENS
