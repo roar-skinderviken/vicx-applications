@@ -2,16 +2,16 @@ package no.vicx.backend.jwt.github;
 
 import no.vicx.backend.jwt.github.vm.GitHubUserResponseVm;
 import no.vicx.backend.jwt.github.vm.GitHubUserVm;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+
+import static no.vicx.backend.jwt.HeaderConstants.BEARER_PREFIX;
 
 @Service
 public record GitHubUserFetcher(
         WebClient webClient,
         GitHubEmailFetcher emailFetcher) {
-
-    public static final String HEADER_AUTHORIZATION = "Authorization";
-    public static final String BEARER_PREFIX = "Bearer ";
 
     static final String USER_URL = "https://api.github.com/user";
     static final String HEADER_SCOPES = "X-OAuth-Scopes";
@@ -20,7 +20,7 @@ public record GitHubUserFetcher(
         var responseEntity = webClient
                 .get()
                 .uri(USER_URL)
-                .header(HEADER_AUTHORIZATION, BEARER_PREFIX + token)
+                .header(HttpHeaders.AUTHORIZATION, BEARER_PREFIX + token)
                 .retrieve()
                 .toEntity(GitHubUserVm.class)
                 .block();

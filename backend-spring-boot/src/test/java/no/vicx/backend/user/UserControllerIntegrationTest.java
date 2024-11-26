@@ -16,6 +16,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.*;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
+import static no.vicx.backend.jwt.HeaderConstants.BEARER_PREFIX;
 import static no.vicx.backend.user.UserTestUtils.VALID_USER_VM;
 import static no.vicx.backend.user.UserTestUtils.assertUserVm;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -136,7 +137,7 @@ class UserControllerIntegrationTest {
             String acceptType
     ) {
         HttpHeaders headers = new HttpHeaders();
-        headers.set(HttpHeaders.AUTHORIZATION, "Bearer token");
+        headers.set(HttpHeaders.AUTHORIZATION, BEARER_PREFIX + "token");
 
         if (includeContentType) headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
 

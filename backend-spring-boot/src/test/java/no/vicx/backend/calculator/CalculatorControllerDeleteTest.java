@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.stream.Stream;
 
+import static no.vicx.backend.jwt.HeaderConstants.BEARER_PREFIX;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
@@ -122,7 +123,7 @@ class CalculatorControllerDeleteTest {
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         if (isAuthenticated) {
-            headers.set(HttpHeaders.AUTHORIZATION, "Bearer token");
+            headers.set(HttpHeaders.AUTHORIZATION, BEARER_PREFIX + "token");
         }
 
         var httpEntity = new HttpEntity<>(ids, headers);
