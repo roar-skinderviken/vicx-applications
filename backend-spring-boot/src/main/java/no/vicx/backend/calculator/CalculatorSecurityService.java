@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 public record CalculatorSecurityService(CalculatorRepository calculatorRepository) {
@@ -20,8 +21,7 @@ public record CalculatorSecurityService(CalculatorRepository calculatorRepositor
 
         var nonNullIds = ids.stream()
                 .filter(Objects::nonNull)
-                .distinct()
-                .toList();
+                .collect(Collectors.toSet());
 
         if (nonNullIds.isEmpty()) {
             return true; // let validation handle this
