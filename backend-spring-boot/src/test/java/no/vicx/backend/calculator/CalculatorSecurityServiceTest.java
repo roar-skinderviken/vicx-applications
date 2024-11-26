@@ -8,6 +8,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -42,12 +43,40 @@ class CalculatorSecurityServiceTest {
     }
 
     @Test
+    void isAllowedToDelete_givenEmptyList_expectTrue() {
+        var result = sut.isAllowedToDelete(Collections.emptyList(), TOKEN_IN_TEST);
+
+        assertTrue(result);
+
+        verify(calculatorRepository, never()).findAllIdsByUsername(anyString());
+    }
+
+    @Test
+    void isAllowedToDelete_givenListWithNull_expectTrue() {
+        var result = sut.isAllowedToDelete(Collections.singletonList(null), TOKEN_IN_TEST);
+
+        assertTrue(result);
+
+        verify(calculatorRepository, never()).findAllIdsByUsername(anyString());
+    }
+
+    @Test
+    void isAllowedToDelete_givenIdsButNoIdsInDatabase_expectFalse() {
+        when(calculatorRepository.findAllIdsByUsername(anyString()))
+                .thenReturn(Collections.emptySet());
+
+        var result = sut.isAllowedToDelete(List.of(1L), TOKEN_IN_TEST);
+
+        assertFalse(result);
+    }
+
+    @Test
     void isAllowedToDelete_givenListOfIdsThatDoesNotBelongToUser_expectFalse() {
         var result = sut.isAllowedToDelete(List.of(1L, 2L), TOKEN_IN_TEST);
 
         assertFalse(result);
 
-        verify(calculatorRepository, times(1)).findAllIdsByUsername(anyString());
+        verify(calculatorRepository).findAllIdsByUsername(anyString());
     }
 
     @Test
@@ -56,7 +85,16 @@ class CalculatorSecurityServiceTest {
 
         assertTrue(result);
 
-        verify(calculatorRepository, times(1)).findAllIdsByUsername(anyString());
+        verify(calculatorRepository).findAllIdsByUsername(anyString());
+    }
+
+    @Test
+    void isAllowedToDelete_givenListWithValueAndNull_expectTrue() {
+        var result = sut.isAllowedToDelete(Arrays.asList(1L, null), TOKEN_IN_TEST);
+
+        assertTrue(result);
+
+        verify(calculatorRepository).findAllIdsByUsername(anyString());
     }
 
     static final JwtAuthenticationToken TOKEN_IN_TEST = new JwtAuthenticationToken(JWT_IN_TEST);

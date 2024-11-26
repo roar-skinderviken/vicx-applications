@@ -1,6 +1,8 @@
 package no.vicx.backend.calculator;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import no.vicx.backend.calculator.vm.CalcVm;
 import no.vicx.backend.calculator.vm.CalculatorRequestVm;
 import org.springframework.data.domain.Page;
@@ -29,7 +31,7 @@ public class CalculatorController {
     @DeleteMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("@calculatorSecurityService.isAllowedToDelete(#ids, authentication)")
     public ResponseEntity<Void> deleteByIds(
-            @RequestBody List<Long> ids) {
+            @RequestBody @NotEmpty List<@NotNull Long> ids) {
         calculatorService.deleteByIds(ids);
         return ResponseEntity.noContent().build();
     }
