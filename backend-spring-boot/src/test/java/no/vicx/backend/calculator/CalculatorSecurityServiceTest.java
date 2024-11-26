@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 
 import java.util.Arrays;
@@ -97,5 +98,5 @@ class CalculatorSecurityServiceTest {
         verify(calculatorRepository).findAllIdsByUsername(anyString());
     }
 
-    static final JwtAuthenticationToken TOKEN_IN_TEST = new JwtAuthenticationToken(JWT_IN_TEST);
+    static final Authentication TOKEN_IN_TEST = new JwtAuthenticationToken(JWT_IN_TEST);
 }

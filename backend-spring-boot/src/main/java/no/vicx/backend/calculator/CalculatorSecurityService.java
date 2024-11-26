@@ -2,7 +2,7 @@ package no.vicx.backend.calculator;
 
 import no.vicx.database.calculator.CalculatorRepository;
 import org.springframework.lang.NonNull;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -14,7 +14,7 @@ public record CalculatorSecurityService(CalculatorRepository calculatorRepositor
 
     public boolean isAllowedToDelete(
             @NonNull Collection<Long> ids,
-            @NonNull JwtAuthenticationToken authentication) {
+            @NonNull Authentication authentication) {
         if (ids.isEmpty()) {
             return true; // let validation handle this
         }
