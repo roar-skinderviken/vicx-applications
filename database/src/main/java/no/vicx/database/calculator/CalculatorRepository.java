@@ -20,6 +20,17 @@ public interface CalculatorRepository extends CrudRepository<CalcEntry, Long> {
     @Modifying
     void deleteByIdIn(List<Long> ids);
 
+    /**
+     * Deletes old calculation entries created by anonymous users.
+     * <p>
+     * This method uses a custom query to perform a bulk delete operation,
+     * avoiding the need to fetch records into memory and delete them one by one.
+     * </p>
+     *
+     * @param createdAt the threshold date/time; all records with a creation time
+     *                  earlier than this will be deleted
+     */
     @Modifying
+    @Query("DELETE FROM CalcEntry c WHERE c.username IS NULL AND c.createdAt < :createdAt")
     void deleteAllByCreatedAtBeforeAndUsernameNull(LocalDateTime createdAt);
 }

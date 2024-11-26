@@ -109,6 +109,8 @@ class CalculatorRepositoryTest {
 
         sut.deleteAllByCreatedAtBeforeAndUsernameNull(LocalDateTime.now());
 
+        entityManager.clear();
+
         assertEquals(1, getCalculationCountInDb());
         assertNotNull(entityManager.find(CalcEntry.class, user1Record.getId()));
         assertNull(entityManager.find(CalcEntry.class, anonymousRecord.getId()));
