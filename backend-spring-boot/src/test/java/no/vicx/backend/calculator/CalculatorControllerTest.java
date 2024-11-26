@@ -26,7 +26,7 @@ import java.util.Collections;
 import java.util.stream.Stream;
 
 import static org.hamcrest.Matchers.is;
-import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -55,11 +55,10 @@ class CalculatorControllerTest {
                 "user1",
                 NOW));
 
-        given(calculatorService.getAllCalculations(Pageable.ofSize(10)))
-                .willReturn(
-                        new PageImpl<>(calcVmList,
-                                PageRequest.of(0, 10),
-                                calcVmList.size()));
+        when(calculatorService.getAllCalculations(Pageable.ofSize(10))).thenReturn(
+                new PageImpl<>(calcVmList,
+                        PageRequest.of(0, 10),
+                        calcVmList.size()));
 
         var requestBuilder =
                 get("/api/calculator").accept(MediaType.APPLICATION_JSON);
@@ -81,7 +80,6 @@ class CalculatorControllerTest {
                 .andExpect(jsonPath("$.content[0].operation", is(CalculatorOperation.PLUS.toString())))
                 .andExpect(jsonPath("$.content[0].result", is(3)))
                 .andExpect(jsonPath("$.content[0].username", is("user1")));
-                //.andExpect(jsonPath("$.content[0].createdAt", is(NOW.toString())));
     }
 
     @ParameterizedTest
@@ -112,8 +110,7 @@ class CalculatorControllerTest {
             requestBuilder.header(HttpHeaders.AUTHORIZATION, "Bearer token");
         }
 
-        given(calculatorService.calculate(requestBody, username))
-                .willReturn(expectedResponse);
+        when(calculatorService.calculate(requestBody, username)).thenReturn(expectedResponse);
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isOk())

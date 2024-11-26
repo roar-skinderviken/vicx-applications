@@ -4,11 +4,14 @@ import no.vicx.database.calculator.CalcEntry;
 import no.vicx.database.calculator.CalculatorRepository;
 import no.vicx.backend.calculator.vm.CalcVm;
 import no.vicx.backend.calculator.vm.CalculatorRequestVm;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -16,9 +19,13 @@ import java.util.List;
 public class CalculatorService {
 
     private final CalculatorRepository calculatorRepository;
+    private final Duration maxAge;
 
-    public CalculatorService(CalculatorRepository calculatorRepository) {
+    public CalculatorService(
+            CalculatorRepository calculatorRepository,
+            @Value("${app.calculator.max-age}") Duration maxAge) {
         this.calculatorRepository = calculatorRepository;
+        this.maxAge = maxAge;
     }
 
     public Page<CalcVm> getAllCalculations(Pageable pageable) {
@@ -28,6 +35,11 @@ public class CalculatorService {
 
     public void deleteByIds(List<Long> ids) {
         calculatorRepository.deleteByIdIn(ids);
+    }
+
+    public void deleteOldAnonymousCalculations() {
+        calculatorRepository.deleteAllByCreatedAtBeforeAndUsernameNull(
+                LocalDateTime.now().minus(maxAge));
     }
 
     public CalcVm calculate(

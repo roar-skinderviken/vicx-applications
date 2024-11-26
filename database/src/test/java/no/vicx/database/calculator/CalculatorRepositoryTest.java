@@ -10,8 +10,9 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import java.time.LocalDateTime;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 @AutoConfigureTestDatabase
@@ -23,6 +24,8 @@ class CalculatorRepositoryTest {
 
     @Autowired
     CalculatorRepository sut;
+    @Autowired
+    TestEntityManager testEntityManager;
 
     @BeforeEach
     void setUp() {
@@ -96,7 +99,27 @@ class CalculatorRepositoryTest {
 
         assertEquals(1, result.size());
     }
-    
+
+    @Test
+    void deleteAllByCreatedAtBeforeAndUsernameNull_expectOnlyRecordWithoutUsernameToBeDeleted() {
+        var user1Record = entityManager.persist(createValidEntity("user1"));
+        var anonymousRecord = entityManager.persist(createValidEntity(null));
+
+        assertEquals(2, getCalculationCountInDb());
+
+        sut.deleteAllByCreatedAtBeforeAndUsernameNull(LocalDateTime.now());
+
+        assertEquals(1, getCalculationCountInDb());
+        assertNotNull(entityManager.find(CalcEntry.class, user1Record.getId()));
+        assertNull(entityManager.find(CalcEntry.class, anonymousRecord.getId()));
+    }
+
+    private long getCalculationCountInDb() {
+        return (long) entityManager.getEntityManager()
+                .createQuery("SELECT COUNT(1) FROM CalcEntry")
+                .getSingleResult();
+    }
+
     private static CalcEntry createValidEntity(String username) {
         return new CalcEntry(
                 1, 2, CalculatorOperation.PLUS, 3, username);
