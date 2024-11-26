@@ -5,7 +5,7 @@ logging:
 app:
   calculator:
     rate: 300_000 # every 5 minutes
-    max-age: PT24H
+    max-age: PT6H
 
 recaptcha:
   secret: ${RECAPTCHA_SECRET:6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe} # dev secret
