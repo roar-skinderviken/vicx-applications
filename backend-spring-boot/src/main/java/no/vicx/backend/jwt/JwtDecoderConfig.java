@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
+import org.springframework.security.oauth2.jwt.JwtDecoders;
 
 @Profile("!test")
 @Configuration
@@ -16,8 +16,9 @@ public class JwtDecoderConfig {
     public JwtDecoder compositeJwtDecoder(
             @Value("${auth-server.issuer-uri}") String issuerUri,
             GitHubJwtFromOpaqueProducer gitHubJwtFromOpaqueProducer) {
+
         return new CompositeJwtDecoder(
-                NimbusJwtDecoder.withIssuerLocation(issuerUri).build(),
+                JwtDecoders.fromIssuerLocation(issuerUri),
                 gitHubJwtFromOpaqueProducer
         );
     }
