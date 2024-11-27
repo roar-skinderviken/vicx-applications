@@ -20,7 +20,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     private final UserRepository userRepository;
 
-    @Value("${app-user.name}")
+    @Value("${default-user.username}")
     private String defaultUsername;
 
     public CustomUserDetailsService(UserRepository userRepository) {

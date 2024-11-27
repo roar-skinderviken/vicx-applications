@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 public class StartupLogger implements CommandLineRunner {
     private static final Logger LOG = LoggerFactory.getLogger(StartupLogger.class);
 
-    @Value("${app-user.name}")
+    @Value("${default-user.username}")
     private String username;
 
     @Override

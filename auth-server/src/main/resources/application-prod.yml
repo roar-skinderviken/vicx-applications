@@ -10,3 +10,7 @@ spring:
     show-sql: true
     properties:
       hibernate.default_schema: vicx
+
+oauth:
+  access-token-time-to-live: PT5M
+  refresh-token-time-to-live: PT1H

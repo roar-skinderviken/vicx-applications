@@ -5,17 +5,21 @@ server:
 
 logging:
   level:
-    org.springframework.security: DEBUG
+    org.springframework.security: INFO
 
-app-user:
-  name: ${DEFAULT_USERNAME:user1}
+default-user:
+  username: ${DEFAULT_USERNAME:user1}
   password: "${DEFAULT_PASSWORD:password}"
+  name: "John Doe"
+  email: ${DEFAULT_USERNAME:user1}@example.com
 
 oauth:
   client-id: "next-app-client"
   client-secret: ${CLIENT_SECRET:secret}
   redirect-uri: ${REDIRECT_URI:http://localhost:3000/api/auth/callback/next-app-client}
   post-logout-redirect-uri: ${POST_LOGOUT_REDIRECT_URI:http://localhost:3000/}
+  access-token-time-to-live: PT1M
+  refresh-token-time-to-live: PT5M
 
 spring:
   application:

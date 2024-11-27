@@ -1,7 +1,6 @@
 package no.vicx.authserver.config;
 
 import no.vicx.authserver.CustomUserDetails;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,16 +16,15 @@ public class DefaultUserConfig {
     @Bean(name = "defaultUserDetails")
     @Scope(BeanDefinition.SCOPE_PROTOTYPE)
     public CustomUserDetails defaultUser(
-            @Value("${app-user.name}") String username,
-            @Value("${app-user.password}") String password,
+            DefaultUserProperties userProperties,
             PasswordEncoder passwordEncoder
     ) {
         return new CustomUserDetails(
-                username,
-                passwordEncoder.encode(password),
+                userProperties.username(),
+                passwordEncoder.encode(userProperties.password()),
                 Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")),
-                "John Doe",
-                "user@example.com",
+                userProperties.name(),
+                userProperties.email(),
                 false);
     }
 }

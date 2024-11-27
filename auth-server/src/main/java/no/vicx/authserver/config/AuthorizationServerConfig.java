@@ -1,6 +1,5 @@
 package no.vicx.authserver.config;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -11,43 +10,38 @@ import org.springframework.security.oauth2.server.authorization.client.InMemoryR
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.settings.ClientSettings;
+import org.springframework.security.oauth2.server.authorization.settings.TokenSettings;
 
 import java.util.UUID;
 
 @Configuration
 public class AuthorizationServerConfig {
 
-    @Value("${oauth.client-id}")
-    private String clientId;
-
-    @Value("${oauth.client-secret}")
-    private String plainClientSecret;
-
-    @Value("${oauth.redirect-uri}")
-    private String redirectUri;
-
-    @Value("${oauth.post-logout-redirect-uri}")
-    private String postLogoutRedirectUri;
-
     @Bean
-    public RegisteredClientRepository registeredClientRepository(PasswordEncoder passwordEncoder) {
+    public RegisteredClientRepository registeredClientRepository(
+            OAuthProperties oAuthProperties,
+            PasswordEncoder passwordEncoder) {
         var registeredClient = RegisteredClient
                 .withId(UUID.randomUUID().toString())
-                .clientId(clientId)
+                .clientId(oAuthProperties.clientId())
                 .clientSettings(ClientSettings.builder().requireAuthorizationConsent(true).build())
-                .clientSecret(passwordEncoder.encode(plainClientSecret))
+                .clientSecret(passwordEncoder.encode(oAuthProperties.clientSecret()))
                 .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
                 .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_POST)
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                 .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
                 //.authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
-                .redirectUri(redirectUri)
-                .postLogoutRedirectUri(postLogoutRedirectUri)
+                .redirectUri(oAuthProperties.redirectUri())
+                .postLogoutRedirectUri(oAuthProperties.postLogoutRedirectUri())
                 .scope(OidcScopes.OPENID)
                 .scope(OidcScopes.PROFILE)
                 .scope(OidcScopes.EMAIL)
-                .scope("message.read")
-                .scope("message.write")
+                .scope("message.read") // to be removed, just for making original tests pass
+                .scope("message.write") // to be removed, just for making original tests pass
+                .tokenSettings(TokenSettings.builder()
+                        .accessTokenTimeToLive(oAuthProperties.accessTokenTimeToLive())
+                        .refreshTokenTimeToLive(oAuthProperties.refreshTokenTimeToLive())
+                        .build())
                 .build();
 
         return new InMemoryRegisteredClientRepository(registeredClient);
