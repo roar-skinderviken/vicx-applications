@@ -5,7 +5,7 @@ import {
     JPEG_IMAGE_CONTENT_TYPE,
     PICSUM_IMAGE_URL,
     PICSUM_OPTIONS
-} from "@/constants/picsumConstants"
+} from "@/app/api/hero-bg-image/picsumConstants"
 import {GET} from "@/app/api/hero-bg-image/route"
 
 jest.mock('node:fs')

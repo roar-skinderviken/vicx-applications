@@ -15,7 +15,7 @@ import ReCAPTCHA from "react-google-recaptcha"
 import fallbackProfileImage from "@/assets/images/profile.png"
 import {signIn} from "next-auth/react"
 import {signInOptions} from "@/components/navbar/navbarConstants"
-import {DEFAULT_APP_PROVIDER_ID} from "@/constants/authProviders"
+import {DEFAULT_OAUTH_CLIENT_ID} from "@/auth/authProviders"
 import {UserRegistrationSchema} from "@/app/user/register/userRegistrationSchema"
 
 // put this in next-app/.env.local
@@ -114,7 +114,7 @@ const UserSignupForm = ({reCaptchaSiteKey}: { reCaptchaSiteKey: string }) => {
             </p>
             <div className="mt-4 text-center">
                 <button
-                    onClick={async () => await signIn(DEFAULT_APP_PROVIDER_ID, signInOptions)}
+                    onClick={async () => await signIn(DEFAULT_OAUTH_CLIENT_ID, signInOptions)}
                     className="px-4 py-2 bg-green-500 text-white font-semibold rounded-lg shadow hover:bg-green-600"
                 >
                     Log In

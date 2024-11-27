@@ -4,21 +4,37 @@ import {redirect, usePathname} from "next/navigation"
 import {Navbar} from "flowbite-react"
 import {SITE_PAGES} from "@/constants/sitePages"
 import SignedInMenu from "@/components/navbar/SignedInMenu"
-import {getSession, signIn} from "next-auth/react"
+import {getSession, signIn, signOut} from "next-auth/react"
 import {faSignInAlt, faUserPlus} from "@fortawesome/free-solid-svg-icons"
-import {navbarTheme, signInOptions} from "@/components/navbar/navbarConstants"
+import {navbarTheme, signInOptions, signOutOptions} from "@/components/navbar/navbarConstants"
 import {useEffect, useState} from "react"
 import {CustomSession, SessionUser} from "@/types/authTypes"
 import SignInOrRegisterButton from "@/components/navbar/SignInOrRegisterButton"
+import {REFRESH_ACCESS_TOKEN_ERROR} from "@/auth/tokenUtils"
+import {Session} from "next-auth"
 
 const EMPTY_USER: SessionUser = {id: ""}
+
+export const getUserOrSignOut = async (session: Session | null) => {
+    if (!session) return EMPTY_USER
+    const customSession = session as CustomSession
+
+    if (customSession.error === REFRESH_ACCESS_TOKEN_ERROR) {
+        await signOut(signOutOptions)
+        return EMPTY_USER
+    }
+
+    return customSession.user || EMPTY_USER
+}
 
 const VicxNavbar = () => {
     const pathname = usePathname()
     const [user, setUser] = useState<SessionUser | null>(null)
 
     useEffect(() => {
-        getSession().then(session => setUser((session as CustomSession)?.user ?? EMPTY_USER))
+        getSession()
+            .then(getUserOrSignOut)
+            .then(user => setUser(user))
     }, [])
 
     return (

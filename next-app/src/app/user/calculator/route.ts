@@ -1,10 +1,15 @@
 import {NextRequest, NextResponse} from "next/server"
 import {getServerSession} from "next-auth"
-import authOptions from "@/authOptions"
+import authOptions from "@/auth/authOptions"
 import {CustomSession} from "@/types/authTypes"
 
 const SPRING_BACKEND_BASE_URL = process.env.SPRING_BACKEND_BASE_URL || ""
 const BACKEND_BASE_URL = `${SPRING_BACKEND_BASE_URL}/api/calculator`
+
+const createHeaders = (accessToken: string) => ({
+    "Authorization": `Bearer ${accessToken}`,
+    'Content-Type': 'application/json'
+})
 
 export async function POST(request: NextRequest) {
     const session = (await getServerSession(authOptions)) as CustomSession | null
@@ -16,10 +21,7 @@ export async function POST(request: NextRequest) {
 
     const fetchOptions = {
         method: "POST",
-        headers: {
-            "Authorization": `Bearer ${accessToken}`,
-            'Content-Type': 'application/json'
-        },
+        headers: createHeaders(accessToken),
         body: request.body,
         duplex: "half"
     }
@@ -30,7 +32,7 @@ export async function POST(request: NextRequest) {
         if (!response.ok) {
             return NextResponse.json(
                 {message: "Failed to fetch calculator result"},
-                {status: 500}
+                {status: response.status}
             )
         }
 
@@ -52,10 +54,7 @@ export async function DELETE(request: NextRequest) {
 
     const fetchOptions = {
         method: "DELETE",
-        headers: {
-            "Authorization": `Bearer ${accessToken}`,
-            'Content-Type': 'application/json'
-        },
+        headers: createHeaders(accessToken),
         body: request.body,
         duplex: "half"
     }

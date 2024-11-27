@@ -7,10 +7,10 @@ import * as yup from "yup"
 import ValidatedTextInput from "@/components/ValidatedTextInput"
 import {InferType} from "yup"
 import {getSession} from "next-auth/react"
-import {CustomSession} from "@/types/authTypes"
 import {hasOneOfRoles} from "@/utils/authUtils"
 import PreviousCalculations from "@/app/tomcat/PreviousCalculations"
 import ButtonWithSpinner from "@/components/ButtonWithSpinner"
+import {extractUserOrSignOut} from "@/auth/tokenUtils"
 
 // put this in next-app/.env.local
 // NEXT_PUBLIC_CALCULATOR_BACKEND_URL=http://localhost:8080/api/calculator
@@ -61,7 +61,10 @@ const CalculatorFormAndResult = () => {
         fetch(`${CALC_BACKEND_BASE_URL}?page=${pageNumber}`)
             .then(response => {
                 if (!response.ok) {
-                    throw new Error('Network response was not ok')
+                    throw new Error(
+                        "Network response was not ok",
+                        {cause: response.status}
+                    )
                 }
                 return response.json()
             })
@@ -69,7 +72,6 @@ const CalculatorFormAndResult = () => {
                 setHasMorePreviousResults(!data.last)
                 setPreviousResults(prev => [...prev, ...data.content])
             })
-            .catch(error => console.error("Error:", error))
     }
 
     const onFetchMore = () => {
@@ -81,7 +83,7 @@ const CalculatorFormAndResult = () => {
         setCurrentPreviousResultPage(0)
         setPreviousResults([])
         getSession()
-            .then(session => (session as CustomSession)?.user)
+            .then(extractUserOrSignOut)
             .then(sessionUser => {
                     const hasUserRole = hasOneOfRoles(["ROLE_USER", "ROLE_GITHUB_USER"], sessionUser)
                     if (!hasUserRole) {
@@ -101,7 +103,7 @@ const CalculatorFormAndResult = () => {
         setPreviousResults([])
 
         getSession()
-            .then(session => (session as CustomSession)?.user)
+            .then(extractUserOrSignOut)
             .then(sessionUser => {
                     const hasUserRole = hasOneOfRoles(["ROLE_USER", "ROLE_GITHUB_USER"], sessionUser)
                     if (hasUserRole) {
@@ -115,19 +117,22 @@ const CalculatorFormAndResult = () => {
                 url,
                 {
                     method: "POST",
+                    headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify(formData),
-                    headers: {'Content-Type': 'application/json'}
                 }
             ))
             .then(response => {
                 if (!response.ok) {
-                    throw new Error('Network response was not ok')
+                    throw new Error(
+                        "Network response was not ok",
+                        {cause: response.status}
+                    )
                 }
                 return response.json()
             })
             .then(data => setResult(data))
-            .catch(error => console.error("Error:", error))
             .then(() => fetchPreviousCalculations(0))
+            .catch(error => console.debug("Error:", error))
             .finally(() => setIsLoading(false))
     }
 

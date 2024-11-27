@@ -1,6 +1,6 @@
 import {NextResponse} from "next/server"
 import {getServerSession} from "next-auth"
-import authOptions from "@/authOptions"
+import authOptions from "@/auth/authOptions"
 import {CustomSession} from "@/types/authTypes"
 
 const SPRING_BACKEND_BASE_URL = process.env.SPRING_BACKEND_BASE_URL || ""

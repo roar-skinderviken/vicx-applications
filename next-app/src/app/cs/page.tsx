@@ -1,9 +1,9 @@
 import Hero from "@/components/Hero"
 import Image from "next/image"
-import {MAPS} from "@/constants/mapEntries"
 
 import csBackgroundImage from "@/assets/images/cs2back.jpg"
 import Link from "next/link"
+import {MAPS} from "@/app/cs/mapEntries"
 
 export const metadata = {
     title: "Counter Strike Smokes | VICX"

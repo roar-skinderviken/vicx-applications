@@ -1,6 +1,6 @@
 import {render, screen} from "@testing-library/react"
 import EsportPage from "@/app/esport/page"
-import {PANDASCORE_BASE_URL} from "@/constants/pandascoreConstants"
+import {PANDASCORE_BASE_URL} from "@/app/esport/pandascoreConstants"
 
 jest.mock('next/cache', () => ({
     revalidateTag: jest.fn(),

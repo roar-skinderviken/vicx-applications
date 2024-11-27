@@ -4,7 +4,7 @@ import {useRef, useState} from "react"
 import Image from "next/image"
 import Link from "next/link"
 import {Tabs, TabsRef} from "flowbite-react"
-import {CsMapEntry, MapSide, SideAndSmokePlaces, SmokePlace} from "@/constants/mapEntries"
+import {CsMapEntry, MapSide, SideAndSmokePlaces, SmokePlace} from "@/app/cs/mapEntries"
 
 const CS_PAGE_URL = "/cs#maps"
 

@@ -3,20 +3,23 @@ import CalculatorFormAndResult, {
     CALC_BACKEND_BASE_URL,
     CALC_NEXT_BACKEND_URL
 } from "@/app/tomcat/CalculatorFormAndResult"
-import {getSession} from "next-auth/react"
+import {getSession, signOut} from "next-auth/react"
 import {CustomSession} from "@/types/authTypes"
 import {changeInputValue, delayedResponse} from "@/testUtils"
+import {REFRESH_ACCESS_TOKEN_ERROR} from "@/auth/tokenUtils"
 
 jest.mock("next-auth/react", () => ({
-    getSession: jest.fn()
+    getSession: jest.fn(),
+    signOut: jest.fn()
 }))
-
-const mockGetSession = getSession as jest.Mock
 
 const setupForSubmit = async () => {
     await changeInputValue("First Value", "1")
     await changeInputValue("Second Value", "2")
 }
+
+const mockGetSession = getSession as jest.Mock
+const mockSignOut = signOut as jest.Mock
 
 const sessionUser = (roles: string[]) => ({
     id: "1",
@@ -27,6 +30,11 @@ const sessionUser = (roles: string[]) => ({
 const validSession: CustomSession = {
     expires: Date.now().toString(),
     user: sessionUser(["ROLE_USER"])
+}
+
+const sessionWithTokenError: CustomSession = {
+    ...validSession,
+    error: REFRESH_ACCESS_TOKEN_ERROR
 }
 
 const validAddResponse = {
@@ -212,6 +220,17 @@ describe("CalculatorFormAndResult", () => {
 
             await waitFor(() =>
                 expect(screen.queryByText("Calculation Result")).toBeInTheDocument())
+        })
+
+        it("logs user out when token has expired", async () => {
+            mockGetSession.mockResolvedValueOnce(sessionWithTokenError)
+
+            await act(() => fireEvent.click(screen.getByRole("button", {name: "Add"})))
+
+            expect(mockSignOut).toHaveBeenCalledWith({
+                callbackUrl: "/user/signed-out",
+                redirect: true
+            })
         })
     })
 })
