@@ -66,7 +66,9 @@ const authOptions = {
     },
     events: {
         async signOut({token}) {
-            await revokeToken(token)
+            if (token.provider === DEFAULT_OAUTH_CLIENT_ID) {
+                await revokeToken(token)
+            }
         }
     }
 } satisfies NextAuthOptions
