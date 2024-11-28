@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
@@ -51,13 +52,13 @@ class UserImageControllerIntegrationTest {
     void getUserImage_imageExistsInDatabase_expectImageInDatabase() {
         var userImage = new UserImage();
         userImage.setImageData(new byte[]{1, 2, 3});
-        userImage.setContentType("image/jpeg");
+        userImage.setContentType(MediaType.IMAGE_JPEG_VALUE);
 
         when(userImageRepository.findByUserUsername(anyString())).thenReturn(Optional.of(userImage));
 
         performGetRequest(true, "user1")
                 .expectStatus().isOk()
-                .expectHeader().contentType("image/jpeg");
+                .expectHeader().contentType(MediaType.IMAGE_JPEG_VALUE);
 
         verify(userImageRepository, times(1)).findByUserUsername("user1");
     }
@@ -66,7 +67,7 @@ class UserImageControllerIntegrationTest {
     void getUserImage_imageDoesNotExistInDatabase_expectDefaultImage() {
         performGetRequest(true, "user1")
                 .expectStatus().isOk()
-                .expectHeader().contentType("image/png");
+                .expectHeader().contentType(MediaType.IMAGE_PNG_VALUE);
 
         verify(userImageRepository, times(1)).findByUserUsername("user1");
     }

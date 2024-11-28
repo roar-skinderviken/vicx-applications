@@ -4,6 +4,7 @@ import no.vicx.backend.user.vm.UserVm;
 import no.vicx.database.user.VicxUser;
 import org.junit.jupiter.params.provider.Arguments;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 
 import java.io.IOException;
@@ -45,12 +46,12 @@ public final class UserTestUtils {
 
     static Stream<Arguments> mockMultipartFileProvider() throws IOException {
         return Stream.of(
-                Arguments.of(createMultipartFile("profile.png", "image/png"), true),
+                Arguments.of(createMultipartFile("profile.png", MediaType.IMAGE_PNG_VALUE), true),
                 Arguments.of(
                         new MockMultipartFile(
                                 "empty-file.png",
                                 "empty.png",
-                                "image/png",
+                                MediaType.IMAGE_PNG_VALUE,
                                 new byte[0]
                         ), true),
                 Arguments.of(null, false)
@@ -60,11 +61,11 @@ public final class UserTestUtils {
     static Stream<Arguments> invalidImageProvider() throws IOException {
         return Stream.of(
                 Arguments.of(
-                        createMultipartFile("test-gif.gif", "image/gif"),
+                        createMultipartFile("test-gif.gif", MediaType.IMAGE_GIF_VALUE),
                         "image", "Only PNG and JPG files are allowed"
                 ),
                 Arguments.of(
-                        createMultipartFile("too-large.png", "image/png"),
+                        createMultipartFile("too-large.png", MediaType.IMAGE_PNG_VALUE),
                         "image", "File size exceeds the maximum allowed size of 51200 bytes"
                 )
         );

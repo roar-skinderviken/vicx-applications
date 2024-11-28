@@ -23,7 +23,9 @@ public class UserImageController {
 
     static {
         try {
-            DEFAULT_PROFILE_IMAGE = Pair.of("image/png", new ClassPathResource("profile.png").getContentAsByteArray());
+            DEFAULT_PROFILE_IMAGE = Pair.of(
+                    MediaType.IMAGE_PNG_VALUE,
+                    new ClassPathResource("profile.png").getContentAsByteArray());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
