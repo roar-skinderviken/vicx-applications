@@ -19,16 +19,17 @@ public class CustomUserDetailsService implements UserDetailsService {
     private static final Logger LOG = LoggerFactory.getLogger(CustomUserDetailsService.class);
 
     private final UserRepository userRepository;
+    private final String defaultUsername;
 
-    @Value("${default-user.username}")
-    private String defaultUsername;
-
-    public CustomUserDetailsService(UserRepository userRepository) {
+    public CustomUserDetailsService(
+            UserRepository userRepository,
+            @Value("${default-user.username}") String defaultUsername) {
         this.userRepository = userRepository;
+        this.defaultUsername = defaultUsername;
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException {
         if (username.equalsIgnoreCase(defaultUsername)) {
             // for localhost testing
             LOG.info("Using default user");

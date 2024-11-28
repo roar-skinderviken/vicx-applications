@@ -36,8 +36,6 @@ public class AuthorizationServerConfig {
                 .scope(OidcScopes.OPENID)
                 .scope(OidcScopes.PROFILE)
                 .scope(OidcScopes.EMAIL)
-                .scope("message.read") // to be removed, just for making original tests pass
-                .scope("message.write") // to be removed, just for making original tests pass
                 .tokenSettings(TokenSettings.builder()
                         .accessTokenTimeToLive(oAuthProperties.accessTokenTimeToLive())
                         .refreshTokenTimeToLive(oAuthProperties.refreshTokenTimeToLive())

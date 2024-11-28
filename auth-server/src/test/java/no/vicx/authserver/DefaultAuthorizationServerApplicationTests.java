@@ -17,9 +17,7 @@ package no.vicx.authserver;
 
 import org.htmlunit.Page;
 import org.htmlunit.WebClient;
-import org.htmlunit.WebResponse;
 import org.htmlunit.html.HtmlButton;
-import org.htmlunit.html.HtmlElement;
 import org.htmlunit.html.HtmlInput;
 import org.htmlunit.html.HtmlPage;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,6 +31,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * Integration tests for the sample Authorization Server.
@@ -71,19 +71,19 @@ public class DefaultAuthorizationServerApplicationTests {
         assertLoginPage(page);
 
         this.webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
-        WebResponse signInResponse = signIn(page, "user1", "password").getWebResponse();
-        assertThat(signInResponse.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());    // there is no "default" index page
+        var signInResponse = signIn(page, "password").getWebResponse();
+        assertEquals(HttpStatus.NOT_FOUND.value(), signInResponse.getStatusCode());
     }
 
     @Test
     public void whenLoginFailsThenDisplayBadCredentials() throws IOException {
         HtmlPage page = this.webClient.getPage("/");
 
-        HtmlPage loginErrorPage = signIn(page, "user1", "wrong-password");
+        HtmlPage loginErrorPage = signIn(page, "wrong-password");
 
-        HtmlElement alert = loginErrorPage.querySelector("div[role=\"alert\"]");
-        assertThat(alert).isNotNull();
-        assertThat(alert.getTextContent()).isEqualTo("Bad credentials");
+        var alert = loginErrorPage.querySelector("div[role=\"alert\"]");
+        assertNotNull(alert);
+        assertEquals("Bad credentials", alert.getTextContent());
     }
 
     @Test
@@ -98,36 +98,36 @@ public class DefaultAuthorizationServerApplicationTests {
         // Log in
         this.webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
         this.webClient.getOptions().setRedirectEnabled(false);
-        signIn(this.webClient.getPage("/login"), "user1", "password");
+        signIn(this.webClient.getPage("/login"), "password");
 
         // Request token
-        WebResponse response = this.webClient.getPage(AUTHORIZATION_REQUEST).getWebResponse();
+        var response = this.webClient.getPage(AUTHORIZATION_REQUEST).getWebResponse();
 
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.MOVED_PERMANENTLY.value());
-        String location = response.getResponseHeaderValue("location");
+        assertEquals(HttpStatus.MOVED_PERMANENTLY.value(), response.getStatusCode());
+
+        var location = response.getResponseHeaderValue("location");
         assertThat(location).startsWith(REDIRECT_URI);
         assertThat(location).contains("code=");
     }
 
-    private static <P extends Page> P signIn(HtmlPage page, String username, String password) throws IOException {
+    private static <P extends Page> P signIn(HtmlPage page, String password) throws IOException {
         HtmlInput usernameInput = page.querySelector("input[name=\"username\"]");
         HtmlInput passwordInput = page.querySelector("input[name=\"password\"]");
         HtmlButton signInButton = page.querySelector("button");
 
-        usernameInput.type(username);
+        usernameInput.type("user1");
         passwordInput.type(password);
+
         return signInButton.click();
     }
 
     private static void assertLoginPage(HtmlPage page) {
         assertThat(page.getUrl().toString()).endsWith("/login");
 
-        HtmlInput usernameInput = page.querySelector("input[name=\"username\"]");
-        HtmlInput passwordInput = page.querySelector("input[name=\"password\"]");
-        HtmlButton signInButton = page.querySelector("button");
+        assertNotNull(page.querySelector("input[name=\"username\"]"));
+        assertNotNull(page.querySelector("input[name=\"password\"]"));
 
-        assertThat(usernameInput).isNotNull();
-        assertThat(passwordInput).isNotNull();
-        assertThat(signInButton.getTextContent()).isEqualTo("Sign in");
+        var signInButton = page.querySelector("button");
+        assertEquals("Sign in", signInButton.getTextContent());
     }
 }

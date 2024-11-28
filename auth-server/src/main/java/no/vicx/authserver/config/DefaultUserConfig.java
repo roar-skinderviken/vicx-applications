@@ -17,8 +17,7 @@ public class DefaultUserConfig {
     @Scope(BeanDefinition.SCOPE_PROTOTYPE)
     public CustomUserDetails defaultUser(
             DefaultUserProperties userProperties,
-            PasswordEncoder passwordEncoder
-    ) {
+            PasswordEncoder passwordEncoder) {
         return new CustomUserDetails(
                 userProperties.username(),
                 passwordEncoder.encode(userProperties.password()),

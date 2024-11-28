@@ -16,7 +16,6 @@
 package no.vicx.authserver;
 
 import org.htmlunit.WebClient;
-import org.htmlunit.WebResponse;
 import org.htmlunit.html.DomElement;
 import org.htmlunit.html.HtmlCheckBoxInput;
 import org.htmlunit.html.HtmlPage;
@@ -33,9 +32,10 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -60,7 +60,7 @@ public class DefaultAuthorizationServerConsentTests {
             .fromPath("/oauth2/authorize")
             .queryParam("response_type", "code")
             .queryParam("client_id", "next-app-client")
-            .queryParam("scope", "openid message.read message.write")
+            .queryParam("scope", "openid profile email")
             .queryParam("state", "state")
             .queryParam("redirect_uri", this.redirectUri)
             .toUriString();
@@ -79,26 +79,29 @@ public class DefaultAuthorizationServerConsentTests {
         final HtmlPage consentPage = this.webClient.getPage(this.authorizationRequestUri);
         assertThat(consentPage.getTitleText()).isEqualTo("Consent required");
 
-        List<HtmlCheckBoxInput> scopes = new ArrayList<>();
+        var scopeCheckBoxes = new ArrayList<HtmlCheckBoxInput>();
         consentPage.querySelectorAll("input[name='scope']").forEach(scope ->
-                scopes.add((HtmlCheckBoxInput) scope));
-        for (HtmlCheckBoxInput scope : scopes) {
-            scope.click();
+                scopeCheckBoxes.add((HtmlCheckBoxInput) scope));
+
+        for (var scopeCheckBox : scopeCheckBoxes) {
+            scopeCheckBox.click();
         }
 
-        List<String> scopeIds = new ArrayList<>();
-        scopes.forEach(scope -> {
-            assertThat(scope.isChecked()).isTrue();
+        var scopeIds = new ArrayList<>();
+        scopeCheckBoxes.forEach(scope -> {
+            assertTrue(scope.isChecked());
             scopeIds.add(scope.getId());
         });
-        assertThat(scopeIds).containsExactlyInAnyOrder("message.read", "message.write");
+
+        assertThat(scopeIds).containsExactlyInAnyOrder("profile", "email");
 
         DomElement submitConsentButton = consentPage.querySelector("button[id='submit-consent']");
         this.webClient.getOptions().setRedirectEnabled(false);
 
-        WebResponse approveConsentResponse = submitConsentButton.click().getWebResponse();
-        assertThat(approveConsentResponse.getStatusCode()).isEqualTo(HttpStatus.MOVED_PERMANENTLY.value());
-        String location = approveConsentResponse.getResponseHeaderValue("location");
+        var approveConsentResponse = submitConsentButton.click().getWebResponse();
+        assertEquals(HttpStatus.MOVED_PERMANENTLY.value(), approveConsentResponse.getStatusCode());
+
+        var location = approveConsentResponse.getResponseHeaderValue("location");
         assertThat(location).startsWith(this.redirectUri);
         assertThat(location).contains("code=");
     }
@@ -107,14 +110,15 @@ public class DefaultAuthorizationServerConsentTests {
     @WithMockUser("user1")
     public void whenUserCancelsConsentThenReturnAccessDeniedError() throws IOException {
         final HtmlPage consentPage = this.webClient.getPage(this.authorizationRequestUri);
-        assertThat(consentPage.getTitleText()).isEqualTo("Consent required");
+        assertEquals("Consent required", consentPage.getTitleText());
 
         DomElement cancelConsentButton = consentPage.querySelector("button[id='cancel-consent']");
         this.webClient.getOptions().setRedirectEnabled(false);
 
-        WebResponse cancelConsentResponse = cancelConsentButton.click().getWebResponse();
-        assertThat(cancelConsentResponse.getStatusCode()).isEqualTo(HttpStatus.MOVED_PERMANENTLY.value());
-        String location = cancelConsentResponse.getResponseHeaderValue("location");
+        var cancelConsentResponse = cancelConsentButton.click().getWebResponse();
+        assertEquals(HttpStatus.MOVED_PERMANENTLY.value(), cancelConsentResponse.getStatusCode());
+
+        var location = cancelConsentResponse.getResponseHeaderValue("location");
         assertThat(location).startsWith(this.redirectUri);
         assertThat(location).contains("error=access_denied");
     }
