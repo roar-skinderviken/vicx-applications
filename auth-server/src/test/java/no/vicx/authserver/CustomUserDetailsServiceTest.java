@@ -29,8 +29,9 @@ class CustomUserDetailsServiceTest {
 
         sut = spy(new CustomUserDetailsService(userRepository, DEFAULT_USERNAME));
 
+        when(userRepository.findByUsername(any())).thenReturn(Optional.empty());
         when(userRepository.findByUsername(EXISTING_USERNAME))
-                .thenReturn(Optional.of(createUserInTest()));
+                .thenReturn(Optional.of(createUserInTest(null)));
     }
 
     @Test
@@ -49,8 +50,6 @@ class CustomUserDetailsServiceTest {
 
     @Test
     void loadUserByUsername_givenUsernameForExistingUser_expectUser() {
-        sut.loadUserByUsername(DEFAULT_USERNAME);
-
         var userDetails = sut.loadUserByUsername(EXISTING_USERNAME);
         assertInstanceOf(CustomUserDetails.class, userDetails);
 
@@ -63,6 +62,16 @@ class CustomUserDetailsServiceTest {
 
         assertEquals("~name~", customUserDetails.getName());
         assertEquals("~email~", customUserDetails.getEmail());
+        assertFalse(customUserDetails.hasImage());
+    }
+
+    @Test
+    void loadUserByUsername_givenUsernameForExistingUserWithImage_expectUserWithImage() {
+        when(userRepository.findByUsername(EXISTING_USERNAME))
+                .thenReturn(Optional.of(createUserInTest(createUserImageInTest())));
+
+        var customUserDetails = (CustomUserDetails) sut.loadUserByUsername(EXISTING_USERNAME);
+
         assertTrue(customUserDetails.hasImage());
     }
 
@@ -76,18 +85,23 @@ class CustomUserDetailsServiceTest {
     static final String EXISTING_USERNAME = "~username~";
     static final String NON_EXISTING_USERNAME = "user2";
 
-    static VicxUser createUserInTest() {
+    static UserImage createUserImageInTest() {
+        var userImage = new UserImage();
+        userImage.setImageData(new byte[]{1, 2, 3});
+        userImage.setContentType(MediaType.IMAGE_PNG_VALUE);
+        return userImage;
+    }
+
+    static VicxUser createUserInTest(UserImage userImage) {
         var user = new VicxUser();
         user.setUsername(EXISTING_USERNAME);
         user.setPassword("~password~");
         user.setName("~name~");
         user.setEmail("~email~");
 
-        var userImage = new UserImage();
-        userImage.setImageData(new byte[]{1, 2, 3});
-        userImage.setContentType(MediaType.IMAGE_PNG_VALUE);
-        user.setUserImage(userImage);
-
+        if (userImage != null) {
+            user.setUserImage(userImage);
+        }
         return user;
     }
 }
