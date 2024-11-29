@@ -8,7 +8,7 @@ public final class UserTestUtils {
     private UserTestUtils() {
     }
 
-    public static final String DEFAULT_USERNAME = "user1";
+    public static final String DEFAULT_USERNAME_IN_TEST = "user1";
     public static final String EXISTING_USERNAME = "~username~";
     public static final String NON_EXISTING_USERNAME = "user2";
 

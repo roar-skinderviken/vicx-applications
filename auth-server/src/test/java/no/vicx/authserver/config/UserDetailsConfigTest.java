@@ -6,7 +6,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -16,7 +15,6 @@ import java.util.Optional;
 import static no.vicx.authserver.CustomUserDetails.GRANTED_AUTHORITIES;
 import static no.vicx.authserver.UserTestUtils.*;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.openMocks;
@@ -24,11 +22,15 @@ import static org.mockito.MockitoAnnotations.openMocks;
 class UserDetailsConfigTest {
 
     @Mock
-    UserRepository userRepository;
+    DefaultUserProperties defaultUserProperties;
 
     @Mock
-    ObjectFactory<CustomUserDetails> defaultUserFactory;
+    PasswordEncoder passwordEncoder;
 
+    @Mock
+    UserRepository userRepository;
+
+    UserDetailsConfig userDetailsConfig;
     UserDetailsService userDetailsService;
 
     AutoCloseable openMocks;
@@ -36,12 +38,19 @@ class UserDetailsConfigTest {
     @BeforeEach
     void setUp() {
         openMocks = openMocks(this);
-        userDetailsService = new UserDetailsConfig().userDetailsService(
-                "user1", defaultUserFactory, userRepository);
 
-        when(userRepository.findByUsername(any())).thenReturn(Optional.empty());
+        when(passwordEncoder.encode(anyString())).thenReturn("~encoded-password~");
+
+        when(defaultUserProperties.username()).thenReturn(DEFAULT_USERNAME_IN_TEST);
+        when(defaultUserProperties.password()).thenReturn("~password~");
+        when(defaultUserProperties.email()).thenReturn("~email~");
+        when(defaultUserProperties.name()).thenReturn("~name~");
+
         when(userRepository.findByUsername(EXISTING_USERNAME))
                 .thenReturn(Optional.of(createUserInTest(null)));
+
+        userDetailsConfig = spy(new UserDetailsConfig(defaultUserProperties, passwordEncoder));
+        userDetailsService = userDetailsConfig.userDetailsService(userRepository);
     }
 
     @AfterEach
@@ -51,16 +60,17 @@ class UserDetailsConfigTest {
 
     @Test
     void loadUserByUsername_givenUsernameForDefaultUser_expectDefaultUser() {
-        userDetailsService.loadUserByUsername(DEFAULT_USERNAME);
+        userDetailsService.loadUserByUsername(DEFAULT_USERNAME_IN_TEST);
 
-        verify(defaultUserFactory).getObject();
+        verify(userDetailsConfig).createDefaultUser();
         verify(userRepository, never()).findByUsername(anyString());
     }
 
     @Test
     void loadUserByUsername_givenUsernameForDefaultUserInUpperCase_expectDefaultUser() {
-        userDetailsService.loadUserByUsername(DEFAULT_USERNAME.toUpperCase());
-        verify(defaultUserFactory).getObject();
+        userDetailsService.loadUserByUsername(DEFAULT_USERNAME_IN_TEST.toUpperCase());
+
+        verify(userDetailsConfig).createDefaultUser();
     }
 
     @Test
@@ -94,24 +104,11 @@ class UserDetailsConfigTest {
                 userDetailsService.loadUserByUsername(NON_EXISTING_USERNAME));
     }
 
-    @Mock
-    DefaultUserProperties userProperties;
-
-    @Mock
-    PasswordEncoder passwordEncoder;
-
     @Test
     void defaultUser_givenUsernameForExistingUser_expectUser() {
-        when(userProperties.username()).thenReturn("~username~");
-        when(userProperties.password()).thenReturn("~password~");
-        when(userProperties.email()).thenReturn("~email~");
-        when(userProperties.name()).thenReturn("~name~");
+        var defaultUser = userDetailsConfig.createDefaultUser();
 
-        when(passwordEncoder.encode(anyString())).thenReturn("~encoded-password~");
-
-        var defaultUser = new UserDetailsConfig().defaultUser(userProperties, passwordEncoder);
-
-        assertEquals("~username~", defaultUser.getUsername());
+        assertEquals(DEFAULT_USERNAME_IN_TEST, defaultUser.getUsername());
         assertEquals("~encoded-password~", defaultUser.getPassword());
         assertEquals("~email~", defaultUser.getEmail());
         assertEquals("~name~", defaultUser.getName());
