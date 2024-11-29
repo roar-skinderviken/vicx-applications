@@ -19,7 +19,7 @@ env:
   REGISTRY: ghcr.io
 
 jobs:
-  build-with-gradle:
+  build-and-push-docker:
     permissions:
       contents: read
       packages: write

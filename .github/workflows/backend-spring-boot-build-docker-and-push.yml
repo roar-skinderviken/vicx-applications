@@ -6,15 +6,15 @@ on:
       - main
     tags:
       - '*'
-#    paths:
-#      - 'backend-spring-boot/**'
+    paths:
+      - 'backend-spring-boot/**'
 
   pull_request:
     paths:
       - 'backend-spring-boot/**'
 
 jobs:
-  build:
+  build-and-push-docker:
     uses: ./.github/workflows/docker-build-template.yml
     secrets: inherit
     with:
