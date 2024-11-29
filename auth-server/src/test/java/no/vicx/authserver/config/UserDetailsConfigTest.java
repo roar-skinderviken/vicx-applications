@@ -1,56 +1,72 @@
-package no.vicx.authserver;
+package no.vicx.authserver.config;
 
+import no.vicx.authserver.CustomUserDetails;
 import no.vicx.database.user.UserImage;
 import no.vicx.database.user.UserRepository;
 import no.vicx.database.user.VicxUser;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
+import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.openMocks;
 
-class CustomUserDetailsServiceTest {
+class UserDetailsConfigTest {
 
     @Mock
     UserRepository userRepository;
 
-    CustomUserDetailsService sut;
+    @Mock
+    ObjectFactory<CustomUserDetails> defaultUserFactory;
+
+    UserDetailsService sut;
+
+    AutoCloseable openMocks;
 
     @BeforeEach
     void setUp() {
-        openMocks(this);
-
-        sut = spy(new CustomUserDetailsService(userRepository, DEFAULT_USERNAME));
+        openMocks = openMocks(this);
+        sut = new UserDetailsConfig().userDetailsService(
+                "user1", defaultUserFactory, userRepository);
 
         when(userRepository.findByUsername(any())).thenReturn(Optional.empty());
         when(userRepository.findByUsername(EXISTING_USERNAME))
                 .thenReturn(Optional.of(createUserInTest(null)));
     }
 
+    @AfterEach
+    void tearDown() throws Exception {
+        openMocks.close();
+    }
+
     @Test
     void loadUserByUsername_givenUsernameForDefaultUser_expectDefaultUser() {
         sut.loadUserByUsername(DEFAULT_USERNAME);
 
-        verify(sut).getDefaultUserDetails();
+        verify(defaultUserFactory).getObject();
         verify(userRepository, never()).findByUsername(anyString());
     }
 
     @Test
     void loadUserByUsername_givenUsernameForDefaultUserInUpperCase_expectDefaultUser() {
         sut.loadUserByUsername(DEFAULT_USERNAME.toUpperCase());
-        verify(sut).getDefaultUserDetails();
+        verify(defaultUserFactory).getObject();
     }
 
     @Test
     void loadUserByUsername_givenUsernameForExistingUser_expectUser() {
         var userDetails = sut.loadUserByUsername(EXISTING_USERNAME);
+
         assertInstanceOf(CustomUserDetails.class, userDetails);
 
         CustomUserDetails customUserDetails = (CustomUserDetails) userDetails;
