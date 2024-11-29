@@ -34,7 +34,7 @@ public class UserDetailsConfig {
     }
 
     @Bean
-    @Scope(value = BeanDefinition.SCOPE_PROTOTYPE)
+    @Scope(BeanDefinition.SCOPE_PROTOTYPE)
     public CustomUserDetails defaultUser(
             DefaultUserProperties userProperties,
             PasswordEncoder passwordEncoder) {
