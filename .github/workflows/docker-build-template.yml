@@ -75,4 +75,4 @@ jobs:
           provenance: false # to avoid unknown/unknown
           tags: |
             ${{ env.DOCKER_IMAGE }}
-            ${{ env.IS_TAG_BUILD == 'false' && format('{0}-gh{1}', env.DOCKER_IMAGE, github.run_id) }}
+            ${{ env.IS_TAG_BUILD == 'false' && format('{0}-gh{1}', env.DOCKER_IMAGE, github.run_id) || '' }}
