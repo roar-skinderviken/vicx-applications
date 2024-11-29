@@ -15,8 +15,8 @@ on:
         type: boolean
 
 env:
-  REGISTRY: ghcr.io
   IS_TAG_BUILD: ${{ startsWith(github.ref, 'refs/tags/') }}
+  REGISTRY: ghcr.io
 
 jobs:
   build-with-gradle:
@@ -34,7 +34,7 @@ jobs:
             "${REGISTRY}" \
             "${{ github.repository_owner }}" \
             "${{ inputs.appName }}" \
-            "${{ env.IS_TAG_BUILD && github.ref_name || format('main-{0}', github.event.pull_request.head.sha || github.sha) }}" >> $GITHUB_ENV
+            "${{ env.IS_TAG_BUILD == 'true' && github.ref_name || format('main-{0}', github.event.pull_request.head.sha || github.sha) }}" >> $GITHUB_ENV
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -75,4 +75,4 @@ jobs:
           provenance: false # to avoid unknown/unknown
           tags: |
             ${{ env.DOCKER_IMAGE }}
-            ${{ env.IS_TAG_BUILD == false && format('{0}-gh{1}', env.DOCKER_IMAGE, github.run_id) }}
+            ${{ env.IS_TAG_BUILD == 'false' && format('{0}-gh{1}', env.DOCKER_IMAGE, github.run_id) }}
