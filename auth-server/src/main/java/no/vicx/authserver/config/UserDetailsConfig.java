@@ -8,12 +8,9 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
-import java.util.Collections;
 
 @Configuration
 public class UserDetailsConfig {
@@ -31,14 +28,7 @@ public class UserDetailsConfig {
 
             return userRepository
                     .findByUsername(username)
-                    .map(it -> new CustomUserDetails(
-                            it.getUsername(),
-                            it.getPassword(),
-                            Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")),
-                            it.getName(),
-                            it.getEmail(),
-                            it.getUserImage() != null)
-                    )
+                    .map(CustomUserDetails::new)
                     .orElseThrow(() -> new UsernameNotFoundException("User not found"));
         };
     }
@@ -52,7 +42,6 @@ public class UserDetailsConfig {
         return new CustomUserDetails(
                 userProperties.username(),
                 passwordEncoder.encode(userProperties.password()),
-                Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")),
                 userProperties.name(),
                 userProperties.email(),
                 false);
