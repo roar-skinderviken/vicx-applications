@@ -6,108 +6,17 @@ on:
       - main
     tags:
       - '*'
-    paths:
-      - 'backend-spring-boot/**'
+#    paths:
+#      - 'backend-spring-boot/**'
 
   pull_request:
     paths:
       - 'backend-spring-boot/**'
 
-env:
-  REGISTRY: ghcr.io
-  APP_NAME: backend-spring-boot
-  TAG: ${{ format('main-{0}', github.event.pull_request.head.sha || github.sha) }}
-
 jobs:
-  build_and_push_docker:
-    if: ${{ !startsWith(github.ref, 'refs/tags/') }}
-    permissions:
-      contents: read
-      packages: write
-
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Extract repository owner
-        id: extract_repo
-        run: |
-          echo "REPO_OWNER=$(echo "${{ github.repository }}" | cut -d'/' -f1)" >> $GITHUB_ENV
-
-      - name: Set docker image env var
-        run: |
-          echo "DOCKER_IMAGE=${REGISTRY}/${REPO_OWNER}/${APP_NAME}:${TAG}" >> $GITHUB_ENV
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-        with:
-          platforms: linux/amd64,linux/arm64
-
-      - name: Set up JDK 21
-        uses: actions/setup-java@v4
-        with:
-          java-version: '21'
-          distribution: 'temurin'
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: 'Login to GitHub Container Registry'
-        uses: docker/login-action@v3
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{github.actor}}
-          password: ${{secrets.GITHUB_TOKEN}}
-
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
-
-      - name: Build with Gradle
-        run: ./gradlew build --build-cache --info
-        # run: ./gradlew clean bootJar jibDockerBuild --image=${{ env.DOCKER_IMAGE }} --build-cache --info
-
-      #      - name: Docker push
-      #        run: |
-      #          docker tag ${{ env.DOCKER_IMAGE }} ${{ env.DOCKER_IMAGE }}-gh${{ github.run_id }}
-      #          docker push ${{ env.REGISTRY }}/${{ env.IMAGE }} --all-tags
-
-      - name: Build and push Docker images
-        uses: docker/build-push-action@v6
-        with:
-          context: ./backend-spring-boot
-          platforms: linux/amd64,linux/arm64
-          push: true
-          provenance: false # to avoid unknown/unknown
-          tags: |
-            ${{ env.DOCKER_IMAGE }}
-            ${{ env.DOCKER_IMAGE }}-gh${{ github.run_id }}
-
-#  retag_docker:
-#    if: ${{ startsWith(github.ref, 'refs/tags/') }}
-#    permissions:
-#      contents: read
-#      packages: write
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: Extract repository owner
-#        id: extract_repo
-#        run: |
-#          echo "REPO_OWNER=$(echo "${{ github.repository }}" | cut -d'/' -f1)" >> $GITHUB_ENV
-#
-#      - name: Set docker image env var
-#        run: |
-#          echo "DOCKER_IMAGE=${REGISTRY}/${REPO_OWNER}/${APP_NAME}:${TAG}" >> $GITHUB_ENV
-#
-#      - name: 'Login to GitHub Container Registry'
-#        uses: docker/login-action@v3
-#        with:
-#          registry: ${{ env.REGISTRY }}
-#          username: ${{github.actor}}
-#          password: ${{secrets.GITHUB_TOKEN}}
-#
-#      - name: Re-tag docker
-#        run: |
-#          docker pull ${{ env.DOCKER_IMAGE }}
-#          docker tag ${{ env.DOCKER_IMAGE }} ${{ env.REGISTRY }}/${{ env.REPO_OWNER }}/${{ env.APP_NAME }}:${{ github.ref_name }}
-#          docker push ${{ env.REGISTRY }}/${{ env.REPO_OWNER }}/${{ env.APP_NAME }} --all-tags
+  build:
+    uses: ./.github/workflows/docker-build-template.yml
+    secrets: inherit
+    with:
+      appName: "backend-spring-boot"
+      dockerContext: "./backend-spring-boot"

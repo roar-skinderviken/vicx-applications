@@ -1,0 +1,79 @@
+name: Build artifact and push
+
+on:
+  workflow_call:
+    inputs:
+      appName:
+        description: "Application name"
+        required: true
+        type: string
+
+      dockerContext:
+        description: "Path to module where Dockerfile is located, e.g. './backend-spring-boot'"
+        required: true
+        type: string
+
+      buildWithGradle:
+        description: If true, runs ./gradlew build
+        required: false
+        default: true
+        type: boolean
+
+env:
+  REGISTRY: ghcr.io
+  TAG: ${{ format('main-{0}', github.event.pull_request.head.sha || github.sha) }}
+
+jobs:
+  build-with-gradle:
+    permissions:
+      contents: read
+      packages: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set docker image env var
+        run: |
+          echo "DOCKER_IMAGE=${REGISTRY}/${{ github.repository_owner }}/${{ inputs.appName }}:${TAG}" >> $GITHUB_ENV
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: linux/amd64,linux/arm64
+
+      - name: Set up JDK 21
+        if : ${{ inputs.buildWithGradle }}
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Setup Gradle
+        if : ${{ inputs.buildWithGradle }}
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Build with Gradle
+        if : ${{ inputs.buildWithGradle }}
+        run: ./gradlew build --build-cache --info
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: 'Login to GitHub Container Registry'
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{github.actor}}
+          password: ${{secrets.GITHUB_TOKEN}}
+
+      - name: Build and push Docker images
+        uses: docker/build-push-action@v6
+        with:
+          context: ${{ inputs.dockerContext }}
+          platforms: linux/amd64,linux/arm64
+          push: true
+          provenance: false # to avoid unknown/unknown
+          tags: |
+            ${{ env.DOCKER_IMAGE }}
+            ${{ env.DOCKER_IMAGE }}-gh${{ github.run_id }}
