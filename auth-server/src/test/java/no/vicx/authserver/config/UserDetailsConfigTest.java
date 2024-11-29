@@ -2,6 +2,7 @@ package no.vicx.authserver.config;
 
 import no.vicx.authserver.CustomUserDetails;
 import no.vicx.database.user.UserRepository;
+import no.vicx.database.user.VicxUser;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,15 +23,13 @@ import static org.mockito.MockitoAnnotations.openMocks;
 class UserDetailsConfigTest {
 
     @Mock
-    DefaultUserProperties defaultUserProperties;
-
-    @Mock
     PasswordEncoder passwordEncoder;
 
     @Mock
     UserRepository userRepository;
 
-    UserDetailsConfig userDetailsConfig;
+    VicxUser userInTest;
+
     UserDetailsService userDetailsService;
 
     AutoCloseable openMocks;
@@ -41,16 +40,11 @@ class UserDetailsConfigTest {
 
         when(passwordEncoder.encode(anyString())).thenReturn("~encoded-password~");
 
-        when(defaultUserProperties.username()).thenReturn(DEFAULT_USERNAME_IN_TEST);
-        when(defaultUserProperties.password()).thenReturn("~password~");
-        when(defaultUserProperties.email()).thenReturn("~email~");
-        when(defaultUserProperties.name()).thenReturn("~name~");
+        userInTest = createUserInTest(null);
+        when(userRepository.findByUsername(EXISTING_USERNAME)).thenReturn(Optional.of(userInTest));
 
-        when(userRepository.findByUsername(EXISTING_USERNAME))
-                .thenReturn(Optional.of(createUserInTest(null)));
-
-        userDetailsConfig = spy(new UserDetailsConfig(defaultUserProperties, passwordEncoder));
-        userDetailsService = userDetailsConfig.userDetailsService(userRepository);
+        userDetailsService = new UserDetailsConfig().userDetailsService(
+                DEFAULT_USER_PROPERTIES, passwordEncoder, userRepository);
     }
 
     @AfterEach
@@ -60,17 +54,23 @@ class UserDetailsConfigTest {
 
     @Test
     void loadUserByUsername_givenUsernameForDefaultUser_expectDefaultUser() {
-        userDetailsService.loadUserByUsername(DEFAULT_USERNAME_IN_TEST);
+        var defaultUser = (CustomUserDetails) userDetailsService.loadUserByUsername(DEFAULT_USERNAME_IN_TEST);
 
-        verify(userDetailsConfig).createDefaultUser();
+        assertEquals(DEFAULT_USER_PROPERTIES.username(), defaultUser.getUsername());
+        assertEquals("~encoded-password~", defaultUser.getPassword());
+        assertEquals(DEFAULT_USER_PROPERTIES.email(), defaultUser.getEmail());
+        assertEquals(DEFAULT_USER_PROPERTIES.name(), defaultUser.getName());
+        assertFalse(defaultUser.hasImage());
+        assertTrue(defaultUser.getAuthorities().containsAll(GRANTED_AUTHORITIES));
+
         verify(userRepository, never()).findByUsername(anyString());
     }
 
     @Test
     void loadUserByUsername_givenUsernameForDefaultUserInUpperCase_expectDefaultUser() {
-        userDetailsService.loadUserByUsername(DEFAULT_USERNAME_IN_TEST.toUpperCase());
+        var defaultUser = userDetailsService.loadUserByUsername(DEFAULT_USERNAME_IN_TEST.toUpperCase());
 
-        verify(userDetailsConfig).createDefaultUser();
+        assertEquals(DEFAULT_USERNAME_IN_TEST, defaultUser.getUsername());
     }
 
     @Test
@@ -80,10 +80,10 @@ class UserDetailsConfigTest {
         assertInstanceOf(CustomUserDetails.class, userDetails);
 
         CustomUserDetails customUserDetails = (CustomUserDetails) userDetails;
-        assertEquals(EXISTING_USERNAME, customUserDetails.getUsername());
-        assertEquals("~password~", customUserDetails.getPassword());
-        assertEquals("~name~", customUserDetails.getName());
-        assertEquals("~email~", customUserDetails.getEmail());
+        assertEquals(userInTest.getUsername(), customUserDetails.getUsername());
+        assertEquals(userInTest.getPassword(), customUserDetails.getPassword());
+        assertEquals(userInTest.getName(), customUserDetails.getName());
+        assertEquals(userInTest.getEmail(), customUserDetails.getEmail());
         assertFalse(customUserDetails.hasImage());
         assertTrue(customUserDetails.getAuthorities().containsAll(GRANTED_AUTHORITIES));
     }
@@ -105,15 +105,12 @@ class UserDetailsConfigTest {
     }
 
     @Test
-    void defaultUser_givenUsernameForExistingUser_expectUser() {
-        var defaultUser = userDetailsConfig.createDefaultUser();
-
-        assertEquals(DEFAULT_USERNAME_IN_TEST, defaultUser.getUsername());
-        assertEquals("~encoded-password~", defaultUser.getPassword());
-        assertEquals("~email~", defaultUser.getEmail());
-        assertEquals("~name~", defaultUser.getName());
-        assertFalse(defaultUser.hasImage());
-
-        assertTrue(defaultUser.getAuthorities().containsAll(GRANTED_AUTHORITIES));
+    void loadUserByUsername_givenNullUsername_expectNullPointerException() {
+        assertThrows(NullPointerException.class, () ->
+                userDetailsService.loadUserByUsername(null));
     }
+
+    static final DefaultUserProperties DEFAULT_USER_PROPERTIES = new DefaultUserProperties(
+            DEFAULT_USERNAME_IN_TEST, "~default-user-password~",
+            "~default-user-name~", "~default-user-email~");
 }

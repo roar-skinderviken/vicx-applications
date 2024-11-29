@@ -5,10 +5,14 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
+import java.util.Objects;
 import java.util.Set;
 
 public class CustomUserDetails extends User {
     public static final Set<GrantedAuthority> GRANTED_AUTHORITIES = Set.of(new SimpleGrantedAuthority("ROLE_USER"));
+
+    public static final String NAME_NOT_NULL_MSG = "Name cannot be null";
+    public static final String EMAIL_NOT_NULL_MSG = "Email cannot be null";
 
     private final String name;
     private final String email;
@@ -30,8 +34,9 @@ public class CustomUserDetails extends User {
             String email,
             boolean hasImage) {
         super(username, password, GRANTED_AUTHORITIES);
-        this.name = name;
-        this.email = email;
+
+        this.name = Objects.requireNonNull(name, NAME_NOT_NULL_MSG);
+        this.email = Objects.requireNonNull(email, EMAIL_NOT_NULL_MSG);
         this.hasImage = hasImage;
     }
 
@@ -41,21 +46,22 @@ public class CustomUserDetails extends User {
      * @param user VicxUser from the database
      */
     public CustomUserDetails(VicxUser user) {
-        super(user.getUsername(), user.getPassword(), GRANTED_AUTHORITIES);
-        this.name = user.getName();
-        this.email = user.getEmail();
-        this.hasImage = user.getUserImage() != null;
+        this(user.getUsername(), user.getPassword(), user.getName(),
+                user.getEmail(), user.getUserImage() != null);
     }
 
+    @IgnoreCoverage
     public String getName() {
-        return name;
+        return this.name;
     }
 
+    @IgnoreCoverage
     public String getEmail() {
-        return email;
+        return this.email;
     }
 
+    @IgnoreCoverage
     public boolean hasImage() {
-        return hasImage;
+        return this.hasImage;
     }
 }
