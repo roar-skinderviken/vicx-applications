@@ -31,7 +31,7 @@ public class FusedClaimConverter implements Converter<Jwt, AbstractAuthenticatio
 
     /**
      * This is the main converter method to override. In essence here we provide a custom
-     * implementation that concatenates the authority lists generated from two respective conterters.
+     * implementation that concatenates the authority lists generated from two respective converters.
      * One is the off-the-shelf default converter that operates on the "scp"/"scope" claim. The other
      * is the converter for our custom claim.
      *
