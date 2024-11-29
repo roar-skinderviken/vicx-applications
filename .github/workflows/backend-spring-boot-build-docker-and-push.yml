@@ -20,3 +20,6 @@ jobs:
     with:
       appName: "backend-spring-boot"
       dockerContext: "./backend-spring-boot"
+    permissions:
+      contents: read
+      packages: write
