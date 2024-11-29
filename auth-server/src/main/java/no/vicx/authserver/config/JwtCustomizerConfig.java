@@ -8,8 +8,6 @@ import org.springframework.security.oauth2.core.oidc.OidcScopes;
 import org.springframework.security.oauth2.server.authorization.token.JwtEncodingContext;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
 
-import java.util.stream.Collectors;
-
 @Configuration
 public class JwtCustomizerConfig {
 
@@ -32,7 +30,7 @@ public class JwtCustomizerConfig {
                     ROLES_CLAIM,
                     authentication.getAuthorities().stream()
                             .map(GrantedAuthority::getAuthority)
-                            .collect(Collectors.toList())
+                            .toList()
             );
 
             if (!(authentication.getPrincipal() instanceof CustomUserDetails userDetails)) {
