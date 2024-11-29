@@ -25,7 +25,7 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.stream.Stream;
 
-import static no.vicx.backend.jwt.HeaderConstants.BEARER_PREFIX;
+import static no.vicx.backend.jwt.JwtConstants.BEARER_PREFIX;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;

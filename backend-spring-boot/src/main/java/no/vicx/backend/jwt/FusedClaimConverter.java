@@ -10,9 +10,10 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static no.vicx.backend.jwt.JwtConstants.CLAIM_ROLES;
 
 /**
  * This is a custom converter to extract all entries of two Jwt claims "scope" and "role". All
@@ -41,12 +42,13 @@ public class FusedClaimConverter implements Converter<Jwt, AbstractAuthenticatio
      */
     @Override
     public AbstractAuthenticationToken convert(@NonNull final Jwt source) {
-        Collection<GrantedAuthority> authorities = Stream.concat(
-                defaultGrantedAuthoritiesConverter.convert(source).stream(),
-                extractRoles(source).stream()
-        ).collect(Collectors.toSet());
-
-        return new JwtAuthenticationToken(source, authorities);
+        return new JwtAuthenticationToken(
+                source,
+                Stream.concat(
+                        defaultGrantedAuthoritiesConverter.convert(source).stream(),
+                        extractRoles(source)
+                ).collect(Collectors.toSet())
+        );
     }
 
     /**
@@ -55,18 +57,15 @@ public class FusedClaimConverter implements Converter<Jwt, AbstractAuthenticatio
      * prefixed with "ROLE_" and returned as list of authorities.
      *
      * @param jwt as the json web token to analyze for "role" claim entries.
-     * @return collection of granted authorities extracted from the jwt.
+     * @return stream of granted authorities extracted from the jwt.
      */
-    private static Collection<? extends GrantedAuthority> extractRoles(final Jwt jwt) {
-        Collection<String> roles = jwt.getClaim("roles");
+    private static Stream<? extends GrantedAuthority> extractRoles(final Jwt jwt) {
+        Collection<String> roles = jwt.getClaim(CLAIM_ROLES);
 
-        if (roles == null) {
-            return Collections.emptySet();
-        }
-
-        return roles.stream()
+        return roles == null
+                ? Stream.empty()
+                : roles.stream()
                 .map(it -> it.startsWith(ROLE_PREFIX) ? it : ROLE_PREFIX + it)
-                .map(SimpleGrantedAuthority::new)
-                .collect(Collectors.toSet());
+                .map(SimpleGrantedAuthority::new);
     }
 }

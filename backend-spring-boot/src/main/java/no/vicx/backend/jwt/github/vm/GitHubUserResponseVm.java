@@ -8,23 +8,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import static no.vicx.backend.jwt.JwtConstants.*;
+
 public record GitHubUserResponseVm(
         GitHubUserVm user,
         String grantedScopes,
         String additionalEmailAddress,
         String token) {
-
-    public static final String CLAIM_SUB = "sub";
-    public static final String CLAIM_NAME = "name";
-    public static final String CLAIM_EMAIL = "email";
-    public static final String CLAIM_IMAGE = "image";
-    public static final String CLAIM_SCOPES = "scopes";
-    public static final String CLAIM_ROLES = "roles";
-    public static final String CLAIM_IAT = "iat";
-    public static final String CLAIM_EXP = "exp";
-
-    public static final String HEADER_ALG = "alg";
-    public static final String HEADER_ALG_VALUE = "none";
 
     static final int EXPIRES_AT_IN_SECS = 3600;
 
@@ -37,11 +27,11 @@ public record GitHubUserResponseVm(
                 CLAIM_EXP, Instant.now().plusSeconds(3600).getEpochSecond()
         );
 
-        var claims = new HashMap<>(defaultClaims);
-
         var emailAddress = user.email() == null || user.email().isBlank()
                 ? additionalEmailAddress
                 : user.email();
+
+        var claims = new HashMap<>(defaultClaims);
 
         Optional.ofNullable(emailAddress).ifPresent(it -> claims.put(CLAIM_EMAIL, it));
         Optional.ofNullable(user.name()).ifPresent(it -> claims.put(CLAIM_NAME, it));

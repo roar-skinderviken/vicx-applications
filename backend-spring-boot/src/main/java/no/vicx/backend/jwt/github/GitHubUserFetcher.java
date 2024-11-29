@@ -6,7 +6,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import static no.vicx.backend.jwt.HeaderConstants.BEARER_PREFIX;
+import static no.vicx.backend.jwt.JwtConstants.BEARER_PREFIX;
 
 @Service
 public record GitHubUserFetcher(

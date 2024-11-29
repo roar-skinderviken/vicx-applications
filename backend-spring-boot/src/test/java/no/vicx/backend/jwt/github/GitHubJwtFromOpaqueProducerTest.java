@@ -13,7 +13,7 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 
 import java.util.Collections;
 
-import static no.vicx.backend.jwt.github.vm.GitHubUserResponseVm.*;
+import static no.vicx.backend.jwt.JwtConstants.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;

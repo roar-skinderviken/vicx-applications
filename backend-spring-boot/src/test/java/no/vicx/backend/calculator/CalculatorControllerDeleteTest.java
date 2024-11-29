@@ -16,7 +16,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.stream.Stream;
 
-import static no.vicx.backend.jwt.HeaderConstants.BEARER_PREFIX;
+import static no.vicx.backend.jwt.JwtConstants.BEARER_PREFIX;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 

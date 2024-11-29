@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 
-import static no.vicx.backend.jwt.github.vm.GitHubUserResponseVm.*;
+import static no.vicx.backend.jwt.JwtConstants.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class GitHubUserResponseVmTest {
