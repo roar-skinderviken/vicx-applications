@@ -4,7 +4,11 @@ import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
+/**
+ * Represents a calculation entry that records a mathematical operation and its result.
+ */
 @Entity
 public class CalcEntry {
 
@@ -26,6 +30,9 @@ public class CalcEntry {
     @Column(updatable = false)
     private LocalDateTime createdAt;
 
+    // Constants for null-check messages
+    static final String OPERATION_MUST_NOT_BE_NULL = "Operation must not be null";
+
     /**
      * Default constructor.
      */
@@ -33,13 +40,14 @@ public class CalcEntry {
     }
 
     /**
-     * Value constructor.
+     * Constructs a new {@code CalcEntry} instance with the specified values.
      *
-     * @param firstValue first value
-     * @param secondValue second value
-     * @param operation operation
-     * @param result result
-     * @param username username
+     * @param firstValue  the first operand of the calculation.
+     * @param secondValue the second operand of the calculation.
+     * @param operation   the mathematical operation performed; must not be null.
+     * @param result      the result of the calculation.
+     * @param username    the username of the user who performed the calculation; may be null.
+     * @throws NullPointerException if {@code operation} is null.
      */
     public CalcEntry(
             long firstValue,
@@ -49,7 +57,7 @@ public class CalcEntry {
             String username) {
         this.firstValue = firstValue;
         this.secondValue = secondValue;
-        this.operation = operation;
+        this.operation = Objects.requireNonNull(operation, OPERATION_MUST_NOT_BE_NULL);
         this.result = result;
         this.username = username;
     }

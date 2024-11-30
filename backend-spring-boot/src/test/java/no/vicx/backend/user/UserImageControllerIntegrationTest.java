@@ -50,9 +50,7 @@ class UserImageControllerIntegrationTest {
 
     @Test
     void getUserImage_imageExistsInDatabase_expectImageInDatabase() {
-        var userImage = new UserImage();
-        userImage.setImageData(new byte[]{1, 2, 3});
-        userImage.setContentType(MediaType.IMAGE_JPEG_VALUE);
+        var userImage = new UserImage(new byte[]{1, 2, 3}, MediaType.IMAGE_JPEG_VALUE);
 
         when(userImageRepository.findByUserUsername(anyString())).thenReturn(Optional.of(userImage));
 

@@ -10,21 +10,13 @@ public final class RepositoryTestUtils {
     }
 
     static VicxUser createValidUser() {
-        var user = new VicxUser();
-        user.setUsername("user1");
-        user.setName("Foo Bar");
-        user.setEmail("user1@vicx.no");
-        user.setPassword("password1");
-        return user;
+        return new VicxUser(
+                "user1", "password1", "Foo Bar", "user1@vicx.no", null);
     }
 
     static UserImage createUserImage() throws IOException {
-        var userImage = new UserImage();
-        userImage.setContentType("image/png");
-
-        var imageResource = new ClassPathResource("profile.png");
-        userImage.setImageData(imageResource.getContentAsByteArray());
-
-        return userImage;
+        return new UserImage(
+                new ClassPathResource("profile.png").getContentAsByteArray(),
+                "image/png");
     }
 }

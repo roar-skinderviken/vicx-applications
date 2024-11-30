@@ -98,8 +98,8 @@ class UserControllerIntegrationTest {
     @Test
     void putUser_givenUsernameForOtherUser_expectForbidden() {
         var user = new UserVm(
-                "user2", "P4ssword", "user@example.com",
-                "The User", "mock-token");
+                "user2", "P4ssword", "The User",
+                "user@example.com", "mock-token");
 
         var response = restTemplate.exchange(
                 "/api/user",

@@ -28,11 +28,7 @@ public class UserService {
         var user = userVm.toNewVicxUser();
 
         if (image != null && !image.isEmpty()) {
-            UserImage userImage = new UserImage();
-            userImage.setContentType(image.getContentType());
-            userImage.setImageData(image.getBytes());
-
-            user.setUserImage(userImage);
+            user.setUserImage(new UserImage(image.getBytes(), image.getContentType()));
         }
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));

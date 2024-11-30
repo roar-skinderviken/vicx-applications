@@ -33,16 +33,17 @@ class UserRepositoryTest {
 
     @Test
     void save_givenValidUser_expectUserInDatabase() {
-        var user = createValidUser();
+        var expected = createValidUser();
 
-        var savedUser = sut.save(user);
+        var savedUser = sut.save(expected);
 
         var userInDb = entityManager.find(VicxUser.class, savedUser.getId());
 
         assertEquals(savedUser.getId(), userInDb.getId());
-        assertEquals(user.getUsername(), userInDb.getUsername());
-        assertEquals(user.getPassword(), userInDb.getPassword());
-        assertEquals(user.getEmail(), userInDb.getEmail());
+        assertEquals(expected.getUsername(), userInDb.getUsername());
+        assertEquals(expected.getPassword(), userInDb.getPassword());
+        assertEquals(expected.getName(), userInDb.getName());
+        assertEquals(expected.getEmail(), userInDb.getEmail());
     }
 
     @Test

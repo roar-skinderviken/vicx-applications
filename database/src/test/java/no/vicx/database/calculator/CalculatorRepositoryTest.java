@@ -58,13 +58,19 @@ class CalculatorRepositoryTest {
 
     @Test
     void save_givenValidEntity_expectEntityToBeSaved() {
-        var expected = createValidEntity();
+        var expected = createValidEntity("user1");
 
         sut.save(expected);
 
         var actual = entityManager.find(CalcEntry.class, expected.getId());
 
-        assertEquals(expected, actual);
+        assertNotNull(actual.getCreatedAt());
+
+        assertEquals(expected.getFirstValue(), actual.getFirstValue());
+        assertEquals(expected.getSecondValue(), actual.getSecondValue());
+        assertEquals(expected.getOperation(), actual.getOperation());
+        assertEquals(expected.getResult(), actual.getResult());
+        assertEquals(expected.getUsername(), actual.getUsername());
     }
 
     @Test

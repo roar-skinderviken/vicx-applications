@@ -26,13 +26,21 @@ class UserImageRepositoryTest {
 
     @Test
     void findByUserUsername_givenUserInDatabase_expectUser() throws IOException {
-        var user = createValidUser();
-        user.setUserImage(createUserImage());
+        var userInTest = createValidUser();
+        var imageInTest = createUserImage();
+        userInTest.setUserImage(imageInTest);
 
-        entityManager.persist(user);
+        entityManager.persist(userInTest);
 
-        var userImageInDb = sut.findByUserUsername(user.getUsername());
-        assertTrue(userImageInDb.isPresent());
+        var optionalImageInDb = sut.findByUserUsername(userInTest.getUsername());
+
+        assertTrue(optionalImageInDb.isPresent());
+        var imageInDb = optionalImageInDb.get();
+
+        assertNotNull(imageInDb.getUser());
+        assertNotNull(imageInDb.getId());
+        assertEquals(imageInTest.getImageData(),imageInDb.getImageData());
+        assertEquals(imageInTest.getContentType(),imageInDb.getContentType());
     }
 
     @Test

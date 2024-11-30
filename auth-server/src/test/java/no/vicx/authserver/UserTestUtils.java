@@ -13,22 +13,11 @@ public final class UserTestUtils {
     public static final String NON_EXISTING_USERNAME = "user2";
 
     public static UserImage createUserImageInTest() {
-        var userImage = new UserImage();
-        userImage.setImageData(new byte[]{1, 2, 3});
-        userImage.setContentType(MediaType.IMAGE_PNG_VALUE);
-        return userImage;
+        return new UserImage(new byte[]{1, 2, 3}, MediaType.IMAGE_PNG_VALUE);
     }
 
     public static VicxUser createUserInTest(UserImage userImage) {
-        var user = new VicxUser();
-        user.setUsername(EXISTING_USERNAME);
-        user.setPassword("~password~");
-        user.setName("~name~");
-        user.setEmail("~email~");
-
-        if (userImage != null) {
-            user.setUserImage(userImage);
-        }
-        return user;
+        return new VicxUser(
+                EXISTING_USERNAME, "~password~", "~name~", "~email~", userImage);
     }
 }
