@@ -23,7 +23,6 @@ dependencyManagement {
 
 dependencies {
     api("org.springframework.boot:spring-boot-starter-data-jpa")
-    compileOnly(libs.lombok)
     testCompileOnly("org.springframework.boot:spring-boot-starter-validation")
     testRuntimeOnly("org.flywaydb:flyway-database-postgresql")
     testRuntimeOnly("org.postgresql:postgresql")
