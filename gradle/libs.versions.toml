@@ -2,8 +2,10 @@
 mockito = "5.14.2"
 logback-access-spring-boot-starter = "4.4.0"
 tika-core = "3.0.0"
+lombok = "1.18.36"
 
 [libraries]
 mockito = { module = "org.mockito:mockito-core", version.ref = "mockito" }
 tika-core = { module = "org.apache.tika:tika-core", version.ref = "tika-core" }
 logback-access-spring-boot-starter = { module = "dev.akkinoc.spring.boot:logback-access-spring-boot-starter", version.ref = "logback-access-spring-boot-starter" }
+lombok = { module = "org.projectlombok:lombok", version.ref = "lombok" }

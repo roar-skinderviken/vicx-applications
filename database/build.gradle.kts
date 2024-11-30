@@ -2,6 +2,7 @@ plugins {
     id("java-library")
     id("org.springframework.boot") version "3.4.0" apply false
     id("io.spring.dependency-management") version "1.1.6"
+    id("io.freefair.lombok") version "8.10"
 }
 
 java {
@@ -22,6 +23,7 @@ dependencyManagement {
 
 dependencies {
     api("org.springframework.boot:spring-boot-starter-data-jpa")
+    compileOnly(libs.lombok)
     testCompileOnly("org.springframework.boot:spring-boot-starter-validation")
     testRuntimeOnly("org.flywaydb:flyway-database-postgresql")
     testRuntimeOnly("org.postgresql:postgresql")

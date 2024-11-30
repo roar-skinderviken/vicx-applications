@@ -1,6 +1,5 @@
 package no.vicx.database.user;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -44,26 +43,6 @@ class VicxUserTest {
                 assertThrows(NullPointerException.class, () -> new VicxUser(username, password, name, email, null));
 
         assertEquals(expectedMessage, exception.getMessage());
-    }
-
-    @Test
-    void whenInvokingSetters_expectValuesToBeSet() {
-        var sut = new VicxUser();
-
-        sut.setId(1L);
-        assertEquals(1L, sut.getId());
-
-        sut.setUsername(userName);
-        assertEquals(userName, sut.getUsername());
-
-        sut.setPassword(password);
-        assertEquals(password, sut.getPassword());
-
-        sut.setName(name);
-        assertEquals(name, sut.getName());
-
-        sut.setEmail(email);
-        assertEquals(email, sut.getEmail());
     }
 
     private static Stream<Arguments> invalidValuesSource() {

@@ -4,8 +4,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import java.time.LocalDateTime;
-
 import static no.vicx.database.calculator.CalcEntry.OPERATION_MUST_NOT_BE_NULL;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -36,32 +34,5 @@ class CalcEntryTest {
                 new CalcEntry(1L, 2L, null, 3L, null));
 
         assertEquals(OPERATION_MUST_NOT_BE_NULL, exception.getMessage());
-    }
-
-    @Test
-    void whenInvokingSetters_expectValuesToBeSet() {
-        var sut = new CalcEntry();
-
-        sut.setId(1L);
-        assertEquals(1L, sut.getId());
-
-        sut.setFirstValue(1L);
-        assertEquals(1L, sut.getFirstValue());
-
-        sut.setSecondValue(2L);
-        assertEquals(2L, sut.getSecondValue());
-
-        sut.setOperation(CalculatorOperation.PLUS);
-        assertEquals(CalculatorOperation.PLUS, sut.getOperation());
-
-        sut.setResult(3L);
-        assertEquals(3L, sut.getResult());
-
-        sut.setUsername("username");
-        assertEquals("username", sut.getUsername());
-
-        LocalDateTime dateInTest = LocalDateTime.now();
-        sut.setCreatedAt(dateInTest);
-        assertEquals(dateInTest, sut.getCreatedAt());
     }
 }

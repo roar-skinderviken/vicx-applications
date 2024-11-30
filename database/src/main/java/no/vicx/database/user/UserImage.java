@@ -1,12 +1,16 @@
 package no.vicx.database.user;
 
 import jakarta.persistence.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Objects;
 
 /**
  * Represents an image associated with a Vicx user.
  */
+@Data
+@NoArgsConstructor
 @Entity
 public class UserImage {
 
@@ -31,12 +35,6 @@ public class UserImage {
     static final String CONTENT_TYPE_MUST_NOT_BE_NULL = "Content type must not be null";
 
     /**
-     * Default constructor.
-     */
-    public UserImage() {
-    }
-
-    /**
      * Constructs a new {@code UserImage} instance with the specified values.
      *
      * @param imageData   the binary data of the image; must not be null.
@@ -46,39 +44,5 @@ public class UserImage {
     public UserImage(byte[] imageData, String contentType) {
         this.imageData = Objects.requireNonNull(imageData, IMAGE_DATA_MUST_NOT_BE_NULL);
         this.contentType = Objects.requireNonNull(contentType, CONTENT_TYPE_MUST_NOT_BE_NULL);
-    }
-
-    // Getters and setters
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public VicxUser getUser() {
-        return user;
-    }
-
-    public void setUser(VicxUser user) {
-        this.user = user;
-    }
-
-    public String getContentType() {
-        return contentType;
-    }
-
-    public void setContentType(String contentType) {
-        this.contentType = contentType;
-    }
-
-    public byte[] getImageData() {
-        return imageData;
-    }
-
-    public void setImageData(byte[] imageData) {
-        this.imageData = imageData;
     }
 }

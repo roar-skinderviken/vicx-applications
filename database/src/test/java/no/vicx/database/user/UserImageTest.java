@@ -10,7 +10,6 @@ import java.util.stream.Stream;
 import static no.vicx.database.user.UserImage.CONTENT_TYPE_MUST_NOT_BE_NULL;
 import static no.vicx.database.user.UserImage.IMAGE_DATA_MUST_NOT_BE_NULL;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
 
 class UserImageTest {
 
@@ -34,24 +33,6 @@ class UserImageTest {
                 assertThrows(NullPointerException.class, () -> new UserImage(imageData, contentType));
 
         assertEquals(expectedMessage, exception.getMessage());
-    }
-
-    @Test
-    void whenInvokingSetters_expectValuesToBeSet() {
-        var sut = new UserImage();
-
-        sut.setId(2L);
-        assertEquals(2L, sut.getId());
-
-        sut.setImageData(validImageData);
-        assertEquals(validImageData, sut.getImageData());
-
-        sut.setContentType(validContentType);
-        assertEquals(validContentType, sut.getContentType());
-
-        var mockUser = mock(VicxUser.class);
-        sut.setUser(mockUser);
-        assertEquals(mockUser, sut.getUser());
     }
 
     private static final byte[] validImageData = new byte[]{1, 2, 3};
