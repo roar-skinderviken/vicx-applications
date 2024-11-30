@@ -2,7 +2,7 @@ plugins {
     id("java-library")
     id("org.springframework.boot") version "3.4.0" apply false
     id("io.spring.dependency-management") version "1.1.6"
-    id("io.freefair.lombok") version "8.10"
+    id("io.freefair.lombok") version "8.11"
 }
 
 java {
