@@ -24,7 +24,7 @@ class RemoveOldEntriesTaskTest {
     void removeOldEntriesTask_expectTimerToFire() {
         await().atMost(Durations.TEN_SECONDS).untilAsserted(() -> {
             verify(removeOldEntriesTask, atLeast(1)).removeOldCalculatorEntries();
-            verify(calculatorService).deleteOldAnonymousCalculations();
+            verify(calculatorService, atLeast(1)).deleteOldAnonymousCalculations();
         });
     }
 }
