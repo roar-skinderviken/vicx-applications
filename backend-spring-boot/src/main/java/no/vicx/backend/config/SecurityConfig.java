@@ -41,6 +41,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/user").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/**").hasRole("USER")
 
+                        .requestMatchers(HttpMethod.PATCH, "/api/user").hasRole("USER")
+
                         .requestMatchers(HttpMethod.GET, "/api/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/user/image/*").hasRole("USER")
                         .requestMatchers(HttpMethod.GET, "/api/user").hasRole("USER")

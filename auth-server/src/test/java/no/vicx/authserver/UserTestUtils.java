@@ -4,6 +4,8 @@ import no.vicx.database.user.UserImage;
 import no.vicx.database.user.VicxUser;
 import org.springframework.http.MediaType;
 
+import static no.vicx.database.user.VicxUser.VALID_BCRYPT_PASSWORD;
+
 public final class UserTestUtils {
     private UserTestUtils() {
     }
@@ -18,6 +20,6 @@ public final class UserTestUtils {
 
     public static VicxUser createUserInTest(UserImage userImage) {
         return new VicxUser(
-                EXISTING_USERNAME, "~password~", "~name~", "~email~", userImage);
+                EXISTING_USERNAME, VALID_BCRYPT_PASSWORD, "~name~", "~email~", userImage);
     }
 }

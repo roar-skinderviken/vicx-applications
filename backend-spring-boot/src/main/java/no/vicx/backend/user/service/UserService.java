@@ -1,6 +1,7 @@
 package no.vicx.backend.user.service;
 
 import no.vicx.backend.error.NotFoundException;
+import no.vicx.backend.user.vm.UserPatchRequestVm;
 import no.vicx.backend.user.vm.UserVm;
 import no.vicx.database.user.UserImage;
 import no.vicx.database.user.UserRepository;
@@ -15,7 +16,6 @@ import java.io.IOException;
 @Transactional
 @Service
 public class UserService {
-
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
@@ -25,14 +25,15 @@ public class UserService {
     }
 
     public VicxUser createUser(UserVm userVm, MultipartFile image) throws IOException {
-        var user = userVm.toNewVicxUser();
-
-        if (image != null && !image.isEmpty()) {
-            user.setUserImage(new UserImage(image.getBytes(), image.getContentType()));
-        }
-
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return userRepository.save(user);
+        return userRepository.save(VicxUser.builder()
+                .username(userVm.username())
+                .password(passwordEncoder.encode(userVm.password()))
+                .name(userVm.name())
+                .email(userVm.email())
+                .userImage(image != null && !image.isEmpty()
+                        ? new UserImage(image.getBytes(), image.getContentType())
+                        : null)
+                .build());
     }
 
     public VicxUser getUserByUserName(String username) {
@@ -40,13 +41,9 @@ public class UserService {
                 () -> new NotFoundException("User " + username + " not found"));
     }
 
-    public VicxUser updateUser(UserVm userVm) {
-        var userInDb = getUserByUserName(userVm.username());
-
-        userInDb.setPassword(passwordEncoder.encode(userVm.password()));
-        userInDb.setName(userVm.name());
-        userInDb.setEmail(userVm.email());
-
-        return userRepository.save(userInDb);
+    public void updateUser(UserPatchRequestVm requestVm, String username) {
+        userRepository.save(requestVm.applyPatch(
+                getUserByUserName(username),
+                passwordEncoder));
     }
 }

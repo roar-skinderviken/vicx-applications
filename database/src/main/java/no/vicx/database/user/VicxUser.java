@@ -1,10 +1,13 @@
 package no.vicx.database.user;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Objects;
+import java.util.regex.Pattern;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * Represents a user in the Vicx database.
@@ -13,6 +16,11 @@ import java.util.Objects;
 @NoArgsConstructor
 @Entity
 public class VicxUser {
+
+    // for tests
+    public static final String VALID_PLAINTEXT_PASSWORD = "P4ssword";
+    public static final String VALID_BCRYPT_PASSWORD = "$2a$10$sOuu7.j.dOykTbMoXwQpgulTjqUf0EutXqEj8YcZrsNkIzlyZGIry";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -39,6 +47,9 @@ public class VicxUser {
     static final String NAME_MUST_NOT_BE_NULL = "Name must not be null";
     static final String EMAIL_MUST_NOT_BE_NULL = "Email must not be null";
 
+    // Password check constant
+    static final String PASSWORD_MUST_BE_ENCRYPTED = "Password must be encrypted";
+
     /**
      * Constructs a new {@code VicxUser} instance with the specified values.
      *
@@ -48,19 +59,40 @@ public class VicxUser {
      * @param email     the user's email address; must not be null.
      * @param userImage the associated user image, or null if not applicable.
      * @throws NullPointerException if {@code username}, {@code password}, {@code name}, or {@code email} is null.
+     * @throws IllegalArgumentException if {@code password} is not encrypted.
      */
-    public VicxUser(String username, String password, String name, String email, UserImage userImage) {
-        this.username = Objects.requireNonNull(username, USERNAME_MUST_NOT_BE_NULL);
-        this.password = Objects.requireNonNull(password, PASSWORD_MUST_NOT_BE_NULL);
-        this.name = Objects.requireNonNull(name, NAME_MUST_NOT_BE_NULL);
-        this.email = Objects.requireNonNull(email, EMAIL_MUST_NOT_BE_NULL);
+    @Builder
+    public VicxUser(
+            final String username, final String password, final String name,
+            final String email, final UserImage userImage) {
+        this.username = requireNonNull(username, USERNAME_MUST_NOT_BE_NULL);
+        this.password = requireNonNullAndBCrypt(password);
+        this.name = requireNonNull(name, NAME_MUST_NOT_BE_NULL);
+        this.email = requireNonNull(email, EMAIL_MUST_NOT_BE_NULL);
+
         setUserImage(userImage);
     }
 
-    public void setUserImage(UserImage userImage) {
+    public void setPassword(final String password) {
+        this.password = requireNonNullAndBCrypt(password);
+    }
+
+    public void setUserImage(final UserImage userImage) {
         if (userImage != null) {
             userImage.setUser(this);
         }
         this.userImage = userImage;
+    }
+
+    private static final Pattern BCRYPT_PATTERN = Pattern.compile("^\\$2[ayb]?\\$\\d{2}\\$.{53}$");
+
+    private static String requireNonNullAndBCrypt(final String password) {
+        requireNonNull(password, PASSWORD_MUST_NOT_BE_NULL);
+
+        if (!BCRYPT_PATTERN.matcher(password).matches()) {
+            throw new IllegalArgumentException(PASSWORD_MUST_BE_ENCRYPTED);
+        }
+
+        return password;
     }
 }

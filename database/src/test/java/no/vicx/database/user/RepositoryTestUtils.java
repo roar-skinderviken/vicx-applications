@@ -1,22 +1,38 @@
 package no.vicx.database.user;
 
+import lombok.experimental.UtilityClass;
 import org.springframework.core.io.ClassPathResource;
 
 import java.io.IOException;
 
-public final class RepositoryTestUtils {
+import static no.vicx.database.user.VicxUser.VALID_BCRYPT_PASSWORD;
 
-    private RepositoryTestUtils() {
-    }
+@UtilityClass
+public class RepositoryTestUtils {
 
     static VicxUser createValidUser() {
-        return new VicxUser(
-                "user1", "password1", "Foo Bar", "user1@vicx.no", null);
+        return createValidUser(null);
     }
 
-    static UserImage createUserImage() throws IOException {
+    static VicxUser createValidUser(UserImage userImage) {
+        return new VicxUser(
+                "user1", VALID_BCRYPT_PASSWORD, "Foo Bar", "user1@vicx.no", userImage);
+    }
+
+    static final String IMAGE_PNG = "image/png";
+    static final String IMAGE_JPEG = "image/jpeg";
+
+    static UserImage createPngUserImage() throws IOException {
+        return createUserImage("test-png.png", IMAGE_PNG);
+    }
+
+    static UserImage createJpegUserImage() throws IOException {
+        return createUserImage("test-jpg.jpg", IMAGE_JPEG);
+    }
+
+    static UserImage createUserImage(String resourceName, String mimeType) throws IOException {
         return new UserImage(
-                new ClassPathResource("profile.png").getContentAsByteArray(),
-                "image/png");
+                new ClassPathResource(resourceName).getContentAsByteArray(),
+                mimeType);
     }
 }

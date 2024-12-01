@@ -11,8 +11,8 @@ import org.springframework.dao.DataIntegrityViolationException;
 
 import java.io.IOException;
 
-import static no.vicx.database.user.RepositoryTestUtils.createUserImage;
-import static no.vicx.database.user.RepositoryTestUtils.createValidUser;
+import static no.vicx.database.user.RepositoryTestUtils.*;
+import static no.vicx.database.user.VicxUser.VALID_BCRYPT_PASSWORD;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
@@ -33,21 +33,20 @@ class UserRepositoryTest {
 
     @Test
     void save_givenValidUser_expectUserInDatabase() {
-        var expected = createValidUser();
+        var savedUser = sut.save(createValidUser());
 
-        var savedUser = sut.save(expected);
-
+        entityManager.clear();
         var userInDb = entityManager.find(VicxUser.class, savedUser.getId());
 
         assertEquals(savedUser.getId(), userInDb.getId());
-        assertEquals(expected.getUsername(), userInDb.getUsername());
-        assertEquals(expected.getPassword(), userInDb.getPassword());
-        assertEquals(expected.getName(), userInDb.getName());
-        assertEquals(expected.getEmail(), userInDb.getEmail());
+        assertEquals(savedUser.getUsername(), userInDb.getUsername());
+        assertEquals(VALID_BCRYPT_PASSWORD, userInDb.getPassword());
+        assertEquals(savedUser.getName(), userInDb.getName());
+        assertEquals(savedUser.getEmail(), userInDb.getEmail());
     }
 
     @Test
-    void save_givenDuplicateUser_expectException() {
+    void save_givenDuplicateUser_expectDataIntegrityViolationException() {
         sut.save(createValidUser());
 
         var duplicateUser = createValidUser();
@@ -57,30 +56,52 @@ class UserRepositoryTest {
 
     @Test
     void save_givenValidUserWithImage_expectUserWithImageInDatabase() throws IOException {
-        var user = createValidUser();
-        user.setUserImage(createUserImage());
-        var savedUser = sut.save(user);
+        var savedUser = sut.save(createValidUser(createPngUserImage()));
 
         var userInDb = entityManager.find(VicxUser.class, savedUser.getId());
-        assertEquals(user.getUserImage().getContentType(), userInDb.getUserImage().getContentType());
+        var imageInDb = entityManager.find(UserImage.class, savedUser.getId());
+
+        assertEquals(userInDb.getUserImage().getId(), imageInDb.getId());
+        assertEquals(userInDb.getUserImage().getContentType(), imageInDb.getContentType());
     }
 
     @Test
-    void save_givenExistingUserWithImageInDb_expectUserWithoutImageAfterSave() throws IOException {
-        var user = createValidUser();
-        user.setUserImage(createUserImage());
+    void save_givenUserWithImageInDb_expectUserWithoutImageAfterSave() throws IOException {
+        var user = createValidUser(createPngUserImage());
         entityManager.persist(user);
         assertEquals(1, getImageCountInDb());
 
-        var savedUser = sut.findByUsername(user.getUsername())
-                .map(userInDb -> {
-                    assertNotNull(userInDb.getUserImage());
-                    userInDb.setUserImage(null);
-                    return sut.save(userInDb);
-                }).orElseThrow();
+        var savedUser = sut.findByUsername(user.getUsername()).orElseThrow();
+        assertNotNull(savedUser.getUserImage());
 
-        assertNull(savedUser.getUserImage());
+        savedUser.setUserImage(null);
+        sut.save(savedUser);
         assertEquals(0, getImageCountInDb());
+    }
+
+    @Test
+    void save_givenUserWithImage_expectUserWithoutImageAfterSave() throws IOException {
+        var user = createValidUser(createPngUserImage());
+        assertEquals(IMAGE_PNG, user.getUserImage().getContentType());
+
+        entityManager.persist(user);
+        assertEquals(1, getImageCountInDb());
+
+        var savedUser = sut.findByUsername(user.getUsername()).orElseThrow();
+        assertNotNull(savedUser.getUserImage());
+
+        // clear existing image and save
+        savedUser.setUserImage(null);
+        savedUser = sut.save(savedUser);
+        assertEquals(0, getImageCountInDb());
+
+        // set new image and save
+        savedUser.setUserImage(createJpegUserImage());
+        sut.save(savedUser);
+        assertEquals(1, getImageCountInDb());
+
+        var imageInDb = entityManager.find(UserImage.class, savedUser.getId());
+        assertEquals(IMAGE_JPEG, imageInDb.getContentType());
     }
 
     @Test

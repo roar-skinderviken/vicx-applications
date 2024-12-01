@@ -4,11 +4,7 @@ import jakarta.validation.constraints.*;
 import no.vicx.backend.user.validation.RecaptchaThenUniqueUsername;
 import no.vicx.database.user.VicxUser;
 
-@RecaptchaThenUniqueUsername(
-        recaptchaMessage = "{vicx.constraints.reCAPTCHA.message}",
-        usernameMinLength = 4,
-        uniqueUsernameMessage = "{vicx.constraints.username.UniqueUsername.message}"
-)
+@RecaptchaThenUniqueUsername
 public record UserVm(
         @NotNull(message = "{vicx.constraints.username.NotNull.message}")
         @Size(min = 4, max = 255)
@@ -26,14 +22,10 @@ public record UserVm(
 
         @NotNull
         @Email
-        @NotNull String email,
+        String email,
 
         @NotBlank(message = "{vicx.constraints.reCAPTCHA.NotBlank.message}")
-        String recaptchaToken
-) {
-    public VicxUser toNewVicxUser() {
-        return new VicxUser(username, password, name, email, null);
-    }
+        String recaptchaToken) {
 
     public static UserVm fromVicxUser(VicxUser user) {
         return new UserVm(
