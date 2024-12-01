@@ -12,6 +12,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import java.io.IOException;
 
 import static no.vicx.database.user.RepositoryTestUtils.*;
+import static no.vicx.database.user.VicxUser.VALID_BCRYPT_PASSWORD;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
@@ -39,7 +40,7 @@ class UserRepositoryTest {
 
         assertEquals(savedUser.getId(), userInDb.getId());
         assertEquals(savedUser.getUsername(), userInDb.getUsername());
-        assertEquals(savedUser.getPassword(), userInDb.getPassword());
+        assertEquals(VALID_BCRYPT_PASSWORD, userInDb.getPassword());
         assertEquals(savedUser.getName(), userInDb.getName());
         assertEquals(savedUser.getEmail(), userInDb.getEmail());
     }

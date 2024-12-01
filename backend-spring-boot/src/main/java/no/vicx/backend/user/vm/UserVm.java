@@ -3,7 +3,6 @@ package no.vicx.backend.user.vm;
 import jakarta.validation.constraints.*;
 import no.vicx.backend.user.validation.RecaptchaThenUniqueUsername;
 import no.vicx.database.user.VicxUser;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 @RecaptchaThenUniqueUsername
 public record UserVm(
@@ -27,10 +26,6 @@ public record UserVm(
 
         @NotBlank(message = "{vicx.constraints.reCAPTCHA.NotBlank.message}")
         String recaptchaToken) {
-
-    public VicxUser toNewVicxUser(PasswordEncoder passwordEncoder) {
-        return new VicxUser(username, passwordEncoder.encode(password), name, email, null);
-    }
 
     public static UserVm fromVicxUser(VicxUser user) {
         return new UserVm(

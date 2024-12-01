@@ -1,6 +1,7 @@
 package no.vicx.database.user;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -17,8 +18,8 @@ import static java.util.Objects.requireNonNull;
 public class VicxUser {
 
     // for tests
-    public static final String VALID_PLAINTEXT_PASSWORD = "Your-passw0rd";
-    public static final String VALID_BCRYPT_PASSWORD = "$2a$10$crhj38nvydnz7y5z/cvrzobamfyichhrachgvgsb0cop46awnaad6";
+    public static final String VALID_PLAINTEXT_PASSWORD = "P4ssword";
+    public static final String VALID_BCRYPT_PASSWORD = "$2a$10$sOuu7.j.dOykTbMoXwQpgulTjqUf0EutXqEj8YcZrsNkIzlyZGIry";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -60,11 +61,12 @@ public class VicxUser {
      * @throws NullPointerException if {@code username}, {@code password}, {@code name}, or {@code email} is null.
      * @throws IllegalArgumentException if {@code password} is not encrypted.
      */
+    @Builder
     public VicxUser(
             final String username, final String password, final String name,
             final String email, final UserImage userImage) {
         this.username = requireNonNull(username, USERNAME_MUST_NOT_BE_NULL);
-        this.password = requireNonNullAndBCrypt(password).toLowerCase();
+        this.password = requireNonNullAndBCrypt(password);
         this.name = requireNonNull(name, NAME_MUST_NOT_BE_NULL);
         this.email = requireNonNull(email, EMAIL_MUST_NOT_BE_NULL);
 

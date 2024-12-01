@@ -52,7 +52,13 @@ class VicxUserTest {
     void constructor_givenValidValues_expectPopulatedInstance(boolean addImage) {
         var image = addImage ? mock(UserImage.class) : null;
 
-        var sut = new VicxUser(userName, VALID_BCRYPT_PASSWORD, name, email, image);
+        var sut = VicxUser.builder()
+                .username(userName)
+                .password(VALID_BCRYPT_PASSWORD)
+                .name(name)
+                .email(email)
+                .userImage(image)
+                .build();
 
         assertEquals(userName, sut.getUsername());
         assertEquals(VALID_BCRYPT_PASSWORD, sut.getPassword());

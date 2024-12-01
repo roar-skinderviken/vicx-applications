@@ -16,7 +16,6 @@ import java.io.IOException;
 @Transactional
 @Service
 public class UserService {
-
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
@@ -26,13 +25,15 @@ public class UserService {
     }
 
     public VicxUser createUser(UserVm userVm, MultipartFile image) throws IOException {
-        var user = userVm.toNewVicxUser(passwordEncoder);
-
-        if (image != null && !image.isEmpty()) {
-            user.setUserImage(new UserImage(image.getBytes(), image.getContentType()));
-        }
-
-        return userRepository.save(user);
+        return userRepository.save(VicxUser.builder()
+                .username(userVm.username())
+                .password(passwordEncoder.encode(userVm.password()))
+                .name(userVm.name())
+                .email(userVm.email())
+                .userImage(image != null && !image.isEmpty()
+                        ? new UserImage(image.getBytes(), image.getContentType())
+                        : null)
+                .build());
     }
 
     public VicxUser getUserByUserName(String username) {
