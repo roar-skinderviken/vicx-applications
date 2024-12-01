@@ -10,19 +10,22 @@ import org.springframework.mock.web.MockMultipartFile;
 import java.io.IOException;
 import java.util.stream.Stream;
 
+import static no.vicx.database.user.VicxUser.VALID_BCRYPT_PASSWORD;
+import static no.vicx.database.user.VicxUser.VALID_PLAINTEXT_PASSWORD;
+
 public final class UserTestUtils {
 
     private UserTestUtils() {
     }
 
     public static VicxUser createValidVicxUser() {
-        return new VicxUser("user1", "P4ssword",
+        return new VicxUser("user1", VALID_BCRYPT_PASSWORD,
                 "The User", "user@example.com", null);
     }
 
     public static final UserVm VALID_USER_VM = new UserVm(
             "user1",
-            "P4ssword",
+            VALID_PLAINTEXT_PASSWORD,
             "The User",
             "user@example.com",
             "mock-token");

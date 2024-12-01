@@ -32,6 +32,7 @@ import java.util.stream.Stream;
 
 import static no.vicx.backend.user.UserController.USER_CREATED_BODY_TEXT;
 import static no.vicx.backend.user.UserTestUtils.*;
+import static no.vicx.database.user.VicxUser.VALID_PLAINTEXT_PASSWORD;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
@@ -151,27 +152,27 @@ class UserControllerPostTest {
     static Stream<Arguments> invalidUserVmProvider() {
         return Stream.of(
                 Arguments.of(
-                        new UserVm(null, "P4ssword", "The User", "user@example.com", "mock-token"),
+                        new UserVm(null, VALID_PLAINTEXT_PASSWORD, "The User", "user@example.com", "mock-token"),
                         "username", "Username cannot be null"
                 ),
                 Arguments.of(
-                        new UserVm(" ".repeat(4), "P4ssword", "The User", "user@example.com", "mock-token"),
+                        new UserVm(" ".repeat(4), VALID_PLAINTEXT_PASSWORD, "The User", "user@example.com", "mock-token"),
                         "username", "Username can only contain letters, numbers, hyphens, and underscores"
                 ),
                 Arguments.of(
-                        new UserVm("a", "P4ssword", "The User", "user@example.com", "mock-token"),
+                        new UserVm("a", VALID_PLAINTEXT_PASSWORD, "The User", "user@example.com", "mock-token"),
                         "username", "It must have minimum 4 and maximum 255 characters"
                 ),
                 Arguments.of(
-                        new UserVm("a".repeat(256), "P4ssword", "The User", "user@example.com", "mock-token"),
+                        new UserVm("a".repeat(256), VALID_PLAINTEXT_PASSWORD, "The User", "user@example.com", "mock-token"),
                         "username", "It must have minimum 4 and maximum 255 characters"
                 ),
                 Arguments.of(
-                        new UserVm("John Doe", "P4ssword", "The User", "user@example.com", "mock-token"),
+                        new UserVm("John Doe", VALID_PLAINTEXT_PASSWORD, "The User", "user@example.com", "mock-token"),
                         "username", "Username can only contain letters, numbers, hyphens, and underscores"
                 ),
                 Arguments.of(
-                        new UserVm("John:Doe", "P4ssword", "The User", "user@example.com", "mock-token"),
+                        new UserVm("John:Doe", VALID_PLAINTEXT_PASSWORD, "The User", "user@example.com", "mock-token"),
                         "username", "Username can only contain letters, numbers, hyphens, and underscores"
                 ),
 
@@ -193,37 +194,37 @@ class UserControllerPostTest {
                 ),
 
                 Arguments.of(
-                        new UserVm("user1", "P4ssword", null, "user@example.com", "mock-token"),
+                        new UserVm("user1", VALID_PLAINTEXT_PASSWORD, null, "user@example.com", "mock-token"),
                         "name", "Cannot be null"
                 ),
                 Arguments.of(
-                        new UserVm("user1", "P4ssword", "a".repeat(3), "user@example.com", "mock-token"),
+                        new UserVm("user1", VALID_PLAINTEXT_PASSWORD, "a".repeat(3), "user@example.com", "mock-token"),
                         "name", "It must have minimum 4 and maximum 255 characters"
                 ),
                 Arguments.of(
-                        new UserVm("user1", "P4ssword", "a".repeat(256), "user@example.com", "mock-token"),
+                        new UserVm("user1", VALID_PLAINTEXT_PASSWORD, "a".repeat(256), "user@example.com", "mock-token"),
                         "name", "It must have minimum 4 and maximum 255 characters"
                 ),
 
                 Arguments.of(
-                        new UserVm("user1", "P4ssword", "The User", null, "mock-token"),
+                        new UserVm("user1", VALID_PLAINTEXT_PASSWORD, "The User", null, "mock-token"),
                         "email", "Cannot be null"
                 ),
                 Arguments.of(
-                        new UserVm("user1", "P4ssword", "The User", "a", "mock-token"),
+                        new UserVm("user1", VALID_PLAINTEXT_PASSWORD, "The User", "a", "mock-token"),
                         "email", "It must be a well-formed email address"
                 ),
 
                 Arguments.of(
-                        new UserVm("user1", "P4ssword", "The User", "user@example.com", null),
+                        new UserVm("user1", VALID_PLAINTEXT_PASSWORD, "The User", "user@example.com", null),
                         "recaptchaToken", "reCAPTCHA cannot be null or blank"
                 ),
                 Arguments.of(
-                        new UserVm("user1", "P4ssword", "The User", "user@example.com", ""),
+                        new UserVm("user1", VALID_PLAINTEXT_PASSWORD, "The User", "user@example.com", ""),
                         "recaptchaToken", "reCAPTCHA cannot be null or blank"
                 ),
                 Arguments.of(
-                        new UserVm("user1", "P4ssword", "The User", "user@example.com", "  "),
+                        new UserVm("user1", VALID_PLAINTEXT_PASSWORD, "The User", "user@example.com", "  "),
                         "recaptchaToken", "reCAPTCHA cannot be null or blank"
                 )
         );

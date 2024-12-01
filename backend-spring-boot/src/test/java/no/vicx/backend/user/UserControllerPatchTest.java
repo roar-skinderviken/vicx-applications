@@ -21,6 +21,7 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 
 import java.util.stream.Stream;
 
+import static no.vicx.database.user.VicxUser.VALID_PLAINTEXT_PASSWORD;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -79,8 +80,8 @@ class UserControllerPatchTest {
 
     private static Stream<Arguments> validUserPatchRequestsSource() {
         return Stream.of(
-                Arguments.of(new UserPatchRequestVm("P4ssword", "~name~", "foo@bar.com")),
-                Arguments.of(new UserPatchRequestVm("P4ssword", null, null)),
+                Arguments.of(new UserPatchRequestVm(VALID_PLAINTEXT_PASSWORD, "~name~", "foo@bar.com")),
+                Arguments.of(new UserPatchRequestVm(VALID_PLAINTEXT_PASSWORD, null, null)),
                 Arguments.of(new UserPatchRequestVm(null, "~name~", null)),
                 Arguments.of(new UserPatchRequestVm(null, null, "foo@bar.com"))
         );

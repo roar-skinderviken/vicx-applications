@@ -4,6 +4,8 @@ import org.springframework.core.io.ClassPathResource;
 
 import java.io.IOException;
 
+import static no.vicx.database.user.VicxUser.VALID_BCRYPT_PASSWORD;
+
 public final class RepositoryTestUtils {
 
     private RepositoryTestUtils() {
@@ -11,7 +13,7 @@ public final class RepositoryTestUtils {
 
     static VicxUser createValidUser() {
         return new VicxUser(
-                "user1", "password1", "Foo Bar", "user1@vicx.no", null);
+                "user1", VALID_BCRYPT_PASSWORD, "Foo Bar", "user1@vicx.no", null);
     }
 
     static UserImage createUserImage() throws IOException {

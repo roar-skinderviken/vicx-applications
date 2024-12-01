@@ -19,6 +19,8 @@ import java.io.IOException;
 import java.util.Optional;
 
 import static no.vicx.backend.user.UserTestUtils.*;
+import static no.vicx.database.user.VicxUser.VALID_BCRYPT_PASSWORD;
+import static no.vicx.database.user.VicxUser.VALID_PLAINTEXT_PASSWORD;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.openMocks;
@@ -50,20 +52,20 @@ class UserServiceTest {
     @MethodSource("no.vicx.backend.user.UserTestUtils#mockMultipartFileProvider")
     void createUser_givenValidUser_shouldCreateUserInDatabase(MockMultipartFile imageFile) throws IOException {
         var expectedUser = createValidVicxUser();
-        expectedUser.setPassword("encoded");
+        expectedUser.setPassword(VALID_BCRYPT_PASSWORD);
 
-        when(passwordEncoder.encode("P4ssword")).thenReturn("encoded");
+        when(passwordEncoder.encode(VALID_PLAINTEXT_PASSWORD)).thenReturn(VALID_BCRYPT_PASSWORD);
         when(userRepository.save(any())).thenReturn(expectedUser);
 
         sut.createUser(VALID_USER_VM, imageFile);
 
-        verify(passwordEncoder, times(1)).encode("P4ssword");
+        verify(passwordEncoder, times(1)).encode(VALID_PLAINTEXT_PASSWORD);
 
         var userCaptor = ArgumentCaptor.forClass(VicxUser.class);
         verify(userRepository, times(1)).save(userCaptor.capture());
 
         var capturedUser = userCaptor.getValue();
-        assertEquals("encoded", capturedUser.getPassword());
+        assertEquals(VALID_BCRYPT_PASSWORD, capturedUser.getPassword());
 
         if (imageFile == null || imageFile.isEmpty()) {
             assertNull(capturedUser.getUserImage());
@@ -92,16 +94,16 @@ class UserServiceTest {
 
     @Test
     void updateUser_givenExistingUser_shouldUpdateUserInDatabase() {
-        var patchVm = new UserPatchRequestVm("P4ssword", "~name~", "foo@bar.com");
+        var patchVm = new UserPatchRequestVm(VALID_PLAINTEXT_PASSWORD, "~name~", "foo@bar.com");
         var userInTest = createValidVicxUser();
 
-        when(passwordEncoder.encode("P4ssword")).thenReturn("encoded");
+        when(passwordEncoder.encode(VALID_PLAINTEXT_PASSWORD)).thenReturn(VALID_BCRYPT_PASSWORD);
         when(userRepository.findByUsername("user1")).thenReturn(Optional.of(userInTest));
         when(userRepository.save(any())).thenReturn(userInTest);
 
         sut.updateUser(patchVm, "user1");
 
-        verify(passwordEncoder).encode("P4ssword");
+        verify(passwordEncoder).encode(VALID_PLAINTEXT_PASSWORD);
         verify(userRepository).save(userInTest);
     }
 }

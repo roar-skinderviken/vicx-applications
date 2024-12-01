@@ -7,6 +7,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import static no.vicx.backend.user.UserTestUtils.VALID_USER_VM;
 import static no.vicx.backend.user.UserTestUtils.createValidVicxUser;
+import static no.vicx.database.user.VicxUser.VALID_BCRYPT_PASSWORD;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
@@ -25,13 +26,13 @@ class UserVmTest {
 
     @Test
     void toNewVicxUser_givenFullyPopulatedVm_expectPopulatedTarget() {
-        when(passwordEncoder.encode(anyString())).thenReturn("~encoded-password~");
+        when(passwordEncoder.encode(anyString())).thenReturn(VALID_BCRYPT_PASSWORD);
 
         var vicxUser = VALID_USER_VM.toNewVicxUser(passwordEncoder);
 
         assertNotNull(vicxUser);
         assertEquals(VALID_USER_VM.username(), vicxUser.getUsername());
-        assertEquals("~encoded-password~", vicxUser.getPassword());
+        assertEquals(VALID_BCRYPT_PASSWORD, vicxUser.getPassword());
         assertEquals(VALID_USER_VM.name(), vicxUser.getName());
         assertEquals(VALID_USER_VM.email(), vicxUser.getEmail());
 
