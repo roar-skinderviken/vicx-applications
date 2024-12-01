@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Import;
 
 import java.io.IOException;
 
-import static no.vicx.database.user.RepositoryTestUtils.createUserImage;
+import static no.vicx.database.user.RepositoryTestUtils.createPngUserImage;
 import static no.vicx.database.user.RepositoryTestUtils.createValidUser;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -26,9 +26,8 @@ class UserImageRepositoryTest {
 
     @Test
     void findByUserUsername_givenUserInDatabase_expectUser() throws IOException {
-        var userInTest = createValidUser();
-        var imageInTest = createUserImage();
-        userInTest.setUserImage(imageInTest);
+        var imageInTest = createPngUserImage();
+        var userInTest = createValidUser(imageInTest);
 
         entityManager.persist(userInTest);
 
@@ -39,14 +38,13 @@ class UserImageRepositoryTest {
 
         assertNotNull(imageInDb.getUser());
         assertNotNull(imageInDb.getId());
-        assertEquals(imageInTest.getImageData(),imageInDb.getImageData());
-        assertEquals(imageInTest.getContentType(),imageInDb.getContentType());
+        assertEquals(imageInTest.getImageData(), imageInDb.getImageData());
+        assertEquals(imageInTest.getContentType(), imageInDb.getContentType());
     }
 
     @Test
     void deleteByUserUsername_givenUserInDatabase_expectImageToBeDeleted() throws IOException {
-        var user = createValidUser();
-        user.setUserImage(createUserImage());
+        var user = createValidUser(createPngUserImage());
         entityManager.persist(user);
 
         sut.deleteByUserUsername(user.getUsername());
