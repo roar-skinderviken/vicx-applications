@@ -58,7 +58,7 @@ public class VicxUser {
      * @param name      the full name of the user; must not be null.
      * @param email     the user's email address; must not be null.
      * @param userImage the associated user image, or null if not applicable.
-     * @throws NullPointerException if {@code username}, {@code password}, {@code name}, or {@code email} is null.
+     * @throws NullPointerException     if {@code username}, {@code password}, {@code name}, or {@code email} is null.
      * @throws IllegalArgumentException if {@code password} is not encrypted.
      */
     @Builder
@@ -78,10 +78,15 @@ public class VicxUser {
     }
 
     public void setUserImage(final UserImage userImage) {
-        if (userImage != null) {
+        if (userImage == null) {
+            this.userImage = null;
+        } else if (this.userImage != null) {
+            this.userImage.setImageData(userImage.getImageData());
+            this.userImage.setContentType(userImage.getContentType());
+        } else {
             userImage.setUser(this);
+            this.userImage = userImage;
         }
-        this.userImage = userImage;
     }
 
     private static final Pattern BCRYPT_PATTERN = Pattern.compile("^\\$2[ayb]?\\$\\d{2}\\$.{53}$");

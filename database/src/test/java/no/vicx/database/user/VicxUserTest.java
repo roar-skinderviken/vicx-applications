@@ -6,11 +6,14 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.io.IOException;
 import java.util.stream.Stream;
 
+import static no.vicx.database.user.RepositoryTestUtils.*;
 import static no.vicx.database.user.VicxUser.*;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 class VicxUserTest {
 
@@ -38,13 +41,31 @@ class VicxUserTest {
     }
 
     @Test
-    void setUserImage_givenNonNullImage_expectSetUserOnImageToBeInvoked() {
-        var image = mock(UserImage.class);
-        var sut = new VicxUser();
+    void setUserImage_givenUserWithImage_expectUserWithoutImage() throws IOException {
+        var sut = createValidUser(createPngUserImage());
 
-        sut.setUserImage(image);
+        sut.setUserImage(null);
 
-        verify(image).setUser(sut);
+        assertNull(sut.getUserImage());
+    }
+
+    @Test
+    void setUserImage_givenUserWithImage_expectUpdatedImage() throws IOException {
+        var sut = createValidUser(createPngUserImage());
+
+        sut.setUserImage(createJpegUserImage());
+
+        assertEquals(IMAGE_JPEG, sut.getUserImage().getContentType());
+    }
+
+    @Test
+    void setUserImage_givenUserWithoutImage_expectAddedImage() {
+        var mockImage = mock(UserImage.class);
+        var sut = createValidUser(null);
+
+        sut.setUserImage(mockImage);
+
+        verify(mockImage).setUser(sut);
     }
 
     @ParameterizedTest
@@ -96,7 +117,7 @@ class VicxUserTest {
                 Arguments.of(userName, VALID_BCRYPT_PASSWORD, name, null, EMAIL_MUST_NOT_BE_NULL, NullPointerException.class)
         );
     }
-
+    
     private static final String userName = "~username~";
     private static final String name = "~name~";
     private static final String email = "~email~";
