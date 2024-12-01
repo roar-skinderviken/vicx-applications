@@ -13,14 +13,11 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ProfileImage {
     String message() default "";
-
-    String invalidFileTypeMessage() default "";
-
-    String invalidSizeMessage() default "";
+    String invalidFileTypeMessage() default "{vicx.constraints.ProfileImage.type.message}";
+    String invalidSizeMessage() default "{vicx.constraints.ProfileImage.size.message}";
+    long maxFileSize() default 50 * 1024; // Default: 50KB
 
     Class<?>[] groups() default {};
 
     Class<? extends Payload>[] payload() default {};
-
-    long maxFileSize() default 50 * 1024; // Default: 50KB
 }

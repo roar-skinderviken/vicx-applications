@@ -1,7 +1,7 @@
-package no.vicx.backend.user;
+package no.vicx.backend.user.service;
 
 import no.vicx.backend.error.NotFoundException;
-import no.vicx.backend.user.service.UserService;
+import no.vicx.backend.user.vm.UserPatchRequestVm;
 import no.vicx.database.user.UserRepository;
 import no.vicx.database.user.VicxUser;
 import org.junit.jupiter.api.AfterEach;
@@ -49,14 +49,13 @@ class UserServiceTest {
     @ParameterizedTest
     @MethodSource("no.vicx.backend.user.UserTestUtils#mockMultipartFileProvider")
     void createUser_givenValidUser_shouldCreateUserInDatabase(MockMultipartFile imageFile) throws IOException {
-        var userVmInTest = VALID_USER_VM;
-        var expectedUser = userVmInTest.toNewVicxUser();
+        var expectedUser = createValidVicxUser();
         expectedUser.setPassword("encoded");
 
         when(passwordEncoder.encode("P4ssword")).thenReturn("encoded");
         when(userRepository.save(any())).thenReturn(expectedUser);
 
-        sut.createUser(userVmInTest, imageFile);
+        sut.createUser(VALID_USER_VM, imageFile);
 
         verify(passwordEncoder, times(1)).encode("P4ssword");
 
@@ -82,7 +81,7 @@ class UserServiceTest {
 
     @Test
     void getUser_givenExistingUser_expectUser() {
-        var userInTest = VALID_USER_VM.toNewVicxUser();
+        var userInTest = createValidVicxUser();
 
         when(userRepository.findByUsername("user1")).thenReturn(Optional.of(userInTest));
 
@@ -93,19 +92,16 @@ class UserServiceTest {
 
     @Test
     void updateUser_givenExistingUser_shouldUpdateUserInDatabase() {
-        var userVmInTest = VALID_USER_VM;
-        var userInTest = userVmInTest.toNewVicxUser();
+        var patchVm = new UserPatchRequestVm("P4ssword", "~name~", "foo@bar.com");
+        var userInTest = createValidVicxUser();
 
         when(passwordEncoder.encode("P4ssword")).thenReturn("encoded");
         when(userRepository.findByUsername("user1")).thenReturn(Optional.of(userInTest));
         when(userRepository.save(any())).thenReturn(userInTest);
 
-        var updatedUser = sut.updateUser(userVmInTest);
+        sut.updateUser(patchVm, "user1");
 
-        assertNotNull(updatedUser);
-        assertEquals("encoded", updatedUser.getPassword());
-
-        verify(passwordEncoder, times(1)).encode("P4ssword");
-        verify(userRepository, times(1)).save(userInTest);
+        verify(passwordEncoder).encode("P4ssword");
+        verify(userRepository).save(userInTest);
     }
 }

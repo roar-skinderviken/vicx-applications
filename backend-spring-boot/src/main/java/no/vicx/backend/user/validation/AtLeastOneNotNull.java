@@ -8,16 +8,12 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Constraint(validatedBy = RecaptchaThenUniqueUsernameValidator.class)
+@Constraint(validatedBy = AtLeastOneNotNullValidator.class)
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface RecaptchaThenUniqueUsername {
-    String message() default "";
-    String recaptchaMessage() default "{vicx.constraints.reCAPTCHA.message}";
-    int usernameMinLength() default 4;
-    String uniqueUsernameMessage() default "{vicx.constraints.username.UniqueUsername.message}";
-
+public @interface AtLeastOneNotNull {
+    String message() default "{vicx.constraints.AtLeastOneNotNull.message}";
+    String propertyNodeName() default "patchRequestBody";
     Class<?>[] groups() default {};
-
     Class<? extends Payload>[] payload() default {};
 }

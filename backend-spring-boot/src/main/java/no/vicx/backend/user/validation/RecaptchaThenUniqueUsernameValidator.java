@@ -33,8 +33,7 @@ public class RecaptchaThenUniqueUsernameValidator implements ConstraintValidator
                 || value.recaptchaToken().isBlank()
                 || value.username() == null
                 || value.username().isBlank()
-                || value.username().length() < usernameMinLength
-        ) {
+                || value.username().length() < usernameMinLength) {
             return true; // let other validators handle this
         }
 
