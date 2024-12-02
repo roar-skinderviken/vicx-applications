@@ -14,7 +14,7 @@ scikit-learn = "^1.5.2"
 
 
 [tool.poetry.group.dev.dependencies]
-pytest = "^8.3.3"
+pytest = "^8.3.4"
 
 [build-system]
 requires = ["poetry-core"]
