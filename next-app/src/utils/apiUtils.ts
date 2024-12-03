@@ -5,15 +5,21 @@ import { CustomSession } from "@/types/authTypes"
 
 const SPRING_BACKEND_BASE_URL = process.env.SPRING_BACKEND_BASE_URL || ""
 
-export const createHeaders = (accessToken: string) => ({
+type SupportedHttpMethods = "PATCH" | "GET" | "POST" | "PUT" | "DELETE"
+
+export const createHeaders = (
+    accessToken: string,
+    contentType?: string
+) => ({
     Authorization: `Bearer ${accessToken}`,
-    "Content-Type": "application/json",
+    ...(contentType && { "Content-Type": contentType }),
 })
 
-export async function handleRequest(
+export async function forwardRequest(
     request: NextRequest,
     endpoint: string,
-    method: "PATCH" | "GET" | "POST" | "PUT" | "DELETE" = "PATCH"
+    method: SupportedHttpMethods,
+    contentType?: string
 ) {
     const session = (await getServerSession(authOptions)) as CustomSession | null
     const accessToken = session?.accessToken
@@ -24,9 +30,8 @@ export async function handleRequest(
 
     const fetchOptions = {
         method,
-        headers: createHeaders(accessToken),
-        body: request.body,
-        duplex: "half" as const,
+        headers: createHeaders(accessToken, contentType),
+        ...(contentType && { body: request.body, duplex: "half" as const }),
     }
 
     try {

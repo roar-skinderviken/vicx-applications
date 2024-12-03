@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server"
-import { handleRequest } from "@/utils/apiUtils"
+import { forwardRequest } from "@/utils/apiUtils"
 
 export async function PATCH(request: NextRequest) {
-    return handleRequest(request, "/api/user", "PATCH")
+    return forwardRequest(request, "/api/user", "PATCH", "application/json")
 }
