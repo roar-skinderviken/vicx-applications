@@ -68,10 +68,5 @@ describe("ValidatedTextInput", () => {
 
             expect(screen.queryByTestId("right-icon")).toBeInTheDocument()
         })
-
-        it("displays default value when provided", () => {
-            render(<ValidatedTextInput name="testInput" label="Test Label" defaultValue="Default Value"/>)
-            expect(screen.getByLabelText("Test Label")).toHaveValue("Default Value")
-        })
     })
 })

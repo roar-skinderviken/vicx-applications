@@ -77,7 +77,7 @@ describe("UserSignupForm", () => {
             expect(screen.queryByText("Mock ReCAPTCHA")).toBeInTheDocument()
         })
 
-        it("has submit button", () => {
+        it("has a disabled submit button", () => {
             const submitButton = screen.queryByRole("button")
             expect(submitButton).toBeInTheDocument()
             expect(submitButton).toBeDisabled()

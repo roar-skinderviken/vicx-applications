@@ -39,7 +39,7 @@ const UserSignupForm = ({reCaptchaSiteKey}: { reCaptchaSiteKey: string }) => {
         handleSubmit,
         formState,
         formState: {
-            errors,
+            errors
         },
         register,
         watch,

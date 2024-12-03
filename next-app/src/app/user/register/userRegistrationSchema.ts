@@ -23,6 +23,7 @@ export const UserRegistrationSchema = yup.object({
 
     email: yup
         .string()
+        .trim()
         .required("Email is required")
         .email("Please enter a valid email address"),
 

@@ -1,6 +1,7 @@
 package no.vicx.backend.user.service;
 
 import no.vicx.backend.error.NotFoundException;
+import no.vicx.backend.user.vm.ChangePasswordVm;
 import no.vicx.backend.user.vm.UserPatchRequestVm;
 import no.vicx.backend.user.vm.UserVm;
 import no.vicx.database.user.UserImage;
@@ -42,6 +43,16 @@ public class UserService {
     }
 
     public void updateUser(UserPatchRequestVm requestVm, String username) {
+        userRepository.save(requestVm.applyPatch(getUserByUserName(username)));
+    }
+
+    public boolean isValidPassword(String username, String clearTextPassword) {
+        return passwordEncoder.matches(
+                clearTextPassword,
+                getUserByUserName(username).getPassword());
+    }
+
+    public void updatePassword(ChangePasswordVm requestVm, String username) {
         userRepository.save(requestVm.applyPatch(
                 getUserByUserName(username),
                 passwordEncoder));
