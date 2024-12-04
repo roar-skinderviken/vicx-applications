@@ -1,6 +1,6 @@
 package no.vicx.backend.user;
 
-import no.vicx.backend.user.vm.UserVm;
+import no.vicx.backend.user.vm.CreateUserVm;
 import no.vicx.database.user.VicxUser;
 import org.junit.jupiter.params.provider.Arguments;
 import org.springframework.core.io.ClassPathResource;
@@ -23,7 +23,7 @@ public final class UserTestUtils {
                 "The User", "user@example.com", null);
     }
 
-    public static final UserVm VALID_USER_VM = new UserVm(
+    public static final CreateUserVm VALID_USER_VM = new CreateUserVm(
             "user1",
             VALID_PLAINTEXT_PASSWORD,
             "The User",
@@ -44,8 +44,9 @@ public final class UserTestUtils {
         );
     }
 
-    static MockMultipartFile createMultipartFile(
-            String fileName, String fileContentType) throws IOException {
+    public static MockMultipartFile createMultipartFile(
+            String fileName,
+            String fileContentType) throws IOException {
         return new MockMultipartFile(
                 "image",
                 fileName,

@@ -11,14 +11,19 @@ const InvisibleIcon = () => (
     </svg>
 )
 
-const ValidatedTextInput = ({name, label, defaultValue, type = "text", errorMessage}: {
+const ValidatedTextInput = ({name, label, type = "text", errorMessage}: {
     name: string
-    label: string
-    defaultValue?: string
+    label?: string
     type?: string,
     errorMessage?: string
 }) => {
-    const {register, watch, formState: {errors}} = useFormContext()
+    const {
+        register,
+        watch,
+        formState: {
+            errors
+        }
+    } = useFormContext()
     const value = watch(name)
 
     let helperText
@@ -32,14 +37,15 @@ const ValidatedTextInput = ({name, label, defaultValue, type = "text", errorMess
 
     return (
         <div className="flex flex-col">
-            <Label
+            {label && <Label
                 htmlFor={name}
                 className={`mb-1 text-left ${errors[name] ? "text-red-500" : "text-gray-700"}`}
                 color={errors[name] ? "failure" : "success"}
                 value={label}
-            />
+            />}
             <TextInput
                 id={name}
+                data-testid={`${name}-input`}
                 {...register(name)}
                 color={errors[name] ? "failure" : "success"}
                 rightIcon={
@@ -47,7 +53,6 @@ const ValidatedTextInput = ({name, label, defaultValue, type = "text", errorMess
                         ? HiExclamationCircle
                         : value ? HiCheck : InvisibleIcon
                 }
-                defaultValue={defaultValue}
                 type={type}
                 sizing="md"
                 helperText={helperText}

@@ -74,7 +74,7 @@ class CalculatorServiceTest {
 
         sut.deleteByIds(idsToDelete);
 
-        verify(calculatorRepository, times(1)).deleteByIdIn(idsToDelete);
+        verify(calculatorRepository).deleteByIdIn(idsToDelete);
     }
 
     @Test
@@ -107,7 +107,7 @@ class CalculatorServiceTest {
 
         // Assert
         assertEquals(expectedResult, calcVm.result());
-        verify(calculatorRepository, times(1)).save(any(CalcEntry.class));
+        verify(calculatorRepository).save(any(CalcEntry.class));
     }
 
     private static Stream<Arguments> provideTestParameters() {

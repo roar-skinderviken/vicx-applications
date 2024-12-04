@@ -8,15 +8,15 @@ import {CustomSession} from "@/types/authTypes"
 import {changeInputValue, delayedResponse} from "@/testUtils"
 import {REFRESH_ACCESS_TOKEN_ERROR} from "@/auth/tokenUtils"
 
-jest.mock("next-auth/react", () => ({
-    getSession: jest.fn(),
-    signOut: jest.fn()
-}))
-
 const setupForSubmit = async () => {
     await changeInputValue("First Value", "1")
     await changeInputValue("Second Value", "2")
 }
+
+jest.mock("next-auth/react", () => ({
+    getSession: jest.fn(),
+    signOut: jest.fn()
+}))
 
 const mockGetSession = getSession as jest.Mock
 const mockSignOut = signOut as jest.Mock

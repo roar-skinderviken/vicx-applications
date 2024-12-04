@@ -4,10 +4,9 @@ export interface SessionUser extends User {
     roles?: string[]
 }
 
-export interface CustomSession extends  Omit<Session, "user"> {
+export interface CustomSession extends Session {
     user?: SessionUser
     provider?: string
     accessToken?: string
     error?: string
 }
-

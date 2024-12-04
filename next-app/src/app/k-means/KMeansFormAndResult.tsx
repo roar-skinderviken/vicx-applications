@@ -66,7 +66,10 @@ const KMeansFormAndResult = () => {
 
     const methods = useForm<KMeansFormData>({
         resolver: yupResolver(kMeansSchema),
-        mode: "onChange"
+        mode: "onChange",
+        defaultValues: {
+            maxIter: 300
+        }
     })
 
     const {handleSubmit, formState} = methods
@@ -107,7 +110,7 @@ const KMeansFormAndResult = () => {
                             <ValidatedTextInput label="Max Score" name="maxScore"/>
                             <ValidatedTextInput label="Fail Score" name="failScore"/>
                             <ValidatedTextInput label="Scores (comma separated)" name="scores"/>
-                            <ValidatedTextInput label="Max Iterations" name="maxIter" defaultValue="300"/>
+                            <ValidatedTextInput label="Max Iterations" name="maxIter"/>
                             <ButtonWithSpinner
                                 disabled={!formState.isValid}
                                 buttonText="Submit"
