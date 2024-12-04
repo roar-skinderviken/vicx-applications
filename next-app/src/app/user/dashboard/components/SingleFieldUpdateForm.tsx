@@ -19,23 +19,20 @@ type SingleFieldUpdateFormProps<T extends yup.AnyObjectSchema> = {
         type?: "text" | "password"
     }>
     endpoint: string
-    onUpdateSuccess?: () => void
-    onEndEdit: () => void
+    onUpdateSuccess: (message: string) => void
+    onCancel: () => void
     resetFormAfterSubmit?: boolean
 }
 
 const SingleFieldUpdateForm = <T extends yup.AnyObjectSchema>({
-                                                          schema,
-                                                          defaultValues,
-                                                          fields,
-                                                          endpoint,
-                                                          onUpdateSuccess = () => {
-                                                          },
-                                                          onEndEdit,
-                                                          resetFormAfterSubmit = false,
-                                                      }: SingleFieldUpdateFormProps<T>) => {
+                                                                  schema,
+                                                                  defaultValues,
+                                                                  fields,
+                                                                  endpoint,
+                                                                  onUpdateSuccess,
+                                                                  onCancel
+                                                              }: SingleFieldUpdateFormProps<T>) => {
     const [isLoading, setIsLoading] = useState(false)
-    const [result, setResult] = useState<string>()
     const [validationErrors, setValidationErrors] = useState<Record<string, string>>()
 
     const methods = useForm<yup.InferType<T>>({
@@ -61,7 +58,6 @@ const SingleFieldUpdateForm = <T extends yup.AnyObjectSchema>({
 
     const onSubmit = async (formData: yup.InferType<T>) => {
         setIsLoading(true)
-        setResult(undefined)
 
         getSession()
             .then(extractUserOrSignOut)
@@ -73,31 +69,18 @@ const SingleFieldUpdateForm = <T extends yup.AnyObjectSchema>({
                 })
             )
             .then(async (response) => {
-                if (!response.ok) {
-                    throw await response.json()
-                }
+                if (!response.ok) throw await response.json()
                 return response.text()
             })
-            .then((data) => {
-                setResult(data)
-                onUpdateSuccess()
-                if (resetFormAfterSubmit) methods.reset(defaultValues)
-            })
+            .then((data) => onUpdateSuccess(data))
             .catch(error => {
-                if (error.validationErrors) {
-                    setValidationErrors(error.validationErrors)
-                }
+                if (error.validationErrors) setValidationErrors(error.validationErrors)
             })
             .finally(() => setIsLoading(false))
     }
 
     return (
         <Card className="max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl m-2 w-full">
-            {result && (
-                <div className="mb-4 text-center text-green-600">
-                    Successfully updated!
-                </div>
-            )}
             <FormProvider {...methods}>
                 <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4">
                     <div className="flex items-start gap-2">
@@ -118,7 +101,7 @@ const SingleFieldUpdateForm = <T extends yup.AnyObjectSchema>({
                                 disabled={isSubmitDisabled}
                                 className="w-24"
                             />
-                            <Button onClick={onEndEdit}>Close</Button>
+                            <Button onClick={onCancel}>Cancel</Button>
                         </div>
                     </div>
 

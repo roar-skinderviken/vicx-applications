@@ -16,13 +16,13 @@ import fallbackProfileImage from "@/assets/images/profile.png"
 import {signIn} from "next-auth/react"
 import {signInOptions} from "@/components/navbar/navbarConstants"
 import {DEFAULT_OAUTH_CLIENT_ID} from "@/auth/authProviders"
-import {UserRegistrationSchema} from "@/app/user/register/userRegistrationSchema"
+import {userRegistrationSchema} from "@/app/user/register/userRegistrationSchema"
 
 // put this in next-app/.env.local
 // NEXT_PUBLIC_USER_BACKEND_URL=http://localhost:8080/api/user
 const BACKEND_URL = process.env.NEXT_PUBLIC_USER_BACKEND_URL || "/backend-spring-boot/api/user"
 
-type UserSignupFormData = InferType<typeof UserRegistrationSchema>
+type UserSignupFormData = InferType<typeof userRegistrationSchema>
 
 const UserSignupForm = ({reCaptchaSiteKey}: { reCaptchaSiteKey: string }) => {
     const [profileImage, setProfileImage] = useState<string | undefined>(undefined)
@@ -31,7 +31,7 @@ const UserSignupForm = ({reCaptchaSiteKey}: { reCaptchaSiteKey: string }) => {
     const [validationErrors, setValidationErrors] = useState<Record<string, string>>()
 
     const methods = useForm<UserSignupFormData>({
-        resolver: yupResolver(UserRegistrationSchema),
+        resolver: yupResolver(userRegistrationSchema),
         mode: "onChange"
     })
 
@@ -145,7 +145,7 @@ const UserSignupForm = ({reCaptchaSiteKey}: { reCaptchaSiteKey: string }) => {
                         <ValidatedTextInput label="Name" name="name"/>
                         <ValidatedTextInput label="Email" name="email"/>
                         <ValidatedTextInput label="Password" name="password" type="password"/>
-                        <ValidatedTextInput label="Repeat Password" name="repeat_password" type="password"/>
+                        <ValidatedTextInput label="Repeat Password" name="confirmPassword" type="password"/>
 
                         <div className="flex flex-col">
                             <Label

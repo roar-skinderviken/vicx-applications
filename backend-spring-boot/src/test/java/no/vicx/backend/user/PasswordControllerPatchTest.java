@@ -1,9 +1,7 @@
 package no.vicx.backend.user;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import no.vicx.backend.config.SecurityConfig;
+import no.vicx.backend.BaseWebMvcTest;
 import no.vicx.backend.error.ApiError;
-import no.vicx.backend.testconfiguration.TestSecurityConfig;
 import no.vicx.backend.user.service.UserService;
 import no.vicx.backend.user.vm.ChangePasswordVm;
 import org.junit.jupiter.api.Test;
@@ -11,17 +9,17 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
+import java.util.Collections;
 import java.util.stream.Stream;
 
+import static no.vicx.backend.testconfiguration.TestSecurityConfig.AUTH_HEADER_IN_TEST;
+import static no.vicx.backend.testconfiguration.TestSecurityConfig.createJwtInTest;
 import static no.vicx.database.user.VicxUser.VALID_PLAINTEXT_PASSWORD;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -32,22 +30,24 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(PasswordController.class)
-@Import({SecurityConfig.class, TestSecurityConfig.class})
-class PasswordControllerPatchTest {
-
-    @Autowired
-    MockMvc mockMvc;
-
-    @Autowired
-    ObjectMapper objectMapper;
+class PasswordControllerPatchTest extends BaseWebMvcTest {
 
     @MockitoBean
     UserService userService;
 
     @Test
-    void patchName_givenUnauthorizedRequest_expectUnauthorized() throws Exception {
+    void changePassword_givenNoAuthHeader_expectUnauthorized() throws Exception {
         mockMvc.perform(createValidChangePasswordRequest("{}", false))
                 .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void changePassword_givenUserWithoutRequiredRole_expectForbidden() throws Exception {
+        when(jwtDecoder.decode(anyString()))
+                .thenReturn(createJwtInTest(Collections.emptyList()));
+
+        mockMvc.perform(createValidChangePasswordRequest("{}", true))
+                .andExpect(status().isForbidden());
     }
 
     @ParameterizedTest
@@ -118,16 +118,16 @@ class PasswordControllerPatchTest {
 
                 Arguments.of(
                         new ChangePasswordVm("~current-password~", null),
-                        "newPassword", "Cannot be null"),
+                        "password", "Cannot be null"),
                 Arguments.of(
                         new ChangePasswordVm("~current-password~", "Aa1Aa1"),
-                        "newPassword", "It must have minimum 8 and maximum 255 characters"),
+                        "password", "It must have minimum 8 and maximum 255 characters"),
                 Arguments.of(
                         new ChangePasswordVm("~current-password~", "Aa1".repeat(90)),
-                        "newPassword", "It must have minimum 8 and maximum 255 characters"),
+                        "password", "It must have minimum 8 and maximum 255 characters"),
                 Arguments.of(
                         new ChangePasswordVm("~current-password~", "a".repeat(8)),
-                        "newPassword", "Password must have at least one uppercase, one lowercase letter and one number")
+                        "password", "Password must have at least one uppercase, one lowercase letter and one number")
         );
     }
 
@@ -138,7 +138,7 @@ class PasswordControllerPatchTest {
                         .contentType(MediaType.APPLICATION_JSON);
 
         if (addAuth) {
-            requestBuilder.header(HttpHeaders.AUTHORIZATION, "Bearer some-token");
+            requestBuilder.header(HttpHeaders.AUTHORIZATION, AUTH_HEADER_IN_TEST);
         }
 
         return requestBuilder;

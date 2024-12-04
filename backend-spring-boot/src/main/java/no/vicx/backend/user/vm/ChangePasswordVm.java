@@ -16,13 +16,13 @@ public record ChangePasswordVm(
         @NotNull
         @Size(min = 8, max = 255)
         @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).*$", message = "{vicx.constraints.password.Pattern.message}")
-        String newPassword) {
+        String password) {
 
     private static final int EXISTING_PASSWORD_MIN_LENGTH = 4;
     private static final int EXISTING_PASSWORD_MAX_LENGTH = 255;
 
     public VicxUser applyPatch(VicxUser target, PasswordEncoder passwordEncoder) {
-        target.setPassword(passwordEncoder.encode(newPassword));
+        target.setPassword(passwordEncoder.encode(password));
         return target;
     }
 }

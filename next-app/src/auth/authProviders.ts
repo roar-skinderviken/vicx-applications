@@ -43,7 +43,7 @@ export const springBootProvider: Provider = {
             id: profile.sub,
             name: profile.name || profile.sub, // if user has not registered name
             email: profile.email,
-            image: profile.image && `/user/image?${profile.sub}`,
+            image: profile.image && `/api/user/image?${profile.sub}`,
             roles: profile.roles
         }
     }

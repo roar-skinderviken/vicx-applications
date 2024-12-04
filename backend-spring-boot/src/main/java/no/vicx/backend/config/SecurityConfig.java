@@ -35,6 +35,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(EndpointRequest.to(HealthEndpoint.class)).permitAll()
 
+                        .requestMatchers(HttpMethod.GET, "/api/calculator").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/calculator").permitAll()
                         .requestMatchers(HttpMethod.DELETE, "/api/calculator").hasAnyRole("USER", "GITHUB_USER")
 
@@ -43,9 +44,7 @@ public class SecurityConfig {
 
                         .requestMatchers(HttpMethod.PATCH, "/api/**").hasRole("USER")
 
-                        .requestMatchers(HttpMethod.GET, "/api/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/user/image/*").hasRole("USER")
-                        .requestMatchers(HttpMethod.GET, "/api/user").hasRole("USER")
+                        .requestMatchers(HttpMethod.GET, "/api/**").hasRole("USER")
 
                         .requestMatchers(HttpMethod.DELETE, "/api/**").hasRole("USER")
 

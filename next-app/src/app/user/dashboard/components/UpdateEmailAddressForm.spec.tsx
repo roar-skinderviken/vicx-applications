@@ -1,8 +1,8 @@
 import {act, render, screen} from "@testing-library/react"
 import {changeInputValueByInput} from "@/testUtils"
 import {
-    callsOnEndEditTest,
-    displaysBackendValidationErrorTest, displaysSpinnerTest, mockOmEndEdit,
+    callsOnCancelTest, callsOnUpdateSuccessTest,
+    displaysBackendValidationErrorTest, displaysSpinnerTest, mockOnCancel, mockOnUpdateSuccess,
     userLogoutTest
 } from "@/app/user/dashboard/components/updateFormTestUtils"
 import UpdateEmailAddressForm from "@/app/user/dashboard/components/UpdateEmailAddressForm"
@@ -14,13 +14,16 @@ jest.mock("next-auth/react", () => ({
 
 const setupForm = async () => {
     const renderResult = await act(() => render(
-        <UpdateEmailAddressForm onEndEdit={mockOmEndEdit} currentEmailAddress="john@doe.com"/>
+        <UpdateEmailAddressForm
+            onUpdateSuccess={mockOnUpdateSuccess}
+            onCancel={mockOnCancel}
+            currentEmailAddress="john@doe.com"/>
     ))
 
     return {
         emailInput: renderResult.getByTestId("email-input"),
         saveButton: renderResult.getByRole("button", {name: "Save"}),
-        closeButton: renderResult.getByRole("button", {name: "Close"})
+        closeButton: renderResult.getByRole("button", {name: "Cancel"})
     }
 }
 
@@ -83,8 +86,11 @@ describe("UpdateEmailAddressForm", () => {
         it("displays spinner when data is loading", async () =>
             await displaysSpinnerTest())
 
-        it("calls onEndEdit", async () =>
-            callsOnEndEditTest())
+        it("calls onUpdateSuccess", async () =>
+            await callsOnUpdateSuccessTest())
+
+        it("calls onCancel", async () =>
+            callsOnCancelTest())
 
         it("logs user out when token has expired", async () =>
             await userLogoutTest())

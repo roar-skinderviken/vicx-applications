@@ -1,7 +1,7 @@
-import { NextRequest, NextResponse } from "next/server"
-import { getServerSession } from "next-auth"
+import {NextRequest, NextResponse} from "next/server"
+import {getServerSession} from "next-auth"
 import authOptions from "@/auth/authOptions"
-import { CustomSession } from "@/types/authTypes"
+import {CustomSession} from "@/types/authTypes"
 
 const SPRING_BACKEND_BASE_URL = process.env.SPRING_BACKEND_BASE_URL || ""
 
@@ -10,10 +10,19 @@ type SupportedHttpMethods = "PATCH" | "GET" | "POST" | "PUT" | "DELETE"
 export const createHeaders = (
     accessToken: string,
     contentType?: string
-) => ({
-    Authorization: `Bearer ${accessToken}`,
-    ...(contentType && { "Content-Type": contentType }),
-})
+) => {
+    // Avoid setting Content-Type if it's multipart/form-data
+    if (contentType === "multipart/form-data") {
+        return {
+            Authorization: `Bearer ${accessToken}`,
+        }
+    }
+
+    return {
+        Authorization: `Bearer ${accessToken}`,
+        ...(contentType && { "Content-Type": contentType }),
+    }
+}
 
 export async function forwardRequest(
     request: NextRequest,
@@ -28,15 +37,21 @@ export async function forwardRequest(
         return NextResponse.json({ message: "Unauthorized" }, { status: 401 })
     }
 
-    const fetchOptions = {
+    let body
+    if (contentType === "multipart/form-data") {
+        body = await request.formData()
+    } else if (contentType) {
+        body = request.body
+    }
+
+    const fetchOptions: RequestInit = {
         method,
         headers: createHeaders(accessToken, contentType),
-        ...(contentType && { body: request.body, duplex: "half" as const }),
+        ...(body && { body: body, duplex: "half" as const })
     }
 
     try {
-        const response =
-            await fetch(`${SPRING_BACKEND_BASE_URL}${endpoint}`, fetchOptions)
+        const response = await fetch(`${SPRING_BACKEND_BASE_URL}${endpoint}`, fetchOptions)
 
         return new NextResponse(response.body, {
             status: response.status,

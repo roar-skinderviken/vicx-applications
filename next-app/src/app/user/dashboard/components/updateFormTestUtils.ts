@@ -31,7 +31,8 @@ export const errorResponse = {
     }
 }
 
-export const mockOmEndEdit = jest.fn()
+export const mockOnUpdateSuccess = jest.fn()
+export const mockOnCancel = jest.fn()
 
 export const displaysBackendValidationErrorTest = async (buttonName: string = "Save") => {
     mockGetSession.mockResolvedValueOnce(validSession)
@@ -56,6 +57,16 @@ export const displaysSpinnerTest = async (buttonName: string = "Save") => {
     expect(submitButton).toHaveTextContent("Loading...")
 }
 
+export const callsOnUpdateSuccessTest = async (buttonName: string = "Save") => {
+    mockGetSession.mockResolvedValue(validSession)
+    fetchMock.mockResponseOnce("User updated successfully.")
+
+    const submitButton = screen.getByRole("button", {name: buttonName})
+    await act(() => fireEvent.click(submitButton))
+
+    expect(mockOnUpdateSuccess).toHaveBeenCalledWith("User updated successfully.")
+}
+
 export const userLogoutTest = async (buttonName: string = "Save") => {
     mockGetSession.mockResolvedValueOnce(sessionWithTokenError)
 
@@ -67,7 +78,7 @@ export const userLogoutTest = async (buttonName: string = "Save") => {
     })
 }
 
-export const callsOnEndEditTest = () => {
-    fireEvent.click(screen.getByRole("button", {name: "Close"}))
-    expect(mockOmEndEdit).toHaveBeenCalled()
+export const callsOnCancelTest = () => {
+    fireEvent.click(screen.getByRole("button", {name: "Cancel"}))
+    expect(mockOnCancel).toHaveBeenCalled()
 }

@@ -177,7 +177,7 @@ describe("UserSignupForm", () => {
             const fileInput = screen.getByLabelText("Profile Image")
             await act(() => fireEvent.change(fileInput, {target: {files: [mockPngFile]}}))
 
-            expect(screen.queryByText("File size exceeds the maximum allowed size of 51200 bytes")).toBeInTheDocument()
+            expect(screen.queryByText("File size must not exceed 50 KB")).toBeInTheDocument()
         })
 
         it("enables submit button when form is valid", async () => {

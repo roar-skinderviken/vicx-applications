@@ -17,7 +17,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.openMocks;
 
-class UserPatchRequestVmTest {
+class UserPatchVmTest {
 
     @Mock
     VicxUser vicxUser;
@@ -29,7 +29,7 @@ class UserPatchRequestVmTest {
 
     @Test
     void applyPatch_givenFullyPopulatedRequest_expectUpdatedVicxUser() {
-        var sut = new UserPatchRequestVm("~name~", "~email~");
+        var sut = new UserPatchVm("~name~", "~email~");
 
         var returnedUser = sut.applyPatch(vicxUser);
 
@@ -40,7 +40,7 @@ class UserPatchRequestVmTest {
 
     @Test
     void applyPatch_givenEmptyRequest_expectVicxUserNotToBeUpdated() {
-        var sut = new UserPatchRequestVm(null, null);
+        var sut = new UserPatchVm(null, null);
 
         var returnedUser = sut.applyPatch(vicxUser);
 
@@ -51,16 +51,16 @@ class UserPatchRequestVmTest {
 
     @ParameterizedTest
     @MethodSource("isEmptySource")
-    void isEmpty(UserPatchRequestVm userPatchRequestVm, boolean expected) {
-        assertEquals(expected, userPatchRequestVm.isEmpty());
+    void isEmpty(UserPatchVm userPatchVm, boolean expected) {
+        assertEquals(expected, userPatchVm.isEmpty());
     }
 
     private static Stream<Arguments> isEmptySource() {
         return Stream.of(
-                Arguments.of(new UserPatchRequestVm("~name~", "~email~"), false),
-                Arguments.of(new UserPatchRequestVm(null, null), true),
-                Arguments.of(new UserPatchRequestVm("~name~", null), false),
-                Arguments.of(new UserPatchRequestVm(null, "~email~"), false)
+                Arguments.of(new UserPatchVm("~name~", "~email~"), false),
+                Arguments.of(new UserPatchVm(null, null), true),
+                Arguments.of(new UserPatchVm("~name~", null), false),
+                Arguments.of(new UserPatchVm(null, "~email~"), false)
         );
     }
 }

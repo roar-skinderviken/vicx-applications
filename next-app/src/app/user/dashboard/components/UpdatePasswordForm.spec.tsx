@@ -17,7 +17,7 @@ const setupForm = async () => {
 
     return {
         currentPasswordInput: renderResult.getByTestId("currentPassword-input"),
-        newPasswordInput: renderResult.getByTestId("newPassword-input"),
+        newPasswordInput: renderResult.getByTestId("password-input"),
         confirmPasswordInput: renderResult.getByTestId("confirmPassword-input"),
         submitButton: renderResult.getByRole("button", {name: "Submit"}),
     }
@@ -93,7 +93,8 @@ describe("UpdatePasswordForm", () => {
         it("displays required validation error message given blank repeat password", async () => {
             await changeInputValueByInput(confirmPasswordInput, "a")
             await changeInputValueByInput(confirmPasswordInput, "")
-            expect(screen.queryByText("Confirm password is required")).toBeInTheDocument()
+
+            expect(screen.queryByText("Please confirm password")).toBeInTheDocument()
         })
         it("displays validation error message given password mismatch", async () => {
             await changeInputValueByInput(confirmPasswordInput, "password")

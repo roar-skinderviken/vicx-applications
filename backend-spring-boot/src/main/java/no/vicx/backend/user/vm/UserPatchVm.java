@@ -6,7 +6,7 @@ import no.vicx.backend.user.validation.AtLeastOneNotNull;
 import no.vicx.database.user.VicxUser;
 
 @AtLeastOneNotNull
-public record UserPatchRequestVm(
+public record UserPatchVm(
         @Size(min = 4, max = 255)
         String name,
 

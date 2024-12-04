@@ -14,8 +14,16 @@ export const metadata = {
 export default async function DashboardPage() {
     const session = await getServerSession(authOptions)
     const sessionUser = session?.user
-    const isGitHubUser = (sessionUser as SessionUser)?.roles?.includes("ROLE_GITHUB_USER")
     const isVicxUser = (sessionUser as SessionUser)?.roles?.includes("ROLE_USER")
+
+    const nonVicxUser = isVicxUser
+        ? undefined
+        : {
+            username: (sessionUser as SessionUser)?.id as string,
+            name: sessionUser?.name as string,
+            email: sessionUser?.email as string,
+            image: sessionUser?.image || undefined
+        }
 
     return (
         <main className="content">
@@ -31,7 +39,7 @@ export default async function DashboardPage() {
 
                 <div className="flex flex-col items-center">
                     <div className="max-w-3xl mx-auto text-center pb-4">
-                        {isGitHubUser ? (
+                        {!isVicxUser ? (
                                 <>
                                     <p className="text-lg">
                                         Since you logged in with GitHub, account details such as name, email, and
@@ -49,7 +57,7 @@ export default async function DashboardPage() {
                                 </p>
                             )}
                     </div>
-                    {sessionUser && <ProfileCard sessionUser={sessionUser as SessionUser}/>}
+                    {sessionUser && <ProfileCard nonVicxUserInfo={nonVicxUser}/>}
                     {isVicxUser && <UpdatePasswordForm cardTitle="Change password"/>}
                 </div>
             </div>

@@ -2,9 +2,9 @@ import {act, render, screen} from "@testing-library/react"
 import UpdateNameForm from "@/app/user/dashboard/components/UpdateNameForm"
 import {changeInputValueByInput} from "@/testUtils"
 import {
-    callsOnEndEditTest,
+    callsOnCancelTest, callsOnUpdateSuccessTest,
     displaysBackendValidationErrorTest,
-    displaysSpinnerTest, mockOmEndEdit,
+    displaysSpinnerTest, mockOnCancel, mockOnUpdateSuccess,
     userLogoutTest
 } from "@/app/user/dashboard/components/updateFormTestUtils"
 
@@ -15,13 +15,16 @@ jest.mock("next-auth/react", () => ({
 
 const setupForm = async () => {
     const renderResult = await act(() => render(
-        <UpdateNameForm onEndEdit={mockOmEndEdit} currentName="John Doe"/>
+        <UpdateNameForm
+            onUpdateSuccess={mockOnUpdateSuccess}
+            onCancel={mockOnCancel}
+            currentName="John Doe"/>
     ))
 
     return {
         nameInput: renderResult.getByTestId("name-input"),
         saveButton: renderResult.getByRole("button", {name: "Save"}),
-        closeButton: renderResult.getByRole("button", {name: "Close"})
+        closeButton: renderResult.getByRole("button", {name: "Cancel"})
     }
 }
 
@@ -88,8 +91,11 @@ describe("UpdateNameForm", () => {
         it("displays spinner when data is loading", async () =>
             await displaysSpinnerTest())
 
-        it("calls onEndEdit", async () =>
-            callsOnEndEditTest())
+        it("calls onUpdateSuccess", async () =>
+            await callsOnUpdateSuccessTest())
+
+        it("calls onCancel", async () =>
+            callsOnCancelTest())
 
         it("logs user out when token has expired", async () =>
             await userLogoutTest())

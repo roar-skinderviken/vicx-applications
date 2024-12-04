@@ -2,7 +2,7 @@ package no.vicx.backend.user.service;
 
 import no.vicx.backend.error.NotFoundException;
 import no.vicx.backend.user.vm.ChangePasswordVm;
-import no.vicx.backend.user.vm.UserPatchRequestVm;
+import no.vicx.backend.user.vm.UserPatchVm;
 import no.vicx.database.user.UserRepository;
 import no.vicx.database.user.VicxUser;
 import org.junit.jupiter.api.AfterEach;
@@ -64,10 +64,10 @@ class UserServiceTest {
 
         sut.createUser(VALID_USER_VM, imageFile);
 
-        verify(passwordEncoder, times(1)).encode(VALID_PLAINTEXT_PASSWORD);
+        verify(passwordEncoder).encode(VALID_PLAINTEXT_PASSWORD);
 
         var userCaptor = ArgumentCaptor.forClass(VicxUser.class);
-        verify(userRepository, times(1)).save(userCaptor.capture());
+        verify(userRepository).save(userCaptor.capture());
 
         var capturedUser = userCaptor.getValue();
         assertEquals(VALID_BCRYPT_PASSWORD, capturedUser.getPassword());
@@ -103,7 +103,7 @@ class UserServiceTest {
 
     @Test
     void updateUser_givenExistingUser_shouldUpdateUserInDatabase() {
-        var patchVm = new UserPatchRequestVm("~name~", "foo@bar.com");
+        var patchVm = new UserPatchVm("~name~", "foo@bar.com");
         var userInTest = createValidVicxUser();
 
         when(passwordEncoder.encode(VALID_PLAINTEXT_PASSWORD)).thenReturn(VALID_BCRYPT_PASSWORD);

@@ -52,7 +52,7 @@ class CalculatorControllerDeleteTest {
 
         assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
 
-        verify(calculatorSecurityService, times(1)).isAllowedToDelete(anyList(), any());
+        verify(calculatorSecurityService).isAllowedToDelete(anyList(), any());
         verify(calculatorService, never()).deleteByIds(anyList());
     }
 
@@ -65,7 +65,7 @@ class CalculatorControllerDeleteTest {
 
         assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
 
-        verify(calculatorService, times(1)).deleteByIds(anyList());
+        verify(calculatorService).deleteByIds(anyList());
     }
 
     static Stream<Arguments> badRequestBodies() {
