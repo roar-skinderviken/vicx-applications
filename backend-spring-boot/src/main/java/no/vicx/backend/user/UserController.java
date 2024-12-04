@@ -2,11 +2,11 @@ package no.vicx.backend.user;
 
 import no.vicx.backend.user.service.UserService;
 import no.vicx.backend.user.validation.ProfileImage;
-import no.vicx.backend.user.vm.UserPatchRequestVm;
+import no.vicx.backend.user.vm.UserPatchVm;
+import no.vicx.backend.user.vm.CreateUserVm;
 import no.vicx.backend.user.vm.UserVm;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -37,7 +37,7 @@ public class UserController {
      * To avoid this, use {@link org.springframework.validation.annotation.Validated}.
      * </p>
      *
-     * @param userVm the user data submitted for creation, validated against {@link no.vicx.backend.user.vm.UserVm}.
+     * @param createUserVm the user data submitted for creation, validated against {@link CreateUserVm}.
      * @param image  an optional multipart file containing the user's profile image.
      *               Validated using the {@link no.vicx.backend.user.validation.ProfileImage} annotation.
      * @return a response containing the location of the created user in the headers,
@@ -48,27 +48,26 @@ public class UserController {
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
             produces = MediaType.TEXT_PLAIN_VALUE)
     public ResponseEntity<String> createUser(
-            @Validated UserVm userVm,
+            @Validated CreateUserVm createUserVm,
             @ProfileImage MultipartFile image) throws IOException {
 
-        var createdUser = userService.createUser(userVm, image);
+        userService.createUser(createUserVm, image);
 
         return ResponseEntity
-                .created(URI.create("/api/user/" + createdUser.getUsername()))
+                .created(URI.create("/api/user"))
                 .body(USER_CREATED_BODY_TEXT);
     }
 
-    @GetMapping(value = "/{username}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("#username == authentication.getName()")
-    UserVm getUser(@PathVariable("username") String username) {
-        return UserVm.fromVicxUser(userService.getUserByUserName(username));
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    UserVm getUser(Authentication authentication) {
+        return UserVm.fromVicxUser(userService.getUserByUserName(authentication.getName()));
     }
 
     @PatchMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.TEXT_PLAIN_VALUE)
     ResponseEntity<String> patchName(
-            @Validated @RequestBody UserPatchRequestVm body,
+            @Validated @RequestBody UserPatchVm body,
             Authentication authentication) {
         userService.updateUser(body, authentication.getName());
 

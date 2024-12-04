@@ -3,10 +3,10 @@ package no.vicx.backend.user.validation;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import no.vicx.backend.user.service.RecaptchaService;
-import no.vicx.backend.user.vm.UserVm;
+import no.vicx.backend.user.vm.CreateUserVm;
 import no.vicx.database.user.UserRepository;
 
-public class RecaptchaThenUniqueUsernameValidator implements ConstraintValidator<RecaptchaThenUniqueUsername, UserVm> {
+public class RecaptchaThenUniqueUsernameValidator implements ConstraintValidator<RecaptchaThenUniqueUsername, CreateUserVm> {
 
     private final RecaptchaService recaptchaService;
     private final UserRepository userRepository;
@@ -28,7 +28,7 @@ public class RecaptchaThenUniqueUsernameValidator implements ConstraintValidator
     }
 
     @Override
-    public boolean isValid(UserVm value, ConstraintValidatorContext context) {
+    public boolean isValid(CreateUserVm value, ConstraintValidatorContext context) {
         if (value.recaptchaToken() == null
                 || value.recaptchaToken().isBlank()
                 || value.username() == null

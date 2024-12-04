@@ -2,9 +2,9 @@ package no.vicx.backend.user.validation;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-import no.vicx.backend.user.vm.UserPatchRequestVm;
+import no.vicx.backend.user.vm.UserPatchVm;
 
-public class AtLeastOneNotNullValidator implements ConstraintValidator<AtLeastOneNotNull, UserPatchRequestVm> {
+public class AtLeastOneNotNullValidator implements ConstraintValidator<AtLeastOneNotNull, UserPatchVm> {
 
     private String defaultMessage;
     private String propertyNodeName;
@@ -16,7 +16,7 @@ public class AtLeastOneNotNullValidator implements ConstraintValidator<AtLeastOn
     }
 
     @Override
-    public boolean isValid(UserPatchRequestVm value, ConstraintValidatorContext context) {
+    public boolean isValid(UserPatchVm value, ConstraintValidatorContext context) {
         if (value.isEmpty()) {
             context.disableDefaultConstraintViolation();
             context.buildConstraintViolationWithTemplate(defaultMessage)

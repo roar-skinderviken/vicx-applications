@@ -17,6 +17,7 @@ spring:
   servlet:
     multipart:
       enabled: true
+      max-file-size: 100KB
 
   cache:
     cache-names: GITHUB_TOKENS

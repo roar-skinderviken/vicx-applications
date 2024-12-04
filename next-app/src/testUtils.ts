@@ -8,6 +8,9 @@ export const changeInputValue = async (label: string, value: string) => {
     await act(() => fireEvent.change(input, changeEvent(value)))
 }
 
+export const changeInputValueByInput = async (input: HTMLElement, value: string) =>
+    await act(() => fireEvent.change(input, changeEvent(value)))
+
 export const delayedResponse = (body: string, delayInMillis: number, status: number = 200) =>
     new Promise<MockResponseInit>(resolve =>
         setTimeout(

@@ -22,7 +22,6 @@ class UserVmTest {
 
         assertNotNull(target);
         assertEquals(vicxUser.getUsername(), target.username());
-        assertNull(target.password());
         assertEquals(vicxUser.getName(), target.name());
         assertEquals(vicxUser.getEmail(), target.email());
     }

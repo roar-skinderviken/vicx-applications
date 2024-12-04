@@ -15,7 +15,7 @@ import {extractUserOrSignOut} from "@/auth/tokenUtils"
 // put this in next-app/.env.local
 // NEXT_PUBLIC_CALCULATOR_BACKEND_URL=http://localhost:8080/api/calculator
 export const CALC_BACKEND_BASE_URL = process.env.NEXT_PUBLIC_CALCULATOR_BACKEND_URL || "/backend-spring-boot/api/calculator"
-export const CALC_NEXT_BACKEND_URL = "/user/calculator"
+export const CALC_NEXT_BACKEND_URL = "/api/user/calculator"
 
 const calculatorYupSchema = yup.object({
     firstValue: yup

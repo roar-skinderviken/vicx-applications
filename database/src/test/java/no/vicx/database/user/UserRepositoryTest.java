@@ -80,7 +80,7 @@ class UserRepositoryTest {
     }
 
     @Test
-    void save_givenUserWithImage_expectUserWithoutImageAfterSave() throws IOException {
+    void save_givenUserWithImage_expectUserWithUpdatedImage() throws IOException {
         var user = createValidUser(createPngUserImage());
         assertEquals(IMAGE_PNG, user.getUserImage().getContentType());
 
@@ -89,11 +89,6 @@ class UserRepositoryTest {
 
         var savedUser = sut.findByUsername(user.getUsername()).orElseThrow();
         assertNotNull(savedUser.getUserImage());
-
-        // clear existing image and save
-        savedUser.setUserImage(null);
-        savedUser = sut.save(savedUser);
-        assertEquals(0, getImageCountInDb());
 
         // set new image and save
         savedUser.setUserImage(createJpegUserImage());
