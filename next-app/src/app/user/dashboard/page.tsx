@@ -32,13 +32,13 @@ export default async function DashboardPage() {
                 lead="Here you can change your settings"
             />
 
-            <div className="container mx-auto my-5">
+            <div className="container mx-auto mt-5 mb-2">
                 <h2 className="text-center text-3xl my-4">
                     Greetings {session?.user?.name || "User"}
                 </h2>
 
-                <div className="flex flex-col items-center">
-                    <div className="max-w-3xl mx-auto text-center pb-4">
+                <div className="flex flex-col items-center mx-4">
+                    <div className="max-w-3xl mx-auto text-center">
                         {!isVicxUser ? (
                                 <>
                                     <p className="text-lg">
