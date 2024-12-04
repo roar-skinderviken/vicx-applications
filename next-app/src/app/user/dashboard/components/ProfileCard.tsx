@@ -20,7 +20,7 @@ const ProfileCard = ({nonVicxUserInfo}: {
     }
 }) => {
     const [editingField, setEditingField] = useState<string | null>(null)
-    const [isLoading, setIsLoading] = useState(true)
+    const [isLoading, setIsLoading] = useState(false)
     const [userInfo, setUserInfo] = useState(nonVicxUserInfo)
     const [updateResult, setUpdateResult] = useState("")
     const [isImageDropdownOpen, setIsImageDropdownOpen] = useState(false)
@@ -59,6 +59,8 @@ const ProfileCard = ({nonVicxUserInfo}: {
     }
 
     const loadUserFromBackend = () => {
+        setIsLoading(true)
+
         fetch("/api/user")
             .then((response) => {
                 if (!response.ok) throw Error(response.statusText)
@@ -110,7 +112,7 @@ const ProfileCard = ({nonVicxUserInfo}: {
                                 className="w-32 h-32 rounded-full bg-gray-200 flex items-center justify-center text-gray-500">
                                 No Image
                             </div>}
-                        <div className="absolute top-0 right-0">
+                        {isVicxUser && <div className="absolute top-0 right-0">
                             <button
                                 onClick={toggleImageDropdown}
                                 className="bg-gray-200 text-gray-500 p-2 rounded-full hover:bg-gray-300 shadow-md"
@@ -137,7 +139,7 @@ const ProfileCard = ({nonVicxUserInfo}: {
                                         >Delete image
                                         </button>)}
                                 </div>)}
-                        </div>
+                        </div>}
                     </div>}
 
                 <h5 className="mb-1 text-xl font-medium text-gray-900 dark:text-white">
