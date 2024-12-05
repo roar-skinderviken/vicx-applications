@@ -63,7 +63,6 @@ public class DefaultAuthorizationServerApplicationTests {
         this.webClient.getCookieManager().clearCookies();    // log out
     }
 
-    //@Disabled("Flaky test, passes when running alone, else it fails")
     @Test
     public void whenLoginSuccessfulThenDisplayNotFoundError() throws IOException {
         HtmlPage page = this.webClient.getPage("/");
