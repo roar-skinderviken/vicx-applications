@@ -23,10 +23,12 @@ const ButtonWithSpinner = (
         onClick={onClick}
         {...rest}>
         {isLoading
-            ? <>
-                <Spinner aria-label="Loading addition result" size="sm"/>
-                <span className="pl-3">Loading...</span>
-            </>
+            ? <div className="flex items-center justify-center gap-2 px-4">
+                <Spinner
+                    aria-label="Loading addition result"
+                    size="sm"/>
+                <span>Loading...</span>
+            </div>
             : <>{buttonText}</>
         }
     </Button>
