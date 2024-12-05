@@ -6,7 +6,7 @@ import {MAX_IMAGE_FILE_SIZE, SUPPORTED_IMAGE_FORMATS} from "@/utils/yupSharedSch
 import {FormProvider, useForm} from "react-hook-form"
 import {yupResolver} from "@hookform/resolvers/yup"
 import Image from "next/image"
-import {Button, FileInput} from "flowbite-react"
+import {Button, Card, FileInput} from "flowbite-react"
 import ButtonWithSpinner from "@/components/ButtonWithSpinner"
 import * as yup from "yup"
 import {getSession} from "next-auth/react"
@@ -107,12 +107,10 @@ const UpdateProfileImageForm = ({onUploadSuccess, onCancel}: {
     }
 
     let helperText
-
     if (validationErrors?.image) {
-        helperText = <span className="font-medium text-left block">{validationErrors?.image}</span>
-    } else if (errors["image"]) {
-        const yupValidationErrorMessage = (errors["image"] as { message?: string }).message
-        helperText = <span className="font-medium text-left block">{yupValidationErrorMessage}</span>
+        helperText = validationErrors.image
+    } else if (errors.image) {
+        helperText = errors.image.message
     }
 
     return (
@@ -131,17 +129,18 @@ const UpdateProfileImageForm = ({onUploadSuccess, onCancel}: {
                     No Image
                 </div>}
 
-            <div className="max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl m-2 w-full">
+            <Card className="max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl m-2 w-full">
                 <FormProvider {...methods}>
-                    <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4">
+                    <form onSubmit={handleSubmit(onSubmit)}>
                         <FileInput
                             id="image"
                             data-testid="image-update-file-input"
                             {...register("image")}
                             sizing="md"
-                            helperText={helperText}
+                            helperText={helperText && (
+                                <span className="font-medium text-left block">{helperText}</span>)}
                         />
-                        <div className="flex justify-center w-full">
+                        <div className="flex justify-center w-full mt-4">
                             <div className="flex items-center gap-2">
                                 <ButtonWithSpinner
                                     disabled={!formState.isValid}
@@ -154,7 +153,7 @@ const UpdateProfileImageForm = ({onUploadSuccess, onCancel}: {
                         </div>
                     </form>
                 </FormProvider>
-            </div>
+            </Card>
         </div>
     )
 }
