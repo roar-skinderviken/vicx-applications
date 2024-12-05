@@ -3,29 +3,30 @@ package no.vicx.backend.calculator;
 import no.vicx.backend.testconfiguration.TestSecurityConfig;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.context.annotation.Import;
-import org.springframework.http.*;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.stream.Stream;
+import java.util.List;
 
-import static no.vicx.backend.jwt.JwtConstants.BEARER_PREFIX;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static no.vicx.backend.testconfiguration.TestSecurityConfig.AUTH_HEADER_IN_TEST;
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest
+@AutoConfigureMockMvc
 @Import(TestSecurityConfig.class)
 class CalculatorControllerDeleteTest {
 
     @Autowired
-    TestRestTemplate restTemplate;
+    MockMvc mockMvc;
 
     @MockitoBean
     CalculatorSecurityService calculatorSecurityService;
@@ -33,105 +34,60 @@ class CalculatorControllerDeleteTest {
     @MockitoBean
     CalculatorService calculatorService;
 
-    @Test
-    void delete_givenNotAuthenticated_expectUnauthorized() {
-        var response = sendDelete(false, Collections.singletonList(1L));
+    private static final String VALID_CONTENT_IN_TEST = "[1]";
 
-        assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+    @Test
+    void delete_givenNoAuthHeader_expectUnauthorized() throws Exception {
+        mockMvc.perform(delete("/api/calculator")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(VALID_CONTENT_IN_TEST))
+                .andExpect(status().isUnauthorized());
 
         verify(calculatorSecurityService, never()).isAllowedToDelete(anyList(), any());
         verify(calculatorService, never()).deleteByIds(anyList());
     }
 
     @Test
-    void delete_givenNotIsAllowedToDelete_expectForbidden() {
+    void delete_givenIdsForOtherUser_expectForbidden() throws Exception {
         when(calculatorSecurityService.isAllowedToDelete(anyList(), any()))
                 .thenReturn(false);
 
-        var response = sendDelete();
-
-        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        mockMvc.perform(delete("/api/calculator")
+                        .header(HttpHeaders.AUTHORIZATION, AUTH_HEADER_IN_TEST)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(VALID_CONTENT_IN_TEST))
+                .andExpect(status().isForbidden());
 
         verify(calculatorSecurityService).isAllowedToDelete(anyList(), any());
         verify(calculatorService, never()).deleteByIds(anyList());
     }
 
     @Test
-    void delete_givenIsAllowedToDelete_expectOK() {
+    void delete_givenIsAllowedToDelete_expectOK() throws Exception {
         when(calculatorSecurityService.isAllowedToDelete(anyList(), any()))
                 .thenReturn(true);
 
-        var response = sendDelete();
+        mockMvc.perform(delete("/api/calculator")
+                        .header(HttpHeaders.AUTHORIZATION, AUTH_HEADER_IN_TEST)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(VALID_CONTENT_IN_TEST))
+                .andExpect(status().isNoContent());
 
-        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
-
-        verify(calculatorService).deleteByIds(anyList());
-    }
-
-    static Stream<Arguments> badRequestBodies() {
-        return Stream.of(
-                Arguments.of(null, true),
-                Arguments.of(Collections.emptyList(), true),
-                Arguments.of(Collections.singletonList(null), true)
-        );
+        verify(calculatorService).deleteByIds(List.of(1L));
     }
 
     @ParameterizedTest
-    @MethodSource("badRequestBodies")
-    void delete_expectBadRequest(Collection<Long> ids) {
+    @ValueSource(strings = {"", "[]", "[,1]"})
+    void delete_givenInvalidParameters_expectBadRequest(String content) throws Exception {
         when(calculatorSecurityService.isAllowedToDelete(anyList(), any()))
                 .thenReturn(true);
 
-        var response = sendDelete(true, ids);
-
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-
-        verify(calculatorService, never()).deleteByIds(anyList());
-    }
-
-    @Test
-    void delete_givenEmptyList_expectBadRequest() {
-        when(calculatorSecurityService.isAllowedToDelete(anyList(), any()))
-                .thenReturn(true);
-
-        var response = sendDelete(true, Collections.emptyList());
-
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        mockMvc.perform(delete("/api/calculator")
+                        .header(HttpHeaders.AUTHORIZATION, AUTH_HEADER_IN_TEST)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content))
+                .andExpect(status().isBadRequest());
 
         verify(calculatorService, never()).deleteByIds(anyList());
-    }
-
-    @Test
-    void delete_givenListOfNull_expectBadRequest() {
-        when(calculatorSecurityService.isAllowedToDelete(anyList(), any()))
-                .thenReturn(true);
-
-        var response = sendDelete(true, Collections.singletonList(null));
-
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-
-        verify(calculatorService, never()).deleteByIds(anyList());
-    }
-
-    ResponseEntity<Void> sendDelete() {
-        return sendDelete(true, Collections.singletonList(1L));
-    }
-
-    ResponseEntity<Void> sendDelete(
-            boolean isAuthenticated, Collection<Long> ids) {
-        var headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        if (isAuthenticated) {
-            headers.set(HttpHeaders.AUTHORIZATION, BEARER_PREFIX + "token");
-        }
-
-        var httpEntity = new HttpEntity<>(ids, headers);
-
-        return restTemplate.exchange(
-                "/api/calculator",
-                HttpMethod.DELETE,
-                httpEntity,
-                Void.class);
     }
 }
