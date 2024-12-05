@@ -2,7 +2,6 @@
 
 import React, {useEffect, useState} from "react"
 import {Card, Spinner} from "flowbite-react"
-import {HiPencil} from "react-icons/hi"
 import Image from "next/image"
 import UpdateNameForm from "@/app/user/dashboard/components/UpdateNameForm"
 import UpdateEmailAddressForm from "@/app/user/dashboard/components/UpdateEmailAddressForm"
@@ -78,9 +77,7 @@ const ProfileCard = ({nonVicxUserInfo}: {
     }
 
     useEffect(() => {
-        if (isVicxUser) {
-            loadUserFromBackend()
-        }
+        if (isVicxUser) loadUserFromBackend()
     }, [isVicxUser])
 
     if (isLoading) return <Card className="max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl m-2 w-full">
@@ -155,12 +152,12 @@ const ProfileCard = ({nonVicxUserInfo}: {
                             onCancel={handleOnCancel}
                         />
                         : <>
-                            <span className="text-sm text-gray-500 dark:text-gray-400">{userInfo.name}</span>
-                            {isVicxUser && <HiPencil
-                                className="text-gray-500 cursor-pointer hover:text-blue-500"
+                            <span className="text-gray-500 dark:text-gray-400">{userInfo.name}</span>
+                            {isVicxUser && <FaPencilAlt
+                                className="cursor-pointer"
                                 onClick={() => handleEditToggle("name")}
                                 title="Edit name"
-                                size={20}
+                                size={16}
                             />}
                         </>}
                 </div>
@@ -174,12 +171,12 @@ const ProfileCard = ({nonVicxUserInfo}: {
                             onCancel={handleOnCancel}
                         />
                         : <>
-                            <span className="text-sm text-gray-500 dark:text-gray-400">{userInfo.email}</span>
-                            {isVicxUser && <HiPencil
-                                className="text-gray-500 cursor-pointer hover:text-blue-500"
+                            <span className="text-gray-500 dark:text-gray-400">{userInfo.email}</span>
+                            {isVicxUser && <FaPencilAlt
+                                className="cursor-pointer"
                                 onClick={() => handleEditToggle("email")}
                                 title="Edit email"
-                                size={20}
+                                size={16}
                             />}
                         </>}
                 </div>
