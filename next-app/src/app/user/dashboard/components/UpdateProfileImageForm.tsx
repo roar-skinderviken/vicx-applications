@@ -11,6 +11,7 @@ import ButtonWithSpinner from "@/components/ButtonWithSpinner"
 import * as yup from "yup"
 import {getSession} from "next-auth/react"
 import {extractUserOrSignOut} from "@/auth/tokenUtils"
+import {useDropzone} from "react-dropzone"
 
 const BACKEND_URL = "/api/user/image"
 
@@ -106,6 +107,18 @@ const UpdateProfileImageForm = ({onUploadSuccess, onCancel}: {
             .finally(() => setIsLoading(false))
     }
 
+    // Handle file drop with react-dropzone
+    const {getRootProps, getInputProps, isDragActive} = useDropzone({
+        onDrop: async (acceptedFiles) => {
+            // Convert acceptedFiles array into a FileList and update the form
+            const fileList = new DataTransfer()
+            acceptedFiles.forEach(file => fileList.items.add(file))
+
+            methods.setValue("image", fileList.files)
+            await methods.trigger("image")
+        }
+    })
+
     let helperText
     if (validationErrors?.image) {
         helperText = validationErrors.image
@@ -115,19 +128,28 @@ const UpdateProfileImageForm = ({onUploadSuccess, onCancel}: {
 
     return (
         <div className="flex flex-col items-center w-full mb-4">
-            {profileImage
-                ? <Image
-                    src={profileImage}
-                    className="w-32 h-32 rounded-full mb-4"
-                    width={64}
-                    height={64}
-                    priority={true}
-                    alt="Profile Image"
-                />
-                : <div
-                    className="w-32 h-32  mb-4 rounded-full bg-gray-200 flex items-center justify-center text-gray-500">
-                    No Image
-                </div>}
+            <div
+                {...getRootProps()}
+                className="border-dashed border-2 border-gray-500 w-full p-4 flex flex-col items-center justify-center text-center"
+            >
+                <input {...getInputProps()} />
+                {isDragActive
+                    ? <p className="mb-4">Drop the file here ...</p>
+                    : <p className="mb-4">Drag 'n' drop a file here, or click to select file</p>}
+
+                {profileImage
+                    ? <Image
+                        src={profileImage}
+                        className="w-32 h-32 rounded-full mb-4"
+                        width={128}
+                        height={128}
+                        priority={true}
+                        alt="Profile Image"/>
+                    : <div
+                        className="w-32 h-32 mb-4 rounded-full bg-gray-200 flex items-center justify-center text-gray-500">
+                        No Image
+                    </div>}
+            </div>
 
             <Card className="max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl m-2 w-full">
                 <FormProvider {...methods}>

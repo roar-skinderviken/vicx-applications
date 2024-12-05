@@ -15,7 +15,8 @@ export default [
     {
         rules: {
             // Disallow semicolons at the end of statements
-            semi: ["error", "never"]
+            semi: ["error", "never"],
+            "react/no-unescaped-entities": "off",
         }
     }
 ];
