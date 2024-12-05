@@ -66,7 +66,9 @@ const UpdateProfileImageForm = ({onUploadSuccess, onCancel}: {
             errors
         },
         register,
-        watch
+        watch,
+        setValue,
+        trigger
     } = methods
 
     const watchedFile = watch("image")
@@ -114,8 +116,8 @@ const UpdateProfileImageForm = ({onUploadSuccess, onCancel}: {
             const fileList = new DataTransfer()
             acceptedFiles.forEach(file => fileList.items.add(file))
 
-            methods.setValue("image", fileList.files)
-            await methods.trigger("image")
+            setValue("image", fileList.files)
+            await trigger("image")
         }
     })
 
