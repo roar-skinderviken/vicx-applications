@@ -1,14 +1,14 @@
 "use client"
 
-import SingleFieldUpdateForm from "@/app/user/dashboard/components/SingleFieldUpdateForm"
 import {nameSchema} from "@/utils/yupSharedSchemas"
+import UpdateForm from "@/app/user/dashboard/components/UpdateForm"
 
 const UpdateNameForm = ({currentName, onUpdateSuccess, onCancel}: {
     currentName: string
     onUpdateSuccess: (message: string) => void
     onCancel: () => void
 }) => {
-    return <SingleFieldUpdateForm
+    return <UpdateForm
         schema={nameSchema}
         defaultValues={{name: currentName}}
         fields={[{name: "name", label: "Name", type: "text"}]}

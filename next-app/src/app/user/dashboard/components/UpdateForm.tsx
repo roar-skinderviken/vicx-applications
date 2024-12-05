@@ -1,14 +1,14 @@
 "use client"
 
-import React, {useState, useEffect, useRef} from "react"
+import React, {useState, useRef, useEffect} from "react"
 import {DefaultValues, FormProvider, useForm} from "react-hook-form"
 import {yupResolver} from "@hookform/resolvers/yup"
 import ButtonWithSpinner from "@/components/ButtonWithSpinner"
 import ValidatedTextInput from "@/components/ValidatedTextInput"
+import {Card, Button} from "flowbite-react"
 import {getSession} from "next-auth/react"
 import {extractUserOrSignOut} from "@/auth/tokenUtils"
 import * as yup from "yup"
-import {Card} from "flowbite-react"
 
 type UpdateFormProps<T extends yup.AnyObjectSchema> = {
     schema: T
@@ -18,9 +18,12 @@ type UpdateFormProps<T extends yup.AnyObjectSchema> = {
         label: string
         type?: "text" | "password"
     }>
-    endpoint: string,
-    cardTitle: string,
-    resetFormAfterSubmit?: boolean,
+    endpoint: string
+    cardTitle?: string
+    onUpdateSuccess?: (message: string) => void
+    onCancel?: () => void
+    resetFormAfterSubmit?: boolean
+    showSuccessMessage?: boolean
 }
 
 const UpdateForm = <T extends yup.AnyObjectSchema>({
@@ -29,9 +32,11 @@ const UpdateForm = <T extends yup.AnyObjectSchema>({
                                                        fields,
                                                        endpoint,
                                                        cardTitle,
-                                                       resetFormAfterSubmit = false
+                                                       onUpdateSuccess,
+                                                       onCancel,
+                                                       resetFormAfterSubmit = false,
+                                                       showSuccessMessage = true,
                                                    }: UpdateFormProps<T>) => {
-
     const [isLoading, setIsLoading] = useState(false)
     const [result, setResult] = useState<string>()
     const [validationErrors, setValidationErrors] = useState<Record<string, string>>()
@@ -42,19 +47,17 @@ const UpdateForm = <T extends yup.AnyObjectSchema>({
         defaultValues,
     })
 
-    const {handleSubmit, formState, watch} = methods
-
+    const {handleSubmit, watch, formState} = methods
     const watchedValues = watch()
     const prevWatchedValuesRef = useRef<yup.InferType<T>>(defaultValues)
 
-    const isSubmitDisabled = !formState.isValid
-        || JSON.stringify(watchedValues) === JSON.stringify(defaultValues)
+    const isSubmitDisabled =
+        !formState.isValid || JSON.stringify(watchedValues) === JSON.stringify(defaultValues)
 
     useEffect(() => {
-        // Only reset validation errors when watched values change significantly
         if (JSON.stringify(watchedValues) !== JSON.stringify(prevWatchedValuesRef.current)) {
             setValidationErrors(undefined)
-            prevWatchedValuesRef.current = watchedValues // Update the ref to track the latest values
+            prevWatchedValuesRef.current = watchedValues
         }
     }, [watchedValues])
 
@@ -72,26 +75,26 @@ const UpdateForm = <T extends yup.AnyObjectSchema>({
                 })
             )
             .then(async (response) => {
-                if (!response.ok) {
-                    throw await response.json()
-                }
+                if (!response.ok) throw await response.json()
                 return response.text()
             })
             .then((data) => {
-                setResult(data)
+                if (onUpdateSuccess) {
+                    onUpdateSuccess(data)
+                } else {
+                    setResult(data)
+                }
                 if (resetFormAfterSubmit) methods.reset(defaultValues)
             })
-            .catch(error => {
-                if (error.validationErrors) {
-                    setValidationErrors(error.validationErrors)
-                }
+            .catch((error) => {
+                if (error.validationErrors) setValidationErrors(error.validationErrors)
             })
             .finally(() => setIsLoading(false))
     }
 
     return (
         <Card className="max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl m-2 w-full">
-            {result && (
+            {result && showSuccessMessage && (
                 <>
                     <h2 className="text-xl font-semibold text-gray-800 text-center flex items-center justify-center gap-2">
                         <span className="text-green-500">✓</span>
@@ -102,7 +105,7 @@ const UpdateForm = <T extends yup.AnyObjectSchema>({
                     </p>
                 </>
             )}
-            <h5 className="text-2xl tracking-tight text-gray-900 dark:text-white">{cardTitle}</h5>
+            {cardTitle && <h5 className="text-2xl tracking-tight text-gray-900 dark:text-white">{cardTitle}</h5>}
             <FormProvider {...methods}>
                 <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4">
                     {fields.map((field) => (
@@ -114,12 +117,15 @@ const UpdateForm = <T extends yup.AnyObjectSchema>({
                             errorMessage={validationErrors?.[field.name as string]}
                         />
                     ))}
-                    <ButtonWithSpinner
-                        disabled={isSubmitDisabled}
-                        buttonText="Submit"
-                        isLoading={isLoading}
-                        className="col-span-1 mt-2 w-full"
-                    />
+                    <div className="flex items-center justify-center gap-2">
+                        <ButtonWithSpinner
+                            buttonText={onUpdateSuccess ? "Save" : "Submit"}
+                            isLoading={isLoading}
+                            disabled={isSubmitDisabled}
+                            className="w-24"
+                        />
+                        {onCancel && <Button onClick={onCancel}>Cancel</Button>}
+                    </div>
                 </form>
             </FormProvider>
         </Card>
