@@ -134,42 +134,38 @@ const ProfileCard = ({nonVicxUserInfo}: {
                 </h5>
 
                 {/* Name Field */}
-                <div className="flex items-center gap-2">
-                    {editingField === "name"
-                        ? <UpdateNameForm
-                            currentName={userInfo.name}
-                            onUpdateSuccess={handleOnUpdateSuccess}
-                            onCancel={handleOnCancel}
-                        />
-                        : <>
-                            <span className="text-gray-500 dark:text-gray-400">{userInfo.name}</span>
-                            {isVicxUser && <FaPencilAlt
-                                className="cursor-pointer"
-                                onClick={() => handleEditToggle("name")}
-                                title="Edit name"
-                                size={16}
-                            />}
-                        </>}
-                </div>
+                {editingField === "name"
+                    ? <UpdateNameForm
+                        currentName={userInfo.name}
+                        onUpdateSuccess={handleOnUpdateSuccess}
+                        onCancel={handleOnCancel}
+                    />
+                    : <div className="flex items-center justify-center gap-2 w-full">
+                        <span className="text-gray-500 dark:text-gray-400">{userInfo.name}</span>
+                        {isVicxUser && <FaPencilAlt
+                            className="cursor-pointer"
+                            onClick={() => handleEditToggle("name")}
+                            title="Edit name"
+                            size={16}
+                        />}
+                    </div>}
 
                 {/* Email Field */}
-                <div className="flex items-center gap-2 mt-2">
-                    {editingField === "email"
-                        ? <UpdateEmailAddressForm
-                            currentEmailAddress={userInfo.email}
-                            onUpdateSuccess={handleOnUpdateSuccess}
-                            onCancel={handleOnCancel}
-                        />
-                        : <>
-                            <span className="text-gray-500 dark:text-gray-400">{userInfo.email}</span>
-                            {isVicxUser && <FaPencilAlt
-                                className="cursor-pointer"
-                                onClick={() => handleEditToggle("email")}
-                                title="Edit email"
-                                size={16}
-                            />}
-                        </>}
-                </div>
+                {editingField === "email"
+                    ? <UpdateEmailAddressForm
+                        currentEmailAddress={userInfo.email}
+                        onUpdateSuccess={handleOnUpdateSuccess}
+                        onCancel={handleOnCancel}
+                    />
+                    : <div className="flex items-center justify-center gap-2 w-full mt-2">
+                        <span className="text-gray-500 dark:text-gray-400">{userInfo.email}</span>
+                        {isVicxUser && <FaPencilAlt
+                            className="cursor-pointer"
+                            onClick={() => handleEditToggle("email")}
+                            title="Edit email"
+                            size={16}
+                        />}
+                    </div>}
             </div>
 
             {updateResult &&
