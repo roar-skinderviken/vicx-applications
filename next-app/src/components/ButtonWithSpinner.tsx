@@ -8,25 +8,23 @@ const ButtonWithSpinner = (
         disabled = false,
         type = "submit",
         size,
-        onClick = () => {
-        },
+        onClick,
         ...rest
     }: {
         buttonText: string
         isLoading: boolean
         size?: "xs" | "sm" | "lg" | "xl"
+        onClick?: () => void
     } & ButtonHTMLAttributes<HTMLButtonElement>) => (
     <Button
         type={type}
         size={size}
         disabled={disabled || isLoading}
-        onClick={onClick}
+        onClick={() => onClick?.()}
         {...rest}>
         {isLoading
             ? <div className="flex items-center justify-center gap-2 px-4">
-                <Spinner
-                    aria-label="Loading addition result"
-                    size="sm"/>
+                <Spinner aria-label="Loading content" size={size === "xs" ? "xs" : "sm"} />
                 <span>Loading...</span>
             </div>
             : <>{buttonText}</>
