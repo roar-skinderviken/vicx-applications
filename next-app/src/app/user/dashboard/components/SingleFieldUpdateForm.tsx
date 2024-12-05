@@ -83,28 +83,24 @@ const SingleFieldUpdateForm = <T extends yup.AnyObjectSchema>({
         <Card className="max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl m-2 w-full">
             <FormProvider {...methods}>
                 <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4">
-                    <div className="flex items-start gap-2">
-                        {fields.map((field) => (
-                            <div key={String(field.name)} className="flex flex-col">
-                                <ValidatedTextInput
-                                    name={String(field.name)}
-                                    type={field.type || "text"}
-                                    errorMessage={validationErrors?.[field.name as string]}
-                                />
-                            </div>
-                        ))}
-
-                        <div className="flex items-center gap-2">
-                            <ButtonWithSpinner
-                                buttonText="Save"
-                                isLoading={isLoading}
-                                disabled={isSubmitDisabled}
-                                className="w-24"
+                    {fields.map((field) => (
+                        <div key={String(field.name)} className="flex flex-col">
+                            <ValidatedTextInput
+                                name={String(field.name)}
+                                type={field.type || "text"}
+                                errorMessage={validationErrors?.[field.name as string]}
                             />
-                            <Button onClick={onCancel}>Cancel</Button>
                         </div>
+                    ))}
+                    <div className="flex items-center justify-center gap-2">
+                        <ButtonWithSpinner
+                            buttonText="Save"
+                            isLoading={isLoading}
+                            disabled={isSubmitDisabled}
+                            className="w-24"
+                        />
+                        <Button onClick={onCancel}>Cancel</Button>
                     </div>
-
                 </form>
             </FormProvider>
         </Card>
