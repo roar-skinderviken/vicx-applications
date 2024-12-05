@@ -1,7 +1,7 @@
 "use client"
 
 import React, {useEffect, useState} from "react"
-import {Card, Spinner} from "flowbite-react"
+import {Card, Dropdown, Spinner} from "flowbite-react"
 import Image from "next/image"
 import UpdateNameForm from "@/app/user/dashboard/components/UpdateNameForm"
 import UpdateEmailAddressForm from "@/app/user/dashboard/components/UpdateEmailAddressForm"
@@ -22,7 +22,6 @@ const ProfileCard = ({nonVicxUserInfo}: {
     const [isLoading, setIsLoading] = useState(false)
     const [userInfo, setUserInfo] = useState(nonVicxUserInfo)
     const [updateResult, setUpdateResult] = useState("")
-    const [isImageDropdownOpen, setIsImageDropdownOpen] = useState(false)
 
     const isVicxUser = !nonVicxUserInfo
 
@@ -39,10 +38,7 @@ const ProfileCard = ({nonVicxUserInfo}: {
         setEditingField(editingField === field ? null : field)
     }
 
-    const toggleImageDropdown = () => setIsImageDropdownOpen((prev) => !prev)
-
     const deleteCurrentProfileImage = () => {
-        toggleImageDropdown()
         setIsLoading(true)
         getSession()
             .then(extractUserOrSignOut)
@@ -82,7 +78,7 @@ const ProfileCard = ({nonVicxUserInfo}: {
 
     if (isLoading) return <Card className="max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl m-2 w-full">
         <div className="flex flex-col items-center">
-            <Spinner aria-label="Loading user info" size="xl" />
+            <Spinner aria-label="Loading user info" size="xl"/>
         </div>
     </Card>
 
@@ -109,33 +105,27 @@ const ProfileCard = ({nonVicxUserInfo}: {
                                 className="w-32 h-32 rounded-full bg-gray-200 flex items-center justify-center text-gray-500">
                                 No Image
                             </div>}
+
                         {isVicxUser && <div className="absolute top-0 right-0">
-                            <button
-                                onClick={toggleImageDropdown}
-                                className="bg-gray-200 text-gray-500 p-2 rounded-full hover:bg-gray-300 shadow-md"
+                            <Dropdown
+                                arrowIcon={false}
+                                size="xs"
+                                placement="right-start"
+                                label={<FaPencilAlt
+                                    title="Profile image options"
+                                    size={16}
+                                />}
+                                theme={{floating: {target: "w-8 h-8 rounded-full"}}}
                             >
-                                <FaPencilAlt/>
-                            </button>
+                                <Dropdown.Item
+                                    onClick={() => handleEditToggle("image")}
+                                    className="text-nowrap">Upload new image</Dropdown.Item>
 
-                            {isImageDropdownOpen && (
-                                <div
-                                    className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-lg border">
-                                    <button
-                                        onClick={() => {
-                                            toggleImageDropdown()
-                                            handleEditToggle("image")
-                                        }}
-                                        className="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
-                                    >Upload new image
-                                    </button>
-
-                                    {userInfo.image && (
-                                        <button
-                                            onClick={deleteCurrentProfileImage}
-                                            className="w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100"
-                                        >Delete image
-                                        </button>)}
-                                </div>)}
+                                {userInfo.image && (
+                                    <Dropdown.Item
+                                        onClick={deleteCurrentProfileImage}
+                                        className="text-nowrap">Delete image</Dropdown.Item>)}
+                            </Dropdown>
                         </div>}
                     </div>}
 
