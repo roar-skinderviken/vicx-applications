@@ -8,7 +8,6 @@ import org.springframework.security.oauth2.jwt.JwtDecoder;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 @TestConfiguration
 public class TestSecurityConfig {
@@ -20,15 +19,14 @@ public class TestSecurityConfig {
             ".aGVsbG9fc2lnbmF0dXJlX2Jhc2U2NA==";
 
     public static Jwt createJwtInTest(List<String> roles) {
-        return new Jwt(
-                VALID_JWT_STRING,
-                Instant.now(),
-                Instant.now().plusSeconds(30),
-                Map.of("alg", "none"),
-                Map.of(
-                        "sub", "user1",
-                        "roles", roles)
-        );
+        return Jwt
+                .withTokenValue(VALID_JWT_STRING)
+                .issuedAt(Instant.now())
+                .expiresAt(Instant.now().plusSeconds(30))
+                .header("alg", "none")
+                .claim("sub", "user1")
+                .claim("roles", roles)
+                .build();
     }
 
     @Bean
