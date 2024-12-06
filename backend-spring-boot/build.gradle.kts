@@ -2,6 +2,7 @@ plugins {
     java
     id("org.springframework.boot") version "3.4.0"
     id("io.spring.dependency-management") version "1.1.6"
+    id("com.gorylenko.gradle-git-properties") version "2.4.2"
 }
 
 java {

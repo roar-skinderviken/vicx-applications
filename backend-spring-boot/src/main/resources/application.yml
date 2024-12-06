@@ -59,8 +59,12 @@ management:
   endpoints:
     web:
       exposure:
-        include: info,health
+        include: health,info
   endpoint:
     health:
       probes:
         enabled: true
+  info:
+    git:
+      enabled: true
+      mode: simple
