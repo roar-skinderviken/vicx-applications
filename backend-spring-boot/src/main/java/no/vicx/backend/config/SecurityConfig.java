@@ -38,6 +38,7 @@ public class SecurityConfig {
                         .requestMatchers(EndpointRequest.to(HealthEndpoint.class)).permitAll()
 
                         // exposes same info as /actuator/info, but on port 8080
+                        .requestMatchers(HttpMethod.GET, "/actuator/info").permitAll()
                         .requestMatchers(HttpMethod.GET, "/info").permitAll()
 
                         .requestMatchers(HttpMethod.GET, "/api/calculator").permitAll()
