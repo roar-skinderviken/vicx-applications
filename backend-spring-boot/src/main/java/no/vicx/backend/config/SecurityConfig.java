@@ -32,8 +32,13 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
+                .formLogin(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
+                        // port 8082
                         .requestMatchers(EndpointRequest.to(HealthEndpoint.class)).permitAll()
+
+                        // exposes same info as /actuator/info, but on port 8080
+                        .requestMatchers(HttpMethod.GET, "/info").permitAll()
 
                         .requestMatchers(HttpMethod.GET, "/api/calculator").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/calculator").permitAll()
