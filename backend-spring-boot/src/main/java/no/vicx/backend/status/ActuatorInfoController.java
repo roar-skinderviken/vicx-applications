@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 
+/*
 @Profile("!test")
 @RestController
 @RequestMapping("/info")
@@ -24,3 +25,4 @@ public class ActuatorInfoController {
         return infoEndpoint.info();
     }
 }
+*/
