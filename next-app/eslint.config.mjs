@@ -14,9 +14,16 @@ export default [
     ...compat.extends("next/core-web-vitals", "next/typescript"),
     {
         rules: {
-            // Disallow semicolons at the end of statements
             semi: ["error", "never"],
             "react/no-unescaped-entities": "off",
+            '@typescript-eslint/no-unused-expressions': [
+                'error',
+                {
+                    allowShortCircuit: true,
+                    allowTernary: true,
+                    allowTaggedTemplates: true,
+                },
+            ],
         }
     }
 ];
