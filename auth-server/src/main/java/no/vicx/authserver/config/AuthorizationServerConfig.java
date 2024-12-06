@@ -39,6 +39,7 @@ public class AuthorizationServerConfig {
                 .tokenSettings(TokenSettings.builder()
                         .accessTokenTimeToLive(oAuthProperties.accessTokenTimeToLive())
                         .refreshTokenTimeToLive(oAuthProperties.refreshTokenTimeToLive())
+                        .reuseRefreshTokens(false)
                         .build())
                 .build();
 
