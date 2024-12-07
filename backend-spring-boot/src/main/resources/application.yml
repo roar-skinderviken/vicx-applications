@@ -56,15 +56,29 @@ spring:
 management:
   server:
     port: 8082
+#  health: # alternative, disable all and enable those required
+#    defaults:
+#      enabled: false
+#    livenessstate:
+#      enabled: true
+#    readinessState:
+#      enabled: true
+#    db:
+#      enabled: true
   endpoints:
     web:
       exposure:
-        include: health,info
+        include: health
   endpoint:
     health:
+      show-details: always # to show all groups on localhost
       probes:
         enabled: true
-  info:
-    git:
-      enabled: true
-      mode: simple
+      group:
+        liveness:
+          include:
+            - livenessState
+        readiness:
+          include:
+            - readinessState
+            - db
