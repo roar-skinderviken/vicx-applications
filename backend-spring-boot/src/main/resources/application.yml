@@ -1,3 +1,7 @@
+server:
+  servlet:
+    context-path: /backend-spring-boot
+
 logging:
   level:
     root: INFO
