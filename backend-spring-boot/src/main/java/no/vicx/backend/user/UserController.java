@@ -39,7 +39,8 @@ public class UserController {
 
     @Operation(
             summary = "Create a new user",
-            description = "Creates a new user if the username does not already exist in the database. An optional profile image can be provided.",
+            description = "Creates a new user if the username does not already exist in the database. " +
+                    "An optional profile image can be provided.",
             responses = {
                     @ApiResponse(
                             responseCode = "201",
@@ -54,7 +55,7 @@ public class UserController {
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
             produces = MediaType.TEXT_PLAIN_VALUE)
     public ResponseEntity<String> createUser(
-            @Parameter(description = "User data", required = true)
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "User data", required = true)
             @Validated CreateUserVm createUserVm,
 
             @Parameter(description = "Profile image")
