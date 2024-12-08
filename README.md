@@ -13,7 +13,7 @@ RECAPTCHA_SITE_KEY=6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI
 NEXT_PUBLIC_KMEANS_BACKEND_URL=http://localhost:8000/k-means
 NEXT_PUBLIC_CALCULATOR_BACKEND_URL=http://localhost:8080/api/calculator
 NEXT_PUBLIC_USER_BACKEND_URL=http://localhost:8080/api/user
-SPRING_BACKEND_BASE_URL=http://localhost:8080
+SPRING_BACKEND_BASE_URL=http://localhost:8080/backend-spring-boot
 ```
 Value for `RECAPTCHA_SITE_KEY` is a dev value. 
 
