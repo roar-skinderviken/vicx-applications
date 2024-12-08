@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.oidc.OidcScopes;
+import org.springframework.security.oauth2.server.authorization.OAuth2TokenType;
 import org.springframework.security.oauth2.server.authorization.token.JwtEncodingContext;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
 
@@ -33,7 +34,9 @@ public class JwtCustomizerConfig {
                             .toList()
             );
 
-            if (!(authentication.getPrincipal() instanceof CustomUserDetails userDetails)) {
+            // only add claims for name, email and image when id-token
+            if (context.getTokenType() == OAuth2TokenType.ACCESS_TOKEN
+                    || !(authentication.getPrincipal() instanceof CustomUserDetails userDetails)) {
                 return;
             }
 

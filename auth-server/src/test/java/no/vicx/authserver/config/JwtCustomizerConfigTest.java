@@ -10,6 +10,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.oauth2.core.oidc.OidcScopes;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
+import org.springframework.security.oauth2.server.authorization.OAuth2TokenType;
 import org.springframework.security.oauth2.server.authorization.token.JwtEncodingContext;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
 
@@ -75,7 +76,19 @@ class JwtCustomizerConfigTest {
     }
 
     @Test
-    void customize_givenPrincipalDifferentFromCustomUserDetails_expectOnlyOneClaimToBeSet() {
+    void customize_givenContextForAccessToken_expectOnlyRolesClaimToBeSet() {
+        when(context.getTokenType()).thenReturn(OAuth2TokenType.ACCESS_TOKEN);
+
+        sut.customize(context);
+
+        verify(claimsBuilder).claim(ROLES_CLAIM, List.of("ROLE_USER", "ROLE_ADMIN"));
+        verify(claimsBuilder, never()).claim(eq(NAME_CLAIM), anyString());
+        verify(claimsBuilder, never()).claim(eq(IMAGE_CLAIM), anyString());
+        verify(claimsBuilder, never()).claim(eq(EMAIL_CLAIM), anyString());
+    }
+
+    @Test
+    void customize_givenPrincipalDifferentFromCustomUserDetails_expectOnlyRolesClaimToBeSet() {
         when(authentication.getPrincipal()).thenReturn(new User(
                 "username",
                 "password",
@@ -92,7 +105,7 @@ class JwtCustomizerConfigTest {
     }
 
     @Test
-    void customize_givenNoScopes_expectOnlyOneClaimToBeSet() {
+    void customize_givenNoScopes_expectOnlyRolesClaimToBeSet() {
         when(context.getAuthorizedScopes()).thenReturn(Collections.emptySet());
 
         sut.customize(context);
