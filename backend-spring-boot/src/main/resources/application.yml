@@ -93,7 +93,7 @@ springdoc:
   swagger-ui:
     oauth:
       clientId: "next-app-client"
-      clientSecret: ${CLIENT_SECRET:secret}
+      clientSecret: ${OAUTH_CLIENT_SECRET:secret}
   oAuthFlow:
     # noinspection SpringBootApplicationYaml
     authorizationUrl: ${OAUTH2_SERVER:http://localhost:9000/auth-server}/oauth2/authorize
