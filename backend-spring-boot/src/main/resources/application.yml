@@ -11,7 +11,7 @@ recaptcha:
   secret: ${RECAPTCHA_SECRET:6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe} # dev secret
 
 auth-server:
-  issuer-uri: ${ISSUER_URI:http://localhost:9000/auth-server}
+  issuer-uri: ${OAUTH2_SERVER:http://localhost:9000/auth-server}
 
 spring:
   servlet:
@@ -82,3 +82,16 @@ management:
           include:
             - readinessState
             - db
+
+springdoc:
+  api-docs:
+    version: openapi_3_1
+  swagger-ui:
+    oauth:
+      clientId: "next-app-client"
+      clientSecret: ${CLIENT_SECRET:secret}
+  oAuthFlow:
+    # noinspection SpringBootApplicationYaml
+    authorizationUrl: ${OAUTH2_SERVER:http://localhost:9000/auth-server}/oauth2/authorize
+    # noinspection SpringBootApplicationYaml
+    tokenUrl: ${OAUTH2_SERVER:http://localhost:9000/auth-server}/oauth2/token

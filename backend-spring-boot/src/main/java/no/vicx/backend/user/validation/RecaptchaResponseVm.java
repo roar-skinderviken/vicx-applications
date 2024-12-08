@@ -1,4 +1,4 @@
-package no.vicx.backend.user.vm;
+package no.vicx.backend.user.validation;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

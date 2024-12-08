@@ -1,6 +1,6 @@
 package no.vicx.backend.user.service;
 
-import no.vicx.backend.user.vm.RecaptchaResponseVm;
+import no.vicx.backend.user.validation.RecaptchaResponseVm;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
