@@ -30,9 +30,13 @@ public class AuthorizationServerConfig {
                 .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_POST)
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                 .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-                //.authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
+                .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
                 .redirectUri(oAuthProperties.redirectUri())
                 .postLogoutRedirectUri(oAuthProperties.postLogoutRedirectUri())
+
+                .redirectUri(oAuthProperties.resourceServer() + "/swagger-ui/oauth2-redirect.html")
+                .redirectUri(oAuthProperties.resourceServer() + "/webjars/swagger-ui/oauth2-redirect.html")
+
                 .scope(OidcScopes.OPENID)
                 .scope(OidcScopes.PROFILE)
                 .scope(OidcScopes.EMAIL)

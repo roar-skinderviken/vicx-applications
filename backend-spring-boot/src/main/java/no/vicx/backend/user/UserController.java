@@ -1,9 +1,16 @@
 package no.vicx.backend.user;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import no.vicx.backend.user.service.UserService;
 import no.vicx.backend.user.validation.ProfileImage;
-import no.vicx.backend.user.vm.UserPatchVm;
 import no.vicx.backend.user.vm.CreateUserVm;
+import no.vicx.backend.user.vm.UserPatchVm;
 import no.vicx.backend.user.vm.UserVm;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +25,9 @@ import java.net.URI;
 @RestController
 @RequestMapping("/api/user")
 @Validated
+@Tag(name = "User", description = "API for adding and updating users")
 public class UserController {
+
     static final String USER_CREATED_BODY_TEXT = "User created successfully.";
     static final String USER_UPDATE_BODY_TEXT = "User updated successfully.";
 
@@ -28,27 +37,28 @@ public class UserController {
         this.userService = userService;
     }
 
-    /**
-     * Creates a new user if the username does not already exist in the database.
-     * <p>
-     * <strong>Note:</strong> When using {@link jakarta.validation.Valid}, the class-level validator
-     * {@link no.vicx.backend.user.validation.RecaptchaThenUniqueUsername}
-     * will run twice and fail reCAPTCHA validation on the second invocation.
-     * To avoid this, use {@link org.springframework.validation.annotation.Validated}.
-     * </p>
-     *
-     * @param createUserVm the user data submitted for creation, validated against {@link CreateUserVm}.
-     * @param image  an optional multipart file containing the user's profile image.
-     *               Validated using the {@link no.vicx.backend.user.validation.ProfileImage} annotation.
-     * @return a response containing the location of the created user in the headers,
-     * a description of the outcome in the body, and HTTP status code 201 (Created).
-     * @throws IOException if an error occurs while processing the profile image.
-     */
+    @Operation(
+            summary = "Create a new user",
+            description = "Creates a new user if the username does not already exist in the database. " +
+                    "An optional profile image can be provided.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "201",
+                            description = "User created successfully.",
+                            content = @Content(
+                                    mediaType = MediaType.TEXT_PLAIN_VALUE,
+                                    schema = @Schema(type = "string", example = USER_CREATED_BODY_TEXT))),
+                    @ApiResponse(responseCode = "400", description = "Invalid input data", content = @Content),
+                    @ApiResponse(responseCode = "500", description = "Server error", content = @Content)
+            })
     @PostMapping(
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
             produces = MediaType.TEXT_PLAIN_VALUE)
     public ResponseEntity<String> createUser(
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "User data", required = true)
             @Validated CreateUserVm createUserVm,
+
+            @Parameter(description = "Profile image")
             @ProfileImage MultipartFile image) throws IOException {
 
         userService.createUser(createUserVm, image);
@@ -58,16 +68,48 @@ public class UserController {
                 .body(USER_CREATED_BODY_TEXT);
     }
 
+    @SecurityRequirement(name = "security_auth")
+    @Operation(
+            summary = "Get the currently authenticated user",
+            description = "Fetches the details of the currently authenticated user.",
+            security = @SecurityRequirement(name = "bearerAuth"),
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "User found",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = UserVm.class))),
+                    @ApiResponse(responseCode = "401", description = "User not authenticated", content = @Content),
+                    @ApiResponse(responseCode = "403", description = "Access denied", content = @Content),
+                    @ApiResponse(responseCode = "404", description = "User not found", content = @Content)})
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    UserVm getUser(Authentication authentication) {
+    public UserVm getUser(Authentication authentication) {
         return UserVm.fromVicxUser(userService.getUserByUserName(authentication.getName()));
     }
 
+    @SecurityRequirement(name = "security_auth")
+    @Operation(
+            summary = "Update user name or email",
+            description = "Allows the user to update their name or email using a patch operation.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "User updated successfully",
+                            content = @Content(
+                                    mediaType = MediaType.TEXT_PLAIN_VALUE,
+                                    schema = @Schema(type = "string", example = USER_UPDATE_BODY_TEXT))),
+                    @ApiResponse(responseCode = "400", description = "Invalid input data", content = @Content),
+                    @ApiResponse(responseCode = "401", description = "User not authenticated", content = @Content),
+                    @ApiResponse(responseCode = "403", description = "Access denied", content = @Content),
+                    @ApiResponse(responseCode = "404", description = "User not found", content = @Content)})
     @PatchMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.TEXT_PLAIN_VALUE)
-    ResponseEntity<String> patchName(
+    public ResponseEntity<String> patchName(
+            @Parameter(description = "The user data to update", required = true)
             @Validated @RequestBody UserPatchVm body,
+
             Authentication authentication) {
         userService.updateUser(body, authentication.getName());
 

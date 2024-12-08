@@ -17,6 +17,7 @@ oauth:
   client-id: "next-app-client"
   client-secret: ${CLIENT_SECRET:secret}
   redirect-uri: ${REDIRECT_URI:http://localhost:3000/api/auth/callback/next-app-client}
+  resource-server: ${RESOURCE_SERVER:http://localhost:8080/backend-spring-boot}
   post-logout-redirect-uri: ${POST_LOGOUT_REDIRECT_URI:http://localhost:3000/}
   access-token-time-to-live: PT1M
   refresh-token-time-to-live: PT5M

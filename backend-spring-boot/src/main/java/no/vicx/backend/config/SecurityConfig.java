@@ -6,6 +6,7 @@ import org.springframework.boot.actuate.health.HealthEndpoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.lang.NonNull;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -15,6 +16,8 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebSecurity
@@ -24,6 +27,19 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(@NonNull CorsRegistry registry) {
+                registry.addMapping("/**")
+                        .allowedOrigins("http://localhost:3000")
+                        .allowedMethods("GET", "POST", "OPTIONS", "HEAD")
+                        .allowCredentials(true);
+            }
+        };
     }
 
     @Bean
@@ -40,46 +56,21 @@ public class SecurityConfig {
                         // exposes same info as /actuator/info, but on port 8080
                         .requestMatchers(HttpMethod.GET, "/gitproperties").permitAll()
 
+                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+
                         .requestMatchers(HttpMethod.GET, "/api/calculator").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/calculator").permitAll()
                         .requestMatchers(HttpMethod.DELETE, "/api/calculator").hasAnyRole("USER", "GITHUB_USER")
 
                         .requestMatchers(HttpMethod.POST, "/api/user").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/**").hasRole("USER")
 
-                        .requestMatchers(HttpMethod.PATCH, "/api/**").hasRole("USER")
-
-                        .requestMatchers(HttpMethod.GET, "/api/**").hasRole("USER")
-
-                        .requestMatchers(HttpMethod.DELETE, "/api/**").hasRole("USER")
+                        .requestMatchers("/api/**").hasRole("USER")
 
                         .requestMatchers("/error").permitAll()
                         .anyRequest().authenticated()
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2
-                        .jwt(jwt -> jwt.jwtAuthenticationConverter(new FusedClaimConverter()))
-                )
-                .headers(headers -> {
-                            headers.permissionsPolicyHeader(permissions ->
-                                    permissions.policy("geolocation=(), microphone=(), camera=()"));
-
-                            headers.contentSecurityPolicy(policyConfig ->
-                                    policyConfig.policyDirectives(
-                                            "default-src 'self'; " +
-                                                    "script-src 'self'; " +
-                                                    "style-src 'self'; " +
-                                                    "img-src 'self'; " +
-                                                    "font-src 'self'; " +
-                                                    "connect-src 'self'; " +
-                                                    "media-src 'self'; " +
-                                                    "frame-src 'none'; " +  // Example for blocking iframes
-                                                    "frame-ancestors 'none'; " +  // Prevent framing
-                                                    "form-action 'self'; " +  // Restrict form submissions
-                                                    "base-uri 'self';"  // Restrict base URI
-                                    )
-                            );
-                        }
-                )
+                        .jwt(jwt -> jwt.jwtAuthenticationConverter(new FusedClaimConverter())))
                 .build();
     }
 }

@@ -15,7 +15,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -27,6 +26,7 @@ import java.util.stream.Stream;
 
 import static no.vicx.backend.jwt.JwtConstants.BEARER_PREFIX;
 import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -56,13 +56,13 @@ class CalculatorControllerTest {
                 "user1",
                 NOW));
 
-        when(calculatorService.getAllCalculations(Pageable.ofSize(10))).thenReturn(
+        when(calculatorService.getAllCalculations(any())).thenReturn(
                 new PageImpl<>(calcVmList,
                         PageRequest.of(0, 10),
                         calcVmList.size()));
 
         var requestBuilder =
-                get("/api/calculator").accept(MediaType.APPLICATION_JSON);
+                get("/api/calculator?size=10").accept(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isOk())
