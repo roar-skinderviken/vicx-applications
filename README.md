@@ -61,7 +61,7 @@ poetry run uvicorn src.app:app --reload
 
 The OpenAPI documentation for the API is available at the following URL:
 
-[Swagger UI](http://localhost:8080/swagger-ui/index.html)
+[Swagger UI](http://localhost:8080/backend-spring-boot/swagger-ui/index.html)
 
 You can use this interface to explore and interact with the API endpoints, view their descriptions, 
 and test requests directly from the UI.
