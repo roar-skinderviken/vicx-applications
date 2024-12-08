@@ -104,6 +104,22 @@ class UserImageControllerTest extends BaseWebMvcTest {
                 apiError.validationErrors().get("image"));
     }
 
+    @Test
+    void postUserImage_givenNullFile_expectBadRequest() throws Exception {
+        var content = mockMvc
+                .perform(createMultipartRequest(null, true))
+                .andExpect(status().isBadRequest())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        var apiError = objectMapper.readValue(content, ApiError.class);
+
+        assertEquals(
+                "Cannot be null",
+                apiError.validationErrors().get("image"));
+    }
+
     // START get
 
     @Test
@@ -155,9 +171,12 @@ class UserImageControllerTest extends BaseWebMvcTest {
 
     private static MockHttpServletRequestBuilder createMultipartRequest(
             MockMultipartFile imageFile, boolean addAuth) {
-        var builder = multipart("/api/user/image")
-                .file(imageFile)
-                .contentType(MediaType.MULTIPART_FORM_DATA);
+
+        var builder = imageFile != null
+                ? multipart("/api/user/image").file(imageFile)
+                : multipart("/api/user/image");
+
+        builder.contentType(MediaType.MULTIPART_FORM_DATA);
 
         if (addAuth) {
             builder.header(HttpHeaders.AUTHORIZATION, AUTH_HEADER_IN_TEST);

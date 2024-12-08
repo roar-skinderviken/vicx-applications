@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.NotNull;
 import no.vicx.backend.error.NotFoundException;
 import no.vicx.backend.user.service.UserImageService;
 import no.vicx.backend.user.validation.ProfileImage;
@@ -52,7 +53,7 @@ public class UserImageController {
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> createUserImage(
             @Parameter(description = "The profile image to upload.", required = true)
-            @ProfileImage MultipartFile image,
+            @NotNull @ProfileImage MultipartFile image,
 
             Authentication authentication) throws IOException {
 
