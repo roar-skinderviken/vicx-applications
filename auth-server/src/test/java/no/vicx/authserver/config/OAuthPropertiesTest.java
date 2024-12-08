@@ -30,6 +30,7 @@ class OAuthPropertiesTest {
                         "oauth.client-secret=~client-secret~",
                         "oauth.redirect-uri=~redirect-uri~",
                         "oauth.post-logout-redirect-uri=~post-logout-redirect-uri~",
+                        "oauth.resource-server=~resource-server~",
                         "oauth.access-token-time-to-live=PT5M",
                         "oauth.refresh-token-time-to-live=PT1H"
                 )
@@ -42,6 +43,7 @@ class OAuthPropertiesTest {
                     assertEquals("~client-secret~", sut.clientSecret());
                     assertEquals("~redirect-uri~", sut.redirectUri());
                     assertEquals("~post-logout-redirect-uri~", sut.postLogoutRedirectUri());
+                    assertEquals("~resource-server~", sut.resourceServer());
                     assertEquals(Duration.ofMinutes(5), sut.accessTokenTimeToLive());
                     assertEquals(Duration.ofHours(1), sut.refreshTokenTimeToLive());
                 });
@@ -51,7 +53,7 @@ class OAuthPropertiesTest {
     @MethodSource("invalidParametersSource")
     void contextLoad_givenInvalidOAuthProperties_expectContextLoadToFail(
             String clientId, String clientSecret, String redirectUri, String postLogoutRedirectUri,
-            String accessTokenTimeToLive, String refreshTokenTimeToLive) {
+            String resourceServerBaseUrl, String accessTokenTimeToLive, String refreshTokenTimeToLive) {
 
         CONTEXT_RUNNER
                 .withUserConfiguration(OAuthPropertiesTestConfig.class)
@@ -60,6 +62,7 @@ class OAuthPropertiesTest {
                         "oauth.client-secret=" + clientSecret,
                         "oauth.redirect-uri=" + redirectUri,
                         "oauth.post-logout-redirect-uri=" + postLogoutRedirectUri,
+                        "oauth.resource-server=" + resourceServerBaseUrl,
                         "oauth.access-token-time-to-live=" + accessTokenTimeToLive,
                         "oauth.refresh-token-time-to-live=" + refreshTokenTimeToLive
                 )
@@ -68,17 +71,19 @@ class OAuthPropertiesTest {
 
     static Stream<Arguments> invalidParametersSource() {
         return Stream.of(
-                Arguments.of(" ", "~client-secret~", "~redirect-uri~", "~post-logout-redirect-uri~",
-                        "PT5M", "PT1H"),
-                Arguments.of("~client-id~", " ", "~redirect-uri~", "~post-logout-redirect-uri~",
-                        "PT5M", "PT1H"),
-                Arguments.of("~client-id~", "~client-secret~", " ", "~post-logout-redirect-uri~",
-                        "PT5M", "PT1H"),
+                Arguments.of(" ", "~client-secret~", "~redirect-uri~", "~resource-server~",
+                        "~post-logout-redirect-uri~", "PT5M", "PT1H"),
+                Arguments.of("~client-id~", " ", "~redirect-uri~", "~resource-server~",
+                        "~post-logout-redirect-uri~", "PT5M", "PT1H"),
+                Arguments.of("~client-id~", "~client-secret~", " ", "~resource-server~",
+                        "~post-logout-redirect-uri~", "PT5M", "PT1H"),
                 Arguments.of("~client-id~", "~client-secret~", "~redirect-uri~", " ",
-                        "PT5M", "PT1H"),
-                Arguments.of("~client-id~", "~client-secret~", "~redirect-uri~", "~post-logout-redirect-uri~",
-                        " ", "PT1H"),
-                Arguments.of("~client-id~", "~client-secret~", "~redirect-uri~", "~post-logout-redirect-uri~",
-                        "PT5M", " "));
+                        "~post-logout-redirect-uri~", "PT5M", "PT1H"),
+                Arguments.of("~client-id~", "~client-secret~", "~redirect-uri~", "~resource-server~",
+                        " ", "PT5M", "PT1H"),
+                Arguments.of("~client-id~", "~client-secret~", "~redirect-uri~", "~resource-server~",
+                        "~post-logout-redirect-uri~", " ", "PT1H"),
+                Arguments.of("~client-id~", "~client-secret~", "~redirect-uri~", "~resource-server~",
+                        "~post-logout-redirect-uri~", "PT5M", " "));
     }
 }

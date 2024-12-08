@@ -14,6 +14,7 @@ public record OAuthProperties(
         @NotBlank String clientSecret,
         @NotBlank String redirectUri,
         @NotBlank String postLogoutRedirectUri,
+        @NotBlank String resourceServer,
         @NotNull Duration accessTokenTimeToLive,
         @NotNull Duration refreshTokenTimeToLive) {
 }
