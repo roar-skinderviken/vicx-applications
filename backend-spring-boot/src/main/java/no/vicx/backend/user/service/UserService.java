@@ -39,6 +39,10 @@ public class UserService {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.recaptchaTokensCache = cacheManager.getCache("RECAPTCHA_TOKENS");
+
+        if (this.recaptchaTokensCache == null) {
+            throw new IllegalStateException("Cache 'RECAPTCHA_TOKENS' is not configured. Application cannot start.");
+        }
     }
 
     /**

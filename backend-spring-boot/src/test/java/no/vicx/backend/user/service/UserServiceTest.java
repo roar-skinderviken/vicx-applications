@@ -61,6 +61,18 @@ class UserServiceTest {
         openMocks.close();
     }
 
+    @Test
+    void constructor_givenNoRecaptchaTokensCache_expectIllegalStateException() {
+        when(cacheManager.getCache("RECAPTCHA_TOKENS")).thenReturn(null);
+
+        var exception = assertThrows(IllegalStateException.class,
+                () -> new UserService(userRepository, passwordEncoder, cacheManager));
+
+        assertEquals(
+                "Cache 'RECAPTCHA_TOKENS' is not configured. Application cannot start.",
+                exception.getMessage());
+    }
+
     // START createUser
 
     @ParameterizedTest
