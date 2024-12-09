@@ -27,24 +27,19 @@ class GitHubUserVmTest {
         return Stream.of(
                 Arguments.of(
                         new GitHubUserVm(
-                                null, "~login~", "~user1~", "~email~", "~avatar~"
-                        )
-                ),
+                                "~id~", "~login~", "~user1~", "~email~", "~avatar~")),
                 Arguments.of(
                         new GitHubUserVm(
-                                null, null, "~user1~", "~email~", "~avatar~"
-                        )
-                ),
+                                null, "~login~", "~user1~", "~email~", "~avatar~")),
                 Arguments.of(
                         new GitHubUserVm(
-                                null, null, null, "~email~", "~avatar~"
-                        )
-                ),
+                                null, null, "~user1~", "~email~", "~avatar~")),
                 Arguments.of(
                         new GitHubUserVm(
-                                null, null, null, null, "~avatar~"
-                        )
-                )
+                                null, null, null, "~email~", "~avatar~")),
+                Arguments.of(
+                        new GitHubUserVm(
+                                null, null, null, null, "~avatar~"))
         );
     }
 }

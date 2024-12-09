@@ -15,6 +15,9 @@ class GitHubUserResponseVmTest {
     static GitHubUserVm minimalUser = new GitHubUserVm(
             "~id~", "~login~", null, null, null);
 
+    static GitHubUserVm minimalUserWithBlankEmail = new GitHubUserVm(
+            "~id~", "~login~", null, " ", null);
+
     @Test
     void toJwt_givenUserWithAllFieldsSet_expectJwtWithAllFieldsSet() {
         var sut = new GitHubUserResponseVm(
@@ -23,6 +26,9 @@ class GitHubUserResponseVmTest {
         var jwt = sut.toJwt();
 
         assertNotNull(jwt);
+        assertNotNull(jwt.getIssuedAt());
+        assertNotNull(jwt.getExpiresAt());
+        assertEquals(Collections.singletonMap(HEADER_ALG, HEADER_ALG_NONE), jwt.getHeaders());
 
         assertEquals("~login~", jwt.getSubject());
         assertEquals("~granted-scopes~", jwt.getClaim(CLAIM_SCOPES));
@@ -30,7 +36,6 @@ class GitHubUserResponseVmTest {
         assertEquals("~email~", jwt.getClaim(CLAIM_EMAIL));
         assertEquals("~name~", jwt.getClaim(CLAIM_NAME));
         assertEquals("~avatar~", jwt.getClaim(CLAIM_IMAGE));
-        assertEquals(Collections.singletonMap(HEADER_ALG, HEADER_ALG_VALUE), jwt.getHeaders());
     }
 
     @Test
@@ -44,5 +49,16 @@ class GitHubUserResponseVmTest {
         assertEquals("~additionalEmailAddress~", jwt.getClaim(CLAIM_EMAIL));
         assertNull(jwt.getClaim(CLAIM_NAME));
         assertNull(jwt.getClaim(CLAIM_IMAGE));
+    }
+
+    @Test
+    void toJwt_givenUserWithBlankEmail_expectJwtWithAdditionalEmailAddress() {
+        var sut = new GitHubUserResponseVm(
+                minimalUserWithBlankEmail, "~granted-scopes~",
+                "~additionalEmailAddress~", "~token~");
+
+        var jwt = sut.toJwt();
+
+        assertEquals("~additionalEmailAddress~", jwt.getClaim(CLAIM_EMAIL));
     }
 }

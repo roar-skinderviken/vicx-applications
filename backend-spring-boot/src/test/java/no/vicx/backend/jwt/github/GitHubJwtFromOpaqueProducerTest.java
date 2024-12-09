@@ -63,7 +63,7 @@ class GitHubJwtFromOpaqueProducerTest {
 
         // Assert
         assertNotNull(jwt);
-        assertEquals("john-doe", jwt.getClaim(CLAIM_SUB));
+        assertEquals("john-doe", jwt.getSubject());
         assertEquals("John Doe", jwt.getClaim(CLAIM_NAME));
         assertEquals("john.doe@example.com", jwt.getClaim(CLAIM_EMAIL));
         assertEquals("https://example.com/avatar.jpg", jwt.getClaim(CLAIM_IMAGE));

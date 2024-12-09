@@ -10,11 +10,11 @@ public record GitHubUserVm(
         @JsonProperty("avatar_url")
         String avatarUrl
 ) {
-        public boolean isEmpty(){
-                return id == null
-                        && login == null
-                        && name == null
-                        && email == null
-                        && avatarUrl == null;
-        }
+    public boolean isEmpty() {
+        return id == null
+                && login == null
+                && name == null
+                && email == null
+                && avatarUrl == null;
+    }
 }

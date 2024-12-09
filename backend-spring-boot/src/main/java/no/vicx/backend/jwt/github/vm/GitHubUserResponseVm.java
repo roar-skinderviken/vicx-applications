@@ -20,11 +20,8 @@ public record GitHubUserResponseVm(
 
     public Jwt toJwt() {
         var defaultClaims = Map.of(
-                CLAIM_SUB, user.login(),
                 CLAIM_SCOPES, grantedScopes,
-                CLAIM_ROLES, Collections.singletonList("ROLE_GITHUB_USER"),
-                CLAIM_IAT, Instant.now().getEpochSecond(),
-                CLAIM_EXP, Instant.now().plusSeconds(3600).getEpochSecond()
+                CLAIM_ROLES, Collections.singletonList("ROLE_GITHUB_USER")
         );
 
         var emailAddress = user.email() == null || user.email().isBlank()
@@ -37,10 +34,9 @@ public record GitHubUserResponseVm(
         Optional.ofNullable(user.name()).ifPresent(it -> claims.put(CLAIM_NAME, it));
         Optional.ofNullable(user.avatarUrl()).ifPresent(it -> claims.put(CLAIM_IMAGE, it));
 
-        var headers = Collections.singletonMap(HEADER_ALG, HEADER_ALG_VALUE);
-
         return Jwt.withTokenValue(token)
-                .headers(h -> h.putAll(headers))
+                .subject(user.login())
+                .headers(h -> h.put(HEADER_ALG, HEADER_ALG_NONE))
                 .claims(c -> c.putAll(claims))
                 .issuedAt(Instant.now())
                 .expiresAt(Instant.now().plusSeconds(EXPIRES_AT_IN_SECS))
