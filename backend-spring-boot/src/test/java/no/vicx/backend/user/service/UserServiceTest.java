@@ -12,8 +12,9 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -36,7 +37,12 @@ class UserServiceTest {
     @Mock
     PasswordEncoder passwordEncoder;
 
-    @InjectMocks
+    @Mock
+    CacheManager cacheManager;
+
+    @Mock
+    Cache reCaptchaCache;
+
     UserService sut;
 
     AutoCloseable openMocks;
@@ -44,6 +50,10 @@ class UserServiceTest {
     @BeforeEach
     void setUp() {
         openMocks = openMocks(this);
+
+        when(cacheManager.getCache("RECAPTCHA_TOKENS")).thenReturn(reCaptchaCache);
+
+        sut = new UserService(userRepository, passwordEncoder, cacheManager);
     }
 
     @AfterEach
@@ -77,6 +87,8 @@ class UserServiceTest {
         } else {
             assertNotNull(capturedUser.getUserImage());
         }
+
+        verify(reCaptchaCache).evictIfPresent(VALID_USER_VM.recaptchaToken());
     }
 
     // START getUser

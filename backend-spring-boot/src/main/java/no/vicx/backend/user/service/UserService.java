@@ -2,11 +2,13 @@ package no.vicx.backend.user.service;
 
 import no.vicx.backend.error.NotFoundException;
 import no.vicx.backend.user.vm.ChangePasswordVm;
-import no.vicx.backend.user.vm.UserPatchVm;
 import no.vicx.backend.user.vm.CreateUserVm;
+import no.vicx.backend.user.vm.UserPatchVm;
 import no.vicx.database.user.UserImage;
 import no.vicx.database.user.UserRepository;
 import no.vicx.database.user.VicxUser;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,10 +30,15 @@ import java.io.IOException;
 public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final Cache recaptchaTokensCache;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserService(
+            UserRepository userRepository,
+            PasswordEncoder passwordEncoder,
+            CacheManager cacheManager) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.recaptchaTokensCache = cacheManager.getCache("RECAPTCHA_TOKENS");
     }
 
     /**
@@ -49,7 +56,7 @@ public class UserService {
     public VicxUser createUser(
             final CreateUserVm createUserVm,
             final MultipartFile image) throws IOException {
-        return userRepository.save(VicxUser.builder()
+        var savedUser = userRepository.save(VicxUser.builder()
                 .username(createUserVm.username())
                 .password(passwordEncoder.encode(createUserVm.password()))
                 .name(createUserVm.name())
@@ -58,6 +65,10 @@ public class UserService {
                         ? new UserImage(image.getBytes(), image.getContentType())
                         : null)
                 .build());
+
+        recaptchaTokensCache.evictIfPresent(createUserVm.recaptchaToken());
+
+        return savedUser;
     }
 
     /**

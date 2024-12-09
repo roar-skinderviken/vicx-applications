@@ -14,7 +14,7 @@ public class GitHubJwtFromOpaqueProducer {
         this.userFetcher = userFetcher;
     }
 
-    @Cacheable(value = "GITHUB_TOKENS", key = "#token", unless = "#result == null")
+    @Cacheable(value = "GITHUB_TOKENS", unless = "#result == null")
     public Jwt createJwt(String token) throws JwtException {
         try {
             var gitHubUserResponse = userFetcher.fetchUser(token);

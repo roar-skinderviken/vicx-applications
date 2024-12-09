@@ -14,7 +14,7 @@ public record GitHubUserFetcher(
         GitHubEmailFetcher emailFetcher) {
 
     static final String USER_URL = "https://api.github.com/user";
-    static final String HEADER_SCOPES = "X-OAuth-Scopes";
+    public static final String HEADER_SCOPES = "X-OAuth-Scopes";
 
     public GitHubUserResponseVm fetchUser(String token) {
         var responseEntity = webClient

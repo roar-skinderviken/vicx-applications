@@ -48,7 +48,7 @@ class UserControllerPostTest extends BaseWebMvcTest {
 
     @BeforeEach
     void setUp() {
-        when(recaptchaService.verifyToken(any())).thenReturn(true);
+        when(recaptchaService.verifyToken(anyString())).thenReturn(true);
     }
 
     @ParameterizedTest
@@ -92,7 +92,7 @@ class UserControllerPostTest extends BaseWebMvcTest {
 
     @Test
     void postUser_GivenInvalidReCaptcha_expectBadRequest() throws Exception {
-        when(recaptchaService.verifyToken(any())).thenReturn(false);
+        when(recaptchaService.verifyToken(anyString())).thenReturn(false);
 
         var apiError = performBadRequest(VALID_USER_VM, null);
 

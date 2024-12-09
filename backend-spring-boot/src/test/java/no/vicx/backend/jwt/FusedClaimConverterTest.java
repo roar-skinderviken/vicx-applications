@@ -54,7 +54,7 @@ class FusedClaimConverterTest {
                 not(hasItem(startsWith("ROLE_"))));
     }
 
-    private Collection<String> authoritiesAsStrings(AbstractAuthenticationToken authenticationToken) {
+    private static Collection<String> authoritiesAsStrings(AbstractAuthenticationToken authenticationToken) {
         return authenticationToken.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .toList();

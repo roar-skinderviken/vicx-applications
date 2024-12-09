@@ -19,7 +19,19 @@ public class RecaptchaService {
         this.webClient = webClient;
     }
 
-    @Cacheable(value = "RECAPTCHA_TOKENS", key = "#token")
+    /**
+     * Validates a reCAPTCHA token against the Google reCAPTCHA verification service.
+     * <p>
+     * This method checks the provided reCAPTCHA token by sending a request to Google's
+     * verification API. The result is cached using the token as the cache key to avoid
+     * redundant verification calls for the same token.
+     * </p>
+     *
+     * @param token the reCAPTCHA token to validate
+     * @return {@code true} if the token is valid and verified by Google; {@code false} otherwise
+     */
+    @SuppressWarnings("unused")
+    @Cacheable("RECAPTCHA_TOKENS")
     public boolean verifyToken(String token) {
         var url = String.format("%s?secret=%s&response=%s", RECAPTCHA_VERIFY_URL, recaptchaSecret, token);
 
