@@ -50,7 +50,7 @@ class RecaptchaServiceTest {
                             "success": true,
                             "challenge_ts": "~challenge_ts~",
                             "hostname": "~hostname~",
-                            "errorCodes": []
+                            "error-codes": []
                         }""");
 
         when(exchangeFunction.exchange(any()))
@@ -68,7 +68,7 @@ class RecaptchaServiceTest {
                             "success": false,
                             "challenge_ts": "~challenge_ts~",
                             "hostname": "~hostname~",
-                            "errorCodes": ["Some error"]
+                            "error-codes": ["Some error"]
                         }""");
 
         when(exchangeFunction.exchange(any()))

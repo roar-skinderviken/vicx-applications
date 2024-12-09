@@ -2,6 +2,8 @@ package no.vicx.backend.user.validation;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+// See https://developers.google.com/recaptcha/docs/verify
+
 public record RecaptchaResponseVm(
         boolean success,
         @JsonProperty("challenge_ts")
