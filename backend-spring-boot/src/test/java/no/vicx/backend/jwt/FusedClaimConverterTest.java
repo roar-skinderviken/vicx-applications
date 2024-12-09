@@ -3,14 +3,15 @@ package no.vicx.backend.jwt;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.jwt.Jwt;
 
-import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class FusedClaimConverterTest {
 
@@ -22,45 +23,44 @@ class FusedClaimConverterTest {
     }
 
     @Test
-    void convert_givenFullyPopulatedJwt_expectAuthenticationToken() {
+    void convert_givenFullyPopulatedJwt_expectTokenWithScopesAndRoles() {
         var authenticationToken =
-                sut.convert(createJwt(List.of("ROLE_ADMIN", "ROLE_USER")));
+                sut.convert(createJwtInTest(List.of("ROLE_ADMIN", "ROLE_USER")));
 
         assertNotNull(authenticationToken);
-        assertTrue(hasAuthorities(authenticationToken,
-                "SCOPE_read", "SCOPE_write", "ROLE_ADMIN", "ROLE_USER"));
+        assertThat(
+                authoritiesAsStrings(authenticationToken),
+                containsInAnyOrder("SCOPE_read", "SCOPE_write", "ROLE_ADMIN", "ROLE_USER"));
     }
 
     @Test
-    void convert_givenRoleNonPrefixedRole_expectPrefixedRole() {
+    void convert_givenRoleNotPrefixedWithRole_expectTokenWithPrefixedRole() {
         var authenticationToken =
-                sut.convert(createJwt(List.of("ADMIN", "ROLE_USER")));
+                sut.convert(createJwtInTest(List.of("ROLE_ADMIN", "USER")));
 
         assertNotNull(authenticationToken);
-        assertTrue(hasAuthorities(authenticationToken, "ROLE_ADMIN", "ROLE_USER"));
+        assertThat(
+                authoritiesAsStrings(authenticationToken),
+                allOf(hasItem("ROLE_ADMIN"), hasItem("ROLE_USER")));
     }
 
     @Test
-    void convert_givenJwtWithoutRoles_expectAuthenticationToken() {
-        var authenticationToken = sut.convert(createJwt(null));
+    void convert_givenJwtWithoutRoles_expectTokenWithoutRoles() {
+        var authenticationToken = sut.convert(createJwtInTest(null));
 
         assertNotNull(authenticationToken);
-
-        assertTrue(authenticationToken.getAuthorities().stream()
-                .noneMatch(authority -> authority.getAuthority().startsWith("ROLE_")));
+        assertThat(
+                authoritiesAsStrings(authenticationToken),
+                not(hasItem(startsWith("ROLE_"))));
     }
 
-    private static boolean hasAuthorities(
-            AbstractAuthenticationToken authenticationToken,
-            String... expectedAuth) {
-
-        var actualAuth = authenticationToken.getAuthorities();
-
-        return Arrays.stream(expectedAuth)
-                .allMatch(it -> actualAuth.contains(new SimpleGrantedAuthority(it)));
+    private Collection<String> authoritiesAsStrings(AbstractAuthenticationToken authenticationToken) {
+        return authenticationToken.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .toList();
     }
 
-    private static Jwt createJwt(List<String> roles) {
+    private static Jwt createJwtInTest(List<String> roles) {
         var builder = Jwt.withTokenValue("token")
                 .header("alg", "HS256")
                 .claim("scope", "read write")
