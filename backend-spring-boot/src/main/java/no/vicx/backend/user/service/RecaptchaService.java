@@ -2,6 +2,7 @@ package no.vicx.backend.user.service;
 
 import no.vicx.backend.user.validation.RecaptchaResponseVm;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -18,6 +19,7 @@ public class RecaptchaService {
         this.webClient = webClient;
     }
 
+    @Cacheable(value = "RECAPTCHA_TOKENS", key = "#token")
     public boolean verifyToken(String token) {
         var url = String.format("%s?secret=%s&response=%s", RECAPTCHA_VERIFY_URL, recaptchaSecret, token);
 

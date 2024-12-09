@@ -24,7 +24,7 @@ spring:
       max-file-size: 100KB
 
   cache:
-    cache-names: GITHUB_TOKENS
+    cache-names: [GITHUB_TOKENS, RECAPTCHA_TOKENS]
     type: caffeine
     caffeine:
       spec: maximumSize=1000,expireAfterWrite=3600s
