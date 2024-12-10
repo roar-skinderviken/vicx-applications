@@ -49,6 +49,15 @@ const nextConfig: NextConfig = {
                     },
                 ],
             },
+            {
+                source: "/user/dashboard",
+                headers: [
+                    {
+                        key: "Cache-Control",
+                        value: "no-store, max-age=0"
+                    },
+                ],
+            },
         ]
     },
     async redirects() {
