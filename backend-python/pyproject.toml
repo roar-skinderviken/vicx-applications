@@ -10,7 +10,7 @@ packages = [{include = "src"}]
 python = "^3.12"
 fastapi = "^0.115.6"
 uvicorn = "^0.32.1"
-scikit-learn = "^1.5.2"
+scikit-learn = "^1.6.0"
 
 
 [tool.poetry.group.dev.dependencies]
