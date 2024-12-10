@@ -8,6 +8,7 @@ export const githubProvider = GitHubProvider({
     id: GITHUB_PROVIDER_ID,
     clientId: process.env.GITHUB_ID || "",
     clientSecret: process.env.GITHUB_SECRET || "",
+    checks: ["state"],
     profile(profile: GithubProfile) {
         return {
             id: profile.login,
