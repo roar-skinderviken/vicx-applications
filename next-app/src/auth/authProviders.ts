@@ -27,6 +27,7 @@ export const springBootProvider: Provider = {
     clientId: "next-app-client",
     clientSecret: process.env.OAUTH_CLIENT_SECRET || "secret",
     type: "oauth",
+    checks: ["pkce", "state", "nonce"],
     idToken: true,
     wellKnown: `${OAUTH_BASE_URL}/.well-known/openid-configuration`,
     authorization: {
