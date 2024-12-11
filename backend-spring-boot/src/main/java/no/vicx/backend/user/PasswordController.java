@@ -58,8 +58,6 @@ public class PasswordController {
 
         userService.updatePassword(changePasswordVm, authentication.getName());
 
-        return ResponseEntity
-                .ok()
-                .body(PASSWORD_CHANGED_BODY_TEXT);
+        return ResponseEntity.ok(PASSWORD_CHANGED_BODY_TEXT);
     }
 }

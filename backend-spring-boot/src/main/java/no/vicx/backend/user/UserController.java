@@ -113,8 +113,6 @@ public class UserController {
             Authentication authentication) {
         userService.updateUser(body, authentication.getName());
 
-        return ResponseEntity
-                .ok()
-                .body(USER_UPDATE_BODY_TEXT);
+        return ResponseEntity.ok(USER_UPDATE_BODY_TEXT);
     }
 }
