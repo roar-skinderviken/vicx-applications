@@ -10,10 +10,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import java.time.Duration;
 import java.util.Collections;
@@ -45,8 +46,9 @@ class CalculatorServiceTest {
         openMocks.close();
     }
 
-    @Test
-    void getAllCalculations_givenDataInDatabase_expectPageWithCalculations() {
+    @ParameterizedTest
+    @ValueSource(booleans = {true, false})
+    void getAllCalculations_givenDataInDatabase_expectPageWithCalculations(boolean addPage) {
         var calcEntry = new CalcEntry();
         calcEntry.setId(1L);
 
@@ -54,18 +56,18 @@ class CalculatorServiceTest {
 
         var page = new PageImpl<>(
                 calcEntries,
-                PageRequest.of(0, 10),
+                PageRequest.of(0, 10, Sort.Direction.DESC, "id"),
                 calcEntries.size());
 
-        var pageable = Pageable.ofSize(10);
+        var pageable = PageRequest.of(0, 10, Sort.by("id").descending());
 
-        when(calculatorRepository.findAllByOrderByIdDesc(pageable)).thenReturn(page);
+        when(calculatorRepository.findAllBy(pageable)).thenReturn(page);
 
-        var result = sut.getAllCalculations(pageable);
+        var result = sut.getAllCalculations(addPage ? 0 : null);
 
         assertNotNull(result);
 
-        verify(calculatorRepository).findAllByOrderByIdDesc(pageable);
+        verify(calculatorRepository).findAllBy(pageable);
     }
 
     @Test

@@ -69,7 +69,7 @@ const CalculatorFormAndResult = () => {
                 return response.json()
             })
             .then(data => {
-                setHasMorePreviousResults(!data.last)
+                setHasMorePreviousResults(data.page.number < data.page.totalPages - 1)
                 setPreviousResults(prev => [...prev, ...data.content])
             })
     }

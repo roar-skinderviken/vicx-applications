@@ -6,10 +6,10 @@ import no.vicx.backend.calculator.vm.CalculatorRequestVm;
 import no.vicx.backend.config.SecurityConfig;
 import no.vicx.backend.testconfiguration.TestSecurityConfig;
 import no.vicx.database.calculator.CalculatorOperation;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
@@ -45,8 +45,9 @@ class CalculatorControllerTest {
     @MockitoBean
     CalculatorService calculatorService;
 
-    @Test
-    void get_expectListOfCalculations() throws Exception {
+    @ParameterizedTest
+    @ValueSource(booleans = {true, false})
+    void get_expectListOfCalculations(boolean addPage) throws Exception {
         var calcVmList = Collections.singletonList(new CalcVm(
                 1L,
                 1,
@@ -62,18 +63,14 @@ class CalculatorControllerTest {
                         calcVmList.size()));
 
         var requestBuilder =
-                get("/api/calculator?size=10").accept(MediaType.APPLICATION_JSON);
+                get("/api/calculator" + (addPage ? "?page=0" : "")).accept(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.totalPages", is(1)))
-                .andExpect(jsonPath("$.totalElements", is(1)))
-                .andExpect(jsonPath("$.first", is(true)))
-                .andExpect(jsonPath("$.size", is(10)))
-                .andExpect(jsonPath("$.last", is(true)))
-                .andExpect(jsonPath("$.number", is(0)))
-                .andExpect(jsonPath("$.pageable.pageNumber", is(0)))
-                .andExpect(jsonPath("$.pageable.pageSize", is(10)))
+                .andExpect(jsonPath("$.page.totalPages", is(1)))
+                .andExpect(jsonPath("$.page.totalElements", is(1)))
+                .andExpect(jsonPath("$.page.size", is(10)))
+                .andExpect(jsonPath("$.page.number", is(0)))
                 .andExpect(jsonPath("$.content[0]").exists())
                 .andExpect(jsonPath("$.content[0].id", is(1)))
                 .andExpect(jsonPath("$.content[0].firstValue", is(1)))

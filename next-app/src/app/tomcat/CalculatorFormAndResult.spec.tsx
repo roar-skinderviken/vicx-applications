@@ -60,11 +60,12 @@ const previousResult = {
         username: "user1",
         createdAt: "2024-11-11T21:17:16.748138"
     }],
-    pageable: {
-        pageNumber: 0,
-        pageSize: 10,
-    },
-    last: false
+    page: {
+        size: 10,
+        number: 0,
+        totalElements: 11,
+        totalPages: 2
+    }
 }
 
 const createValidRequest = (firstValue: number, secondValue: number, operation: string) => {

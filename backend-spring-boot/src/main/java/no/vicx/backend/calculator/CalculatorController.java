@@ -2,9 +2,7 @@ package no.vicx.backend.calculator;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -14,9 +12,6 @@ import jakarta.validation.constraints.NotNull;
 import no.vicx.backend.calculator.vm.CalcVm;
 import no.vicx.backend.calculator.vm.CalculatorRequestVm;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -60,12 +55,7 @@ public class CalculatorController {
             summary = "Perform a calculation",
             description = "Processes the provided calculation request and returns the result.",
             responses = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "Calculation performed successfully.",
-                            content = @Content(
-                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = CalcVm.class))),
+                    @ApiResponse(responseCode = "200", description = "Calculation performed successfully."),
                     @ApiResponse(responseCode = "400", description = "Invalid calculation request.")})
     @PostMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -87,21 +77,16 @@ public class CalculatorController {
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "Successfully retrieved the calculations.",
-                            content = @Content(
-                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    array = @ArraySchema(schema = @Schema(implementation = CalcVm.class))))})
+                            description = "Successfully retrieved the calculations."),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Bad request",
+                            content = @Content())})
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public Page<CalcVm> index(
             @Parameter(description = "Page number (0-based)")
-            @RequestParam(value = "page", required = false) Integer page,
-            @Parameter(description = "Page size")
-            @RequestParam(value = "size", required = false) Integer size,
-            @Parameter(description = "Sort criteria")
-            @RequestParam(value = "sort", required = false) String sort) {
-        Pageable pageable = PageRequest.of(page != null ? page : 0,
-                size != null ? size : 10,
-                Sort.by(sort != null ? sort : "id").ascending());
-        return calculatorService.getAllCalculations(pageable);
+            @RequestParam(value = "page", required = false) Integer page) {
+
+        return calculatorService.getAllCalculations(page);
     }
 }

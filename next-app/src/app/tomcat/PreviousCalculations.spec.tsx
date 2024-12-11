@@ -3,7 +3,6 @@ import PreviousCalculations, {formatDate} from "@/app/tomcat/PreviousCalculation
 import {CalculationResult} from "@/app/tomcat/CalculatorFormAndResult"
 import resetAllMocks = jest.resetAllMocks
 
-
 const dateInTest = new Date()
 
 const createValidCalculation = (username?: string): CalculationResult => ({

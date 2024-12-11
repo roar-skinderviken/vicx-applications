@@ -9,6 +9,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 import java.time.LocalDateTime;
 
@@ -33,11 +34,12 @@ class CalculatorRepositoryTest {
     }
 
     @Test
-    void findAllByOrderByIdDesc_givenTwoItemsInDatabase_expectResultToBeOrderedDescending() {
+    void findAllBy_givenTwoItemsInDatabase_expectResultToBeOrderedDescending() {
         entityManager.persist(createValidEntity());
         entityManager.persist(createValidEntity());
 
-        var result = sut.findAllByOrderByIdDesc(PageRequest.of(0, 10));
+        var result = sut.findAllBy(
+                PageRequest.of(0, 10, Sort.Direction.DESC, "id"));
 
         var first = result.getContent().getFirst();
         var last = result.getContent().getLast();
@@ -46,12 +48,12 @@ class CalculatorRepositoryTest {
     }
 
     @Test
-    void findAllByOrderByIdDesc_givenThreeItemsInDatabase_expectResultWithTwoElements() {
+    void findAllBy_givenThreeItemsInDatabase_expectResultWithTwoElements() {
         entityManager.persist(createValidEntity());
         entityManager.persist(createValidEntity());
         entityManager.persist(createValidEntity());
 
-        var result = sut.findAllByOrderByIdDesc(PageRequest.of(0, 2));
+        var result = sut.findAllBy(PageRequest.of(0, 2));
 
         assertEquals(2, result.getContent().size());
     }

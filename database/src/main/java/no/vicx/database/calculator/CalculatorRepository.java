@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Set;
 
 public interface CalculatorRepository extends CrudRepository<CalcEntry, Long> {
-    Page<CalcEntry> findAllByOrderByIdDesc(Pageable pageable);
+    Page<CalcEntry> findAllBy(Pageable pageable);
 
     @Query("SELECT c.id FROM CalcEntry c WHERE c.username = :username")
     Set<Long> findAllIdsByUsername(@Param("username") String username);
