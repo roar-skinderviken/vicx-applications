@@ -6,7 +6,7 @@ springdoc-openapi = "2.7.0"
 # Logging
 logback-access-spring-boot-starter = "4.4.0"
 logstash-logback-encoder = "8.0"
-logback-classic = "1.5.7"
+logback-classic = "1.5.12"
 
 [libraries]
 mockito = { module = "org.mockito:mockito-core", version.ref = "mockito" }
