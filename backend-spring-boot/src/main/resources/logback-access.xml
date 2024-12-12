@@ -2,7 +2,9 @@
 <configuration>
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>{"host": "%h", "remoteUser": "%u", "timestamp": "%t", "request": "%r", "status": %s, "size": %b, "referer": "%i{Referer}", "userAgent": "%i{User-Agent"}, "latency": "%D"}</pattern>
+            <pattern>
+                {"host": "%h", "remoteUser": "%u", "timestamp": "%date{yyyy-MM-dd'T'HH:mm:ssZ}", "request": "%r", "status": %s, "size": %b, "referer": "%i{Referer}", "userAgent": "%i{User-Agent}", "latency": "%D"}
+            </pattern>
         </encoder>
     </appender>
 
