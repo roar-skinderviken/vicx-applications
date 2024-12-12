@@ -1,10 +1,20 @@
 <configuration debug="false" scan="false">
-    <!--<statusListener class="ch.qos.logback.core.status.OnConsoleStatusListener" />-->
-    <appender name="logstash-access" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder class="net.logstash.logback.encoder.LogstashAccessEncoder">
-            <customFields>{"appname":"backend-spring-boot"}</customFields>
-            <includeCallerData>false</includeCallerData>
-        </encoder>
-    </appender>
-    <appender-ref ref="logstash-access"/>
+    <springProfile name="!prod">
+        <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder>
+                <pattern>combined</pattern>
+            </encoder>
+        </appender>
+    </springProfile>
+
+    <springProfile name="prod">
+        <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder class="net.logstash.logback.encoder.LogstashAccessEncoder">
+                <customFields>{"appname":"backend-spring-boot"}</customFields>
+                <includeCallerData>false</includeCallerData>
+            </encoder>
+        </appender>
+    </springProfile>
+
+    <appender-ref ref="console"/>
 </configuration>
