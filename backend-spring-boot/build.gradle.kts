@@ -28,7 +28,6 @@ dependencies {
 
     runtimeOnly(libs.logback.access.spring.boot.starter)
     runtimeOnly(libs.logstash.logback.encoder)
-    runtimeOnly(libs.logback.classic)
 
     implementation(libs.tika.core)
 
