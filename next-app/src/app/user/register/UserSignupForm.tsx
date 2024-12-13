@@ -55,16 +55,12 @@ const UserSignupForm = ({reCaptchaSiteKey}: { reCaptchaSiteKey: string }) => {
         if (watchedFile?.[0]) {
             const file = watchedFile[0]
             const reader = new FileReader()
-            reader.onload = () => {
-                setProfileImage(reader.result as string)
-            }
+            reader.onload = () => setProfileImage(reader.result as string)
             reader.readAsDataURL(file)
         }
     }, [watchedFile, errors.image])
 
-    useEffect(() => {
-        setValidationErrors(undefined)
-    }, [watchedUsername])
+    useEffect(() => setValidationErrors(undefined), [watchedUsername])
 
     const onSubmit = async (formData: UserSignupFormData) => {
         const multipartFormData = new FormData()
@@ -88,10 +84,8 @@ const UserSignupForm = ({reCaptchaSiteKey}: { reCaptchaSiteKey: string }) => {
 
         fetch(BACKEND_URL, fetchConfig)
             .then(async response => {
-                if (!response.ok) {
-                    // Parse error response as JSON to extract validation errors
-                    throw await response.json()
-                }
+                // Parse error response as JSON to extract validation errors
+                if (!response.ok) throw await response.json()
                 return response.text()
             })
             .then(data => setResult(data))
