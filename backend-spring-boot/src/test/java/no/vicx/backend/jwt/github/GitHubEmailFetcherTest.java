@@ -1,53 +1,33 @@
 package no.vicx.backend.jwt.github;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import no.vicx.backend.config.RestClientConfig;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
-import org.springframework.web.reactive.function.client.ClientResponse;
-import org.springframework.web.reactive.function.client.ExchangeFunction;
-import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
+import org.springframework.test.web.client.MockRestServiceServer;
 
+import static no.vicx.backend.jwt.github.GitHubEmailFetcher.EMAILS_URL;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.openMocks;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
+@RestClientTest(GitHubEmailFetcher.class)
+@Import(RestClientConfig.class)
 class GitHubEmailFetcherTest {
 
-    @Mock
-    ExchangeFunction exchangeFunction;
-
+    @Autowired
     GitHubEmailFetcher sut;
 
-    AutoCloseable openMocks;
-
-    @BeforeEach
-    void setUp() {
-        openMocks = openMocks(this);
-
-        WebClient webClient = WebClient.builder()
-                .exchangeFunction(exchangeFunction)
-                .build();
-
-        sut = new GitHubEmailFetcher(webClient);
-    }
-
-    @AfterEach
-    void tearDown() throws Exception {
-        openMocks.close();
-    }
+    @Autowired
+    MockRestServiceServer mockServer;
 
     @Test
     void fetchEmail_givenResponseWithSinglePrimary_expectPrimary() {
-        var emailResponse = ClientResponse.create(HttpStatus.OK)
-                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .body("""
+        mockServer.expect(requestTo(EMAILS_URL))
+                .andRespond(withSuccess("""
                         [
                           {
                             "email": "user@hotmail.com",
@@ -61,24 +41,23 @@ class GitHubEmailFetcherTest {
                             "verified": true,
                             "visibility": "private"
                           }
-                        ]""")
-                .build();
-
-        when(exchangeFunction.exchange(any()))
-                .thenReturn(Mono.just(emailResponse));
+                        ]""", MediaType.APPLICATION_JSON));
 
         assertEquals("user@example.com", sut.fetchEmail("some-token"));
     }
 
     @Test
-    void fetchEmail_givenEmptyResponse_expectNull() {
-        var emailResponse = ClientResponse.create(HttpStatus.OK)
-                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .body("[]")
-                .build();
+    void fetchEmail_givenResponseBodyWithEmptyArray_expectNull() {
+        mockServer.expect(requestTo(EMAILS_URL))
+                .andRespond(withSuccess("[]", MediaType.APPLICATION_JSON));
 
-        when(exchangeFunction.exchange(any()))
-                .thenReturn(Mono.just(emailResponse));
+        assertNull(sut.fetchEmail("some-token"));
+    }
+
+    @Test
+    void fetchEmail_givenEmptyResponseBody_expectNull() {
+        mockServer.expect(requestTo(EMAILS_URL))
+                .andRespond(withSuccess("", MediaType.APPLICATION_JSON));
 
         assertNull(sut.fetchEmail("some-token"));
     }

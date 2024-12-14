@@ -1,116 +1,73 @@
 package no.vicx.backend.user.service;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import no.vicx.backend.config.RestClientConfig;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
-import org.springframework.web.reactive.function.client.ClientResponse;
-import org.springframework.web.reactive.function.client.ExchangeFunction;
-import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
+import org.springframework.test.web.client.MockRestServiceServer;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.openMocks;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
+@RestClientTest(RecaptchaService.class)
+@Import(RestClientConfig.class)
 class RecaptchaServiceTest {
 
-    @Mock
-    ExchangeFunction exchangeFunction;
+    @Autowired
+    private RecaptchaService sut;
 
-    RecaptchaService sut;
-
-    AutoCloseable openMocks;
-
-    @BeforeEach
-    void setUp() {
-        openMocks = openMocks(this);
-
-        var webClient = WebClient.builder()
-                .exchangeFunction(exchangeFunction)
-                .build();
-
-        sut = new RecaptchaService(webClient);
-    }
-
-    @AfterEach
-    void tearDown() throws Exception {
-        openMocks.close();
-    }
+    @Autowired
+    private MockRestServiceServer mockServer;
 
     @Test
     void verifyToken_givenValidToken_expectTrue() {
-        var tokenResponse = buildClientResponse("""
-                        {
-                            "success": true,
-                            "challenge_ts": "~challenge_ts~",
-                            "hostname": "~hostname~",
-                            "error-codes": []
-                        }""");
+        mockServer.expect(requestTo(EXPECTED_URL))
+                .andRespond(withSuccess(validResponseBody, MediaType.APPLICATION_JSON));
 
-        when(exchangeFunction.exchange(any()))
-                .thenReturn(Mono.just(tokenResponse));
-
-        var result = sut.verifyToken("some-token");
-
-        assertTrue(result);
+        assertTrue(sut.verifyToken("some-token"));
     }
 
     @Test
     void verifyToken_givenErrorResponse_expectFalse() {
-        var tokenResponse = buildClientResponse("""
-                        {
-                            "success": false,
-                            "challenge_ts": "~challenge_ts~",
-                            "hostname": "~hostname~",
-                            "error-codes": ["Some error"]
-                        }""");
+        mockServer.expect(requestTo(EXPECTED_URL))
+                .andRespond(withSuccess(errorResponseBody, MediaType.APPLICATION_JSON));
 
-        when(exchangeFunction.exchange(any()))
-                .thenReturn(Mono.just(tokenResponse));
-
-        var result = sut.verifyToken("some-token");
-
-        assertFalse(result);
+        assertFalse(sut.verifyToken("some-token"));
     }
 
-    @Test
-    void verifyToken_givenNullResponseBody_expectFalse() {
-        var tokenResponse = buildClientResponse(null);
+    @ParameterizedTest
+    @ValueSource(strings = {"", "{}"})
+    void verifyToken_givenEmptyResponseBody_expectFalse(String body) {
+        mockServer.expect(requestTo(EXPECTED_URL))
+                .andRespond(withSuccess(body, MediaType.APPLICATION_JSON));
 
-        when(exchangeFunction.exchange(any()))
-                .thenReturn(Mono.just(tokenResponse));
-
-        var result = sut.verifyToken("some-token");
-
-        assertFalse(result);
+        assertFalse(sut.verifyToken("some-token"));
     }
 
-    @Test
-    void verifyToken_givenEmptyResponseBody_expectFalse() {
-        var tokenResponse = buildClientResponse("{}");
+    private static final String EXPECTED_URL =
+            "https://www.google.com/recaptcha/api/siteverify?secret=6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe&response=some-token";
 
-        when(exchangeFunction.exchange(any()))
-                .thenReturn(Mono.just(tokenResponse));
+    private static final String validResponseBody = """
+            {
+                "success": true,
+                "challenge_ts": "~challenge_ts~",
+                "hostname": "~hostname~",
+                "error-codes": []
+            }
+            """;
 
-        var result = sut.verifyToken("some-token");
-
-        assertFalse(result);
-    }
-
-    private static ClientResponse buildClientResponse(String body) {
-        var builder = ClientResponse.create(HttpStatus.OK)
-                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
-
-        if (body != null){
-            builder.body(body);
-        }
-
-        return builder.build();
-    }
+    private static final String errorResponseBody = """
+            {
+                "success": false,
+                "challenge_ts": "~challenge_ts~",
+                "hostname": "~hostname~",
+                "error-codes": ["Some error"]
+            }
+            """;
 }

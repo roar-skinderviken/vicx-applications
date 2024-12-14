@@ -9,7 +9,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.oauth2.jwt.JwtException;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.Collections;
 
@@ -42,7 +42,6 @@ class GitHubJwtFromOpaqueProducerTest {
 
     @Test
     void createJwt_givenValidToken_expectJwt() {
-        // Arrange
         when(userFetcher.fetchUser(anyString())).thenReturn(
                 new GitHubUserResponseVm(
                         new GitHubUserVm(
@@ -54,14 +53,10 @@ class GitHubJwtFromOpaqueProducerTest {
                         ),
                         "repo, user",
                         null,
-                        "valid-token"
-                )
-        );
+                        "valid-token"));
 
-        // Act
         var jwt = sut.createJwt("valid-token");
 
-        // Assert
         assertNotNull(jwt);
         assertEquals("john-doe", jwt.getSubject());
         assertEquals("John Doe", jwt.getClaim(CLAIM_NAME));
@@ -73,7 +68,6 @@ class GitHubJwtFromOpaqueProducerTest {
 
     @Test
     void createJwt_givenResponseWithoutEmailInUserResponse_expectJwtWithEmail() {
-        // Arrange
         when(userFetcher.fetchUser(anyString())).thenReturn(
                 new GitHubUserResponseVm(
                         new GitHubUserVm(
@@ -85,21 +79,16 @@ class GitHubJwtFromOpaqueProducerTest {
                         ),
                         "repo, user",
                         "john.doe@example.com",
-                        "valid-token"
-                )
-        );
+                        "valid-token"));
 
-        // Act
         var jwt = sut.createJwt("valid-token");
 
-        // Assert
         assertNotNull(jwt);
         assertEquals("john.doe@example.com", jwt.getClaim(CLAIM_EMAIL));
     }
 
     @Test
     void createJwt_givenResponseWithoutPrimaryEmail_expectJwtWithoutEmail() {
-        // Arrange
         when(userFetcher.fetchUser(anyString())).thenReturn(
                 new GitHubUserResponseVm(
                         new GitHubUserVm(
@@ -111,29 +100,26 @@ class GitHubJwtFromOpaqueProducerTest {
                         ),
                         "repo, user",
                         null,
-                        "valid-token"
-                )
-        );
+                        "valid-token"));
 
-        // Act
         var jwt = sut.createJwt("valid-token");
 
-        // Assert
         assertNotNull(jwt);
         assertNull(jwt.getClaim(CLAIM_EMAIL));
     }
 
     @Test
     void createJwt_givenWebClientResponseException_expectJwtException() {
-        when(userFetcher.fetchUser(anyString())).thenThrow(WebClientResponseException.create(
-                HttpStatus.UNAUTHORIZED.value(),  // HTTP status code
-                HttpStatus.UNAUTHORIZED.getReasonPhrase(), // Reason phrase
-                null,  // Headers (optional)
-                null,  // Body (optional)
-                null   // Charset (optional)
-        ));
+        when(userFetcher.fetchUser(anyString())).thenThrow(HttpClientErrorException.create(
+                HttpStatus.UNAUTHORIZED,
+                HttpStatus.UNAUTHORIZED.getReasonPhrase(),
+                null,
+                null,
+                null));
 
-        var exception = assertThrows(JwtException.class, () -> sut.createJwt("valid-token"));
+        var exception = assertThrows(
+                JwtException.class, () -> sut.createJwt("valid-token"));
+
         assertEquals("Invalid or expired GitHub access token", exception.getMessage());
     }
 
@@ -141,7 +127,9 @@ class GitHubJwtFromOpaqueProducerTest {
     void createJwt_givenRuntimeException_expectJwtException() {
         when(userFetcher.fetchUser(anyString())).thenThrow(new RuntimeException());
 
-        var exception = assertThrows(JwtException.class, () -> sut.createJwt("valid-token"));
+        var exception = assertThrows(
+                JwtException.class, () -> sut.createJwt("valid-token"));
+
         assertEquals("Error validating GitHub token", exception.getMessage());
     }
 }

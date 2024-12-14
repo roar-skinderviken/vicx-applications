@@ -9,6 +9,11 @@ const nextConfig: NextConfig = {
                 hostname: 'avatars.githubusercontent.com',
                 pathname: '/**',
             },
+            {
+                protocol: 'https',
+                hostname: 'private-avatars.githubusercontent.com',
+                pathname: '/**',
+            },
         ],
     },
     async headers() {

@@ -4,30 +4,25 @@ import no.vicx.backend.jwt.github.vm.GitHubUserResponseVm;
 import no.vicx.backend.jwt.github.vm.GitHubUserVm;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.client.RestClient;
 
 import static no.vicx.backend.jwt.JwtConstants.BEARER_PREFIX;
 
 @Service
 public record GitHubUserFetcher(
-        WebClient webClient,
+        RestClient restClient,
         GitHubEmailFetcher emailFetcher) {
 
     static final String USER_URL = "https://api.github.com/user";
     public static final String HEADER_SCOPES = "X-OAuth-Scopes";
 
     public GitHubUserResponseVm fetchUser(String token) {
-        var responseEntity = webClient
+        var responseEntity = restClient
                 .get()
                 .uri(USER_URL)
                 .header(HttpHeaders.AUTHORIZATION, BEARER_PREFIX + token)
                 .retrieve()
-                .toEntity(GitHubUserVm.class)
-                .block();
-
-        if (responseEntity == null) {
-            throw new IllegalStateException("Response entity is null");
-        }
+                .toEntity(GitHubUserVm.class);
 
         var user = responseEntity.getBody();
         if (user == null || user.isEmpty()) {

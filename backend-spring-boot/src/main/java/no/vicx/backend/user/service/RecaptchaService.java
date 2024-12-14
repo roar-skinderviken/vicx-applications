@@ -4,19 +4,20 @@ import no.vicx.backend.user.validation.RecaptchaResponseVm;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.client.RestClient;
 
 @Service
 public class RecaptchaService {
-    private static final String RECAPTCHA_VERIFY_URL = "https://www.google.com/recaptcha/api/siteverify";
+    static final String RECAPTCHA_VERIFY_URL = "https://www.google.com/recaptcha/api/siteverify";
 
-    @Value("${recaptcha.secret}")
-    private String recaptchaSecret;
+    private final RestClient restClient;
+    private final String recaptchaSecret;
 
-    private final WebClient webClient;
-
-    public RecaptchaService(WebClient webClient) {
-        this.webClient = webClient;
+    public RecaptchaService(
+            RestClient restClient,
+            @Value("${recaptcha.secret}") String recaptchaSecret) {
+        this.restClient = restClient;
+        this.recaptchaSecret = recaptchaSecret;
     }
 
     /**
@@ -35,13 +36,12 @@ public class RecaptchaService {
     public boolean verifyToken(String token) {
         var url = String.format("%s?secret=%s&response=%s", RECAPTCHA_VERIFY_URL, recaptchaSecret, token);
 
-        var responseMono = webClient
+        var recaptchaResponseVm = restClient
                 .post()
                 .uri(url)
                 .retrieve()
-                .bodyToMono(RecaptchaResponseVm.class);
+                .body(RecaptchaResponseVm.class);
 
-        var response = responseMono.block();
-        return response != null && response.success();
+        return recaptchaResponseVm != null && recaptchaResponseVm.success();
     }
 }

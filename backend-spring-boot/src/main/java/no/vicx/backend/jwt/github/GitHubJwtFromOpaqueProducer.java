@@ -4,7 +4,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtException;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
+import org.springframework.web.client.HttpClientErrorException;
 
 @Service
 public class GitHubJwtFromOpaqueProducer {
@@ -19,7 +19,7 @@ public class GitHubJwtFromOpaqueProducer {
         try {
             var gitHubUserResponse = userFetcher.fetchUser(token);
             return gitHubUserResponse.toJwt();
-        } catch (WebClientResponseException.Unauthorized e) {
+        } catch (HttpClientErrorException e) {
             throw new JwtException("Invalid or expired GitHub access token", e);
         } catch (Exception e) {
             throw new JwtException("Error validating GitHub token", e);
