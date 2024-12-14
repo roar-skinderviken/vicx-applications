@@ -1,19 +1,20 @@
-import nextAuthMiddleware from 'next-auth/middleware';
-import {NextRequest, NextResponse} from "next/server";
+import nextAuthMiddleware from 'next-auth/middleware'
+import {NextRequest, NextResponse} from "next/server"
 
 const authConfigMatchers: string[] = [
     "/user/dashboard",
     "/api/user:path*"
-];
+]
 
 export function middleware(req: NextRequest) {
     if (authConfigMatchers.some(path => req.url.includes(path))) {
-        return nextAuthMiddleware(req as any);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        return nextAuthMiddleware(req as any)
     }
 
-    return NextResponse.next();
+    return NextResponse.next()
 }
 
 export const config = {
     matcher: ['/((?!_next|static|.*\\..*).*)']
-};
+}
