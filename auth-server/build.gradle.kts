@@ -19,12 +19,17 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-oauth2-authorization-server")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-validation")
-    runtimeOnly(libs.logback.access.spring.boot.starter)
 
+    // logging
+    runtimeOnly(libs.logback.access.spring.boot.starter)
+    runtimeOnly(libs.logstash.logback.encoder)
+
+    // database
     implementation(project(":database"))
     runtimeOnly("com.h2database:h2")
     runtimeOnly("org.postgresql:postgresql")
 
+    // test
     testImplementation("org.htmlunit:htmlunit")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")

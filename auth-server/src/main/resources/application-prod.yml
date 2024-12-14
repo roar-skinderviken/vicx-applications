@@ -1,3 +1,8 @@
+logging:
+  structured:
+    format:
+      console: logstash
+
 spring:
   datasource:
     url: ${DATASOURCE_URL}

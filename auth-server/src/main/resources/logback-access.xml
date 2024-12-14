@@ -1,10 +1,20 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<configuration>
-    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder>
-            <pattern>combined</pattern>
-<!--            <pattern>{"host": "%h", "remoteUser": "%u", "timestamp": "%t", "request": "%r", "status": %s, "size": %b, "referer": "%i{Referer}", "userAgent": "%i{User-Agent}, "latency": "%D"}</pattern>-->
-        </encoder>
-    </appender>
+<configuration debug="false" scan="false">
+    <springProfile name="!prod">
+        <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder>
+                <pattern>combined</pattern>
+            </encoder>
+        </appender>
+    </springProfile>
+
+    <springProfile name="prod">
+        <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder class="net.logstash.logback.encoder.LogstashAccessEncoder">
+                <customFields>{"appname":"auth-server"}</customFields>
+                <includeCallerData>false</includeCallerData>
+            </encoder>
+        </appender>
+    </springProfile>
+
     <appender-ref ref="console"/>
 </configuration>

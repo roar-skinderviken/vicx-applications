@@ -25,17 +25,19 @@ dependencies {
     implementation(libs.springdoc.openapi)
 
     runtimeOnly("com.github.ben-manes.caffeine:caffeine")
+    implementation(libs.tika.core)
 
+    // logging
     runtimeOnly(libs.logback.access.spring.boot.starter)
     runtimeOnly(libs.logstash.logback.encoder)
 
-    implementation(libs.tika.core)
-
+    // database
     implementation(project(":database"))
     runtimeOnly("com.h2database:h2")
     runtimeOnly("org.flywaydb:flyway-database-postgresql")
     runtimeOnly("org.postgresql:postgresql")
 
+    // test
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
