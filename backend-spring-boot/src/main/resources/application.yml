@@ -18,6 +18,13 @@ auth-server:
   issuer-uri: ${OAUTH2_SERVER:http://localhost:9000/auth-server}
 
 spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          authorities-claim-name: roles
+          authority-prefix: ""
+
   servlet:
     multipart:
       enabled: true
