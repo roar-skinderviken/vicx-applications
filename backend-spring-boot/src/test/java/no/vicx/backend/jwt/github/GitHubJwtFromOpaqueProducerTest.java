@@ -68,7 +68,7 @@ class GitHubJwtFromOpaqueProducerTest {
         assertEquals("john.doe@example.com", jwt.getClaim(CLAIM_EMAIL));
         assertEquals("https://example.com/avatar.jpg", jwt.getClaim(CLAIM_IMAGE));
         assertEquals("repo, user", jwt.getClaim(CLAIM_SCOPES));
-        assertEquals(Collections.singletonList("ROLE_GITHUB_USER"), jwt.getClaim(CLAIM_ROLES));
+        assertEquals(Collections.singletonList("GITHUB_USER"), jwt.getClaim(CLAIM_ROLES));
     }
 
     @Test

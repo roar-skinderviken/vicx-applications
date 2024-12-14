@@ -30,6 +30,6 @@ public abstract class BaseWebMvcTest {
     @BeforeEach
     void setUp() {
         when(jwtDecoder.decode(anyString()))
-                .thenReturn(createJwtInTest(Collections.singletonList("ROLE_USER")));
+                .thenReturn(createJwtInTest(Collections.singletonList("USER")));
     }
 }

@@ -21,7 +21,7 @@ public record GitHubUserResponseVm(
     public Jwt toJwt() {
         var defaultClaims = Map.of(
                 CLAIM_SCOPES, grantedScopes,
-                CLAIM_ROLES, Collections.singletonList("ROLE_GITHUB_USER")
+                CLAIM_ROLES, Collections.singletonList("GITHUB_USER")
         );
 
         var emailAddress = user.email() == null || user.email().isBlank()

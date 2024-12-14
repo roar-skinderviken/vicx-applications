@@ -29,7 +29,7 @@ const sessionUser = (roles: string[]) => ({
 
 const validSession: CustomSession = {
     expires: Date.now().toString(),
-    user: sessionUser(["ROLE_USER"])
+    user: sessionUser(["USER"])
 }
 
 const sessionWithTokenError: CustomSession = {
@@ -187,7 +187,7 @@ describe("CalculatorFormAndResult", () => {
             await runCalculationTest("PLUS")
         })
 
-        it("calls Next route API endpoint with add when user has role 'ROLE_USER'", async () => {
+        it("calls Next route API endpoint with add when user has role 'USER'", async () => {
             await runCalculationTest("PLUS", true)
         })
 
@@ -195,7 +195,7 @@ describe("CalculatorFormAndResult", () => {
             await runCalculationTest("MINUS")
         })
 
-        it("calls Next route API endpoint with subtract when user has role 'ROLE_USER'", async () => {
+        it("calls Next route API endpoint with subtract when user has role 'USER'", async () => {
             await runCalculationTest("MINUS", true)
         })
 

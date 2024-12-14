@@ -99,5 +99,5 @@ class CalculatorSecurityServiceTest {
     }
 
     static final Authentication TOKEN_IN_TEST =
-            new JwtAuthenticationToken(createJwtInTest(Collections.singletonList("ROLE_USER")));
+            new JwtAuthenticationToken(createJwtInTest(Collections.singletonList("USER")));
 }

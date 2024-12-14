@@ -13,7 +13,7 @@ export const githubProvider = GitHubProvider({
         return {
             id: profile.login,
             name: profile.name || profile.login, // if user has not registered name
-            roles: ["ROLE_GITHUB_USER"],
+            roles: ["GITHUB_USER"],
             email: profile.email,
             image: profile.avatar_url,
         }

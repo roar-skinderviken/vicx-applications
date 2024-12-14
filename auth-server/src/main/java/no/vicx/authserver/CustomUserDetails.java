@@ -9,7 +9,7 @@ import java.util.Objects;
 import java.util.Set;
 
 public class CustomUserDetails extends User {
-    public static final Set<GrantedAuthority> GRANTED_AUTHORITIES = Set.of(new SimpleGrantedAuthority("ROLE_USER"));
+    public static final Set<GrantedAuthority> GRANTED_AUTHORITIES = Set.of(new SimpleGrantedAuthority("USER"));
 
     public static final String NAME_NOT_NULL_MSG = "Name cannot be null";
     public static final String EMAIL_NOT_NULL_MSG = "Email cannot be null";

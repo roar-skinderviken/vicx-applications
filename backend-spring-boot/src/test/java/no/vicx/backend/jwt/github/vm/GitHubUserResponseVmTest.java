@@ -32,7 +32,7 @@ class GitHubUserResponseVmTest {
 
         assertEquals("~login~", jwt.getSubject());
         assertEquals("~granted-scopes~", jwt.getClaim(CLAIM_SCOPES));
-        assertEquals(Collections.singletonList("ROLE_GITHUB_USER"), jwt.getClaim(CLAIM_ROLES));
+        assertEquals(Collections.singletonList("GITHUB_USER"), jwt.getClaim(CLAIM_ROLES));
         assertEquals("~email~", jwt.getClaim(CLAIM_EMAIL));
         assertEquals("~name~", jwt.getClaim(CLAIM_NAME));
         assertEquals("~avatar~", jwt.getClaim(CLAIM_IMAGE));

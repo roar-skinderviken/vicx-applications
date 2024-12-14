@@ -23,7 +23,7 @@ spring:
       resourceserver:
         jwt:
           authorities-claim-name: roles
-          authority-prefix: ""
+          authority-prefix: ROLE_
 
   servlet:
     multipart:

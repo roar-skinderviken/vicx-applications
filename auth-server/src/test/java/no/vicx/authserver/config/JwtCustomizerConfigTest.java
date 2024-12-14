@@ -51,8 +51,8 @@ class JwtCustomizerConfigTest {
 
         when(authentication.getPrincipal()).thenReturn(customUserDetails);
         doReturn(List.of(
-                new SimpleGrantedAuthority("ROLE_USER"),
-                new SimpleGrantedAuthority("ROLE_ADMIN")
+                new SimpleGrantedAuthority("USER"),
+                new SimpleGrantedAuthority("ADMIN")
         )).when(authentication).getAuthorities();
 
         when(customUserDetails.getUsername()).thenReturn("john-doe");
@@ -81,7 +81,7 @@ class JwtCustomizerConfigTest {
 
         sut.customize(context);
 
-        verify(claimsBuilder).claim(ROLES_CLAIM, List.of("ROLE_USER", "ROLE_ADMIN"));
+        verify(claimsBuilder).claim(ROLES_CLAIM, List.of("USER", "ADMIN"));
         verify(claimsBuilder, never()).claim(eq(NAME_CLAIM), anyString());
         verify(claimsBuilder, never()).claim(eq(IMAGE_CLAIM), anyString());
         verify(claimsBuilder, never()).claim(eq(EMAIL_CLAIM), anyString());
@@ -92,13 +92,13 @@ class JwtCustomizerConfigTest {
         when(authentication.getPrincipal()).thenReturn(new User(
                 "username",
                 "password",
-                List.of(new SimpleGrantedAuthority("ROLE_USER"))
+                List.of(new SimpleGrantedAuthority("USER"))
         ));
-        doReturn(List.of(new SimpleGrantedAuthority("ROLE_USER"))).when(authentication).getAuthorities();
+        doReturn(List.of(new SimpleGrantedAuthority("USER"))).when(authentication).getAuthorities();
 
         sut.customize(context);
 
-        verify(claimsBuilder).claim(ROLES_CLAIM, Collections.singletonList("ROLE_USER"));
+        verify(claimsBuilder).claim(ROLES_CLAIM, Collections.singletonList("USER"));
         verify(claimsBuilder, never()).claim(eq(NAME_CLAIM), anyString());
         verify(claimsBuilder, never()).claim(eq(IMAGE_CLAIM), anyString());
         verify(claimsBuilder, never()).claim(eq(EMAIL_CLAIM), anyString());
@@ -110,7 +110,7 @@ class JwtCustomizerConfigTest {
 
         sut.customize(context);
 
-        verify(claimsBuilder).claim(ROLES_CLAIM, List.of("ROLE_USER", "ROLE_ADMIN"));
+        verify(claimsBuilder).claim(ROLES_CLAIM, List.of("USER", "ADMIN"));
 
         verify(claimsBuilder, never()).claim(eq(NAME_CLAIM), anyString());
         verify(claimsBuilder, never()).claim(eq(IMAGE_CLAIM), anyString());
@@ -130,7 +130,7 @@ class JwtCustomizerConfigTest {
     void customize_givenUserDetailsWithAllPropsSet_expectAllClaimsToBeSet() {
         sut.customize(context);
 
-        verify(claimsBuilder).claim(ROLES_CLAIM, List.of("ROLE_USER", "ROLE_ADMIN"));
+        verify(claimsBuilder).claim(ROLES_CLAIM, List.of("USER", "ADMIN"));
         verify(claimsBuilder).claim(NAME_CLAIM, "John Doe");
         verify(claimsBuilder).claim(IMAGE_CLAIM, "john-doe");
         verify(claimsBuilder).claim(EMAIL_CLAIM, "john.doe@example.com");

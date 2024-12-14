@@ -15,7 +15,7 @@ export const sessionUser = (roles: string[]) => ({
 
 export const validSession: CustomSession = {
     expires: Date.now().toString(),
-    user: sessionUser(["ROLE_USER"])
+    user: sessionUser(["USER"])
 }
 
 export const sessionWithTokenError: CustomSession = {

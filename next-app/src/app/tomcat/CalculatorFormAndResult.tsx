@@ -85,7 +85,7 @@ const CalculatorFormAndResult = () => {
         getSession()
             .then(extractUserOrSignOut)
             .then(sessionUser => {
-                    const hasUserRole = hasOneOfRoles(["ROLE_USER", "ROLE_GITHUB_USER"], sessionUser)
+                    const hasUserRole = hasOneOfRoles(["USER", "GITHUB_USER"], sessionUser)
                     if (!hasUserRole) {
                         throw new Error('User not allowed to perform this operation')
                     }
@@ -105,7 +105,7 @@ const CalculatorFormAndResult = () => {
         getSession()
             .then(extractUserOrSignOut)
             .then(sessionUser => {
-                    const hasUserRole = hasOneOfRoles(["ROLE_USER", "ROLE_GITHUB_USER"], sessionUser)
+                    const hasUserRole = hasOneOfRoles(["USER", "GITHUB_USER"], sessionUser)
                     if (hasUserRole) {
                         setUsername(sessionUser.id || undefined)
                     }

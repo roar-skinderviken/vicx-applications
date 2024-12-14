@@ -31,6 +31,6 @@ public class TestSecurityConfig {
 
     @Bean
     public JwtDecoder jwtDecoder() {
-        return token -> createJwtInTest(Collections.singletonList("ROLE_USER"));
+        return token -> createJwtInTest(Collections.singletonList("USER"));
     }
 }

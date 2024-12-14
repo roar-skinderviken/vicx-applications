@@ -14,7 +14,7 @@ export const metadata = {
 export default async function DashboardPage() {
     const session = await getServerSession(authOptions)
     const sessionUser = session?.user
-    const isVicxUser = (sessionUser as SessionUser)?.roles?.includes("ROLE_USER")
+    const isVicxUser = (sessionUser as SessionUser)?.roles?.includes("USER")
 
     const nonVicxUser = isVicxUser
         ? undefined
