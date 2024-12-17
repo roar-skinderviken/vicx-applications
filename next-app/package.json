@@ -12,9 +12,9 @@
     "test:watch": "jest --watch"
   },
   "dependencies": {
-    "@fortawesome/fontawesome-svg-core": "^6.7.1",
-    "@fortawesome/free-brands-svg-icons": "^6.7.1",
-    "@fortawesome/free-solid-svg-icons": "^6.7.1",
+    "@fortawesome/fontawesome-svg-core": "^6.7.2",
+    "@fortawesome/free-brands-svg-icons": "^6.7.2",
+    "@fortawesome/free-solid-svg-icons": "^6.7.2",
     "@fortawesome/react-fontawesome": "^0.2.2",
     "@hookform/resolvers": "^3.9.1",
     "flowbite-react": "^0.10.2",
@@ -27,7 +27,7 @@
     "react-google-recaptcha": "^3.1.0",
     "react-hook-form": "^7.54.1",
     "sharp": "^0.33.5",
-    "yup": "^1.5.0"
+    "yup": "^1.6.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.1.0",
