@@ -57,11 +57,8 @@ public class SecurityConfig {
 
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
 
-                        .requestMatchers(HttpMethod.GET, "/api/calculator").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/calculator").permitAll()
-                        .requestMatchers(HttpMethod.DELETE, "/api/calculator").hasAnyRole("USER", "GITHUB_USER")
-
                         .requestMatchers(HttpMethod.POST, "/api/user").permitAll()
+                        .requestMatchers("/graphiql","/graphql").permitAll()
 
                         .requestMatchers("/api/**").hasRole("USER")
 

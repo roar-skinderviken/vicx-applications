@@ -68,6 +68,10 @@ spring:
   flyway:
     enabled: false
 
+  graphql:
+    graphiql:
+      enabled: true
+
 management:
   server:
     port: 8082

@@ -21,6 +21,10 @@ spring:
     locations: classpath:db/migration
     default-schema: vicx
 
+  graphql:
+    graphiql:
+      enabled: false
+
 management:
   endpoint:
     health:

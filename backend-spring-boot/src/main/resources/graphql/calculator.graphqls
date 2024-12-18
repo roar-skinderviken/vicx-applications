@@ -1,0 +1,33 @@
+enum CalculatorOperation {
+    PLUS
+    MINUS
+}
+
+type PaginatedCalculations {
+  calculations: [CalcVm]
+  page: Int
+  totalPages: Int
+}
+
+type CalcVm {
+    id: ID!
+    firstValue: Int
+    secondValue: Int
+    operation: String
+    result: Int
+    username: String
+    createdAt: String
+}
+
+type Query {
+    getAllCalculations(page: Int!): PaginatedCalculations
+}
+
+type Mutation {
+    createCalculation(
+        firstValue: Int,
+        secondValue: Int,
+        operation: CalculatorOperation): CalcVm
+
+    deleteCalculations(ids: [ID!]!): Boolean
+}
