@@ -31,6 +31,6 @@ public interface CalculatorRepository extends CrudRepository<CalcEntry, Long> {
      *                  earlier than this will be deleted
      */
     @Modifying
-    @Query("DELETE FROM CalcEntry c WHERE c.username IS NULL AND c.createdAt < :createdAt")
+    @Query("DELETE FROM CalcEntry c WHERE (c.username IS NULL OR c.username = 'anonymousUser') AND c.createdAt < :createdAt")
     void deleteAllByCreatedAtBeforeAndUsernameNull(LocalDateTime createdAt);
 }
