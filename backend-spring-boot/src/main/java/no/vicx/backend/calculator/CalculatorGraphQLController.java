@@ -41,7 +41,7 @@ public class CalculatorGraphQLController {
         return calculatorService.calculate(
                 new CalculatorRequestVm(firstValue, secondValue, operation),
                 Optional.ofNullable(authentication)
-                        .map(Authentication::getName)
+                        .map(it -> it.isAuthenticated() ? it.getName() : null)
                         .orElse(null)
         );
     }
