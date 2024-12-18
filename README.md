@@ -11,7 +11,7 @@ NEXTAUTH_SECRET=secret
 NEXTAUTH_URL=http://localhost:3000/api/auth
 RECAPTCHA_SITE_KEY=6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI
 NEXT_PUBLIC_KMEANS_BACKEND_URL=http://localhost:8000/k-means
-NEXT_PUBLIC_CALCULATOR_BACKEND_URL=http://localhost:8080/backend-spring-boot/api/calculator
+NEXT_PUBLIC_CALCULATOR_BACKEND_URL=http://localhost:8080/backend-spring-boot/graphql
 NEXT_PUBLIC_USER_BACKEND_URL=http://localhost:8080/backend-spring-boot/api/user
 SPRING_BACKEND_BASE_URL=http://localhost:8080/backend-spring-boot
 ```
@@ -65,3 +65,46 @@ The OpenAPI documentation for the API is available at the following URL:
 
 You can use this interface to explore and interact with the API endpoints, view their descriptions, 
 and test requests directly from the UI.
+
+## GraphQL
+
+http://localhost:8080/backend-spring-boot/graphiql
+
+
+```
+mutation {
+  createCalculation(
+    firstValue: 1, 
+    secondValue: 2, 
+    operation: PLUS
+  ) {
+    id
+    firstValue
+    secondValue
+    operation
+    result
+    username
+    createdAt
+  }
+}
+```
+
+```
+query {
+  getAllCalculations(page: 0) {
+    data {
+      firstValue
+      secondValue
+      operation
+      result
+    },
+    totalPages
+  }
+}
+```
+
+```
+mutation {
+    deleteCalculations(ids: [1,2])
+}
+```

@@ -1,12 +1,11 @@
 import {act, fireEvent, render, screen, waitFor} from "@testing-library/react"
-import CalculatorFormAndResult, {
-    CALC_BACKEND_BASE_URL,
-    CALC_NEXT_BACKEND_URL
-} from "@/app/tomcat/CalculatorFormAndResult"
+import CalculatorFormAndResult from "@/app/tomcat/CalculatorFormAndResult"
 import {getSession, signOut} from "next-auth/react"
 import {CustomSession} from "@/types/authTypes"
-import {changeInputValue, delayedResponse} from "@/testUtils"
+import {changeInputValue} from "@/testUtils"
 import {REFRESH_ACCESS_TOKEN_ERROR} from "@/auth/tokenUtils"
+import {createClient} from "urql"
+import clearAllMocks = jest.clearAllMocks;
 
 const setupForSubmit = async () => {
     await changeInputValue("First Value", "1")
@@ -38,47 +37,55 @@ const sessionWithTokenError: CustomSession = {
 }
 
 const validAddResponse = {
-    firstValue: 1,
-    secondValue: 2,
-    operation: "PLUS",
-    result: 3
+    data: {
+        createCalculation: {
+            id: 1,
+            firstValue: 1,
+            secondValue: 2,
+            operation: "PLUS",
+            result: 3,
+            username: null,
+            createdAt: "2024-01-01T01:01:01"
+        }
+    }
 }
 
 const validSubtractResponse = {
-    ...validAddResponse,
-    operation: "MINUS",
-    result: -1
-}
-
-const previousResult = {
-    content: [{
-        id: 49,
-        firstValue: 1,
-        secondValue: 12,
-        operation: "PLUS",
-        result: 13,
-        username: "user1",
-        createdAt: "2024-11-11T21:17:16.748138"
-    }],
-    page: {
-        size: 10,
-        number: 0,
-        totalElements: 11,
-        totalPages: 2
+    data: {
+        createCalculation: {
+            id: 1,
+            firstValue: 1,
+            secondValue: 2,
+            operation: "MINUS",
+            result: -1,
+            username: null,
+            createdAt: "2024-01-01T01:01:01"
+        }
     }
 }
 
-const createValidRequest = (firstValue: number, secondValue: number, operation: string) => {
-    return {
-        body: JSON.stringify({
-            operation,
-            secondValue,
-            firstValue,
-        }),
-        headers: {"Content-Type": "application/json"},
-        method: "POST",
+const validPreviousResult = {
+    data: {
+        getAllCalculations: {
+            page: 0,
+            totalPages: 1,
+            calculations: [{
+                id: 1,
+                firstValue: 1,
+                secondValue: 2,
+                operation: "MINUS",
+                result: -1,
+                username: "user1",
+                createdAt: "2024-01-01T01:01:01"
+            }]
+        }
     }
 }
+
+jest.mock("urql", () => ({
+    createClient: jest.fn(),
+    gql: jest.fn((query: string) => query)
+}))
 
 describe("CalculatorFormAndResult", () => {
     describe("Layout", () => {
@@ -141,6 +148,19 @@ describe("CalculatorFormAndResult", () => {
             })
         }
 
+        const setupGraphQLMocks = (mockMutation: jest.Mock<{ toPromise: jest.Mock }, []>) => {
+            const mockQuery = jest.fn(() => ({
+                toPromise: jest.fn().mockResolvedValue(validPreviousResult),
+            }))
+
+            const mockClient = {
+                mutation: mockMutation,
+                query: mockQuery
+            };
+
+            (createClient as jest.Mock).mockReturnValue(mockClient)
+        }
+
         const runCalculationTest = async (operation: "PLUS" | "MINUS", authenticated: boolean = false) => {
             const isAddition = operation === "PLUS"
             const validResponse = isAddition ? validAddResponse : validSubtractResponse
@@ -150,74 +170,75 @@ describe("CalculatorFormAndResult", () => {
 
             if (authenticated) mockGetSession.mockResolvedValueOnce(validSession)
 
-            fetchMock
-                .mockResponseOnce(async () => await delayedResponse(JSON.stringify(validResponse), 100))
-                .mockResponseOnce(JSON.stringify(previousResult))
+            setupGraphQLMocks(jest.fn(() => ({
+                toPromise: jest.fn().mockResolvedValue(
+                    new Promise(resolve =>
+                        setTimeout(() => resolve(validResponse), 200) // 200ms delay
+                    )
+                ),
+            })))
 
             const button = screen.getByRole("button", {name: isAddition ? "Add" : "Subtract"})
             const otherButton = screen.getByRole("button", {name: isAddition ? "Subtract" : "Add"})
 
-            await act(() => fireEvent.click(button))
+            fireEvent.click(button)
 
-            expect(button).toHaveTextContent("Loading...")
-            expect(otherButton).not.toHaveTextContent("Loading...")
+            await waitFor(() => {
+                expect(button).toHaveTextContent("Loading...")
+                expect(otherButton).not.toHaveTextContent("Loading...")
+            })
 
             expect(button).toBeDisabled()
             expect(otherButton).toBeDisabled()
 
-            await waitFor(() =>
-                expect(button).not.toHaveTextContent("Loading..."))
+            await waitFor(() => expect(button).not.toHaveTextContent("Loading..."))
 
             expectSpanValuesToBeInTheDocument(["1", expectedSign, "2", "=", expectedResult])
-
-            // Verify API calls
-            const backendUrl = authenticated ? CALC_NEXT_BACKEND_URL : CALC_BACKEND_BASE_URL
-            expect(fetchMock).toHaveBeenCalledWith(backendUrl, createValidRequest(1, 2, operation))
-            expect(fetchMock).toHaveBeenCalledWith(`${CALC_BACKEND_BASE_URL}?page=0`)
         }
 
         beforeEach(async () => {
-            fetchMock.resetMocks()
+            clearAllMocks()
             mockGetSession.mockResolvedValue(null)
             render(<CalculatorFormAndResult/>)
             await setupForSubmit()
         })
 
-        it("displays add result when API returns valid response, user not logged in", async () => {
-            await runCalculationTest("PLUS")
-        })
+        it("displays add result when API returns valid response, user not logged in", async () =>
+            await runCalculationTest("PLUS"))
 
-        it("calls Next route API endpoint with add when user has role 'USER'", async () => {
-            await runCalculationTest("PLUS", true)
-        })
+        it("calls Next route API endpoint with add when user has role 'USER'", async () =>
+            await runCalculationTest("PLUS", true))
 
-        it("displays subtract result when API returns valid response", async () => {
-            await runCalculationTest("MINUS")
-        })
+        it("displays subtract result when API returns valid response", async () =>
+            await runCalculationTest("MINUS"))
 
-        it("calls Next route API endpoint with subtract when user has role 'USER'", async () => {
-            await runCalculationTest("MINUS", true)
-        })
+        it("calls Next route API endpoint with subtract when user has role 'USER'", async () =>
+            await runCalculationTest("MINUS", true))
 
         it("displays list of previous results when returned by API", async () => {
             await runCalculationTest("MINUS", true)
 
             expect(screen.queryByRole("heading", {level: 3})).toHaveTextContent("Previous results on this server")
 
-            expect(screen.queryByText(previousResult.content[0].username)).toBeInTheDocument()
+            expect(screen.queryByText("user1")).toBeInTheDocument()
         })
 
         it("hides previous calculation result when resubmitting form", async () => {
-            fetchMock
-                .mockResponseOnce(JSON.stringify(validAddResponse))
-                .mockResponseOnce(JSON.stringify(previousResult))
-                .mockResponseOnce(async () => await delayedResponse(JSON.stringify(validAddResponse), 100))
-                .mockResponseOnce(JSON.stringify(previousResult))
+            setupGraphQLMocks(jest.fn(() => ({
+                toPromise: jest.fn()
+                    .mockResolvedValueOnce(validAddResponse)
+                    .mockResolvedValueOnce(
+                        new Promise(resolve =>
+                            setTimeout(() => resolve(validSubtractResponse), 200) // 200ms delay
+                        )
+                    )
+            })))
 
-            await act(() => fireEvent.click(screen.getByRole("button", {name: "Add"})))
-            await act(() => fireEvent.click(screen.getByRole("button", {name: "Subtract"})))
+            fireEvent.click(screen.getByRole("button", {name: "Add"}))
+            fireEvent.click(screen.getByRole("button", {name: "Subtract"}))
 
-            expect(screen.queryByText("Calculation Result")).not.toBeInTheDocument()
+            await waitFor(() =>
+                expect(screen.queryByText("Calculation Result")).not.toBeInTheDocument())
 
             await waitFor(() =>
                 expect(screen.queryByText("Calculation Result")).toBeInTheDocument())

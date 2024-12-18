@@ -11,11 +11,59 @@ import {hasOneOfRoles} from "@/utils/authUtils"
 import PreviousCalculations from "@/app/tomcat/PreviousCalculations"
 import ButtonWithSpinner from "@/components/ButtonWithSpinner"
 import {extractUserOrSignOut} from "@/auth/tokenUtils"
+import {createClient, gql, fetchExchange} from "urql"
 
 // put this in next-app/.env.local
-// NEXT_PUBLIC_CALCULATOR_BACKEND_URL=http://localhost:8080/api/calculator
-export const CALC_BACKEND_BASE_URL = process.env.NEXT_PUBLIC_CALCULATOR_BACKEND_URL || "/backend-spring-boot/api/calculator"
+// NEXT_PUBLIC_CALCULATOR_BACKEND_URL=http://localhost:8080/backend-spring-boot/graphql
+export const CALC_BACKEND_BASE_URL = process.env.NEXT_PUBLIC_CALCULATOR_BACKEND_URL || "/backend-spring-boot/graphql"
 export const CALC_NEXT_BACKEND_URL = "/api/user/calculator"
+
+enum CalculatorOperation {
+    PLUS = 'PLUS',
+    MINUS = 'MINUS'
+}
+
+export const createCalculationQuery = gql`
+    mutation($firstValue: Int!, $secondValue: Int!, $operation: CalculatorOperation!) {
+        createCalculation(firstValue: $firstValue, secondValue: $secondValue, operation: $operation) {
+            firstValue
+            secondValue
+            operation
+            result
+        }
+    }`
+
+export const previousResultsQuery = gql`
+    query($page: Int!) {
+        getAllCalculations(page: $page) {
+            page
+            totalPages
+            calculations {
+                id
+                firstValue
+                secondValue
+                operation
+                result
+                username
+                createdAt
+            }
+        }
+    }`
+
+export const deleteCalculationsQuery = gql`
+    mutation($ids: [ID!]!) {
+        deleteCalculations(ids: $ids)
+    }`
+
+const backendClient = () => createClient({
+    url: CALC_BACKEND_BASE_URL,
+    exchanges: [fetchExchange]
+})
+
+const nextClient = () => createClient({
+    url: CALC_NEXT_BACKEND_URL,
+    exchanges: [fetchExchange]
+})
 
 const calculatorYupSchema = yup.object({
     firstValue: yup
@@ -58,19 +106,13 @@ const CalculatorFormAndResult = () => {
     const operationFromForm = watch("operation")
 
     const fetchPreviousCalculations = (pageNumber: number) => {
-        fetch(`${CALC_BACKEND_BASE_URL}?page=${pageNumber}`)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(
-                        "Network response was not ok",
-                        {cause: response.status}
-                    )
-                }
-                return response.json()
-            })
+        backendClient()
+            .query(previousResultsQuery, {page: pageNumber}).toPromise()
+            .then(response => response.data)
             .then(data => {
-                setHasMorePreviousResults(data.page.number < data.page.totalPages - 1)
-                setPreviousResults(prev => [...prev, ...data.content])
+                const innerResult = data.getAllCalculations
+                setHasMorePreviousResults(innerResult.page < innerResult.totalPages - 1)
+                setPreviousResults(prev => [...prev, ...innerResult.calculations])
             })
     }
 
@@ -89,10 +131,10 @@ const CalculatorFormAndResult = () => {
                     if (!hasUserRole) {
                         throw new Error('User not allowed to perform this operation')
                     }
-                    return CALC_NEXT_BACKEND_URL
+                    return nextClient()
                 }
             )
-            .then(url => fetch(url, {method: "DELETE", body: JSON.stringify(idsToDelete)}))
+            .then(client => client.mutation(deleteCalculationsQuery, {ids: idsToDelete}))
             .then(() => fetchPreviousCalculations(0))
     }, [])
 
@@ -110,27 +152,21 @@ const CalculatorFormAndResult = () => {
                         setUsername(sessionUser.id || undefined)
                     }
 
-                    return hasUserRole ? CALC_NEXT_BACKEND_URL : CALC_BACKEND_BASE_URL
+                    return hasUserRole
+                        ? nextClient()
+                        : backendClient()
                 }
             )
-            .then(url => fetch(
-                url,
-                {
-                    method: "POST",
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify(formData),
-                }
-            ))
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(
-                        "Network response was not ok",
-                        {cause: response.status}
-                    )
-                }
-                return response.json()
-            })
-            .then(data => setResult(data))
+            .then(client => client
+                .mutation(createCalculationQuery, {
+                    firstValue: formData.firstValue,
+                    secondValue: formData.secondValue,
+                    operation: formData.operation as CalculatorOperation
+                })
+                .toPromise()
+            )
+            .then(response => response.data)
+            .then(data => setResult(data.createCalculation))
             .then(() => fetchPreviousCalculations(0))
             .catch(error => console.debug("Error:", error))
             .finally(() => setIsLoading(false))
