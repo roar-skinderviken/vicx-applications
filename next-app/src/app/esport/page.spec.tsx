@@ -1,6 +1,5 @@
 import {render, screen} from "@testing-library/react"
 import EsportPage from "@/app/esport/page"
-import {PANDASCORE_BASE_URL} from "@/app/esport/pandascoreConstants"
 
 jest.mock('next/cache', () => ({
     revalidateTag: jest.fn(),
@@ -18,27 +17,13 @@ const upcomingMatches = [{
     opponents: [{opponent: {name: "Team-3"}}, {opponent: {name: "Team-4"}}]
 }]
 
-const runningMatchesUrl = `${PANDASCORE_BASE_URL}/running?token=`
-const upcomingMatchesUrl = `${PANDASCORE_BASE_URL}/running?token=`
+const ESPORT_URL = "/backend-spring-boot/api/esport"
 
 describe("Esport Page", () => {
     describe("Layout", () => {
-        it("displays header Running Matches", async () => {
-            fetchMock.mockResponse("", {status: 500})
-            render(await EsportPage())
-            expect(screen.queryByText("Running Matches")).toBeInTheDocument()
-        })
-
-        it("displays header Upcoming Matches", async () => {
-            fetchMock.mockResponse("", {status: 500})
-            render(await EsportPage())
-            expect(screen.queryByText("Upcoming Matches")).toBeInTheDocument()
-        })
-
         it("displays running matches when matches are returned by fetch", async () => {
             fetchMock
-                .mockResponseOnce(JSON.stringify(runningMatches), {url: runningMatchesUrl})
-                .mockResponseOnce(JSON.stringify([]), {url: upcomingMatchesUrl})
+                .mockResponseOnce(JSON.stringify({runningMatches, upcomingMatches: []}), {url: ESPORT_URL})
 
             render(await EsportPage())
 
@@ -49,8 +34,7 @@ describe("Esport Page", () => {
 
         it("displays upcoming matches when matches are returned by fetch", async () => {
             fetchMock
-                .mockResponseOnce(JSON.stringify(upcomingMatches), {url: upcomingMatchesUrl})
-                .mockResponseOnce(JSON.stringify([]), {url: runningMatchesUrl})
+                .mockResponseOnce(JSON.stringify({runningMatches: [], upcomingMatches}), {url: ESPORT_URL})
 
             render(await EsportPage())
 
