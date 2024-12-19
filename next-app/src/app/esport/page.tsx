@@ -6,7 +6,7 @@ export interface MatchEntry {
     status: string
 }
 
-const SPRING_BACKEND_BASE_URL = process.env.SPRING_BACKEND_BASE_URL || "/backend-spring-boot"
+const SPRING_BACKEND_BASE_URL = process.env.SPRING_BACKEND_BASE_URL || ""
 const ESPORT_URL = SPRING_BACKEND_BASE_URL + "/api/esport"
 
 const getMatches = async () => {
@@ -41,6 +41,8 @@ const displayMatches = (matches: MatchEntry[]) =>
             </div>
         )
     })
+
+export const dynamic = "force-dynamic"
 
 export const metadata = {
     title: "Esport | VICX"
