@@ -4,6 +4,7 @@ import no.vicx.backend.esport.vm.EsportVm;
 import no.vicx.backend.esport.vm.MatchType;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 
 @Service
 public class EsportService {
@@ -15,9 +16,12 @@ public class EsportService {
     }
 
     @Cacheable(value = "ESPORT")
-    public EsportVm getMatches() {
-        return new EsportVm(
-                esportClient.getMatches(MatchType.running),
-                esportClient.getMatches(MatchType.upcoming));
+    public Mono<EsportVm> getMatches() {
+        return Mono.zip(
+                esportClient.getMatches(MatchType.running).collectList(),
+                esportClient.getMatches(MatchType.upcoming).collectList()
+        ).map(tuple -> new EsportVm(
+                tuple.getT1(),
+                tuple.getT2()));
     }
 }

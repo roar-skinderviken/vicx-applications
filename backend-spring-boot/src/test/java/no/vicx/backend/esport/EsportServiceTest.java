@@ -6,11 +6,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-
-import java.util.ArrayList;
+import reactor.core.publisher.Flux;
+import reactor.test.StepVerifier;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.openMocks;
 
 class EsportServiceTest {
@@ -35,9 +36,13 @@ class EsportServiceTest {
 
     @Test
     void getMatches_expectResult() {
-        when(esportClient.getMatches(any())).thenReturn(new ArrayList<>());
+        when(esportClient.getMatches(any())).thenReturn(Flux.empty());
 
-        sut.getMatches();
+        var matches = sut.getMatches();
+
+        StepVerifier.create(matches)
+                .expectNextCount(1)
+                .verifyComplete();
 
         verify(esportClient).getMatches(MatchType.running);
         verify(esportClient).getMatches(MatchType.upcoming);

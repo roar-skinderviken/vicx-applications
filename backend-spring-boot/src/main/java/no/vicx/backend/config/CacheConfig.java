@@ -28,7 +28,7 @@ public class CacheConfig {
         cacheManager.registerCustomCache("ESPORT",
                 Caffeine.newBuilder()
                         .expireAfterWrite(30, TimeUnit.SECONDS)
-                        .build());
+                        .buildAsync());
 
         return cacheManager;
     }

@@ -2,91 +2,108 @@ package no.vicx.backend.esport;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import no.vicx.backend.config.RestClientConfig;
 import no.vicx.backend.esport.vm.EsportMatchVm;
 import no.vicx.backend.esport.vm.EsportTeamVm;
 import no.vicx.backend.esport.vm.MatchType;
 import no.vicx.backend.esport.vm.OpponentVm;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
-import org.springframework.context.annotation.Import;
+import org.mockito.Mock;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.client.MockRestServiceServer;
+import org.springframework.web.reactive.function.client.ClientResponse;
+import org.springframework.web.reactive.function.client.ExchangeFunction;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
 
 import java.util.Collections;
 import java.util.List;
 
-import static no.vicx.backend.esport.EsportClient.PANDASCORE_BASE_URL;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.openMocks;
 
-@RestClientTest(EsportClient.class)
-@Import(RestClientConfig.class)
 class EsportClientTest {
 
-    @Value("${esport.token}")
-    String token;
+    @Mock
+    ExchangeFunction exchangeFunction;
 
-    @Autowired
-    MockRestServiceServer mockServer;
-
-    @Autowired
     EsportClient sut;
 
-    @Autowired
-    ObjectMapper objectMapper;
+    AutoCloseable openMocks;
 
-    public static final String URL_IN_TEST = PANDASCORE_BASE_URL + "running?token=";
+    @BeforeEach
+    void setUp() {
+        openMocks = openMocks(this);
+
+        WebClient webClient = WebClient.builder()
+                .exchangeFunction(exchangeFunction)
+                .build();
+
+        sut = new EsportClient(webClient, "~token~");
+    }
+
+    @AfterEach
+    void tearDown() throws Exception {
+        openMocks.close();
+    }
+
+    private static final ObjectMapper MAPPER = new ObjectMapper();
 
     @Test
     void getMatches_givenMatches_expectResult() throws JsonProcessingException {
-        var expectedMatches = Collections.singletonList(
-                new EsportMatchVm(
-                        "01/01/2024", "running",
-                        List.of(
-                                new OpponentVm(new EsportTeamVm("Team-1")),
-                                new OpponentVm(new EsportTeamVm("Team-2")))));
+        var expectedMatch = new EsportMatchVm(
+                "01/01/2024", "running",
+                List.of(
+                        new OpponentVm(new EsportTeamVm("Team-1")),
+                        new OpponentVm(new EsportTeamVm("Team-2"))));
 
+        when(exchangeFunction.exchange(any()))
+                .thenReturn(Mono.just(ClientResponse.create(HttpStatus.OK)
+                        .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                        .body(MAPPER.writeValueAsString(Collections.singletonList(expectedMatch)))
+                        .build()));
 
-        var body = objectMapper.writeValueAsString(expectedMatches);
+        var runningMatches = sut.getMatches(MatchType.running);
 
-        mockServer.expect(requestTo(URL_IN_TEST + token))
-                .andRespond(withSuccess(body, MediaType.APPLICATION_JSON));
-
-        var actualMatches = sut.getMatches(MatchType.running);
-
-        assertEquals(expectedMatches, actualMatches);
+        StepVerifier.create(runningMatches)
+                .expectNext(expectedMatch)
+                .verifyComplete();
     }
 
     @Test
     void getMatches_givenNoMatches_expectEmptyList() {
-        mockServer.expect(requestTo(URL_IN_TEST + token))
-                .andRespond(withSuccess("", MediaType.APPLICATION_JSON));
+        when(exchangeFunction.exchange(any()))
+                .thenReturn(Mono.just(ClientResponse.create(HttpStatus.OK)
+                        .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                        .body("[]")
+                        .build()));
 
-        var actualMatches = sut.getMatches(MatchType.running);
 
-        assertTrue(actualMatches.isEmpty());
+        var runningMatches = sut.getMatches(MatchType.running);
+
+        StepVerifier.create(runningMatches)
+                .verifyComplete();
     }
 
     @Test
     void getMatches_givenOnlySingleOpponent_expectEmptyResult() throws JsonProcessingException {
-        var matches = Collections.singletonList(
-                new EsportMatchVm(
-                        "01/01/2024", "running",
-                        List.of(new OpponentVm(new EsportTeamVm("Team-2")))));
+        var matchInTest = new EsportMatchVm(
+                "01/01/2024", "running",
+                List.of(new OpponentVm(new EsportTeamVm("Team-2"))));
 
+        when(exchangeFunction.exchange(any()))
+                .thenReturn(Mono.just(ClientResponse.create(HttpStatus.OK)
+                        .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                        .body(MAPPER.writeValueAsString(Collections.singletonList(matchInTest)))
+                        .build()));
 
-        var body = objectMapper.writeValueAsString(matches);
+        var runningMatches = sut.getMatches(MatchType.running);
 
-        mockServer.expect(requestTo(PANDASCORE_BASE_URL + "upcoming?token=" + token))
-                .andRespond(withSuccess(body, MediaType.APPLICATION_JSON));
-
-        var actualMatches = sut.getMatches(MatchType.upcoming);
-
-        assertTrue(actualMatches.isEmpty());
+        StepVerifier.create(runningMatches)
+                .verifyComplete();
     }
 }
