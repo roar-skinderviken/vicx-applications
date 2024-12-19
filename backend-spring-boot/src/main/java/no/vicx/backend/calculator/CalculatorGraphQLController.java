@@ -1,7 +1,6 @@
 package no.vicx.backend.calculator;
 
 import no.vicx.backend.calculator.vm.CalcVm;
-import no.vicx.backend.calculator.vm.CalculatorRequestVm;
 import no.vicx.backend.calculator.vm.PaginatedCalculations;
 import no.vicx.database.calculator.CalculatorOperation;
 import org.springframework.graphql.data.method.annotation.Argument;
@@ -41,7 +40,7 @@ public class CalculatorGraphQLController {
             Authentication authentication) {
 
         return calculatorService.calculate(
-                new CalculatorRequestVm(firstValue, secondValue, operation),
+                firstValue, secondValue, operation,
                 Optional.ofNullable(authentication)
                         .filter(auth -> !(auth instanceof AnonymousAuthenticationToken))
                         .map(Principal::getName)

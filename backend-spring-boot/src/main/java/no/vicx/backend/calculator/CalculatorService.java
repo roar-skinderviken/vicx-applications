@@ -1,9 +1,9 @@
 package no.vicx.backend.calculator;
 
-import no.vicx.database.calculator.CalcEntry;
-import no.vicx.database.calculator.CalculatorRepository;
 import no.vicx.backend.calculator.vm.CalcVm;
-import no.vicx.backend.calculator.vm.CalculatorRequestVm;
+import no.vicx.database.calculator.CalcEntry;
+import no.vicx.database.calculator.CalculatorOperation;
+import no.vicx.database.calculator.CalculatorRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -47,19 +47,21 @@ public class CalculatorService {
     }
 
     public CalcVm calculate(
-            CalculatorRequestVm calculatorRequestVm,
+            long firstValue,
+            long secondValue,
+            CalculatorOperation operation,
             String username) {
 
-        var result = switch (calculatorRequestVm.operation()) {
-            case PLUS -> calculatorRequestVm.firstValue() + calculatorRequestVm.secondValue();
-            case MINUS -> calculatorRequestVm.firstValue() - calculatorRequestVm.secondValue();
+        var result = switch (operation) {
+            case PLUS -> firstValue + secondValue;
+            case MINUS -> firstValue - secondValue;
         };
 
         var savedEntity = calculatorRepository.save(
                 new CalcEntry(
-                        calculatorRequestVm.firstValue(),
-                        calculatorRequestVm.secondValue(),
-                        calculatorRequestVm.operation(),
+                        firstValue,
+                        secondValue,
+                        operation,
                         result,
                         username));
 

@@ -118,7 +118,7 @@ class CalculatorGraphQLControllerSpringBootTest {
         var expected = new CalcVm(1L, 1L, 2L, PLUS, 3,
                 expectedUsername, LocalDateTime.of(2024, 1, 1, 1, 1, 1));
 
-        when(calculatorService.calculate(any(), any())).thenReturn(expected);
+        when(calculatorService.calculate(anyLong(), anyLong(), any(), any())).thenReturn(expected);
 
         var requestBuilder = post("/graphql")
                 .contentType(MediaType.APPLICATION_JSON)

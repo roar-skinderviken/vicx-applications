@@ -1,6 +1,5 @@
 package no.vicx.backend.calculator;
 
-import no.vicx.backend.calculator.vm.CalculatorRequestVm;
 import no.vicx.database.calculator.CalcEntry;
 import no.vicx.database.calculator.CalculatorOperation;
 import no.vicx.database.calculator.CalculatorRepository;
@@ -23,7 +22,8 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.openMocks;
 
 class CalculatorServiceTest {
@@ -89,25 +89,17 @@ class CalculatorServiceTest {
     @ParameterizedTest
     @MethodSource("provideTestParameters")
     void calculate_bothOperations_savesAndReturnsResult(
-            Long firstValue, Long secondValue, CalculatorOperation operation) {
-        // Arrange
+            long firstValue, long secondValue, CalculatorOperation operation) {
+
         var username = "user1";
-        var entityId = 1L;
         long expectedResult = firstValue + secondValue;
         var savedEntity = new CalcEntry(firstValue, secondValue, operation, expectedResult, username);
-        savedEntity.setId(entityId);
+        savedEntity.setId(1L);
 
         when(calculatorRepository.save(any(CalcEntry.class))).thenReturn(savedEntity);
 
-        var requestBody = new CalculatorRequestVm(
-                firstValue,
-                secondValue,
-                operation);
+        var calcVm = sut.calculate(firstValue, secondValue, operation, username);
 
-        // Act
-        var calcVm = sut.calculate(requestBody, username);
-
-        // Assert
         assertEquals(expectedResult, calcVm.result());
         verify(calculatorRepository).save(any(CalcEntry.class));
     }
