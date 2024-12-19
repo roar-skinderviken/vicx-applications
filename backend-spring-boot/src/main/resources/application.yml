@@ -11,6 +11,9 @@ app:
     rate: 300_000 # every 5 minutes
     max-age: PT6H
 
+esport:
+  token: ${ESPORT_TOKEN:~token~}
+
 recaptcha:
   secret: ${RECAPTCHA_SECRET:6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe} # dev secret
 
@@ -33,12 +36,6 @@ spring:
     multipart:
       enabled: true
       max-file-size: 100KB
-
-  cache:
-    cache-names: [GITHUB_TOKENS, RECAPTCHA_TOKENS]
-    type: caffeine
-    caffeine:
-      spec: maximumSize=1000,expireAfterWrite=3600s
 
   application:
     name: vicx-backend-spring-boot

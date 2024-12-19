@@ -57,6 +57,8 @@ public class SecurityConfig {
 
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
 
+                        .requestMatchers(HttpMethod.GET, "/api/esport").permitAll()
+
                         .requestMatchers(HttpMethod.POST, "/api/user").permitAll()
                         .requestMatchers("/graphiql","/graphql").permitAll()
 

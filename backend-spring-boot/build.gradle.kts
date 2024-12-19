@@ -24,7 +24,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-graphql")
     implementation(libs.springdoc.openapi)
 
-    runtimeOnly("com.github.ben-manes.caffeine:caffeine")
+    implementation("com.github.ben-manes.caffeine:caffeine")
     implementation(libs.tika.core)
 
     // logging

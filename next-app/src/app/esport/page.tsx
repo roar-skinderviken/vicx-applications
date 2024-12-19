@@ -1,11 +1,4 @@
 import Hero from "@/components/Hero"
-import {
-    CACHE_TAG_BASE,
-    PANDASCORE_BASE_URL, pandaScoreFetchOptions,
-    RUNNING_MATCH_TYPE, UPCOMING_MATCH_TYPE
-} from "@/app/esport/pandascoreConstants"
-
-const apiKey = process.env.API_KEY
 
 export interface MatchEntry {
     opponents: { opponent: { name: string } }[],
@@ -13,21 +6,16 @@ export interface MatchEntry {
     status: string
 }
 
-const getMatches = async (matchType: "running" | "upcoming") => {
-    const cacheTag = `${CACHE_TAG_BASE}${matchType}`
+const SPRING_BACKEND_BASE_URL = process.env.SPRING_BACKEND_BASE_URL || "/backend-spring-boot"
+const ESPORT_URL = SPRING_BACKEND_BASE_URL + "/api/esport"
 
+const getMatches = async () => {
     try {
-        const response = await fetch(
-            `${PANDASCORE_BASE_URL}/${matchType}?token=${apiKey}`,
-            pandaScoreFetchOptions(cacheTag)
-        )
+        const response = await fetch(ESPORT_URL)
 
-        if (!response.ok) {
-            return []
-        }
+        if (!response.ok) return []
 
-        const data: MatchEntry[] = await response.json()
-        return data.filter(match => match.opponents && match.opponents.length === 2)
+        return await response.json()
     } catch (error) {
         console.error(error)
         return []
@@ -59,10 +47,7 @@ export const metadata = {
 }
 
 export default async function EsportPage() {
-    const [runningMatches, upcomingMatches] = await Promise.all([
-        getMatches(RUNNING_MATCH_TYPE),
-        getMatches(UPCOMING_MATCH_TYPE)
-    ])
+    const matches = await getMatches()
 
     return <main className="content">
         <Hero
@@ -73,12 +58,12 @@ export default async function EsportPage() {
         <div className="container mx-auto grid grid-cols-1 sm:grid-cols-2 gap-4 px-2">
             <div>
                 <h2 className="text-center text-3xl my-4">Running Matches</h2>
-                {displayMatches(runningMatches)}
+                {displayMatches(matches.runningMatches)}
             </div>
 
             <div>
                 <h2 className="text-center text-3xl my-4">Upcoming Matches</h2>
-                {displayMatches(upcomingMatches)}
+                {displayMatches(matches.upcomingMatches)}
             </div>
         </div>
     </main>
