@@ -42,7 +42,7 @@ jobs:
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
         with:
-          platforms: ${{ matrix.platform }} # Dynamically use the matrix platform
+          platforms: linux/amd64,linux/arm64
 
       - name: Set up JDK 21
         if : ${{ inputs.buildWithGradle }}
@@ -73,7 +73,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: ./${{ inputs.appName }}
-          platforms: ${{ matrix.platform }} # Dynamically use the matrix platform
+          platforms: linux/amd64,linux/arm64
           push: true
           provenance: false # to avoid unknown/unknown
           tags: |
