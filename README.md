@@ -92,12 +92,13 @@ mutation {
 ```
 query {
   getAllCalculations(page: 0) {
-    data {
+    calculations {
       firstValue
       secondValue
       operation
       result
     },
+    page,
     totalPages
   }
 }
