@@ -12,6 +12,7 @@ import org.springframework.security.oauth2.server.authorization.client.Registere
 import org.springframework.security.oauth2.server.authorization.settings.ClientSettings;
 import org.springframework.security.oauth2.server.authorization.settings.TokenSettings;
 
+import java.util.List;
 import java.util.UUID;
 
 @Configuration
@@ -21,7 +22,7 @@ public class AuthorizationServerConfig {
     public RegisteredClientRepository registeredClientRepository(
             OAuthProperties oAuthProperties,
             PasswordEncoder passwordEncoder) {
-        var registeredClient = RegisteredClient
+        var nextClient = RegisteredClient
                 .withId(UUID.randomUUID().toString())
                 .clientId(oAuthProperties.clientId())
                 .clientSettings(ClientSettings.builder().requireAuthorizationConsent(true).build())
@@ -45,6 +46,19 @@ public class AuthorizationServerConfig {
                         .build())
                 .build();
 
-        return new InMemoryRegisteredClientRepository(registeredClient);
+        // Peter Penzov: Second Registered Client
+        var clientCredentialsClient = RegisteredClient
+                .withId(UUID.randomUUID().toString())
+                .clientId("second-client-id")
+                .clientSecret(passwordEncoder.encode("second-client-secret"))
+                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
+                .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
+                .scope("custom-scope")
+                .tokenSettings(TokenSettings.builder()
+                        .accessTokenTimeToLive(oAuthProperties.accessTokenTimeToLive())
+                        .build())
+                .build();
+
+        return new InMemoryRegisteredClientRepository(List.of(nextClient, clientCredentialsClient));
     }
 }
