@@ -22,6 +22,8 @@ Value for `RECAPTCHA_SITE_KEY` is a dev value.
 ```shell
 ./gradlew -p auth-server bootRun
 ```
+Please note that context path is `/auth-server`, hence use http://localhost:9000/auth-server when testing
+with e.g. Postman.
 
 ### Start the Next app
 ```shell
@@ -45,6 +47,8 @@ Username/password for logging in with OAuth:
 ```shell
 ./gradlew -p backend-spring-boot bootRun
 ```
+Please note that context path is `/backend-spring-boot`, hence use http://localhost:8080/backend-spring-boot 
+when testing with e.g. Postman.
 
 ### Start the backend-python (optional, requires Poetry)
 ```shell
