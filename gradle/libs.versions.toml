@@ -1,7 +1,7 @@
 [versions]
 mockito = "5.15.2"
 tika-core = "3.0.0"
-springdoc-openapi = "2.8.0"
+springdoc-openapi = "2.8.1"
 
 # Logging
 logback-access-spring-boot-starter = "4.4.0"
