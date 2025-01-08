@@ -22,7 +22,7 @@ class GitHubUserResponseVmTest {
         assertNotNull(principal);
         assertEquals("~login~", principal.getName());
         assertEquals(
-                Collections.singletonList(new SimpleGrantedAuthority("GITHUB_USER")),
+                Collections.singletonList(new SimpleGrantedAuthority("ROLE_GITHUB_USER")),
                 principal.getAuthorities());
     }
 }

@@ -59,7 +59,7 @@ class GitHubFromOpaqueProducerTest {
         assertNotNull(principal);
         assertEquals("john-doe", principal.getName());
         assertEquals(
-                Collections.singletonList("GITHUB_USER"),
+                Collections.singletonList("ROLE_GITHUB_USER"),
                 principal.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList());
     }
 

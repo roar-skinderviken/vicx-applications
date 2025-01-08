@@ -18,6 +18,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationProvider;
 import org.springframework.security.oauth2.server.resource.authentication.OpaqueTokenAuthenticationProvider;
 import org.springframework.security.oauth2.server.resource.introspection.OpaqueTokenIntrospector;
@@ -53,9 +54,13 @@ public class SecurityConfig {
     @Bean
     AuthenticationManagerResolver<HttpServletRequest> tokenAuthenticationManagerResolver(
             final JwtDecoder jwtDecoder,
-            final OpaqueTokenIntrospector opaqueTokenIntrospector) {
+            final OpaqueTokenIntrospector opaqueTokenIntrospector,
+            final JwtAuthenticationConverter jwtAuthenticationConverter) {
 
-        var jwtProviderManager = new ProviderManager(new JwtAuthenticationProvider(jwtDecoder));
+        var jwtAuthenticationProvider = new JwtAuthenticationProvider(jwtDecoder);
+        jwtAuthenticationProvider.setJwtAuthenticationConverter(jwtAuthenticationConverter);
+        var jwtProviderManager = new ProviderManager(jwtAuthenticationProvider);
+
         var opaqueTokenProviderManager = new ProviderManager(
                 new OpaqueTokenAuthenticationProvider(opaqueTokenIntrospector));
 

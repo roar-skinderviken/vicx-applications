@@ -21,7 +21,7 @@ public record GitHubUserResponseVm(
             @Override
             public Collection<GrantedAuthority> getAuthorities() {
                 return Collections.singletonList(
-                        new SimpleGrantedAuthority("GITHUB_USER"));
+                        new SimpleGrantedAuthority("ROLE_GITHUB_USER"));
             }
 
             @Override
