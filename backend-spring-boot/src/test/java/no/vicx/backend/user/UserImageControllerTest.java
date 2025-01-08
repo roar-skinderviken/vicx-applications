@@ -16,8 +16,7 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import java.util.Collections;
 import java.util.Optional;
 
-import static no.vicx.backend.testconfiguration.TestSecurityConfig.AUTH_HEADER_IN_TEST;
-import static no.vicx.backend.testconfiguration.TestSecurityConfig.createJwtInTest;
+import static no.vicx.backend.testconfiguration.TestSecurityConfig.*;
 import static no.vicx.backend.user.UserTestUtils.createMultipartFile;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -49,8 +48,8 @@ class UserImageControllerTest extends BaseWebMvcTest {
 
     @Test
     void postUserImage_givenUserWithoutRequiredRole_expectForbidden() throws Exception {
-        when(jwtDecoder.decode(anyString()))
-                .thenReturn(createJwtInTest(Collections.emptyList()));
+        when(opaqueTokenIntrospector.introspect(anyString())).thenReturn(
+                createPrincipalInTest(Collections.emptyList()));
 
         var file = createMultipartFile("test-png.png", MediaType.IMAGE_PNG_VALUE);
 

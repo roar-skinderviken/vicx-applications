@@ -17,14 +17,12 @@ esport:
 recaptcha:
   secret: ${RECAPTCHA_SECRET:6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe} # dev secret
 
-auth-server:
-  issuer-uri: ${OAUTH2_SERVER:http://localhost:9000/auth-server}
-
 spring:
   security:
     oauth2:
       resourceserver:
         jwt:
+          issuer-uri: ${OAUTH2_SERVER:http://localhost:9000/auth-server}
           authorities-claim-name: roles
           authority-prefix: ROLE_
 

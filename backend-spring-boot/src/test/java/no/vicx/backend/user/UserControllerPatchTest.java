@@ -17,8 +17,7 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import java.util.Collections;
 import java.util.stream.Stream;
 
-import static no.vicx.backend.testconfiguration.TestSecurityConfig.AUTH_HEADER_IN_TEST;
-import static no.vicx.backend.testconfiguration.TestSecurityConfig.createJwtInTest;
+import static no.vicx.backend.testconfiguration.TestSecurityConfig.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
@@ -41,8 +40,8 @@ class UserControllerPatchTest extends BaseWebMvcTest {
 
     @Test
     void patchName_givenUserWithoutRequiredRole_expectForbidden() throws Exception {
-        when(jwtDecoder.decode(anyString()))
-                .thenReturn(createJwtInTest(Collections.emptyList()));
+        when(opaqueTokenIntrospector.introspect(anyString())).thenReturn(
+                createPrincipalInTest(Collections.emptyList()));
 
         mockMvc.perform(createPatchRequest("{}", true))
                 .andExpect(status().isForbidden());

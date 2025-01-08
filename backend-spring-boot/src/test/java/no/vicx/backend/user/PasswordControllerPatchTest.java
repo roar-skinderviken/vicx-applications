@@ -18,8 +18,7 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import java.util.Collections;
 import java.util.stream.Stream;
 
-import static no.vicx.backend.testconfiguration.TestSecurityConfig.AUTH_HEADER_IN_TEST;
-import static no.vicx.backend.testconfiguration.TestSecurityConfig.createJwtInTest;
+import static no.vicx.backend.testconfiguration.TestSecurityConfig.*;
 import static no.vicx.database.user.VicxUser.VALID_PLAINTEXT_PASSWORD;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -43,8 +42,8 @@ class PasswordControllerPatchTest extends BaseWebMvcTest {
 
     @Test
     void changePassword_givenUserWithoutRequiredRole_expectForbidden() throws Exception {
-        when(jwtDecoder.decode(anyString()))
-                .thenReturn(createJwtInTest(Collections.emptyList()));
+        when(opaqueTokenIntrospector.introspect(anyString())).thenReturn(
+                createPrincipalInTest(Collections.emptyList()));
 
         mockMvc.perform(createValidChangePasswordRequest("{}", true))
                 .andExpect(status().isForbidden());

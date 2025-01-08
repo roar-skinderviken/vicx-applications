@@ -6,12 +6,10 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
-import static no.vicx.backend.jwt.JwtConstants.BEARER_PREFIX;
+import static no.vicx.backend.jwt.JwtUtils.BEARER_PREFIX;
 
 @Service
-public record GitHubUserFetcher(
-        RestClient restClient,
-        GitHubEmailFetcher emailFetcher) {
+public record GitHubUserFetcher(RestClient restClient) {
 
     static final String USER_URL = "https://api.github.com/user";
     public static final String HEADER_SCOPES = "X-OAuth-Scopes";
@@ -29,14 +27,9 @@ public record GitHubUserFetcher(
             throw new IllegalStateException("User is null");
         }
 
-        var additionalEmailAddress = user.email() == null
-            ? emailFetcher.fetchEmail(token)
-            : null;
-
         return new GitHubUserResponseVm(
-                responseEntity.getBody(),
+                user,
                 responseEntity.getHeaders().getFirst(HEADER_SCOPES),
-                additionalEmailAddress,
                 token);
     }
 }

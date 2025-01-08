@@ -15,7 +15,7 @@ public class CacheConfig {
     public CacheManager cacheManager() {
         var cacheManager = new CaffeineCacheManager();
 
-        cacheManager.registerCustomCache("GITHUB_TOKENS",
+        cacheManager.registerCustomCache("GITHUB_OPAQUE_PRINCIPALS",
                 Caffeine.newBuilder()
                         .expireAfterWrite(1, TimeUnit.HOURS)
                         .build());
