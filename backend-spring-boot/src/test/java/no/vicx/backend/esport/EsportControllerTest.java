@@ -1,7 +1,7 @@
 package no.vicx.backend.esport;
 
+import no.vicx.backend.BaseWebMvcTest;
 import no.vicx.backend.config.SecurityConfig;
-import no.vicx.backend.testconfiguration.TestSecurityConfig;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -14,8 +14,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(EsportController.class)
-@Import({SecurityConfig.class, TestSecurityConfig.class})
-class EsportControllerTest {
+@Import(SecurityConfig.class)
+class EsportControllerTest extends BaseWebMvcTest {
 
     @Autowired
     MockMvc mockMvc;

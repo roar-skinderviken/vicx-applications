@@ -1,45 +1,33 @@
 package no.vicx.backend.jwt.github.vm;
 
-import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.oauth2.core.OAuth2AuthenticatedPrincipal;
 
-import java.time.Instant;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-
-import static no.vicx.backend.jwt.JwtConstants.*;
+import java.util.*;
 
 public record GitHubUserResponseVm(
         GitHubUserVm user,
         String grantedScopes,
-        String additionalEmailAddress,
         String token) {
 
-    static final int EXPIRES_AT_IN_SECS = 3600;
+    public OAuth2AuthenticatedPrincipal toPrincipal() {
+        return new OAuth2AuthenticatedPrincipal() {
+            @Override
+            public Map<String, Object> getAttributes() {
+                return Collections.emptyMap();
+            }
 
-    public Jwt toJwt() {
-        var defaultClaims = Map.of(
-                CLAIM_SCOPES, grantedScopes,
-                CLAIM_ROLES, Collections.singletonList("GITHUB_USER")
-        );
+            @Override
+            public Collection<GrantedAuthority> getAuthorities() {
+                return Collections.singletonList(
+                        new SimpleGrantedAuthority("ROLE_GITHUB_USER"));
+            }
 
-        var emailAddress = user.email() == null || user.email().isBlank()
-                ? additionalEmailAddress
-                : user.email();
-
-        var claims = new HashMap<>(defaultClaims);
-
-        Optional.ofNullable(emailAddress).ifPresent(it -> claims.put(CLAIM_EMAIL, it));
-        Optional.ofNullable(user.name()).ifPresent(it -> claims.put(CLAIM_NAME, it));
-        Optional.ofNullable(user.avatarUrl()).ifPresent(it -> claims.put(CLAIM_IMAGE, it));
-
-        return Jwt.withTokenValue(token)
-                .subject(user.login())
-                .headers(h -> h.put(HEADER_ALG, HEADER_ALG_NONE))
-                .claims(c -> c.putAll(claims))
-                .issuedAt(Instant.now())
-                .expiresAt(Instant.now().plusSeconds(EXPIRES_AT_IN_SECS))
-                .build();
+            @Override
+            public String getName() {
+                return user.login();
+            }
+        };
     }
 }

@@ -1,23 +1,25 @@
 package no.vicx.backend.calculator;
 
 import no.vicx.backend.calculator.vm.CalcVm;
-import no.vicx.backend.testconfiguration.TestSecurityConfig;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.security.oauth2.server.resource.introspection.OpaqueTokenIntrospector;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 
 import static no.vicx.backend.testconfiguration.TestSecurityConfig.AUTH_HEADER_IN_TEST;
+import static no.vicx.backend.testconfiguration.TestSecurityConfig.createPrincipalInTest;
 import static no.vicx.database.calculator.CalculatorOperation.PLUS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
@@ -26,7 +28,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@Import(TestSecurityConfig.class)
 class CalculatorGraphQLControllerSpringBootTest {
 
     final static String VALID_DELETE_BODY_IN_TEST = """
@@ -43,6 +44,15 @@ class CalculatorGraphQLControllerSpringBootTest {
 
     @MockitoBean
     CalculatorService calculatorService;
+
+    @MockitoBean
+    OpaqueTokenIntrospector opaqueTokenIntrospector;
+
+    @BeforeEach
+    void setUp() {
+        when(opaqueTokenIntrospector.introspect(anyString())).thenReturn(
+                createPrincipalInTest(Collections.singletonList("ROLE_USER")));
+    }
 
     @Test
     void deleteCalculations_givenNoAuthHeader_expectUnauthorized() throws Exception {

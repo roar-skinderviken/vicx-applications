@@ -10,8 +10,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.util.Collections;
 
-import static no.vicx.backend.testconfiguration.TestSecurityConfig.AUTH_HEADER_IN_TEST;
-import static no.vicx.backend.testconfiguration.TestSecurityConfig.createJwtInTest;
+import static no.vicx.backend.testconfiguration.TestSecurityConfig.*;
 import static no.vicx.backend.user.UserTestUtils.createValidVicxUser;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
@@ -34,8 +33,8 @@ class UserControllerGetTest extends BaseWebMvcTest {
 
     @Test
     void getUser_givenUserWithoutRequiredRole_expectForbidden() throws Exception {
-        when(jwtDecoder.decode(anyString()))
-                .thenReturn(createJwtInTest(Collections.emptyList()));
+        when(opaqueTokenIntrospector.introspect(anyString())).thenReturn(
+                createPrincipalInTest(Collections.emptyList()));
 
         mockMvc
                 .perform(get("/api/user").header(HttpHeaders.AUTHORIZATION, AUTH_HEADER_IN_TEST))

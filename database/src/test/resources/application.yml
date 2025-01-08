@@ -10,6 +10,7 @@ spring:
     show-sql: true
     properties:
       hibernate.default_schema: vicx
+      hibernate.format_sql: true
 
   data:
     web:
