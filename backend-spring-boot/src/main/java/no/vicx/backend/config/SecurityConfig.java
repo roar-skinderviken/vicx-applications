@@ -92,6 +92,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/user").permitAll()
                         .requestMatchers("/graphiql", "/graphql").permitAll()
 
+                        .requestMatchers("/messages").hasRole("USER")
                         .requestMatchers("/api/**").hasRole("USER")
 
                         .requestMatchers("/error").permitAll()

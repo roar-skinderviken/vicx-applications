@@ -1,0 +1,31 @@
+server:
+  port: 8085
+
+logging:
+  level:
+    root: INFO
+    org.springframework.web: INFO
+    org.springframework.security: INFO
+    org.springframework.security.oauth2: INFO
+
+spring:
+  thymeleaf:
+    cache: false
+  security:
+    oauth2:
+      client:
+        registration:
+          messaging-client-oidc:
+            provider: spring
+            client-id: next-app-client
+            client-secret: secret
+            authorization-grant-type: authorization_code
+            redirect-uri: "http://localhost:8085/login/oauth2/code/{registrationId}"
+            scope: openid, profile
+            client-name: messaging-client-oidc
+        provider:
+          spring:
+            issuer-uri: http://localhost:9000/auth-server
+
+messages:
+  backend-base-uri: http://localhost:8080/backend-spring-boot
