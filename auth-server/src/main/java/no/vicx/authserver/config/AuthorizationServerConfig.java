@@ -36,6 +36,10 @@ public class AuthorizationServerConfig {
                 .redirectUri(oAuthProperties.resourceServer() + "/swagger-ui/oauth2-redirect.html")
                 .redirectUri(oAuthProperties.resourceServer() + "/webjars/swagger-ui/oauth2-redirect.html")
 
+                .redirectUri("http://localhost:8085/login/oauth2/code/messaging-client-oidc")
+                .redirectUri("http://localhost:8085/authorized")
+                .postLogoutRedirectUri("http://localhost:8085/logged-out")
+
                 .scope(OidcScopes.OPENID)
                 .scope(OidcScopes.PROFILE)
                 .scope(OidcScopes.EMAIL)
