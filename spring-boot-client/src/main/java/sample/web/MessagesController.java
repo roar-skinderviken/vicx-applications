@@ -6,26 +6,46 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.client.RestClient;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
+import static org.springframework.security.oauth2.client.web.client.RequestAttributeClientRegistrationIdResolver.clientRegistrationId;
 import static org.springframework.security.oauth2.client.web.reactive.function.client.ServletOAuth2AuthorizedClientExchangeFilterFunction.oauth2AuthorizedClient;
 
 @Controller
 public class MessagesController {
+    private final RestClient restClient;
     private final WebClient webClient;
 
-    public MessagesController(WebClient webClient) {
+    public MessagesController(RestClient restClient, WebClient webClient) {
+        this.restClient = restClient;
         this.webClient = webClient;
     }
 
-    @GetMapping(value = "/messages")
-    public String authorizationCodeGrant(
+    // https://spring.io/blog/2024/10/28/restclient-support-for-oauth2-in-spring-security-6-4
+    @GetMapping(value = "/messages-restclient")
+    public String messagesUsingRestClient(Model model) {
+
+        String[] messages = restClient
+                .get()
+                .uri("/messages")
+                .attributes(clientRegistrationId("messaging-client-oidc"))
+                .retrieve()
+                .body(String[].class);
+
+        model.addAttribute("messages", messages);
+
+        return "index";
+    }
+
+    @GetMapping(value = "/messages-webclient")
+    public String messagesUsingWebClient(
             Model model,
             @RegisteredOAuth2AuthorizedClient("messaging-client-oidc")
             OAuth2AuthorizedClient authorizedClient) {
 
-        String[] messages = this.webClient
+        String[] messages = webClient
                 .get()
                 .uri("/messages")
                 .attributes(oauth2AuthorizedClient(authorizedClient))

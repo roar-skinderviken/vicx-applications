@@ -8,21 +8,35 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizedClientProvider
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.client.web.DefaultOAuth2AuthorizedClientManager;
 import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository;
+import org.springframework.security.oauth2.client.web.client.OAuth2ClientHttpRequestInterceptor;
 import org.springframework.security.oauth2.client.web.reactive.function.client.ServletOAuth2AuthorizedClientExchangeFilterFunction;
+import org.springframework.web.client.RestClient;
 import org.springframework.web.reactive.function.client.WebClient;
 
 @Configuration
 public class WebClientConfig {
 
     @Bean
-    public WebClient defaultClientWebClient(
+    public RestClient restClient(
+            RestClient.Builder builder,
+            @Value("${messages.backend-base-uri}") String baseUri,
+            OAuth2AuthorizedClientManager authorizedClientManager) {
+        return builder
+                .baseUrl(baseUri)
+                .requestInterceptor(new OAuth2ClientHttpRequestInterceptor(authorizedClientManager))
+                .build();
+    }
+
+    @Bean
+    public WebClient webClient(
+            WebClient.Builder builder,
             @Value("${messages.backend-base-uri}") String baseUri,
             OAuth2AuthorizedClientManager authorizedClientManager) {
 
         var oauth2Client =
                 new ServletOAuth2AuthorizedClientExchangeFilterFunction(authorizedClientManager);
 
-        return WebClient.builder()
+        return builder
                 .baseUrl(baseUri)
                 .apply(oauth2Client.oauth2Configuration())
                 .build();
@@ -34,10 +48,10 @@ public class WebClientConfig {
             OAuth2AuthorizedClientRepository authorizedClientRepository) {
 
         var authorizedClientProvider = OAuth2AuthorizedClientProviderBuilder.builder()
-                        .authorizationCode()
-                        .refreshToken()
-                        .clientCredentials()
-                        .build();
+                .authorizationCode()
+                .refreshToken()
+                .clientCredentials()
+                .build();
 
         var authorizedClientManager = new DefaultOAuth2AuthorizedClientManager(
                 clientRegistrationRepository,
