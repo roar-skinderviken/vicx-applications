@@ -21,9 +21,13 @@ public class WebAndRestClientConfig {
             RestClient.Builder builder,
             @Value("${messages.backend-base-uri}") String baseUri,
             OAuth2AuthorizedClientManager authorizedClientManager) {
+
+        var interceptor = new OAuth2ClientHttpRequestInterceptor(authorizedClientManager);
+        interceptor.setClientRegistrationIdResolver(request -> "messaging-client-oidc");
+
         return builder
                 .baseUrl(baseUri)
-                .requestInterceptor(new OAuth2ClientHttpRequestInterceptor(authorizedClientManager))
+                .requestInterceptor(interceptor)
                 .build();
     }
 

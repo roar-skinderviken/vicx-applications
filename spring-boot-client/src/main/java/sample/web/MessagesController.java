@@ -11,7 +11,6 @@ import org.springframework.web.client.RestClient;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
-import static org.springframework.security.oauth2.client.web.client.RequestAttributeClientRegistrationIdResolver.clientRegistrationId;
 import static org.springframework.security.oauth2.client.web.reactive.function.client.ServletOAuth2AuthorizedClientExchangeFilterFunction.oauth2AuthorizedClient;
 
 @Controller
@@ -33,7 +32,6 @@ public class MessagesController {
         String[] messages = restClient
                 .get()
                 .uri("/messages")
-                .attributes(clientRegistrationId("messaging-client-oidc"))
                 .retrieve()
                 .body(String[].class);
 
