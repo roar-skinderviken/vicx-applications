@@ -14,7 +14,7 @@ import org.springframework.web.client.RestClient;
 import org.springframework.web.reactive.function.client.WebClient;
 
 @Configuration
-public class WebClientConfig {
+public class WebAndRestClientConfig {
 
     @Bean
     public RestClient restClient(
