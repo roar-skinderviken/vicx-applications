@@ -3,9 +3,10 @@ package no.vicx.backend.jwt.github.vm;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-import java.util.Collections;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class GitHubUserResponseVmTest {
 
@@ -21,8 +22,8 @@ class GitHubUserResponseVmTest {
 
         assertNotNull(principal);
         assertEquals("~login~", principal.getName());
-        assertEquals(
-                Collections.singletonList(new SimpleGrantedAuthority("ROLE_GITHUB_USER")),
-                principal.getAuthorities());
+        assertThat(
+                principal.getAuthorities(),
+                containsInAnyOrder(new SimpleGrantedAuthority("ROLE_GITHUB_USER")));
     }
 }
