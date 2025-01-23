@@ -1,9 +1,9 @@
 package no.vicx.database.user;
 
+import no.vicx.database.PostgresTestContainerConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
@@ -16,8 +16,7 @@ import static no.vicx.database.user.VicxUser.VALID_BCRYPT_PASSWORD;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
-@AutoConfigureTestDatabase
-@Import(no.vicx.database.PostgresTestContainerConfig.class)
+@Import(PostgresTestContainerConfig.class)
 class UserRepositoryTest {
 
     @Autowired
