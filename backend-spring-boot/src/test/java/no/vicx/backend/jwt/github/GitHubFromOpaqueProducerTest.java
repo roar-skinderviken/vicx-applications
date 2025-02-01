@@ -2,11 +2,11 @@ package no.vicx.backend.jwt.github;
 
 import no.vicx.backend.jwt.github.vm.GitHubUserResponseVm;
 import no.vicx.backend.jwt.github.vm.GitHubUserVm;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.server.resource.introspection.BadOpaqueTokenException;
@@ -17,9 +17,8 @@ import java.util.Collections;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.openMocks;
 
-
+@ExtendWith(MockitoExtension.class)
 class GitHubFromOpaqueProducerTest {
 
     @Mock
@@ -27,18 +26,6 @@ class GitHubFromOpaqueProducerTest {
 
     @InjectMocks
     GitHubFromOpaqueProducer sut;
-
-    AutoCloseable openMocks;
-
-    @BeforeEach
-    void setUp() {
-        openMocks = openMocks(this);
-    }
-
-    @AfterEach
-    void tearDown() throws Exception {
-        openMocks.close();
-    }
 
     @Test
     void createJwt_givenValidToken_expectJwt() {

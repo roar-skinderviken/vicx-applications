@@ -2,14 +2,14 @@ package no.vicx.backend.user.service;
 
 import no.vicx.database.user.UserImageRepository;
 import no.vicx.database.user.UserRepository;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,12 +18,12 @@ import java.util.stream.Stream;
 
 import static no.vicx.backend.user.UserTestUtils.createMultipartFile;
 import static no.vicx.backend.user.UserTestUtils.createValidVicxUser;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
-import static org.mockito.MockitoAnnotations.openMocks;
 
+@ExtendWith(MockitoExtension.class)
 class UserImageServiceTest {
 
     @Mock
@@ -37,18 +37,6 @@ class UserImageServiceTest {
 
     @InjectMocks
     UserImageService sut;
-
-    AutoCloseable openMocks;
-
-    @BeforeEach
-    void setUp() {
-        openMocks = openMocks(this);
-    }
-
-    @AfterEach
-    void tearDown() throws Exception {
-        openMocks.close();
-    }
 
     @Test
     void addOrReplaceUserImage_givenExistingUser_expectImageAddedToUser() throws IOException {
