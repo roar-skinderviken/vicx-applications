@@ -3,6 +3,7 @@ package sample.config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.oauth2.client.OAuth2AuthorizationFailureHandler;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientProviderBuilder;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
@@ -20,10 +21,16 @@ public class WebAndRestClientConfig {
     public RestClient restClient(
             RestClient.Builder builder,
             @Value("${messages.backend-base-uri}") String baseUri,
-            OAuth2AuthorizedClientManager authorizedClientManager) {
+            OAuth2AuthorizedClientManager authorizedClientManager,
+            OAuth2AuthorizedClientRepository authorizedClientRepository) {
 
         var interceptor = new OAuth2ClientHttpRequestInterceptor(authorizedClientManager);
-        interceptor.setClientRegistrationIdResolver(request -> "messaging-client-oidc");
+        interceptor.setClientRegistrationIdResolver(request -> "messaging-client-credentials");
+
+        OAuth2AuthorizationFailureHandler authorizationFailureHandler =
+                OAuth2ClientHttpRequestInterceptor.authorizationFailureHandler(authorizedClientRepository);
+
+        interceptor.setAuthorizationFailureHandler(authorizationFailureHandler);
 
         return builder
                 .baseUrl(baseUri)
