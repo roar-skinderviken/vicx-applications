@@ -26,6 +26,7 @@ public class AuthorizationServerConfig {
                 .clientId(oAuthProperties.clientId())
                 .clientSettings(ClientSettings.builder().requireAuthorizationConsent(true).build())
                 .clientSecret(passwordEncoder.encode(oAuthProperties.clientSecret()))
+                .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
                 .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
                 .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_POST)
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
