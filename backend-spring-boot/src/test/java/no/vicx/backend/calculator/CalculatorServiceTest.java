@@ -3,14 +3,15 @@ package no.vicx.backend.calculator;
 import no.vicx.database.calculator.CalcEntry;
 import no.vicx.database.calculator.CalculatorOperation;
 import no.vicx.database.calculator.CalculatorRepository;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -24,8 +25,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.openMocks;
 
+@ExtendWith(MockitoExtension.class)
 class CalculatorServiceTest {
 
     @Mock
@@ -33,17 +34,9 @@ class CalculatorServiceTest {
 
     CalculatorService sut;
 
-    AutoCloseable openMocks;
-
     @BeforeEach
     void setUp() {
-        openMocks = openMocks(this);
         sut = new CalculatorService(calculatorRepository, Duration.ZERO);
-    }
-
-    @AfterEach
-    void tearDown() throws Exception {
-        openMocks.close();
     }
 
     @ParameterizedTest

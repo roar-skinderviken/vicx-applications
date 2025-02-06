@@ -3,10 +3,11 @@ package no.vicx.authserver.config;
 import no.vicx.authserver.CustomUserDetails;
 import no.vicx.database.user.UserRepository;
 import no.vicx.database.user.VicxUser;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,8 +19,8 @@ import static no.vicx.authserver.UserTestUtils.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
-import static org.mockito.MockitoAnnotations.openMocks;
 
+@ExtendWith(MockitoExtension.class)
 class UserDetailsConfigTest {
 
     @Mock
@@ -32,28 +33,18 @@ class UserDetailsConfigTest {
 
     UserDetailsService userDetailsService;
 
-    AutoCloseable openMocks;
-
     @BeforeEach
     void setUp() {
-        openMocks = openMocks(this);
-
-        when(passwordEncoder.encode(anyString())).thenReturn("~encoded-password~");
-
         userInTest = createUserInTest(null);
-        when(userRepository.findByUsername(EXISTING_USERNAME)).thenReturn(Optional.of(userInTest));
 
         userDetailsService = new UserDetailsConfig().userDetailsService(
                 DEFAULT_USER_PROPERTIES, passwordEncoder, userRepository);
     }
 
-    @AfterEach
-    void tearDown() throws Exception {
-        openMocks.close();
-    }
-
     @Test
     void loadUserByUsername_givenUsernameForDefaultUser_expectDefaultUser() {
+        when(passwordEncoder.encode(anyString())).thenReturn("~encoded-password~");
+
         var defaultUser = (CustomUserDetails) userDetailsService.loadUserByUsername(DEFAULT_USERNAME_IN_TEST);
 
         assertEquals(DEFAULT_USER_PROPERTIES.username(), defaultUser.getUsername());
@@ -68,6 +59,7 @@ class UserDetailsConfigTest {
 
     @Test
     void loadUserByUsername_givenUsernameForDefaultUserInUpperCase_expectDefaultUser() {
+        when(passwordEncoder.encode(anyString())).thenReturn("~encoded-password~");
         var defaultUser = userDetailsService.loadUserByUsername(DEFAULT_USERNAME_IN_TEST.toUpperCase());
 
         assertEquals(DEFAULT_USERNAME_IN_TEST, defaultUser.getUsername());
@@ -75,6 +67,8 @@ class UserDetailsConfigTest {
 
     @Test
     void loadUserByUsername_givenUsernameForExistingUser_expectUser() {
+        when(userRepository.findByUsername(EXISTING_USERNAME)).thenReturn(Optional.of(userInTest));
+
         var userDetails = userDetailsService.loadUserByUsername(EXISTING_USERNAME);
 
         assertInstanceOf(CustomUserDetails.class, userDetails);

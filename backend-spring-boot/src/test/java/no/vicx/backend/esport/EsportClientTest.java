@@ -6,10 +6,11 @@ import no.vicx.backend.esport.vm.EsportMatchVm;
 import no.vicx.backend.esport.vm.EsportTeamVm;
 import no.vicx.backend.esport.vm.MatchType;
 import no.vicx.backend.esport.vm.OpponentVm;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -24,8 +25,8 @@ import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.openMocks;
 
+@ExtendWith(MockitoExtension.class)
 class EsportClientTest {
 
     @Mock
@@ -33,22 +34,13 @@ class EsportClientTest {
 
     EsportClient sut;
 
-    AutoCloseable openMocks;
-
     @BeforeEach
     void setUp() {
-        openMocks = openMocks(this);
-
         WebClient webClient = WebClient.builder()
                 .exchangeFunction(exchangeFunction)
                 .build();
 
         sut = new EsportClient(webClient, "~token~");
-    }
-
-    @AfterEach
-    void tearDown() throws Exception {
-        openMocks.close();
     }
 
     private static final ObjectMapper MAPPER = new ObjectMapper();

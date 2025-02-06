@@ -5,14 +5,15 @@ import no.vicx.backend.user.vm.ChangePasswordVm;
 import no.vicx.backend.user.vm.UserPatchVm;
 import no.vicx.database.user.UserRepository;
 import no.vicx.database.user.VicxUser;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.mock.web.MockMultipartFile;
@@ -27,8 +28,8 @@ import static no.vicx.database.user.VicxUser.VALID_BCRYPT_PASSWORD;
 import static no.vicx.database.user.VicxUser.VALID_PLAINTEXT_PASSWORD;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-import static org.mockito.MockitoAnnotations.openMocks;
 
+@ExtendWith(MockitoExtension.class)
 class UserServiceTest {
 
     @Mock
@@ -45,20 +46,11 @@ class UserServiceTest {
 
     UserService sut;
 
-    AutoCloseable openMocks;
-
     @BeforeEach
     void setUp() {
-        openMocks = openMocks(this);
-
         when(cacheManager.getCache("RECAPTCHA_TOKENS")).thenReturn(reCaptchaCache);
 
         sut = new UserService(userRepository, passwordEncoder, cacheManager);
-    }
-
-    @AfterEach
-    void tearDown() throws Exception {
-        openMocks.close();
     }
 
     @Test
@@ -130,7 +122,6 @@ class UserServiceTest {
         var patchVm = new UserPatchVm("~name~", "foo@bar.com");
         var userInTest = createValidVicxUser();
 
-        when(passwordEncoder.encode(VALID_PLAINTEXT_PASSWORD)).thenReturn(VALID_BCRYPT_PASSWORD);
         when(userRepository.findByUsername("user1")).thenReturn(Optional.of(userInTest));
         when(userRepository.save(any())).thenReturn(userInTest);
 

@@ -1,13 +1,13 @@
 package no.vicx.authserver.config;
 
 import no.vicx.authserver.CustomUserDetails;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.oauth2.core.oidc.OidcScopes;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.server.authorization.OAuth2TokenType;
@@ -20,8 +20,8 @@ import java.util.Set;
 
 import static no.vicx.authserver.config.JwtCustomizerConfig.*;
 import static org.mockito.Mockito.*;
-import static org.mockito.MockitoAnnotations.openMocks;
 
+@ExtendWith(MockitoExtension.class)
 class JwtCustomizerConfigTest {
 
     @Mock
@@ -38,32 +38,11 @@ class JwtCustomizerConfigTest {
 
     OAuth2TokenCustomizer<JwtEncodingContext> sut;
 
-    AutoCloseable openMocks;
-
     @BeforeEach
     void setUp() {
-        openMocks = openMocks(this);
         sut = new JwtCustomizerConfig().jwtCustomizer();
 
         when(context.getPrincipal()).thenReturn(authentication);
-        when(context.getAuthorizedScopes()).thenReturn(Set.of(OidcScopes.PROFILE, OidcScopes.EMAIL));
-        when(context.getClaims()).thenReturn(claimsBuilder);
-
-        when(authentication.getPrincipal()).thenReturn(customUserDetails);
-        doReturn(List.of(
-                new SimpleGrantedAuthority("USER"),
-                new SimpleGrantedAuthority("ADMIN")
-        )).when(authentication).getAuthorities();
-
-        when(customUserDetails.getUsername()).thenReturn("john-doe");
-        when(customUserDetails.getName()).thenReturn("John Doe");
-        when(customUserDetails.getEmail()).thenReturn("john.doe@example.com");
-        when(customUserDetails.hasImage()).thenReturn(true);
-    }
-
-    @AfterEach
-    void tearDown() throws Exception {
-        openMocks.close();
     }
 
     @Test
@@ -78,6 +57,12 @@ class JwtCustomizerConfigTest {
     @Test
     void customize_givenContextForAccessToken_expectOnlyRolesClaimToBeSet() {
         when(context.getTokenType()).thenReturn(OAuth2TokenType.ACCESS_TOKEN);
+        when(context.getClaims()).thenReturn(claimsBuilder);
+
+        doReturn(List.of(
+                new SimpleGrantedAuthority("USER"),
+                new SimpleGrantedAuthority("ADMIN")
+        )).when(authentication).getAuthorities();
 
         sut.customize(context);
 
@@ -89,11 +74,8 @@ class JwtCustomizerConfigTest {
 
     @Test
     void customize_givenPrincipalDifferentFromCustomUserDetails_expectOnlyRolesClaimToBeSet() {
-        when(authentication.getPrincipal()).thenReturn(new User(
-                "username",
-                "password",
-                List.of(new SimpleGrantedAuthority("USER"))
-        ));
+        when(context.getTokenType()).thenReturn(OAuth2TokenType.ACCESS_TOKEN);
+        when(context.getClaims()).thenReturn(claimsBuilder);
         doReturn(List.of(new SimpleGrantedAuthority("USER"))).when(authentication).getAuthorities();
 
         sut.customize(context);
@@ -106,7 +88,12 @@ class JwtCustomizerConfigTest {
 
     @Test
     void customize_givenNoScopes_expectOnlyRolesClaimToBeSet() {
-        when(context.getAuthorizedScopes()).thenReturn(Collections.emptySet());
+        when(context.getTokenType()).thenReturn(OAuth2TokenType.ACCESS_TOKEN);
+        when(context.getClaims()).thenReturn(claimsBuilder);
+        doReturn(List.of(
+                        new SimpleGrantedAuthority("USER"),
+                        new SimpleGrantedAuthority("ADMIN")
+                )).when(authentication).getAuthorities();
 
         sut.customize(context);
 
@@ -119,6 +106,14 @@ class JwtCustomizerConfigTest {
 
     @Test
     void customize_givenUserDetailsWithoutImage_expectImageClaimNotToBeSet() {
+        when(context.getAuthorizedScopes()).thenReturn(Set.of(OidcScopes.PROFILE, OidcScopes.EMAIL));
+        when(context.getClaims()).thenReturn(claimsBuilder);
+        when(authentication.getPrincipal()).thenReturn(customUserDetails);
+        doReturn(List.of(new SimpleGrantedAuthority("USER"))).when(authentication).getAuthorities();
+
+        when(customUserDetails.hasImage()).thenReturn(false);
+        when(customUserDetails.getName()).thenReturn("John Doe");
+        when(customUserDetails.getEmail()).thenReturn("john.doe@example.com");
         when(customUserDetails.hasImage()).thenReturn(false);
 
         sut.customize(context);
@@ -128,6 +123,19 @@ class JwtCustomizerConfigTest {
 
     @Test
     void customize_givenUserDetailsWithAllPropsSet_expectAllClaimsToBeSet() {
+         when(context.getAuthorizedScopes()).thenReturn(Set.of(OidcScopes.PROFILE, OidcScopes.EMAIL));
+         when(context.getClaims()).thenReturn(claimsBuilder);
+        when(authentication.getPrincipal()).thenReturn(customUserDetails);
+        doReturn(List.of(
+                new SimpleGrantedAuthority("USER"),
+                new SimpleGrantedAuthority("ADMIN")
+        )).when(authentication).getAuthorities();
+
+         when(customUserDetails.getUsername()).thenReturn("john-doe");
+         when(customUserDetails.getName()).thenReturn("John Doe");
+         when(customUserDetails.getEmail()).thenReturn("john.doe@example.com");
+         when(customUserDetails.hasImage()).thenReturn(true);
+
         sut.customize(context);
 
         verify(claimsBuilder).claim(ROLES_CLAIM, List.of("USER", "ADMIN"));

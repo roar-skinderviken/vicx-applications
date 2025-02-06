@@ -1,38 +1,27 @@
 package no.vicx.authserver;
 
 import no.vicx.database.user.VicxUser;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.stream.Stream;
 
 import static no.vicx.authserver.CustomUserDetails.*;
-import static no.vicx.authserver.UserTestUtils.*;
+import static no.vicx.authserver.UserTestUtils.createUserImageInTest;
+import static no.vicx.authserver.UserTestUtils.createUserInTest;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.openMocks;
 
+@ExtendWith(MockitoExtension.class)
 class CustomUserDetailsTest {
 
     @Mock
     VicxUser user;
-
-    AutoCloseable openMocks;
-
-    @BeforeEach
-    void setUp() {
-        openMocks = openMocks(this);
-    }
-
-    @AfterEach
-    void tearDown() throws Exception {
-        openMocks.close();
-    }
 
     @ParameterizedTest
     @MethodSource("invalidParametersSource")

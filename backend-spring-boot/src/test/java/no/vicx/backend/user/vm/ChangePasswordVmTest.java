@@ -1,17 +1,18 @@
 package no.vicx.backend.user.vm;
 
 import no.vicx.database.user.VicxUser;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.openMocks;
 
+@ExtendWith(MockitoExtension.class)
 class ChangePasswordVmTest {
 
     @Mock
@@ -19,11 +20,6 @@ class ChangePasswordVmTest {
 
     @Mock
     PasswordEncoder passwordEncoder;
-
-    @BeforeEach
-    void setUp() {
-        openMocks(this);
-    }
 
     @Test
     void applyPatch_givenValidRequest_expectUpdatedVicxUser() {
