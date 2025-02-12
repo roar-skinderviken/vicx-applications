@@ -15,7 +15,7 @@ import static no.vicx.backend.testconfiguration.TestSecurityConfig.createPrincip
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
-@Import({SecurityConfig.class})
+@Import(SecurityConfig.class)
 public abstract class BaseWebMvcTest {
 
     @Autowired
