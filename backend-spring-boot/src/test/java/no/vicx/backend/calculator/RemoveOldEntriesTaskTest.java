@@ -1,6 +1,5 @@
 package no.vicx.backend.calculator;
 
-import no.vicx.backend.testconfiguration.TestSecurityConfig;
 import org.awaitility.Durations;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -11,7 +10,7 @@ import static org.awaitility.Awaitility.await;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.verify;
 
-@SpringBootTest(classes = TestSecurityConfig.class)
+@SpringBootTest
 class RemoveOldEntriesTaskTest {
 
     @MockitoBean

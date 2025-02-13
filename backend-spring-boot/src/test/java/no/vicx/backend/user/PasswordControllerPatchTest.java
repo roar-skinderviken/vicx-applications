@@ -18,7 +18,7 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import java.util.Collections;
 import java.util.stream.Stream;
 
-import static no.vicx.backend.testconfiguration.TestSecurityConfig.*;
+import static no.vicx.backend.testconfiguration.SecurityTestUtils.*;
 import static no.vicx.database.user.VicxUser.VALID_PLAINTEXT_PASSWORD;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyString;

@@ -14,7 +14,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import static no.vicx.backend.testconfiguration.TestSecurityConfig.createJwtInTest;
+import static no.vicx.backend.testconfiguration.SecurityTestUtils.createJwtInTest;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;

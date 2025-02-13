@@ -16,7 +16,7 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import java.util.Collections;
 import java.util.Optional;
 
-import static no.vicx.backend.testconfiguration.TestSecurityConfig.*;
+import static no.vicx.backend.testconfiguration.SecurityTestUtils.*;
 import static no.vicx.backend.user.UserTestUtils.createMultipartFile;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;

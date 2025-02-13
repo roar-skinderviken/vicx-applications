@@ -2,11 +2,9 @@ package no.vicx.backend.calculator;
 
 import no.vicx.backend.calculator.vm.CalcVm;
 import no.vicx.backend.calculator.vm.PaginatedCalculations;
-import no.vicx.backend.testconfiguration.TestSecurityConfig;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.graphql.GraphQlTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.graphql.test.tester.GraphQlTester;
@@ -19,7 +17,6 @@ import static no.vicx.database.calculator.CalculatorOperation.PLUS;
 import static org.mockito.Mockito.when;
 
 @GraphQlTest(value = CalculatorGraphQLController.class)
-@Import(TestSecurityConfig.class)
 class CalculatorGraphQLControllerTest {
 
     @Autowired

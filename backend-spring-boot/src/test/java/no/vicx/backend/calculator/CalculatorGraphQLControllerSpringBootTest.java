@@ -18,8 +18,8 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
-import static no.vicx.backend.testconfiguration.TestSecurityConfig.AUTH_HEADER_IN_TEST;
-import static no.vicx.backend.testconfiguration.TestSecurityConfig.createPrincipalInTest;
+import static no.vicx.backend.testconfiguration.SecurityTestUtils.AUTH_HEADER_IN_TEST;
+import static no.vicx.backend.testconfiguration.SecurityTestUtils.createPrincipalInTest;
 import static no.vicx.database.calculator.CalculatorOperation.PLUS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;

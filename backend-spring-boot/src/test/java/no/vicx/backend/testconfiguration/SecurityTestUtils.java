@@ -1,6 +1,5 @@
 package no.vicx.backend.testconfiguration;
 
-import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.core.OAuth2AuthenticatedPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -10,8 +9,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-@TestConfiguration
-public class TestSecurityConfig {
+public class SecurityTestUtils {
 
     public static final String AUTH_HEADER_IN_TEST = "Bearer some-token";
 

@@ -10,7 +10,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.util.Collections;
 
-import static no.vicx.backend.testconfiguration.TestSecurityConfig.*;
+import static no.vicx.backend.testconfiguration.SecurityTestUtils.*;
 import static no.vicx.backend.user.UserTestUtils.createValidVicxUser;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
