@@ -1,6 +1,7 @@
 package no.vicx.backend.esport;
 
 import no.vicx.backend.esport.vm.EsportVm;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,7 +17,7 @@ public class EsportController {
         this.esportService = esportService;
     }
 
-    @GetMapping
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public Mono<EsportVm> getMatches() {
         return esportService.getMatches();
     }

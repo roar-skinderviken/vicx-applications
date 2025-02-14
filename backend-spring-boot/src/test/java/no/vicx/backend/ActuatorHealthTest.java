@@ -9,7 +9,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalManagementPort;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -32,13 +34,15 @@ class ActuatorHealthTest {
     @ParameterizedTest
     @MethodSource("probeEndpoints")
     void getHealthProbe_givenExpectedComponents_expectComponentsAsInConfig(
-            String probeEndpoint, List<String> expectedComponents) {
+            String probeName, List<String> expectedComponents) {
 
-        var currentProbeUrl = "http://localhost:%d/actuator/health%s"
-                .formatted(managementPort, probeEndpoint);
+        URI uri = UriComponentsBuilder
+                .fromUriString("http://localhost:{port}/actuator/health/{probeName}")
+                .buildAndExpand(managementPort, probeName)
+                .toUri();
 
         webClient.get()
-                .uri(currentProbeUrl)
+                .uri(uri)
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody(new ParameterizedTypeReference<Map<String, Object>>() {
@@ -54,8 +58,8 @@ class ActuatorHealthTest {
 
     private static Stream<Arguments> probeEndpoints() {
         return Stream.of(
-                Arguments.of("/readiness", List.of("db", "readinessState")),
-                Arguments.of("/liveness", Collections.singletonList("livenessState"))
+                Arguments.of("readiness", List.of("db", "readinessState")),
+                Arguments.of("liveness", Collections.singletonList("livenessState"))
         );
     }
 }

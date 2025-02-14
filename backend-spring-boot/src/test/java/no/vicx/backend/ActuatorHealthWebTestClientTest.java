@@ -8,6 +8,9 @@ import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWeb
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalManagementPort;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import org.springframework.web.util.UriComponentsBuilder;
+
+import java.net.URI;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWebTestClient
@@ -20,11 +23,16 @@ class ActuatorHealthWebTestClientTest {
     WebTestClient webTestClient;
 
     @ParameterizedTest
-    @ValueSource(strings = {"/liveness", "/readiness"})
+    @ValueSource(strings = {"liveness", "readiness"})
     @DisplayName("Health Endpoint Probes Should Return HTTP 200")
-    void testHealthProbes(String probePath) {
+    void testHealthProbes(String probeName) {
+        URI uri = UriComponentsBuilder
+                .fromUriString("http://localhost:{port}/actuator/health/{probeName}")
+                .buildAndExpand(managementPort, probeName)
+                .toUri();
+
         webTestClient.get()
-                .uri("http://localhost:%d/actuator/health%s".formatted(managementPort, probePath))
+                .uri(uri)
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody().json("{\"status\":\"UP\"}");

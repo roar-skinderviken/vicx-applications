@@ -12,7 +12,7 @@ import static no.vicx.backend.jwt.JwtUtils.BEARER_PREFIX;
 public record GitHubUserFetcher(RestClient restClient) {
 
     static final String USER_URL = "https://api.github.com/user";
-    public static final String HEADER_SCOPES = "X-OAuth-Scopes";
+    public static final String SCOPES_HEADER = "X-OAuth-Scopes";
 
     public GitHubUserResponseVm fetchUser(String token) {
         var responseEntity = restClient
@@ -29,7 +29,7 @@ public record GitHubUserFetcher(RestClient restClient) {
 
         return new GitHubUserResponseVm(
                 user,
-                responseEntity.getHeaders().getFirst(HEADER_SCOPES),
+                responseEntity.getHeaders().getFirst(SCOPES_HEADER),
                 token);
     }
 }

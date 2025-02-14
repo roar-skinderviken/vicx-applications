@@ -12,7 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.HttpClientErrorException;
 
-import static no.vicx.backend.jwt.github.GitHubUserFetcher.HEADER_SCOPES;
+import static no.vicx.backend.jwt.github.GitHubUserFetcher.SCOPES_HEADER;
 import static no.vicx.backend.jwt.github.GitHubUserFetcher.USER_URL;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -41,7 +41,7 @@ class GitHubUserFetcherTest {
                             "email": "john.doe@example.com",
                             "avatar_url": "https://example.com/avatar.jpg"
                         }""", MediaType.APPLICATION_JSON)
-                        .header(HEADER_SCOPES, "repo, user"));
+                        .header(SCOPES_HEADER, "repo, user"));
 
         var userResponseVm = sut.fetchUser("some-token");
         var user = userResponseVm.user();

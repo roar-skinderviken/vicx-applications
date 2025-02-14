@@ -48,7 +48,6 @@ class CalculatorSecurityServiceTest {
 
     @Test
     void isAllowedToDelete_givenIdsButNoIdsInDatabase_expectFalse() {
-
         var result = sut.isAllowedToDelete(List.of(1L), TOKEN_IN_TEST);
 
         assertFalse(result);
@@ -87,6 +86,6 @@ class CalculatorSecurityServiceTest {
         verify(calculatorRepository).findAllIdsByUsername(anyString());
     }
 
-    static final Authentication TOKEN_IN_TEST =
+    private static final Authentication TOKEN_IN_TEST =
             new JwtAuthenticationToken(createJwtInTest(Collections.singletonList("USER")));
 }

@@ -9,7 +9,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-public class SecurityTestUtils {
+public final class SecurityTestUtils {
+
+    private SecurityTestUtils() {
+    }
 
     public static final String AUTH_HEADER_IN_TEST = "Bearer some-token";
 

@@ -23,7 +23,7 @@ class GitHubUserVmTest {
         assertFalse(userVm.isEmpty());
     }
 
-    static Stream<Arguments> provideNonEmptyUsers() {
+    private static Stream<Arguments> provideNonEmptyUsers() {
         return Stream.of(
                 Arguments.of(
                         new GitHubUserVm(

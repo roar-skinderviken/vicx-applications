@@ -4,19 +4,16 @@ import org.junit.jupiter.api.Test;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.contains;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class GitHubUserResponseVmTest {
 
-    static GitHubUserVm userInTest = new GitHubUserVm(
-            "~id~", "~login~", "~name~", "~email~", "~avatar~");
-
     @Test
-    void toJwt_givenUserWithAllFieldsSet_expectJwtWithAllFieldsSet() {
+    void toPrincipal_givenUserWithAllFieldsSet_expectPrincipalWithAllFieldsSet() {
         var sut = new GitHubUserResponseVm(
-                userInTest, "~granted-scopes~", "~token~");
+                USER_IN_TEST, "~granted-scopes~", "~token~");
 
         var principal = sut.toPrincipal();
 
@@ -24,6 +21,9 @@ class GitHubUserResponseVmTest {
         assertEquals("~login~", principal.getName());
         assertThat(
                 principal.getAuthorities(),
-                containsInAnyOrder(new SimpleGrantedAuthority("ROLE_GITHUB_USER")));
+                contains(new SimpleGrantedAuthority("ROLE_GITHUB_USER")));
     }
+
+    private static final GitHubUserVm USER_IN_TEST = new GitHubUserVm(
+            "~id~", "~login~", "~name~", "~email~", "~avatar~");
 }

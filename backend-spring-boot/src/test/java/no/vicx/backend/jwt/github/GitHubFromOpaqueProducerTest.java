@@ -28,7 +28,7 @@ class GitHubFromOpaqueProducerTest {
     GitHubFromOpaqueProducer sut;
 
     @Test
-    void createJwt_givenValidToken_expectJwt() {
+    void createPrincipal_givenValidToken_expectPrincipal() {
         when(userFetcher.fetchUser(anyString())).thenReturn(
                 new GitHubUserResponseVm(
                         new GitHubUserVm(
@@ -51,7 +51,7 @@ class GitHubFromOpaqueProducerTest {
     }
 
     @Test
-    void createJwt_givenWebClientResponseException_expectJwtException() {
+    void createPrincipal_givenWebClientResponseException_expectBadOpaqueTokenException() {
         when(userFetcher.fetchUser(anyString())).thenThrow(HttpClientErrorException.create(
                 HttpStatus.UNAUTHORIZED,
                 HttpStatus.UNAUTHORIZED.getReasonPhrase(),
@@ -66,7 +66,7 @@ class GitHubFromOpaqueProducerTest {
     }
 
     @Test
-    void createJwt_givenRuntimeException_expectJwtException() {
+    void createPrincipal_givenRuntimeException_expectBadOpaqueTokenException() {
         when(userFetcher.fetchUser(anyString())).thenThrow(new RuntimeException());
 
         var exception = assertThrows(
