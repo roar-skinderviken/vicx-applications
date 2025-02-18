@@ -25,7 +25,7 @@ public class WebAndRestClientConfig {
             OAuth2AuthorizedClientRepository authorizedClientRepository) {
 
         var interceptor = new OAuth2ClientHttpRequestInterceptor(authorizedClientManager);
-        interceptor.setClientRegistrationIdResolver(request -> "messaging-client-credentials");
+        interceptor.setClientRegistrationIdResolver(request -> "messaging-client-oidc");
 
         OAuth2AuthorizationFailureHandler authorizationFailureHandler =
                 OAuth2ClientHttpRequestInterceptor.authorizationFailureHandler(authorizedClientRepository);
