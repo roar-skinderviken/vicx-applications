@@ -49,7 +49,7 @@ public class CalculatorGraphQLController {
     }
 
     @MutationMapping
-    @PreAuthorize("(hasRole('USER') or hasRole('GITHUB_USER')) and @calculatorSecurityService.isAllowedToDelete(#ids, authentication)")
+    @PreAuthorize("hasAnyRole('USER', 'GITHUB_USER') and @calculatorSecurityService.isAllowedToDelete(#ids, authentication)")
     public Boolean deleteCalculations(@Argument List<Long> ids) {
         calculatorService.deleteByIds(ids);
         return true;
