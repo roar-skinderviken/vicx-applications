@@ -1,16 +1,18 @@
 package no.vicx.database.user;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.Objects;
 
 /**
  * Represents an image associated with a Vicx user.
  */
-@Data
 @NoArgsConstructor
+@Getter
+@Setter
 @Entity
 public class UserImage {
 

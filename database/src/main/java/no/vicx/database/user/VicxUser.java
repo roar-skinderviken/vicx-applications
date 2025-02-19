@@ -1,9 +1,7 @@
 package no.vicx.database.user;
 
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.regex.Pattern;
 
@@ -12,8 +10,9 @@ import static java.util.Objects.requireNonNull;
 /**
  * Represents a user in the Vicx database.
  */
-@Data
 @NoArgsConstructor
+@Getter
+@Setter
 @Entity
 public class VicxUser {
 

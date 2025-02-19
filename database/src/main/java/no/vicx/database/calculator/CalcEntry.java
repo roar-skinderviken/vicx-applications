@@ -1,8 +1,9 @@
 package no.vicx.database.calculator;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
@@ -11,8 +12,9 @@ import java.util.Objects;
 /**
  * Represents a calculation entry that records a mathematical operation and its result.
  */
-@Data
 @NoArgsConstructor
+@Getter
+@Setter
 @Entity
 public class CalcEntry {
 
