@@ -24,11 +24,8 @@ import java.util.List;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
-@Configuration
+@Configuration(proxyBeanMethods = false)
 public class SecurityConfig {
-
-    @Value("${oauth.post-logout-redirect-uri}")
-    private String postLogoutRedirectUri;
 
     // required for Swagger on localhost
     @Bean
@@ -79,7 +76,10 @@ public class SecurityConfig {
 
     @Bean
     @Order(2)
-    public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain defaultSecurityFilterChain(
+            HttpSecurity http,
+            @Value("${oauth.post-logout-redirect-uri}")
+            String postLogoutRedirectUri) throws Exception {
         http
                 .cors(withDefaults()) // required for Swagger on localhost
                 .authorizeHttpRequests(authorize -> authorize

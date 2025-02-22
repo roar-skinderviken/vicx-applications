@@ -27,7 +27,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import static no.vicx.backend.jwt.JwtUtils.useJwt;
 
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @EnableMethodSecurity
 public class SecurityConfig {
 
