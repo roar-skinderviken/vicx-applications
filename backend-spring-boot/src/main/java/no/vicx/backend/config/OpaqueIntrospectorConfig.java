@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.oauth2.server.resource.introspection.OpaqueTokenIntrospector;
 
-@Configuration
+@Configuration(proxyBeanMethods = false)
 public class OpaqueIntrospectorConfig {
 
     @Bean

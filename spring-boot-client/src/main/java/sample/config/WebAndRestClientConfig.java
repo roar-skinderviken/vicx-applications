@@ -14,7 +14,7 @@ import org.springframework.security.oauth2.client.web.reactive.function.client.S
 import org.springframework.web.client.RestClient;
 import org.springframework.web.reactive.function.client.WebClient;
 
-@Configuration
+@Configuration(proxyBeanMethods = false)
 public class WebAndRestClientConfig {
 
     @Bean

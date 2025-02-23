@@ -10,7 +10,7 @@ import org.springframework.security.web.authentication.logout.LogoutSuccessHandl
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
-@Configuration
+@Configuration(proxyBeanMethods = false)
 public class SecurityConfig {
 
     private static final String[] AUTH_WHITELIST = {

@@ -16,7 +16,7 @@ import org.springframework.security.oauth2.server.authorization.settings.TokenSe
 
 import java.util.UUID;
 
-@Configuration
+@Configuration(proxyBeanMethods = false)
 public class AuthorizationServerConfig {
 
     @Bean

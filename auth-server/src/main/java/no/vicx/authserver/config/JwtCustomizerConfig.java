@@ -9,7 +9,7 @@ import org.springframework.security.oauth2.server.authorization.OAuth2TokenType;
 import org.springframework.security.oauth2.server.authorization.token.JwtEncodingContext;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
 
-@Configuration
+@Configuration(proxyBeanMethods = false)
 public class JwtCustomizerConfig {
 
     static final String ROLES_CLAIM = "roles";
