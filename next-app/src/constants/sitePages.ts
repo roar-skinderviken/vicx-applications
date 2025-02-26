@@ -15,7 +15,7 @@ import kubernetesImage from "@/assets/images/kube.png"
 import archImage from "@/assets/images/arch.png"
 import tuxImage from "@/assets/images/Tux.png"
 import counterStrikeImage from "@/assets/images/counter.png"
-import esportImage from "@/assets/images/esl.png"
+import esportImage from "@/assets/images/esport.png"
 import kmeansImage from "@/assets/images/kmeans.png"
 
 export const SITE_PAGES = [
