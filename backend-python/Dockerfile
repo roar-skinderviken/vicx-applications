@@ -14,7 +14,7 @@ COPY src /app/src
 RUN touch README.md && \
     pip install poetry && \
     poetry config virtualenvs.create false && \
-    poetry install --no-root --no-dev && \
+    poetry install --no-root --without dev && \
     poetry build --format wheel
 
 FROM python:${PYTHON_VERSION} AS runtime
