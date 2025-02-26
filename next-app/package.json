@@ -30,6 +30,12 @@
     "urql": "^4.2.1",
     "yup": "^1.6.1"
   },
+  "optionalDependencies": {
+    "@next/swc-darwin-arm64": "15.1.7",
+    "@next/swc-darwin-x64": "15.1.7",
+    "@next/swc-linux-arm64-gnu": "15.1.7",
+    "@next/swc-linux-arm64-musl": "15.1.7"
+  },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.0",
     "@testing-library/jest-dom": "^6.6.2",
