@@ -1,9 +1,7 @@
 package no.vicx.backend.esport;
 
 import no.vicx.backend.esport.vm.EsportMatchVm;
-import no.vicx.backend.esport.vm.EsportTeamVm;
 import no.vicx.backend.esport.vm.EsportVm;
-import no.vicx.backend.esport.vm.OpponentVm;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
@@ -17,7 +15,6 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
 
 import java.util.Collections;
-import java.util.List;
 
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
@@ -62,10 +59,9 @@ class EsportControllerTest {
 
     private static EsportMatchVm createMatch(String status) {
         return new EsportMatchVm(
+                42L,
+                "Team 1 vs Team 2",
                 "01/01/2024",
-                status,
-                List.of(
-                        new OpponentVm(new EsportTeamVm("Team-1")),
-                        new OpponentVm(new EsportTeamVm("Team-2"))));
+                status);
     }
 }

@@ -3,9 +3,7 @@ package no.vicx.backend.esport;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.vicx.backend.esport.vm.EsportMatchVm;
-import no.vicx.backend.esport.vm.EsportTeamVm;
 import no.vicx.backend.esport.vm.MatchType;
-import no.vicx.backend.esport.vm.OpponentVm;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,7 +19,6 @@ import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import java.util.Collections;
-import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -48,10 +45,10 @@ class EsportClientTest {
     @Test
     void getMatches_givenMatches_expectResult() throws JsonProcessingException {
         var expectedMatch = new EsportMatchVm(
-                "01/01/2024", "running",
-                List.of(
-                        new OpponentVm(new EsportTeamVm("Team-1")),
-                        new OpponentVm(new EsportTeamVm("Team-2"))));
+                42L,
+                "Team 1 vs Team 2",
+                "01/01/2024",
+                "running");
 
         when(exchangeFunction.exchange(any()))
                 .thenReturn(Mono.just(ClientResponse.create(HttpStatus.OK)
@@ -70,28 +67,11 @@ class EsportClientTest {
     void getMatches_givenNoMatches_expectEmptyList() {
         when(exchangeFunction.exchange(any()))
                 .thenReturn(Mono.just(ClientResponse.create(HttpStatus.OK)
+                                .header(HttpHeaders.ACCEPT_ENCODING)
                         .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                         .body("[]")
                         .build()));
 
-
-        var runningMatches = sut.getMatches(MatchType.running);
-
-        StepVerifier.create(runningMatches)
-                .verifyComplete();
-    }
-
-    @Test
-    void getMatches_givenOnlySingleOpponent_expectEmptyResult() throws JsonProcessingException {
-        var matchInTest = new EsportMatchVm(
-                "01/01/2024", "running",
-                List.of(new OpponentVm(new EsportTeamVm("Team-2"))));
-
-        when(exchangeFunction.exchange(any()))
-                .thenReturn(Mono.just(ClientResponse.create(HttpStatus.OK)
-                        .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                        .body(MAPPER.writeValueAsString(Collections.singletonList(matchInTest)))
-                        .build()));
 
         var runningMatches = sut.getMatches(MatchType.running);
 
