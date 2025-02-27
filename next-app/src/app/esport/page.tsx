@@ -1,7 +1,8 @@
 import Hero from "@/components/Hero"
 
 export interface MatchEntry {
-    opponents: { opponent: { name: string } }[],
+    id: number,
+    name: string,
     begin_at: string,
     status: string
 }
@@ -23,24 +24,18 @@ const getMatches = async () => {
 }
 
 const displayMatches = (matches: MatchEntry[]) =>
-    matches.map((match, index) => {
-        const opponent1 = match.opponents[0].opponent.name
-        const opponent2 = match.opponents[1].opponent.name
-
-        return (
-            <div key={index} className="border p-4 mb-4 rounded-lg shadow-lg bg-white">
-                <h2 className="text-xl font-bold mb-2">{opponent1} vs {opponent2}</h2>
-                <p className="text-lg">
-                    <span className="text-blue-600 px-1 rounded">Date:</span>
-                    {new Date(match.begin_at).toLocaleDateString()}
-                </p>
-                <p className="text-lg">
-                    <span className="text-blue-600 px-1 rounded">Status:</span>
-                    {match.status}
-                </p>
-            </div>
-        )
-    })
+    matches.map(match =>
+        <div key={match.id} className="border p-4 mb-4 rounded-lg shadow-lg bg-white">
+            <h2 className="text-xl font-bold mb-2">{match.name}</h2>
+            <p className="text-lg">
+                <span className="text-blue-600 px-1 rounded">Date:</span>
+                {new Date(match.begin_at).toLocaleDateString()}
+            </p>
+            <p className="text-lg">
+                <span className="text-blue-600 px-1 rounded">Status:</span>
+                {match.status}
+            </p>
+        </div>)
 
 export const dynamic = "force-dynamic"
 

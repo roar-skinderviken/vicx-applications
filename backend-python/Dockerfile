@@ -1,5 +1,5 @@
 # cd backend-python
-# docker build -t backend-python .
+# docker build --no-cache --progress=plain -t backend-python .
 # docker run --name backend-python -p 80:8000 backend-python:latest
 # docker rm backend-python # remove stopped container
 # docker rmi backend-python # remove Docker-image

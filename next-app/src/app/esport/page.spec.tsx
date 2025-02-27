@@ -6,15 +6,17 @@ jest.mock('next/cache', () => ({
 }))
 
 const runningMatches = [{
+    id: 41,
+    name: "Team-1 vs Team-2",
     begin_at: "01/01/2024",
-    status: "running",
-    opponents: [{opponent: {name: "Team-1"}}, {opponent: {name: "Team-2"}}]
+    status: "running"
 }]
 
 const upcomingMatches = [{
+    id: 42,
+    name: "Team-3 vs Team-4",
     begin_at: "02/02/2024",
-    status: "not_started",
-    opponents: [{opponent: {name: "Team-3"}}, {opponent: {name: "Team-4"}}]
+    status: "not_started"
 }]
 
 const ESPORT_URL = "/backend-spring-boot/api/esport"
