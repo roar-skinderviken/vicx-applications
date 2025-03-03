@@ -23,7 +23,7 @@ jobs:
     permissions:
       contents: read
       packages: write
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
