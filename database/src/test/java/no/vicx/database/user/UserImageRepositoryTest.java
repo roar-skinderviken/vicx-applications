@@ -1,11 +1,8 @@
 package no.vicx.database.user;
 
-import no.vicx.database.PostgresTestContainerConfig;
+import no.vicx.database.RepositoryTestBase;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.context.annotation.Import;
 
 import java.io.IOException;
 
@@ -13,12 +10,7 @@ import static no.vicx.database.user.RepositoryTestUtils.createPngUserImage;
 import static no.vicx.database.user.RepositoryTestUtils.createValidUser;
 import static org.junit.jupiter.api.Assertions.*;
 
-@DataJpaTest
-@Import(PostgresTestContainerConfig.class)
-class UserImageRepositoryTest {
-
-    @Autowired
-    TestEntityManager entityManager;
+class UserImageRepositoryTest extends RepositoryTestBase {
 
     @Autowired
     UserImageRepository sut;

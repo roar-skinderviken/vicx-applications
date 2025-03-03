@@ -1,12 +1,9 @@
 package no.vicx.database.user;
 
-import no.vicx.database.PostgresTestContainerConfig;
+import no.vicx.database.RepositoryTestBase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.context.annotation.Import;
 import org.springframework.dao.DataIntegrityViolationException;
 
 import java.io.IOException;
@@ -15,12 +12,7 @@ import static no.vicx.database.user.RepositoryTestUtils.*;
 import static no.vicx.database.user.VicxUser.VALID_BCRYPT_PASSWORD;
 import static org.junit.jupiter.api.Assertions.*;
 
-@DataJpaTest
-@Import(PostgresTestContainerConfig.class)
-class UserRepositoryTest {
-
-    @Autowired
-    TestEntityManager entityManager;
+class UserRepositoryTest extends RepositoryTestBase {
 
     @Autowired
     UserRepository sut;

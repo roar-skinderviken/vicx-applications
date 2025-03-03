@@ -1,12 +1,9 @@
 package no.vicx.database.calculator;
 
-import no.vicx.database.PostgresTestContainerConfig;
+import no.vicx.database.RepositoryTestBase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
@@ -14,18 +11,10 @@ import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@DataJpaTest
-@Import(PostgresTestContainerConfig.class)
-class CalculatorRepositoryTest {
-
-    @Autowired
-    TestEntityManager entityManager;
+class CalculatorRepositoryTest extends RepositoryTestBase {
 
     @Autowired
     CalculatorRepository sut;
-
-    @Autowired
-    TestEntityManager testEntityManager;
 
     @BeforeEach
     void setUp() {
