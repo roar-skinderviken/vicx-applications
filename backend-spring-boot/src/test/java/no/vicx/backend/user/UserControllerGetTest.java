@@ -12,10 +12,12 @@ import java.util.Collections;
 
 import static no.vicx.backend.testconfiguration.SecurityTestUtils.*;
 import static no.vicx.backend.user.UserTestUtils.createValidVicxUser;
+import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(UserController.class)
@@ -37,8 +39,19 @@ class UserControllerGetTest extends BaseWebMvcTest {
                 createPrincipalInTest(Collections.emptyList()));
 
         mockMvc
-                .perform(get("/api/user").header(HttpHeaders.AUTHORIZATION, AUTH_HEADER_IN_TEST))
+                .perform(get("/api/user")
+                        .header(HttpHeaders.AUTHORIZATION, AUTH_HEADER_IN_TEST))
                 .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void getUser_givenMissingUser_expectNotFound() throws Exception {
+        when(userService.getUserByUserName("user1")).thenThrow(new NotFoundException("User user1 not found"));
+
+        mockMvc
+                .perform(get("/api/user")
+                        .header(HttpHeaders.AUTHORIZATION, AUTH_HEADER_IN_TEST))
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -47,18 +60,14 @@ class UserControllerGetTest extends BaseWebMvcTest {
         when(userService.getUserByUserName("user1")).thenReturn(validUser);
 
         mockMvc
-                .perform(get("/api/user").header(HttpHeaders.AUTHORIZATION, AUTH_HEADER_IN_TEST))
-                .andExpect(status().isOk());
+                .perform(get("/api/user")
+                        .header(HttpHeaders.AUTHORIZATION, AUTH_HEADER_IN_TEST))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.username", is("user1")))
+                .andExpect(jsonPath("$.name", is("The User")))
+                .andExpect(jsonPath("$.email", is("user@example.com")))
+                .andExpect(jsonPath("$.hasImage", is(false)));
 
         verify(userService).getUserByUserName(anyString());
-    }
-
-    @Test
-    void getUser_givenMissingUser_expectNotFound() throws Exception {
-        when(userService.getUserByUserName("user1")).thenThrow(new NotFoundException("User user1 not found"));
-
-        mockMvc
-                .perform(get("/api/user").header(HttpHeaders.AUTHORIZATION, AUTH_HEADER_IN_TEST))
-                .andExpect(status().isNotFound());
     }
 }
