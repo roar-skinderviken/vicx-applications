@@ -1,5 +1,5 @@
 [versions]
-mockito = "5.17.0"
+mockito = "5.18.0"
 tika-core = "3.1.0"
 springdoc-openapi = "2.8.6"
 
