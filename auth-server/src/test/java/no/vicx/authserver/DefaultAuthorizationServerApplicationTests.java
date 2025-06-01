@@ -82,7 +82,7 @@ public class DefaultAuthorizationServerApplicationTests {
 
         var alert = loginErrorPage.querySelector("div[role=\"alert\"]");
         assertNotNull(alert);
-        assertEquals("Bad credentials", alert.getTextContent());
+        assertEquals("Invalid credentials", alert.getTextContent());
     }
 
     @Test
