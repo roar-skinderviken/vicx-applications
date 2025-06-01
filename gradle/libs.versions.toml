@@ -1,6 +1,6 @@
 [versions]
 mockito = "5.18.0"
-tika-core = "3.1.0"
+tika-core = "3.2.0"
 springdoc-openapi = "2.8.8"
 
 # Logging
