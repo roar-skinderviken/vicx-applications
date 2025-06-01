@@ -2,6 +2,9 @@
 mockito = "5.18.0"
 tika-core = "3.2.0"
 springdoc-openapi = "2.8.8"
+spring-boot = "3.5.0"
+spring-dependency-management = "1.1.7"
+git-properties = "2.4.2"
 
 # Logging
 logback-access-spring-boot-starter = "4.6.0"
@@ -10,8 +13,14 @@ logstash-logback-encoder = "8.1"
 [libraries]
 mockito = { module = "org.mockito:mockito-core", version.ref = "mockito" }
 tika-core = { module = "org.apache.tika:tika-core", version.ref = "tika-core" }
-springdoc-openapi = {module="org.springdoc:springdoc-openapi-starter-webmvc-ui", version.ref="springdoc-openapi"}
+springdoc-openapi = { module = "org.springdoc:springdoc-openapi-starter-webmvc-ui", version.ref = "springdoc-openapi" }
 
 # logging
 logback-access-spring-boot-starter = { module = "dev.akkinoc.spring.boot:logback-access-spring-boot-starter", version.ref = "logback-access-spring-boot-starter" }
 logstash-logback-encoder = { module = "net.logstash.logback:logstash-logback-encoder", version.ref = "logstash-logback-encoder" }
+
+[plugins]
+springframework-boot = { id = "org.springframework.boot", version.ref = "spring-boot" }
+spring-dependency-management = { id = "io.spring.dependency-management", version.ref = "spring-dependency-management" }
+git-properties = { id = "com.gorylenko.gradle-git-properties", version.ref = "git-properties" }
+
