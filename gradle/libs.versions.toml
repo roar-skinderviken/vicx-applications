@@ -7,7 +7,7 @@ spring-dependency-management = "1.1.7"
 git-properties = "2.4.2"
 
 # Logging
-logback-access-spring-boot-starter = "4.6.0"
+logback-access-spring-boot-starter = "4.7.0"
 logstash-logback-encoder = "8.1"
 
 [libraries]
