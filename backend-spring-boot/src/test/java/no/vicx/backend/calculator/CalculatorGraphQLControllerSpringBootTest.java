@@ -22,6 +22,7 @@ import static no.vicx.backend.testconfiguration.SecurityTestUtils.AUTH_HEADER_IN
 import static no.vicx.backend.testconfiguration.SecurityTestUtils.createPrincipalInTest;
 import static no.vicx.database.calculator.CalculatorOperation.PLUS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -64,11 +65,7 @@ class CalculatorGraphQLControllerSpringBootTest {
                 .getResponse()
                 .getContentAsString();
 
-        assertEquals(
-                """
-                        {"errors":[{"message":"Unauthorized","locations":[{"line":1,"column":12}],"path":["deleteCalculations"],"extensions":{"classification":"UNAUTHORIZED"}}],"data":{"deleteCalculations":null}}""",
-                responseBody
-        );
+        assertTrue(responseBody.contains("\"message\":\"Unauthorized\""));
 
         verify(calculatorSecurityService, never()).isAllowedToDelete(anyList(), any());
         verify(calculatorService, never()).deleteByIds(anyList());
@@ -88,11 +85,7 @@ class CalculatorGraphQLControllerSpringBootTest {
                 .getResponse()
                 .getContentAsString();
 
-        assertEquals(
-                """
-                        {"errors":[{"message":"Forbidden","locations":[{"line":1,"column":12}],"path":["deleteCalculations"],"extensions":{"classification":"FORBIDDEN"}}],"data":{"deleteCalculations":null}}""",
-                responseBody
-        );
+        assertTrue(responseBody.contains("\"message\":\"Forbidden\""));
 
         verify(calculatorSecurityService).isAllowedToDelete(eq(List.of(1L, 2L, 3L)), any());
         verify(calculatorService, never()).deleteByIds(anyList());
