@@ -6,8 +6,26 @@ spring-boot = "3.5.0"
 spring-dependency-management = "1.1.7"
 git-properties = "2.4.2"
 
+# Ktor
+exposed-version = "0.61.0"
+h2-version = "2.3.232"
+kotlin-version = "2.1.10"
+ktor-version = "3.1.3"
+logback-version = "1.4.14"
+postgres-version = "42.7.5"
+flyway-version = "11.5.0"
+hikari-version = "6.3.0"
+embedded-postgres-version = "2.1.0"
+graphql-kotlin-version = "8.5.0"
+
+kotlin-test-version = "2.1.10"
+mockito-junit-jupiter-version = "5.18.0"
+mockito-kotlin-version = "3.2.0"
+mockk-version = "1.14.2"
+
+
 # Logging
-logback-access-spring-boot-starter = "4.6.0"
+logback-access-spring-boot-starter = "4.7.0"
 logstash-logback-encoder = "8.1"
 
 [libraries]
@@ -19,8 +37,51 @@ springdoc-openapi = { module = "org.springdoc:springdoc-openapi-starter-webmvc-u
 logback-access-spring-boot-starter = { module = "dev.akkinoc.spring.boot:logback-access-spring-boot-starter", version.ref = "logback-access-spring-boot-starter" }
 logstash-logback-encoder = { module = "net.logstash.logback:logstash-logback-encoder", version.ref = "logstash-logback-encoder" }
 
+# Ktor
+ktor-server-auth = { module = "io.ktor:ktor-server-auth", version.ref = "ktor-version" }
+ktor-server-core = { module = "io.ktor:ktor-server-core", version.ref = "ktor-version" }
+ktor-server-auth-jwt = { module = "io.ktor:ktor-server-auth-jwt", version.ref = "ktor-version" }
+ktor-server-netty = { module = "io.ktor:ktor-server-netty", version.ref = "ktor-version" }
+ktor-server-config-yaml = { module = "io.ktor:ktor-server-config-yaml", version.ref = "ktor-version" }
+ktor-server-test-host = { module = "io.ktor:ktor-server-test-host", version.ref = "ktor-version" }
+ktor-server-content-negotiation = { module = "io.ktor:ktor-server-content-negotiation", version.ref = "ktor-version" }
+ktor-server-cors = { module = "io.ktor:ktor-server-cors", version.ref = "ktor-version" }
+
+ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor-version" }
+ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor-version" }
+ktor-client-apache = { module = "io.ktor:ktor-client-apache", version.ref = "ktor-version" }
+ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor-version" }
+postgresql = { module = "org.postgresql:postgresql", version.ref = "postgres-version" }
+h2 = { module = "com.h2database:h2", version.ref = "h2-version" }
+
+hikaricp = { module = "com.zaxxer:HikariCP", version.ref = "hikari-version" }
+flyway-core = { module = "org.flywaydb:flyway-core", version.ref = "flyway-version" }
+flyway-postgres = { module = "org.flywaydb:flyway-database-postgresql", version.ref = "flyway-version" }
+embedded-postgres = { module = "io.zonky.test:embedded-postgres", version.ref = "embedded-postgres-version" }
+
+exposed-core = { module = "org.jetbrains.exposed:exposed-core", version.ref = "exposed-version" }
+exposed-jdbc = { module = "org.jetbrains.exposed:exposed-jdbc", version.ref = "exposed-version" }
+exposed-datetime = { module = "org.jetbrains.exposed:exposed-kotlin-datetime", version.ref = "exposed-version" }
+exposed-dao = { module = "org.jetbrains.exposed:exposed-dao", version.ref = "exposed-version" }
+
+kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin-version" }
+logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logback-version" }
+
+graphql-kotlin-server = { module = "com.expediagroup:graphql-kotlin-ktor-server", version.ref = "graphql-kotlin-version" }
+graphql-kotlin-schema-generator = { module = "com.expediagroup:graphql-kotlin-schema-generator", version.ref = "graphql-kotlin-version" }
+
+kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin-test-version" }
+mockito-junit-jupiter = { module = "org.mockito:mockito-junit-jupiter", version.ref = "mockito-junit-jupiter-version" }
+mockito-kotlin = { module = "org.mockito.kotlin:mockito-kotlin", version.ref = "mockito-kotlin-version" }
+mockk = { module = "io.mockk:mockk", version.ref = "mockk-version" }
+
 [plugins]
 springframework-boot = { id = "org.springframework.boot", version.ref = "spring-boot" }
 spring-dependency-management = { id = "io.spring.dependency-management", version.ref = "spring-dependency-management" }
 git-properties = { id = "com.gorylenko.gradle-git-properties", version.ref = "git-properties" }
 
+# Ktor
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin-version" }
+ktor = { id = "io.ktor.plugin", version.ref = "ktor-version" }
+kotlin-plugin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin-version" }
+expedia-graphql = { id = "com.expediagroup.graphql", version.ref = "graphql-kotlin-version" }
