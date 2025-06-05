@@ -9,6 +9,9 @@ jwt:
   issuer: "http://localhost:9000/auth-server"
   realm: "ktor sample app"
 
+esport:
+  token: ""
+
 postgres:
   url: "jdbc:postgresql://localhost/default"
   user: username

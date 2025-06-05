@@ -46,16 +46,12 @@ dependencies {
     implementation(libs.logback.classic)
     implementation(libs.ktor.server.config.yaml)
 
+    implementation("com.github.ben-manes.caffeine:caffeine:3.2.0")
+
     testImplementation(libs.ktor.server.test.host)
     implementation(libs.embedded.postgres) // TODO
-
     testImplementation(libs.kotlin.test)
-    testImplementation(libs.mockito.junit.jupiter)
-    testImplementation(libs.mockito.kotlin)
     testImplementation(libs.mockk)
-
-    testImplementation(libs.mockito)
-    mockitoAgent(libs.mockito) { isTransitive = false }
 }
 
 kotlin {
@@ -63,6 +59,5 @@ kotlin {
 }
 
 tasks.test {
-    jvmArgs("-javaagent:${mockitoAgent.asPath}")
     useJUnitPlatform()
 }

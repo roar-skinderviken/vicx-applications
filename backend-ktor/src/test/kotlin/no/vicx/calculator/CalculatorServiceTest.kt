@@ -1,39 +1,28 @@
 package no.vicx.calculator
 
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.toKotlinLocalDateTime
 import no.vicx.calculator.CalculatorService.Companion.DEFAULT_PAGE_SIZE
 import no.vicx.db.model.CalcEntry
 import no.vicx.db.model.CalculatorOperation
 import no.vicx.db.repository.CalculatorRepository
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.EnumSource
 import org.junit.jupiter.params.provider.ValueSource
-import org.mockito.InjectMocks
-import org.mockito.Mock
-import org.mockito.junit.jupiter.MockitoExtension
-import org.mockito.kotlin.any
-import org.mockito.kotlin.argThat
-import org.mockito.kotlin.verify
-import org.mockito.kotlin.whenever
 import java.time.Duration
 import java.time.LocalDateTime
-import kotlin.test.assertEquals
 
-@ExtendWith(MockitoExtension::class)
 class CalculatorServiceTest {
 
-    @Mock
-    private lateinit var calculatorRepository: CalculatorRepository
-
-    @Mock
-    private lateinit var maxAge: Duration
-
-    @InjectMocks
-    lateinit var sut: CalculatorService
+    private val calculatorRepository = mockk<CalculatorRepository>(relaxed = true)
+    private val maxAge = mockk<Duration>(relaxed = true)
+    private val sut = CalculatorService(calculatorRepository, maxAge)
 
     @Nested
     inner class CreateCalculationTests {
@@ -42,38 +31,39 @@ class CalculatorServiceTest {
         @EnumSource(CalculatorOperation::class)
         fun `given valid params when calling calculate then expect call to CalculatorRepository#save`(
             expectedOperation: CalculatorOperation
-        ) =
-            runTest {
-                val expectedResult = when (expectedOperation) {
-                    CalculatorOperation.PLUS -> 3L
-                    CalculatorOperation.MINUS -> 1L
-                }
+        ) = runTest {
+            val expectedResult = when (expectedOperation) {
+                CalculatorOperation.PLUS -> 3L
+                CalculatorOperation.MINUS -> 1L
+            }
 
-                val expected = CalcEntry(
-                    firstValue = 2L,
-                    secondValue = 1L,
-                    operation = expectedOperation,
-                    result = expectedResult,
-                    username = "~username~"
-                )
+            val expected = CalcEntry(
+                firstValue = 2L,
+                secondValue = 1L,
+                operation = expectedOperation,
+                result = expectedResult,
+                username = "~username~"
+            )
 
-                whenever(calculatorRepository.save(any<CalcEntry>())).thenReturn(expected)
+            coEvery { calculatorRepository.save(any<CalcEntry>()) } returns expected
 
-                sut.calculate(
-                    firstValue = expected.firstValue,
-                    secondValue = expected.secondValue,
-                    operation = expected.operation,
-                    username = expected.username
-                )
+            sut.calculate(
+                firstValue = expected.firstValue,
+                secondValue = expected.secondValue,
+                operation = expected.operation,
+                username = expected.username
+            )
 
-                verify(calculatorRepository).save(argThat {
-                    this.firstValue == expected.firstValue &&
-                            this.secondValue == expected.secondValue &&
-                            this.operation == expected.operation &&
-                            this.result == expected.result &&
-                            this.username == expected.username
+            coVerify(exactly = 1) {
+                calculatorRepository.save(match {
+                    it.firstValue == expected.firstValue &&
+                            it.secondValue == expected.secondValue &&
+                            it.operation == expected.operation &&
+                            it.result == expected.result &&
+                            it.username == expected.username
                 })
             }
+        }
     }
 
     @Nested
@@ -85,8 +75,9 @@ class CalculatorServiceTest {
             val expectedTotalCount = 101
             val expectedTotalPages = 11
 
-            whenever(calculatorRepository.findAllOrderDesc(expectedPageNumber, DEFAULT_PAGE_SIZE))
-                .thenReturn(Pair(createCalcEntriesInTest(DEFAULT_PAGE_SIZE), expectedTotalCount))
+            coEvery {
+                calculatorRepository.findAllOrderDesc(expectedPageNumber, DEFAULT_PAGE_SIZE)
+            } returns Pair(createCalcEntriesInTest(DEFAULT_PAGE_SIZE), expectedTotalCount)
 
             val paginatedCalculations = sut.getPagedCalculations(expectedPageNumber)
 
@@ -106,8 +97,9 @@ class CalculatorServiceTest {
             else
                 expectedTotalCount / DEFAULT_PAGE_SIZE + 1
 
-            whenever(calculatorRepository.findAllOrderDesc(expectedPageNumber, DEFAULT_PAGE_SIZE))
-                .thenReturn(Pair(createCalcEntriesInTest(DEFAULT_PAGE_SIZE), expectedTotalCount))
+            coEvery {
+                calculatorRepository.findAllOrderDesc(expectedPageNumber, DEFAULT_PAGE_SIZE)
+            } returns Pair(createCalcEntriesInTest(DEFAULT_PAGE_SIZE), expectedTotalCount)
 
             val paginatedCalculations = sut.getPagedCalculations(expectedPageNumber)
 
@@ -116,7 +108,7 @@ class CalculatorServiceTest {
     }
 
     companion object {
-        fun createCalcEntriesInTest(size: Int) = List<CalcEntry>(size) { index ->
+        fun createCalcEntriesInTest(size: Int) = List(size) { index ->
             CalcEntry(
                 index.toLong(), 42, 43, CalculatorOperation.PLUS,
                 85,

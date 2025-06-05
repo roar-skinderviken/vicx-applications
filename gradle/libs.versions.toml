@@ -19,8 +19,6 @@ embedded-postgres-version = "2.1.0"
 graphql-kotlin-version = "8.5.0"
 
 kotlin-test-version = "2.1.10"
-mockito-junit-jupiter-version = "5.18.0"
-mockito-kotlin-version = "3.2.0"
 mockk-version = "1.14.2"
 
 
@@ -71,8 +69,6 @@ graphql-kotlin-server = { module = "com.expediagroup:graphql-kotlin-ktor-server"
 graphql-kotlin-schema-generator = { module = "com.expediagroup:graphql-kotlin-schema-generator", version.ref = "graphql-kotlin-version" }
 
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin-test-version" }
-mockito-junit-jupiter = { module = "org.mockito:mockito-junit-jupiter", version.ref = "mockito-junit-jupiter-version" }
-mockito-kotlin = { module = "org.mockito.kotlin:mockito-kotlin", version.ref = "mockito-kotlin-version" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockk-version" }
 
 [plugins]

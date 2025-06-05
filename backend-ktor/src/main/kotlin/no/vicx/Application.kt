@@ -5,6 +5,9 @@ import io.ktor.server.application.*
 import io.ktor.server.plugins.cors.routing.*
 import no.vicx.calculator.CalculatorService
 import no.vicx.db.repository.CalculatorRepository
+import no.vicx.esport.EsportClient
+import no.vicx.esport.EsportService
+import no.vicx.esport.HttpClientConfig.defaultClient
 import no.vicx.plugins.configureSecurity
 import no.vicx.plugins.configureSerialization
 import no.vicx.plugins.connectToPostgres
@@ -17,20 +20,22 @@ fun main(args: Array<String>) {
 
 fun Application.module() {
 
+    val esportToken = environment.config.property("esport.token").getString()
+
+    val calculatorService = CalculatorService(CalculatorRepository(), Duration.ofHours(1))
+    val calculatorRepository = CalculatorRepository()
+    val esportService = EsportService(EsportClient(defaultClient, esportToken))
+
     install(CORS) {
         anyHost()
         allowHeader(HttpHeaders.ContentType)
         allowHeader(HttpHeaders.Authorization)
     }
 
-    // install(ContentNegotiation) { json() } does not work with GraphQL
+    // install(ContentNegotiation) { json() } // does not work with GraphQL
 
     connectToPostgres(true)
-
-    val calculatorService = CalculatorService(CalculatorRepository(), Duration.ofHours(1))
-    val calculatorRepository = CalculatorRepository()
-
     configureSecurity()
-    configureSerialization(calculatorService)
+    configureSerialization(calculatorService, esportService)
     graphQLModule(calculatorService, calculatorRepository)
 }

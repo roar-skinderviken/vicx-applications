@@ -13,9 +13,9 @@ import no.vicx.util.SecurityTestUtils.USERNAME_IN_TEST
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertNotNull
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
-import kotlin.test.assertNotNull
 
 class CalculatorMutationIntegrationTest : CalculatorGraphQLTestBase() {
 

@@ -6,11 +6,11 @@ import no.vicx.db.model.UserImage
 import no.vicx.db.model.VicxUser
 import no.vicx.util.configureTestDb
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertNotNull
 import org.junit.jupiter.api.assertNull
-import kotlin.test.assertNotNull
-import kotlin.test.assertTrue
 
 class UserRepositoryTest {
 

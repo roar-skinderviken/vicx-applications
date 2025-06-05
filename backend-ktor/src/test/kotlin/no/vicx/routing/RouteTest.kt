@@ -41,7 +41,7 @@ class RouteTest {
         application {
             install(ContentNegotiation) { json() }
             configureTestSecurity()
-            configureSerialization(calculatorService)
+            configureSerialization(calculatorService, mockk())
         }
 
         val response = client.get("/calculations/get-all/1") {

@@ -7,11 +7,21 @@ import io.ktor.server.auth.jwt.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import no.vicx.calculator.CalculatorService
+import no.vicx.esport.EsportService
 
 fun Application.configureSerialization(
-    calculatorService: CalculatorService
+    calculatorService: CalculatorService,
+    esportService: EsportService
 ) {
     routing {
+
+        route("/api") {
+
+            get("/esport") {
+                call.respond(esportService.getMatches())
+            }
+        }
+
         authenticate {
             route("/calculations") {
 
