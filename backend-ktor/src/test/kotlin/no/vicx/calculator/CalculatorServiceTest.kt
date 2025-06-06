@@ -1,5 +1,6 @@
 package no.vicx.calculator
 
+import io.kotest.assertions.asClue
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.data.forAll
 import io.kotest.data.row
@@ -17,74 +18,74 @@ import no.vicx.db.repository.CalculatorRepository
 import java.time.Duration
 import java.time.LocalDateTime
 
-class CalculatorServiceTest : BehaviorSpec() {
-    init {
-        coroutineTestScope = true
+class CalculatorServiceTest : BehaviorSpec({
+    coroutineTestScope = true
 
-        lateinit var calculatorRepository: CalculatorRepository
-        lateinit var sut: CalculatorService
-        val maxAge = mockk<Duration>(relaxed = true)
+    lateinit var calculatorRepository: CalculatorRepository
+    lateinit var sut: CalculatorService
+    val maxAge = mockk<Duration>(relaxed = true)
 
-        Given("a CalculatorService with mocked CalculatorRepository") {
-            beforeContainer {
-                calculatorRepository = mockk()
-                sut = CalculatorService(calculatorRepository, maxAge)
-            }
+    Given("a CalculatorService with mocked CalculatorRepository") {
+        beforeContainer {
+            calculatorRepository = mockk()
+            sut = CalculatorService(calculatorRepository, maxAge)
+        }
 
-            withData(
-                CalculatorOperation.PLUS to 3L,
-                CalculatorOperation.MINUS to 1L,
-            ) { (operation, expectedResult) ->
+        withData(
+            CalculatorOperation.PLUS to 3L,
+            CalculatorOperation.MINUS to 1L,
+        ) { (operation, expectedResult) ->
 
-                When("calculate is called with valid parameters, operator: $operation") {
-                    val expected = expectedCalcEntry(operation, expectedResult)
-                    coEvery { calculatorRepository.save(any<CalcEntry>()) } returns expected
+            When("calculate is called with valid parameters, operator: $operation") {
+                val expected = expectedCalcEntry(operation, expectedResult)
+                coEvery { calculatorRepository.save(any<CalcEntry>()) } returns expected
 
-                    sut.calculate(
-                        firstValue = expected.firstValue,
-                        secondValue = expected.secondValue,
-                        operation = expected.operation,
-                        username = expected.username
-                    )
+                sut.calculate(
+                    firstValue = expected.firstValue,
+                    secondValue = expected.secondValue,
+                    operation = expected.operation,
+                    username = expected.username
+                )
 
-                    Then("it should save the correct calculation entry in the repository") {
-                        coVerify(exactly = 1) {
-                            calculatorRepository.save(match {
-                                it.firstValue == expected.firstValue &&
-                                        it.secondValue == expected.secondValue &&
-                                        it.operation == expected.operation &&
-                                        it.result == expected.result &&
-                                        it.username == expected.username
-                            })
-                        }
+                Then("it should save the correct calculation entry in the repository") {
+                    coVerify(exactly = 1) {
+                        calculatorRepository.save(match {
+                            it.firstValue == expected.firstValue &&
+                                    it.secondValue == expected.secondValue &&
+                                    it.operation == expected.operation &&
+                                    it.result == expected.result &&
+                                    it.username == expected.username
+                        })
                     }
                 }
             }
+        }
 
-            forAll(
-                row(100, 10),
-                row(101, 11),
-            ) { expectedTotalCount, expectedTotalPages ->
+        forAll(
+            row(100, 10),
+            row(101, 11),
+        ) { expectedTotalCount, expectedTotalPages ->
 
-                When("getPagedCalculations is called and totalCount: $expectedTotalCount and totalPages: $expectedTotalPages") {
-                    val expectedPageNumber = 2
+            When("getPagedCalculations is called and totalCount: $expectedTotalCount and totalPages: $expectedTotalPages") {
+                val expectedPageNumber = 2
 
-                    coEvery {
-                        calculatorRepository.findAllOrderDesc(expectedPageNumber, DEFAULT_PAGE_SIZE)
-                    } returns Pair(createCalcEntriesInTest(DEFAULT_PAGE_SIZE), expectedTotalCount)
+                coEvery {
+                    calculatorRepository.findAllOrderDesc(expectedPageNumber, DEFAULT_PAGE_SIZE)
+                } returns Pair(createCalcEntriesInTest(DEFAULT_PAGE_SIZE), expectedTotalCount)
 
-                    val paginatedCalculations = sut.getPagedCalculations(expectedPageNumber)
+                val paginatedCalculations = sut.getPagedCalculations(expectedPageNumber)
 
-                    Then("it should return the expected number of calculations and pages") {
-                        paginatedCalculations.calculations shouldHaveSize DEFAULT_PAGE_SIZE
-                        paginatedCalculations.page shouldBe expectedPageNumber
-                        paginatedCalculations.totalPages shouldBe expectedTotalPages
+                Then("it should return the expected number of calculations and pages") {
+                    paginatedCalculations.asClue {
+                        it.calculations shouldHaveSize DEFAULT_PAGE_SIZE
+                        it.page shouldBe expectedPageNumber
+                        it.totalPages shouldBe expectedTotalPages
                     }
                 }
             }
         }
     }
-
+}) {
     companion object {
         fun expectedCalcEntry(
             operation: CalculatorOperation,
