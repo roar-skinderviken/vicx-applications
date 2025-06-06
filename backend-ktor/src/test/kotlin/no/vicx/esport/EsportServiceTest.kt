@@ -15,11 +15,11 @@ class EsportServiceTest {
 
     @Test
     fun `given data on remote server then expect result with both running and upcoming matches`() {
-        val expectedRunningMatches = createMatches(MatchType.running)
-        val expectedUpcomingMatches = createMatches(MatchType.upcoming)
+        val expectedRunningMatches = createMatches(MatchType.RUNNING)
+        val expectedUpcomingMatches = createMatches(MatchType.UPCOMING)
 
-        coEvery { esportClient.getMatches(MatchType.running) } returns expectedRunningMatches
-        coEvery { esportClient.getMatches(MatchType.upcoming) } returns expectedUpcomingMatches
+        coEvery { esportClient.getMatches(MatchType.RUNNING) } returns expectedRunningMatches
+        coEvery { esportClient.getMatches(MatchType.UPCOMING) } returns expectedUpcomingMatches
 
         val result = runBlocking { sut.getMatches() }
 
@@ -29,14 +29,14 @@ class EsportServiceTest {
 
     @Test
     fun `given cached data then expect no further calls to esportClient`() {
-        coEvery { esportClient.getMatches(MatchType.running) } returns createMatches(MatchType.running)
-        coEvery { esportClient.getMatches(MatchType.upcoming) } returns createMatches(MatchType.upcoming)
+        coEvery { esportClient.getMatches(MatchType.RUNNING) } returns createMatches(MatchType.RUNNING)
+        coEvery { esportClient.getMatches(MatchType.UPCOMING) } returns createMatches(MatchType.UPCOMING)
 
         runBlocking { sut.getMatches() }
         runBlocking { sut.getMatches() }
 
-        coVerify(exactly = 1) { esportClient.getMatches(MatchType.running) }
-        coVerify(exactly = 1) { esportClient.getMatches(MatchType.upcoming) }
+        coVerify(exactly = 1) { esportClient.getMatches(MatchType.RUNNING) }
+        coVerify(exactly = 1) { esportClient.getMatches(MatchType.UPCOMING) }
     }
 
     companion object {

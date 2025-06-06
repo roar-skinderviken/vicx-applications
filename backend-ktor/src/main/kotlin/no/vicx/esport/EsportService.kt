@@ -22,8 +22,8 @@ class EsportService(
         .buildAsync()
 
     suspend fun getMatches(): EsportVm = coroutineScope {
-        val runningMatchesDeferred = async { getCachedMatches(MatchType.running).await() }
-        val upcomingMatchesDeferred = async { getCachedMatches(MatchType.upcoming).await() }
+        val runningMatchesDeferred = async { getCachedMatches(MatchType.RUNNING).await() }
+        val upcomingMatchesDeferred = async { getCachedMatches(MatchType.UPCOMING).await() }
 
         EsportVm(
             runningMatches = runningMatchesDeferred.await(),

@@ -32,10 +32,8 @@ fun Application.module() {
         allowHeader(HttpHeaders.Authorization)
     }
 
-    // install(ContentNegotiation) { json() } // does not work with GraphQL
-
     connectToPostgres(true)
     configureSecurity()
-    configureSerialization(calculatorService, esportService)
     graphQLModule(calculatorService, calculatorRepository)
+    configureSerialization(calculatorService, esportService)
 }

@@ -11,7 +11,7 @@ class EsportClient(
     private val token: String
 ) {
     suspend fun getMatches(matchType: MatchType): List<EsportMatchVm> {
-        val url = "$PANDASCORE_BASE_URL${matchType.name}"
+        val url = "$PANDASCORE_BASE_URL${matchType.name.lowercase()}"
 
         return httpClient
             .get(url) { bearerAuth(token) }

@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 data class EsportMatchVm(
     val id: Long,
     val name: String,
-    @SerialName("begin_at") // Correctly maps "begin_at" to "beginAt"
-    val beginAt: String,
+    @SerialName("begin_at")
+    val beginAt: String? = null,
     val status: String
 )
