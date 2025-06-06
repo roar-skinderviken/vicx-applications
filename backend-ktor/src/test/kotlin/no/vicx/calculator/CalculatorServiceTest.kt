@@ -1,112 +1,93 @@
 package no.vicx.calculator
 
+import io.kotest.core.spec.style.BehaviorSpec
+import io.kotest.data.forAll
+import io.kotest.data.row
+import io.kotest.matchers.collections.shouldHaveSize
+import io.kotest.matchers.shouldBe
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.toKotlinLocalDateTime
 import no.vicx.calculator.CalculatorService.Companion.DEFAULT_PAGE_SIZE
+import no.vicx.calculator.vm.PaginatedCalculations
 import no.vicx.db.model.CalcEntry
 import no.vicx.db.model.CalculatorOperation
 import no.vicx.db.repository.CalculatorRepository
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Nested
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.params.ParameterizedTest
-import org.junit.jupiter.params.provider.EnumSource
-import org.junit.jupiter.params.provider.ValueSource
 import java.time.Duration
 import java.time.LocalDateTime
 
-class CalculatorServiceTest {
+class CalculatorServiceTest : BehaviorSpec({
+    val calculatorRepository = mockk<CalculatorRepository>(relaxed = true)
+    val maxAge = mockk<Duration>(relaxed = true)
+    val sut = CalculatorService(calculatorRepository, maxAge)
 
-    private val calculatorRepository = mockk<CalculatorRepository>(relaxed = true)
-    private val maxAge = mockk<Duration>(relaxed = true)
-    private val sut = CalculatorService(calculatorRepository, maxAge)
+    Given("a CalculatorService with mocked CalculatorRepository") {
 
-    @Nested
-    inner class CreateCalculationTests {
+        forAll(
+            row(CalculatorOperation.PLUS, 3L),
+            row(CalculatorOperation.MINUS, 1L),
+        ) { operation, expectedResult ->
+            When("calculate is called with valid parameters, operator: $operation") {
+                val expected = CalcEntry(
+                    firstValue = 2L,
+                    secondValue = 1L,
+                    operation = operation,
+                    result = expectedResult,
+                    username = "~username~"
+                )
 
-        @ParameterizedTest
-        @EnumSource(CalculatorOperation::class)
-        fun `given valid params when calling calculate then expect call to CalculatorRepository#save`(
-            expectedOperation: CalculatorOperation
-        ) = runTest {
-            val expectedResult = when (expectedOperation) {
-                CalculatorOperation.PLUS -> 3L
-                CalculatorOperation.MINUS -> 1L
+                coEvery { calculatorRepository.save(any<CalcEntry>()) } returns expected
+
+                runTest {
+                    sut.calculate(
+                        firstValue = expected.firstValue,
+                        secondValue = expected.secondValue,
+                        operation = expected.operation,
+                        username = expected.username
+                    )
+                }
+
+                Then("it should save the correct calculation entry in the repository") {
+                    coVerify(exactly = 1) {
+                        calculatorRepository.save(match {
+                            it.firstValue == expected.firstValue &&
+                                    it.secondValue == expected.secondValue &&
+                                    it.operation == expected.operation &&
+                                    it.result == expected.result &&
+                                    it.username == expected.username
+                        })
+                    }
+                }
             }
+        }
 
-            val expected = CalcEntry(
-                firstValue = 2L,
-                secondValue = 1L,
-                operation = expectedOperation,
-                result = expectedResult,
-                username = "~username~"
-            )
+        forAll(
+            row(100, 10),
+            row(101, 11),
+        ) { expectedTotalCount, expectedTotalPages ->
+            When("getPagedCalculations is called") {
+                val expectedPageNumber = 2
 
-            coEvery { calculatorRepository.save(any<CalcEntry>()) } returns expected
+                coEvery {
+                    calculatorRepository.findAllOrderDesc(expectedPageNumber, DEFAULT_PAGE_SIZE)
+                } returns Pair(createCalcEntriesInTest(DEFAULT_PAGE_SIZE), expectedTotalCount)
 
-            sut.calculate(
-                firstValue = expected.firstValue,
-                secondValue = expected.secondValue,
-                operation = expected.operation,
-                username = expected.username
-            )
+                lateinit var paginatedCalculations: PaginatedCalculations
+                runTest {
+                    paginatedCalculations = sut.getPagedCalculations(expectedPageNumber)
+                }
 
-            coVerify(exactly = 1) {
-                calculatorRepository.save(match {
-                    it.firstValue == expected.firstValue &&
-                            it.secondValue == expected.secondValue &&
-                            it.operation == expected.operation &&
-                            it.result == expected.result &&
-                            it.username == expected.username
-                })
+                Then("it should return the expected number of calculations and pages") {
+                    paginatedCalculations.calculations shouldHaveSize DEFAULT_PAGE_SIZE
+                    paginatedCalculations.page shouldBe expectedPageNumber
+                    paginatedCalculations.totalPages shouldBe expectedTotalPages
+                }
             }
         }
     }
-
-    @Nested
-    inner class GetPagedCalculationsTests {
-
-        @Test
-        fun `given result from repo when calling getPagedCalculations then expect result`() = runTest {
-            val expectedPageNumber = 2
-            val expectedTotalCount = 101
-            val expectedTotalPages = 11
-
-            coEvery {
-                calculatorRepository.findAllOrderDesc(expectedPageNumber, DEFAULT_PAGE_SIZE)
-            } returns Pair(createCalcEntriesInTest(DEFAULT_PAGE_SIZE), expectedTotalCount)
-
-            val paginatedCalculations = sut.getPagedCalculations(expectedPageNumber)
-
-            assertEquals(DEFAULT_PAGE_SIZE, paginatedCalculations.calculations.size)
-            assertEquals(expectedPageNumber, paginatedCalculations.page)
-            assertEquals(expectedTotalPages, paginatedCalculations.totalPages)
-        }
-
-        @ParameterizedTest
-        @ValueSource(ints = [100, 101])
-        fun `given result from repo when calling getPagedCalculations then expect total pages`(
-            expectedTotalCount: Int
-        ) = runTest {
-            val expectedPageNumber = 1
-            val expectedTotalPages = if (expectedTotalCount % DEFAULT_PAGE_SIZE == 0)
-                expectedTotalCount / DEFAULT_PAGE_SIZE
-            else
-                expectedTotalCount / DEFAULT_PAGE_SIZE + 1
-
-            coEvery {
-                calculatorRepository.findAllOrderDesc(expectedPageNumber, DEFAULT_PAGE_SIZE)
-            } returns Pair(createCalcEntriesInTest(DEFAULT_PAGE_SIZE), expectedTotalCount)
-
-            val paginatedCalculations = sut.getPagedCalculations(expectedPageNumber)
-
-            assertEquals(expectedTotalPages, paginatedCalculations.totalPages)
-        }
-    }
-
+}) {
     companion object {
         fun createCalcEntriesInTest(size: Int) = List(size) { index ->
             CalcEntry(

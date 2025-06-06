@@ -50,8 +50,10 @@ dependencies {
 
     testImplementation(libs.ktor.server.test.host)
     implementation(libs.embedded.postgres) // TODO
-    testImplementation(libs.kotlin.test)
+
+    testImplementation(libs.kotest.runner.junit5)
     testImplementation(libs.mockk)
+    testImplementation(libs.kotlin.test)
 }
 
 kotlin {

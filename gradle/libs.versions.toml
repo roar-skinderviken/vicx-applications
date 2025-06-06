@@ -20,7 +20,7 @@ graphql-kotlin-version = "8.5.0"
 
 kotlin-test-version = "2.1.10"
 mockk-version = "1.14.2"
-
+kotest-runner-junit5-version = "5.9.1"
 
 # Logging
 logback-access-spring-boot-starter = "4.7.0"
@@ -69,7 +69,8 @@ graphql-kotlin-server = { module = "com.expediagroup:graphql-kotlin-ktor-server"
 graphql-kotlin-schema-generator = { module = "com.expediagroup:graphql-kotlin-schema-generator", version.ref = "graphql-kotlin-version" }
 
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin-test-version" }
-mockk = { module = "io.mockk:mockk", version.ref = "mockk-version" }
+kotest-runner-junit5 = { module = "io.kotest:kotest-runner-junit5-jvm", version.ref = "kotest-runner-junit5-version" }
+mockk = { module = "io.mockk:mockk-jvm", version.ref = "mockk-version" }
 
 [plugins]
 springframework-boot = { id = "org.springframework.boot", version.ref = "spring-boot" }
