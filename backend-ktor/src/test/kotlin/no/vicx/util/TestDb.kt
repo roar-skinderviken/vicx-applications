@@ -1,0 +1,32 @@
+package no.vicx.util
+
+import io.ktor.server.testing.*
+import io.zonky.test.db.postgres.embedded.EmbeddedPostgres
+import org.flywaydb.core.Flyway
+import org.jetbrains.exposed.sql.Database
+import org.jetbrains.exposed.sql.transactions.transaction
+import javax.sql.DataSource
+
+object TestDb {
+    val postgres: DataSource by lazy {
+        EmbeddedPostgres.start().postgresDatabase.also { Database.connect(it) }
+    }
+}
+
+fun configureTestDb() {
+    val flyway = Flyway.configure()
+        .cleanDisabled(false)
+        .dataSource(TestDb.postgres)
+        .locations("classpath:db.migration")
+        .load()
+
+    flyway.clean()
+    flyway.migrate()
+}
+
+fun ApplicationTestBuilder.insertTestData(block: () -> Unit) = application {
+    transaction {
+        //addLogger(StdOutSqlLogger)
+        block()
+    }
+}

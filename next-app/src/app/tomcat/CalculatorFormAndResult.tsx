@@ -51,7 +51,7 @@ export const previousResultsQuery = gql`
     }`
 
 export const deleteCalculationsQuery = gql`
-    mutation($ids: [ID!]!) {
+    mutation($ids: [Int!]!) {
         deleteCalculations(ids: $ids)
     }`
 
