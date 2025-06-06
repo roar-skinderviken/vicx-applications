@@ -3,6 +3,7 @@ package no.vicx.calculator
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.data.forAll
 import io.kotest.data.row
+import io.kotest.datatest.withData
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
 import io.mockk.coEvery
@@ -20,25 +21,23 @@ class CalculatorServiceTest : BehaviorSpec() {
     init {
         coroutineTestScope = true
 
-        val calculatorRepository = mockk<CalculatorRepository>(relaxed = true)
+        lateinit var calculatorRepository: CalculatorRepository
+        lateinit var sut: CalculatorService
         val maxAge = mockk<Duration>(relaxed = true)
-        val sut = CalculatorService(calculatorRepository, maxAge)
 
         Given("a CalculatorService with mocked CalculatorRepository") {
+            beforeContainer {
+                calculatorRepository = mockk()
+                sut = CalculatorService(calculatorRepository, maxAge)
+            }
 
-            forAll(
-                row(CalculatorOperation.PLUS, 3L),
-                row(CalculatorOperation.MINUS, 1L),
-            ) { operation, expectedResult ->
+            withData(
+                CalculatorOperation.PLUS to 3L,
+                CalculatorOperation.MINUS to 1L,
+            ) { (operation, expectedResult) ->
+
                 When("calculate is called with valid parameters, operator: $operation") {
-                    val expected = CalcEntry(
-                        firstValue = 2L,
-                        secondValue = 1L,
-                        operation = operation,
-                        result = expectedResult,
-                        username = "~username~"
-                    )
-
+                    val expected = expectedCalcEntry(operation, expectedResult)
                     coEvery { calculatorRepository.save(any<CalcEntry>()) } returns expected
 
                     sut.calculate(
@@ -66,7 +65,8 @@ class CalculatorServiceTest : BehaviorSpec() {
                 row(100, 10),
                 row(101, 11),
             ) { expectedTotalCount, expectedTotalPages ->
-                When("getPagedCalculations is called") {
+
+                When("getPagedCalculations is called and totalCount: $expectedTotalCount and totalPages: $expectedTotalPages") {
                     val expectedPageNumber = 2
 
                     coEvery {
@@ -86,6 +86,17 @@ class CalculatorServiceTest : BehaviorSpec() {
     }
 
     companion object {
+        fun expectedCalcEntry(
+            operation: CalculatorOperation,
+            result: Long
+        ) = CalcEntry(
+            firstValue = 2L,
+            secondValue = 1L,
+            operation = operation,
+            result = result,
+            username = "~username~"
+        )
+
         fun createCalcEntriesInTest(size: Int) = List(size) { index ->
             CalcEntry(
                 index.toLong(), 42, 43, CalculatorOperation.PLUS,

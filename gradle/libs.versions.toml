@@ -70,6 +70,7 @@ graphql-kotlin-schema-generator = { module = "com.expediagroup:graphql-kotlin-sc
 
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin-test-version" }
 kotest-runner-junit5 = { module = "io.kotest:kotest-runner-junit5-jvm", version.ref = "kotest-runner-junit5-version" }
+kotest-framework-datatest = { module = "io.kotest:kotest-framework-datatest", version.ref = "kotest-runner-junit5-version" }
 mockk = { module = "io.mockk:mockk-jvm", version.ref = "mockk-version" }
 
 [plugins]
