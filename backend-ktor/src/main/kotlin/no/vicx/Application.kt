@@ -5,14 +5,18 @@ import io.ktor.server.application.*
 import io.ktor.server.plugins.cors.routing.*
 import no.vicx.calculator.CalculatorService
 import no.vicx.db.repository.CalculatorRepository
+import no.vicx.db.repository.UserRepository
 import no.vicx.esport.EsportClient
 import no.vicx.esport.EsportService
 import no.vicx.esport.HttpClientConfig.defaultClient
-import no.vicx.plugins.configureSecurity
-import no.vicx.plugins.configureSerialization
-import no.vicx.plugins.connectToPostgres
-import no.vicx.plugins.graphQLModule
+import no.vicx.plugins.*
+import no.vicx.user.service.RecaptchaClient
+import no.vicx.user.service.UserService
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import java.time.Duration
+
+inline fun <reified T : Any> loggerFor(): Logger = LoggerFactory.getLogger(T::class.java)
 
 fun main(args: Array<String>) {
     io.ktor.server.netty.EngineMain.main(args)
@@ -21,10 +25,19 @@ fun main(args: Array<String>) {
 fun Application.module() {
 
     val esportToken = environment.config.property("esport.token").getString()
+    val reCaptchaSecret = environment.config.property("user.recaptcha.secret").getString()
+
+    val calculatorRepository = CalculatorRepository()
+
+    // user
+    val recaptchaClient = RecaptchaClient(defaultClient, reCaptchaSecret)
+    val userRepository = UserRepository()
 
     val calculatorService = CalculatorService(CalculatorRepository(), Duration.ofHours(1))
-    val calculatorRepository = CalculatorRepository()
     val esportService = EsportService(EsportClient(defaultClient, esportToken))
+    val userService = UserService(recaptchaClient, userRepository)
+
+    //install(ContentNegotiation) { json() }
 
     install(CORS) {
         anyHost()
@@ -34,6 +47,8 @@ fun Application.module() {
 
     connectToPostgres(true)
     configureSecurity()
-    graphQLModule(calculatorService, calculatorRepository)
-    configureSerialization(calculatorService, esportService)
+
+    configureStatusPage()
+    configureGraphQL(calculatorService, calculatorRepository)
+    configureRestApi(esportService, userService)
 }

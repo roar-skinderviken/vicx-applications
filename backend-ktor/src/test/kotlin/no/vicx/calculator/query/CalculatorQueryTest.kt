@@ -25,7 +25,7 @@ import no.vicx.calculator.toGraphQLModel
 import no.vicx.calculator.vm.PaginatedCalculations
 import no.vicx.db.model.CalculatorOperation
 import no.vicx.db.repository.CalculatorRepository
-import no.vicx.plugins.graphQLModule
+import no.vicx.plugins.configureGraphQL
 import no.vicx.util.CalculatorTestUtils.calcEntryInTest
 import no.vicx.util.CalculatorTestUtils.generateTestCalcEntries
 import no.vicx.util.SecurityTestUtils.USERNAME_IN_TEST
@@ -148,7 +148,10 @@ class CalculatorQueryTest : BehaviorSpec() {
         testApplication {
             application {
                 configureTestSecurity()
-                graphQLModule(calculatorService, calculatorRepository)
+                configureGraphQL(
+                    calculatorService,
+                    calculatorRepository
+                )
             }
 
             val client = createClient {

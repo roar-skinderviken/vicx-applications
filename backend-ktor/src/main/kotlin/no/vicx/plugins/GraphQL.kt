@@ -6,7 +6,6 @@ import graphql.GraphQLContext
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
-import io.ktor.server.plugins.statuspages.*
 import io.ktor.server.request.*
 import io.ktor.server.routing.*
 import no.vicx.calculator.CalculatorService
@@ -14,7 +13,7 @@ import no.vicx.calculator.query.CalculatorMutation
 import no.vicx.calculator.query.CalculatorQuery
 import no.vicx.db.repository.CalculatorRepository
 
-fun Application.graphQLModule(
+fun Application.configureGraphQL(
     calculatorService: CalculatorService,
     calculatorRepository: CalculatorRepository
 ) {
@@ -46,10 +45,6 @@ fun Application.graphQLModule(
         }
         graphiQLRoute()
         graphQLSDLRoute()
-    }
-
-    install(StatusPages) {
-        defaultGraphQLStatusPages()
     }
 }
 

@@ -29,6 +29,7 @@ dependencies {
     implementation(libs.ktor.serialization.kotlinx.json)
     implementation(libs.ktor.server.content.negotiation)
     implementation(libs.ktor.server.cors)
+    implementation(libs.ktor.server.request.validation)
 
     implementation(libs.exposed.jdbc)
     implementation(libs.exposed.dao)
@@ -46,7 +47,8 @@ dependencies {
     implementation(libs.logback.classic)
     implementation(libs.ktor.server.config.yaml)
 
-    implementation("com.github.ben-manes.caffeine:caffeine:3.2.0")
+    implementation(libs.spring.security.crypto)
+    implementation(libs.caffeine)
 
     testImplementation(libs.ktor.server.test.host)
     implementation(libs.embedded.postgres) // TODO

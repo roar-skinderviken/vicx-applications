@@ -10,7 +10,11 @@ jwt:
   realm: "ktor sample app"
 
 esport:
-  token: ""
+  token: "TODO"
+
+user:
+  recaptcha:
+    secret: "6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe" # dev secret
 
 postgres:
   url: "jdbc:postgresql://localhost/default"

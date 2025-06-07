@@ -9,8 +9,8 @@ import kotlinx.coroutines.future.future
 import no.vicx.esport.vm.EsportMatchVm
 import no.vicx.esport.vm.EsportVm
 import no.vicx.esport.vm.MatchType
+import no.vicx.loggerFor
 import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.TimeUnit
 
@@ -35,13 +35,13 @@ class EsportService(
         coroutineScope {
             cache.get(matchType) { _, _ ->
                 future {
-                    log.info("Cache miss for {}", matchType)
+                    log.debug("Cache miss for {}", matchType)
                     esportClient.getMatches(matchType)
                 }
             }
         }
 
     companion object {
-        val log: Logger = LoggerFactory.getLogger(EsportService::class.java)
+        val log: Logger = loggerFor<EsportService>()
     }
 }
