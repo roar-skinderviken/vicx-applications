@@ -6,14 +6,13 @@ import no.vicx.db.model.VicxUser
 import no.vicx.db.suspendTransaction
 import no.vicx.db.table.VicxUserTable
 import no.vicx.db.toModel
-import java.util.regex.Pattern
 
 class UserRepository {
 
     suspend fun createUser(
         userModel: VicxUser
     ): VicxUser = suspendTransaction {
-        require(BCRYPT_PATTERN.matcher(userModel.password).matches()) { PASSWORD_MUST_BE_ENCRYPTED }
+        require(bcryptRegex.matches(userModel.password)) { PASSWORD_MUST_BE_ENCRYPTED_MSG }
 
         val insertedUser = VicxUserEntity.new {
             this.username = userModel.username
@@ -39,8 +38,21 @@ class UserRepository {
             ?.toModel()
     }
 
+    suspend fun updateUser(
+        id: Long,
+        name: String?,
+        email: String?
+    ): Unit = suspendTransaction {
+        VicxUserEntity.findByIdAndUpdate(id) { user ->
+            user.apply {
+                name?.let { this.name = it }
+                email?.let { this.email = it }
+            }
+        }
+    }
+
     companion object {
-        private val BCRYPT_PATTERN: Pattern = Pattern.compile("^\\$2[ayb]?\\$\\d{2}\\$.{53}$")
-        const val PASSWORD_MUST_BE_ENCRYPTED = "Password must be encrypted"
+        private val bcryptRegex = Regex("^\\$2[ayb]?\\$\\d{2}\\$.{53}$")
+        const val PASSWORD_MUST_BE_ENCRYPTED_MSG = "Password must be encrypted"
     }
 }

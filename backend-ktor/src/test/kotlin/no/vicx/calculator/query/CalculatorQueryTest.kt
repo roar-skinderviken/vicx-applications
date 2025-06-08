@@ -1,7 +1,8 @@
 package no.vicx.calculator.query
 
 import io.kotest.core.spec.style.BehaviorSpec
-import io.kotest.datatest.withData
+import io.kotest.data.forAll
+import io.kotest.data.row
 import io.kotest.matchers.ints.shouldBeGreaterThan
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
@@ -62,11 +63,11 @@ class CalculatorQueryTest : BehaviorSpec() {
                 }
             }
 
-            withData(
-                ANONYMOUS_USERNAME to false,
-                USERNAME_IN_TEST to true
-            ) { (username, addAuthHeader) ->
-                When("sending valid request to createCalculation") {
+            forAll(
+               row(ANONYMOUS_USERNAME, false),
+                row(USERNAME_IN_TEST, true),
+            ) { username, addAuthHeader ->
+                When("sending valid request to createCalculation. $username, $addAuthHeader") {
                     val expectedCalcEntry = calcEntryInTest(username = username).toGraphQLModel()
 
                     coEvery {

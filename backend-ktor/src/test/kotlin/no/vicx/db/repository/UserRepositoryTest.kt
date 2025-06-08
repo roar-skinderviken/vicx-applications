@@ -3,6 +3,8 @@ package no.vicx.db.repository
 import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.BehaviorSpec
+import io.kotest.data.forAll
+import io.kotest.data.row
 import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
@@ -10,13 +12,15 @@ import io.ktor.server.testing.*
 import kotlinx.coroutines.runBlocking
 import no.vicx.db.entity.UserImageEntity
 import no.vicx.db.entity.VicxUserEntity
-import no.vicx.db.model.UserImage
 import no.vicx.db.model.VicxUser
-import no.vicx.db.repository.UserRepository.Companion.PASSWORD_MUST_BE_ENCRYPTED
-import no.vicx.util.TestConstants.VALID_BCRYPT_PASSWORD
+import no.vicx.db.repository.UserRepository.Companion.PASSWORD_MUST_BE_ENCRYPTED_MSG
+import no.vicx.db.toModel
 import no.vicx.util.TestConstants.VALID_PLAINTEXT_PASSWORD
+import no.vicx.util.TestConstants.userImageModelInTest
+import no.vicx.util.TestConstants.userModelInTest
 import no.vicx.util.configureTestDb
 import no.vicx.util.insertTestData
+import org.jetbrains.exposed.sql.transactions.transaction
 
 class UserRepositoryTest : BehaviorSpec({
     coroutineTestScope = true
@@ -35,7 +39,7 @@ class UserRepositoryTest : BehaviorSpec({
             }
 
             Then("throws exception") {
-                thrown.message shouldBe PASSWORD_MUST_BE_ENCRYPTED
+                thrown.message shouldBe PASSWORD_MUST_BE_ENCRYPTED_MSG
             }
         }
 
@@ -126,25 +130,48 @@ class UserRepositoryTest : BehaviorSpec({
                 }
             }
         }
-    }
-}) {
-    companion object {
-        val userImageModelInTest = UserImage(
-            id = 1L,
-            contentType = "image/png",
-            imageData = "~imageData~".toByteArray()
-        )
 
-        val userModelInTest = VicxUser(
-            id = 1L,
-            username = "~username~",
-            name = "~name~",
-            password = VALID_BCRYPT_PASSWORD,
-            email = "~email~",
-            userImage = userImageModelInTest
-        )
+        forAll(
+            row("Both values changed", "~new-name~", "~new-email~"),
+            row("Name changed", "~new-name~", null),
+            row("Email changed", null, "~new-email~"),
+            row("No values changed", null, null),
+        ) { description, newName, newEmail ->
+            When("calling update user, $description") {
+                lateinit var insertedUser: VicxUser
+                lateinit var updatedUser: VicxUser
+
+                testApplication {
+                    insertTestData {
+                        insertedUser = VicxUserEntity.new {
+                            username = userModelInTest.username
+                            name = userModelInTest.name
+                            email = userModelInTest.email
+                            password = userModelInTest.password
+                        }.toModel()
+                    }
+
+                    application {
+                        runBlocking {
+                            sut.updateUser(insertedUser.id, newName, newEmail)
+                        }
+
+                        transaction {
+                            updatedUser = VicxUserEntity[1L].toModel()
+                        }
+                    }
+                }
+
+                Then("expect user to be updated if any non-null values") {
+                    assertSoftly(updatedUser) {
+                        name shouldBe (newName ?: userModelInTest.name)
+                        email shouldBe (newEmail ?: userModelInTest.email)
+                    }
+                }
+            }
+        }
     }
-}
+})
 
 
 

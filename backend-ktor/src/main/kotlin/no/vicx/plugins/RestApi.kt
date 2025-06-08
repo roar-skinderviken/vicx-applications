@@ -1,17 +1,18 @@
 package no.vicx.plugins
 
 import io.ktor.http.*
-import io.ktor.http.content.*
 import io.ktor.server.application.*
+import io.ktor.server.auth.*
+import io.ktor.server.auth.jwt.*
 import io.ktor.server.plugins.requestvalidation.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.serialization.json.Json
 import no.vicx.esport.EsportService
-import no.vicx.extensions.toCreateUserVm
-import no.vicx.extensions.toUserImage
+import no.vicx.extension.toCreateUserVmAndUserImage
 import no.vicx.user.service.UserService
+import no.vicx.user.vm.UserPatchVm
 
 fun Application.configureRestApi(
     esportService: EsportService,
@@ -21,8 +22,8 @@ fun Application.configureRestApi(
         route("/api") {
 
             post("/user") {
-                val multipart: MultiPartData = call.receiveMultipart()
-                val createUserVm = multipart.toCreateUserVm()
+                val multiPartData = call.receiveMultipart()
+                val (createUserVm, userImage) = multiPartData.toCreateUserVmAndUserImage()
 
                 createUserVm.validate().also { validationResult ->
                     if (validationResult is ValidationResult.Invalid) {
@@ -30,18 +31,52 @@ fun Application.configureRestApi(
                     }
                 }
 
-                userService.createUser(
-                    createUserVm,
-                    multipart.toUserImage()
-                )
-
+                userService.createUser(createUserVm, userImage)
                 call.respond("User created successfully.")
             }
 
-            patch("/user") {
-                call.respond("User updated successfully.")
+            authenticate(strategy = AuthenticationStrategy.Required) {
+
+                get("/user") {
+                    val username = call.principal<JWTPrincipal>()?.subject ?: run {
+                        call.respond(HttpStatusCode.Unauthorized, "Invalid token or missing subject")
+                        return@get
+                    }
+
+                    call.respondText(
+                        Json.encodeToString(userService.getUserByUserName(username)),
+                        ContentType.Application.Json,
+                        HttpStatusCode.OK
+                    )
+                }
+
+                patch("/user") {
+                    val username = call.principal<JWTPrincipal>()?.subject ?: run {
+                        call.respond(HttpStatusCode.Unauthorized, "Invalid token or missing subject")
+                        return@patch
+                    }
+
+                    val userPatchVm = Json.decodeFromString<UserPatchVm>(call.receiveText())
+
+                    userPatchVm.validate().also { validationResult ->
+                        if (validationResult is ValidationResult.Invalid) {
+                            throw RequestValidationException(userPatchVm, validationResult.reasons)
+                        }
+                    }
+
+                    userService.updateUser(
+                        userPatchVm,
+                        username
+                    )
+
+                    call.respondText(
+                        "User updated successfully.",
+                        ContentType.Text.Plain,
+                        HttpStatusCode.OK
+                    )
+                }
             }
-            
+
             // because of GraphQL, we cannot use ContentNegotiation, hence respondText
             get("/esport") {
                 call.respondText(

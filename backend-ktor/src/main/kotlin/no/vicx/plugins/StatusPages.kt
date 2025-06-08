@@ -16,9 +16,16 @@ const val VALIDATION_ERROR = "validation error"
 fun Application.configureStatusPage() {
     install(StatusPages) {
         exception<NotFoundException> { call, cause ->
-            call.respond(
-                status = HttpStatusCode.NotFound,
-                message = mapOf("error" to cause.message)
+            call.respondText(
+                text = Json.encodeToString(
+                    ApiError(
+                        status = HttpStatusCode.NotFound.value,
+                        message = cause.message.orEmpty(),
+                        url = call.request.uri
+                    )
+                ),
+                contentType = ContentType.Application.Json,
+                status = HttpStatusCode.NotFound
             )
         }
 

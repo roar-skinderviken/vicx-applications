@@ -4,7 +4,6 @@ import io.kotest.assertions.asClue
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.data.forAll
 import io.kotest.data.row
-import io.kotest.datatest.withData
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
 import io.mockk.coEvery
@@ -31,12 +30,11 @@ class CalculatorServiceTest : BehaviorSpec({
             sut = CalculatorService(calculatorRepository, maxAge)
         }
 
-        withData(
-            CalculatorOperation.PLUS to 3L,
-            CalculatorOperation.MINUS to 1L,
-        ) { (operation, expectedResult) ->
-
-            When("calculate is called with valid parameters, operator: $operation") {
+        forAll(
+            row(CalculatorOperation.PLUS, 3L),
+            row(CalculatorOperation.MINUS, 1L),
+        ) {operation, expectedResult ->
+            When("calculate is called with valid parameters, operation: $operation") {
                 val expected = expectedCalcEntry(operation, expectedResult)
                 coEvery { calculatorRepository.save(any<CalcEntry>()) } returns expected
 

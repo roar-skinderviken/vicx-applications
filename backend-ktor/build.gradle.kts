@@ -54,7 +54,6 @@ dependencies {
     implementation(libs.embedded.postgres) // TODO
 
     testImplementation(libs.kotest.runner.junit5)
-    testImplementation(libs.kotest.framework.datatest)
     testImplementation(libs.mockk)
     testImplementation(libs.kotlin.test)
 }

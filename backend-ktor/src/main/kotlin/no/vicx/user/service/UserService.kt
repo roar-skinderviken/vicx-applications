@@ -2,6 +2,7 @@ package no.vicx.user.service
 
 import io.ktor.server.plugins.*
 import io.ktor.server.plugins.requestvalidation.*
+import no.vicx.cache.AsyncCacheWrapper
 import no.vicx.db.model.UserImage
 import no.vicx.db.model.VicxUser
 import no.vicx.db.repository.UserRepository
@@ -10,12 +11,17 @@ import no.vicx.user.vm.CreateUserVm
 import no.vicx.user.vm.UserPatchVm
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
+import java.util.concurrent.TimeUnit
 
 class UserService(
     private val recaptchaClient: RecaptchaClient,
     private val userRepository: UserRepository,
     private val passwordEncoder: PasswordEncoder = BCryptPasswordEncoder()
 ) {
+    private val recaptchaCache = AsyncCacheWrapper<String, Boolean>(
+        1, TimeUnit.MINUTES,
+    ) { recaptchaToken -> recaptchaClient.verifyToken(recaptchaToken) }
+
     /**
      * Creates a new user with the specified details.
      *
@@ -30,7 +36,7 @@ class UserService(
         createUserVm: CreateUserVm,
         userImage: UserImage?
     ): VicxUser {
-        if (!recaptchaClient.verifyToken(createUserVm.recaptchaToken)) {
+        if (!recaptchaCache.getOrCompute(createUserVm.recaptchaToken)) {
             throw RequestValidationException(
                 value = createUserVm,
                 reasons = listOf("recaptchaToken is invalid. Please wait to token expires and try again")
@@ -44,8 +50,7 @@ class UserService(
             )
         }
 
-        // TODO
-        //recaptchaTokensCache.evictIfPresent(createUserVm.recaptchaToken());
+        recaptchaCache.invalidate(createUserVm.recaptchaToken)
 
         return userRepository.createUser(
             createUserVm.toDbModel(
@@ -75,12 +80,16 @@ class UserService(
      * @param requestVm the [UserPatchVm] containing the details to update
      * @param username  the username of the user to update
      */
-    fun updateUser(
+    suspend fun updateUser(
         requestVm: UserPatchVm,
         username: String
     ) {
-        TODO()
-        //userRepository.save<no.vicx.database.user.VicxUser>(requestVm.applyPatch(getUserByUserName(username)))
+        val userToPatch = getUserByUserName(username)
+        userRepository.updateUser(
+            id = userToPatch.id,
+            name = requestVm.name.takeIf { it.isNotBlank() },
+            email = requestVm.email.takeIf { it.isNotBlank() },
+        )
     }
 
     /**
