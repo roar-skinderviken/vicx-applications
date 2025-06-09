@@ -6,6 +6,7 @@ import io.kotest.data.forAll
 import io.kotest.data.row
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
+import io.mockk.clearAllMocks
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -20,20 +21,19 @@ import java.time.LocalDateTime
 class CalculatorServiceTest : BehaviorSpec({
     coroutineTestScope = true
 
-    lateinit var calculatorRepository: CalculatorRepository
-    lateinit var sut: CalculatorService
-    val maxAge = mockk<Duration>(relaxed = true)
+    val calculatorRepository: CalculatorRepository = mockk()
+    val maxAge = mockk<Duration>()
+    val sut = CalculatorService(calculatorRepository, maxAge)
 
     Given("a CalculatorService with mocked CalculatorRepository") {
         beforeContainer {
-            calculatorRepository = mockk()
-            sut = CalculatorService(calculatorRepository, maxAge)
+            clearAllMocks()
         }
 
         forAll(
             row(CalculatorOperation.PLUS, 3L),
             row(CalculatorOperation.MINUS, 1L),
-        ) {operation, expectedResult ->
+        ) { operation, expectedResult ->
             When("calculate is called with valid parameters, operation: $operation") {
                 val expected = expectedCalcEntry(operation, expectedResult)
                 coEvery { calculatorRepository.save(any<CalcEntry>()) } returns expected

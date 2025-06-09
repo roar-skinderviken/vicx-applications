@@ -14,6 +14,10 @@ import no.vicx.extension.toCreateUserVmAndUserImage
 import no.vicx.user.service.UserService
 import no.vicx.user.vm.UserPatchVm
 
+fun ApplicationCall.getAuthenticatedUsername(): String =
+    this.principal<JWTPrincipal>()?.subject
+        ?: throw SecurityException("JWTPrincipal or subject is missing for secured endpoint")
+
 fun Application.configureRestApi(
     esportService: EsportService,
     userService: UserService,
@@ -38,10 +42,7 @@ fun Application.configureRestApi(
             authenticate(strategy = AuthenticationStrategy.Required) {
 
                 get("/user") {
-                    val username = call.principal<JWTPrincipal>()?.subject ?: run {
-                        call.respond(HttpStatusCode.Unauthorized, "Invalid token or missing subject")
-                        return@get
-                    }
+                    val username = call.getAuthenticatedUsername()
 
                     call.respondText(
                         Json.encodeToString(userService.getUserByUserName(username)),
@@ -51,11 +52,7 @@ fun Application.configureRestApi(
                 }
 
                 patch("/user") {
-                    val username = call.principal<JWTPrincipal>()?.subject ?: run {
-                        call.respond(HttpStatusCode.Unauthorized, "Invalid token or missing subject")
-                        return@patch
-                    }
-
+                    val username = call.getAuthenticatedUsername()
                     val userPatchVm = Json.decodeFromString<UserPatchVm>(call.receiveText())
 
                     userPatchVm.validate().also { validationResult ->

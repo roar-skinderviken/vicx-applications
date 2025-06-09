@@ -49,14 +49,18 @@ fun Application.configureGraphQL(
 }
 
 /**
- * Custom logic for how this example app should create its context given the [ApplicationRequest]
+ * Custom logic for adding [JWTPrincipal] to the [GraphQLContext]
  */
 class CustomGraphQLContextFactory : DefaultKtorGraphQLContextFactory() {
     override suspend fun generateContext(request: ApplicationRequest): GraphQLContext {
-        val context = super.generateContext(request)
-        val principal = request.call.principal<JWTPrincipal>()
+        val baseContext = super.generateContext(request)
 
-        return if (principal != null) context.plus(mapOf("jwtPrincipal" to principal))
-        else context
+        return request.call.principal<JWTPrincipal>()
+            ?.let { jwtPrincipal -> baseContext.plus(mapOf(JWT_PRINCIPAL_KEY to jwtPrincipal)) }
+            ?: baseContext
+    }
+
+    companion object {
+        const val JWT_PRINCIPAL_KEY = "jwtPrincipal"
     }
 }

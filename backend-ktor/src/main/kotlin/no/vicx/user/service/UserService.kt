@@ -14,7 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import java.util.concurrent.TimeUnit
 
 class UserService(
-    private val recaptchaClient: RecaptchaClient,
+    recaptchaClient: RecaptchaClient,
     private val userRepository: UserRepository,
     private val passwordEncoder: PasswordEncoder = BCryptPasswordEncoder()
 ) {

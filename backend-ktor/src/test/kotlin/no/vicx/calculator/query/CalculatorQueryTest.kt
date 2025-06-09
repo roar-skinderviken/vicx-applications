@@ -34,8 +34,8 @@ import no.vicx.util.SecurityTestUtils.configureTestSecurity
 import no.vicx.util.SecurityTestUtils.tokenStringInTest
 
 class CalculatorQueryTest : BehaviorSpec() {
-    private lateinit var calculatorService: CalculatorService
-    private lateinit var calculatorRepository: CalculatorRepository
+    private val calculatorService: CalculatorService = mockk()
+    private val calculatorRepository: CalculatorRepository = mockk()
 
     init {
         coroutineTestScope = true
@@ -43,8 +43,6 @@ class CalculatorQueryTest : BehaviorSpec() {
         Given("GraphQL environment with mocked dependencies") {
             beforeContainer {
                 clearAllMocks()
-                calculatorService = mockk()
-                calculatorRepository = mockk()
             }
 
             When("sending valid request to getAllCalculations") {
@@ -64,7 +62,7 @@ class CalculatorQueryTest : BehaviorSpec() {
             }
 
             forAll(
-               row(ANONYMOUS_USERNAME, false),
+                row(ANONYMOUS_USERNAME, false),
                 row(USERNAME_IN_TEST, true),
             ) { username, addAuthHeader ->
                 When("sending valid request to createCalculation. $username, $addAuthHeader") {
@@ -131,7 +129,7 @@ class CalculatorQueryTest : BehaviorSpec() {
         }
     }
 
-    private suspend inline fun <reified T> postGraphQLRequestAndReturnResult(
+    private suspend inline fun <reified T : Any> postGraphQLRequestAndReturnResult(
         query: String,
         addAuthHeader: Boolean = false,
     ): GraphQLResponseBody<T> {

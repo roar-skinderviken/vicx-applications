@@ -28,14 +28,13 @@ fun Application.module() {
     val reCaptchaSecret = environment.config.property("user.recaptcha.secret").getString()
 
     val calculatorRepository = CalculatorRepository()
+    val calculatorService = CalculatorService(CalculatorRepository(), Duration.ofHours(1))
 
-    // user
     val recaptchaClient = RecaptchaClient(defaultClient, reCaptchaSecret)
     val userRepository = UserRepository()
-
-    val calculatorService = CalculatorService(CalculatorRepository(), Duration.ofHours(1))
-    val esportService = EsportService(EsportClient(defaultClient, esportToken))
     val userService = UserService(recaptchaClient, userRepository)
+
+    val esportService = EsportService(EsportClient(defaultClient, esportToken))
 
     //install(ContentNegotiation) { json() }
 

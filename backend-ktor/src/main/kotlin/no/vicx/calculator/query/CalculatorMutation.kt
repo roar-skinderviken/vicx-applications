@@ -7,6 +7,7 @@ import no.vicx.calculator.CalculatorService
 import no.vicx.calculator.vm.CalcVm
 import no.vicx.db.model.CalculatorOperation
 import no.vicx.db.repository.CalculatorRepository
+import no.vicx.plugins.CustomGraphQLContextFactory.Companion.JWT_PRINCIPAL_KEY
 
 @Suppress("unused")
 class CalculatorMutation(
@@ -18,7 +19,7 @@ class CalculatorMutation(
         ids: List<Int>,
         environment: DataFetchingEnvironment
     ): Boolean {
-        val jwtPrincipal = environment.graphQlContext.get<JWTPrincipal>("jwtPrincipal")
+        val jwtPrincipal = environment.graphQlContext.get<JWTPrincipal>(JWT_PRINCIPAL_KEY)
             ?: throw RuntimeException("Unauthorized")
 
         if (!calculatorService.isAllowedToDelete(ids, jwtPrincipal.subject!!)) {
@@ -34,7 +35,7 @@ class CalculatorMutation(
         operation: CalculatorOperation,
         environment: DataFetchingEnvironment
     ): CalcVm {
-        val jwtPrincipal = environment.graphQlContext.get<JWTPrincipal>("jwtPrincipal")
+        val jwtPrincipal = environment.graphQlContext.get<JWTPrincipal>(JWT_PRINCIPAL_KEY)
         val username = jwtPrincipal?.subject ?: ANONYMOUS_USERNAME
 
         return calculatorService.calculate(
