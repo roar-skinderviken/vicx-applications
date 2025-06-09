@@ -13,7 +13,7 @@ import no.vicx.user.UserTestConstants.API_USER
 import no.vicx.util.RouteTestContext
 import no.vicx.util.SecurityTestUtils.USERNAME_IN_TEST
 import no.vicx.util.SecurityTestUtils.tokenStringInTest
-import no.vicx.util.TestConstants.userModelInTest
+import no.vicx.util.MiscTestUtils.userModelInTest
 
 class GetUserRouteTest : BehaviorSpec({
     coroutineTestScope = true

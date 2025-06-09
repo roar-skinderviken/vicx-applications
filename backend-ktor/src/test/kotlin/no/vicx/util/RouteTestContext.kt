@@ -9,6 +9,7 @@ import no.vicx.esport.EsportService
 import no.vicx.plugins.configureRestApi
 import no.vicx.plugins.configureStatusPage
 import no.vicx.user.service.RecaptchaClient
+import no.vicx.user.service.UserImageService
 import no.vicx.user.service.UserService
 import no.vicx.util.SecurityTestUtils.configureTestSecurity
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation as ClientContentNegotiation
@@ -16,7 +17,8 @@ import io.ktor.client.plugins.contentnegotiation.ContentNegotiation as ClientCon
 class RouteTestContext(
     val esportService: EsportService = mockk(),
     val recaptchaClient: RecaptchaClient = mockk(),
-    val userRepository: UserRepository = mockk()
+    val userRepository: UserRepository = mockk(),
+    val userImageService: UserImageService = mockk(),
 ) {
     fun <T : Any> runInTestApplicationContext(block: suspend (HttpClient) -> T): T {
         lateinit var result: T
@@ -27,7 +29,8 @@ class RouteTestContext(
                 configureTestSecurity()
                 configureRestApi(
                     esportService,
-                    UserService(recaptchaClient, userRepository)
+                    UserService(recaptchaClient, userRepository),
+                    userImageService
                 )
             }
 

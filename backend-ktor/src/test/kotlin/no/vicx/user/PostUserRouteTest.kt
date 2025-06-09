@@ -17,10 +17,15 @@ import no.vicx.error.ApiError
 import no.vicx.plugins.VALIDATION_ERROR
 import no.vicx.user.UserTestConstants.API_USER
 import no.vicx.user.vm.CreateUserVm
+import no.vicx.util.MiscTestUtils.GIF_CONTENT_TYPE
+import no.vicx.util.MiscTestUtils.GIF_RESOURCE_NAME
+import no.vicx.util.MiscTestUtils.PNG_CONTENT_TYPE
+import no.vicx.util.MiscTestUtils.TOO_LARGE_RESOURCE_NAME
+import no.vicx.util.MiscTestUtils.VALID_BCRYPT_PASSWORD
+import no.vicx.util.MiscTestUtils.VALID_PLAINTEXT_PASSWORD
+import no.vicx.util.MiscTestUtils.getResourceAsByteArray
+import no.vicx.util.MiscTestUtils.userModelInTest
 import no.vicx.util.RouteTestContext
-import no.vicx.util.TestConstants.VALID_BCRYPT_PASSWORD
-import no.vicx.util.TestConstants.VALID_PLAINTEXT_PASSWORD
-import no.vicx.util.TestConstants.userModelInTest
 
 class PostUserRouteTest : BehaviorSpec({
     coroutineTestScope = true
@@ -123,87 +128,98 @@ class PostUserRouteTest : BehaviorSpec({
         forAll(
             row(
                 CreateUserVm("", VALID_PLAINTEXT_PASSWORD, "The User", "user@example.com", "mock-token"),
-                "username", "Username cannot be blank"
+                null, "username", "Username cannot be blank"
             ),
             row(
                 CreateUserVm(" ".repeat(4), VALID_PLAINTEXT_PASSWORD, "The User", "user@example.com", "mock-token"),
-                "username", "Username cannot be blank"
+                null, "username", "Username cannot be blank"
             ),
             row(
                 CreateUserVm("a", VALID_PLAINTEXT_PASSWORD, "The User", "user@example.com", "mock-token"),
-                "username", "Username must be between 4 and 255 characters"
+                null, "username", "Username must be between 4 and 255 characters"
             ),
             row(
                 CreateUserVm("a".repeat(256), VALID_PLAINTEXT_PASSWORD, "The User", "user@example.com", "mock-token"),
-                "username", "Username must be between 4 and 255 characters"
+                null, "username", "Username must be between 4 and 255 characters"
             ),
             row(
                 CreateUserVm("John Doe", VALID_PLAINTEXT_PASSWORD, "The User", "user@example.com", "mock-token"),
-                "username", "Username can only contain letters, numbers, hyphens, and underscores"
+                null, "username", "Username can only contain letters, numbers, hyphens, and underscores"
             ),
 
             row(
                 CreateUserVm("user1", "", "The User", "user@example.com", "mock-token"),
-                "password", "Password cannot be blank"
+                null, "password", "Password cannot be blank"
             ),
             row(
                 CreateUserVm("user1", " ".repeat(4), "The User", "user@example.com", "mock-token"),
-                "password", "Password cannot be blank"
+                null, "password", "Password cannot be blank"
             ),
             row(
                 CreateUserVm("user1", "Aa1Aa1", "The User", "user@example.com", "mock-token"),
-                "password", "Password must be between 8 and 255 characters"
+                null, "password", "Password must be between 8 and 255 characters"
             ),
             row(
                 CreateUserVm("user1", "Aa1".repeat(90), "The User", "user@example.com", "mock-token"),
-                "password", "Password must be between 8 and 255 characters"
+                null, "password", "Password must be between 8 and 255 characters"
             ),
             row(
                 CreateUserVm("user1", "a".repeat(8), "The User", "user@example.com", "mock-token"),
-                "password", "Password must contain at least one lowercase letter, one uppercase letter, and one digit"
+                null,
+                "password",
+                "Password must contain at least one lowercase letter, one uppercase letter, and one digit"
             ),
 
             row(
                 CreateUserVm("user1", VALID_PLAINTEXT_PASSWORD, "", "user@example.com", "mock-token"),
-                "name", "Name cannot be blank"
+                null, "name", "Name cannot be blank"
             ),
             row(
                 CreateUserVm("user1", VALID_PLAINTEXT_PASSWORD, " ".repeat(4), "user@example.com", "mock-token"),
-                "name", "Name cannot be blank"
+                null, "name", "Name cannot be blank"
             ),
             row(
                 CreateUserVm("user1", VALID_PLAINTEXT_PASSWORD, "a".repeat(3), "user@example.com", "mock-token"),
-                "name", "Name must be between 4 and 255 characters"
+                null, "name", "Name must be between 4 and 255 characters"
             ),
             row(
                 CreateUserVm("user1", VALID_PLAINTEXT_PASSWORD, "a".repeat(256), "user@example.com", "mock-token"),
-                "name", "Name must be between 4 and 255 characters"
+                null, "name", "Name must be between 4 and 255 characters"
             ),
 
             row(
                 CreateUserVm("user1", VALID_PLAINTEXT_PASSWORD, "The User", "", "mock-token"),
-                "email", "Email cannot be blank"
+                null, "email", "Email cannot be blank"
             ),
             row(
                 CreateUserVm("user1", VALID_PLAINTEXT_PASSWORD, "The User", "a", "mock-token"),
-                "email", "Email format is invalid"
+                null, "email", "Email format is invalid"
             ),
 
             row(
                 CreateUserVm("user1", VALID_PLAINTEXT_PASSWORD, "The User", "user@example.com", ""),
-                "recaptchaToken", "recaptchaToken cannot be blank"
+                null, "recaptchaToken", "recaptchaToken cannot be blank"
             ),
             row(
                 CreateUserVm("user1", VALID_PLAINTEXT_PASSWORD, "The User", "user@example.com", " ".repeat(4)),
-                "recaptchaToken", "recaptchaToken cannot be blank"
-            )
-        ) { createUserVm, field, expectedValidationError ->
+                null, "recaptchaToken", "recaptchaToken cannot be blank"
+            ),
 
-            When("calling POST /api/user with invalid $field, $createUserVm") {
+            row(
+                CreateUserVm("user1", VALID_PLAINTEXT_PASSWORD, "The User", "user@example.com", "mock-token"),
+                GIF_CONTENT_TYPE to GIF_RESOURCE_NAME, "image", "Image file type: Only PNG and JPG files are allowed"
+            ),
+            row(
+                CreateUserVm("user1", VALID_PLAINTEXT_PASSWORD, "The User", "user@example.com", "mock-token"),
+                PNG_CONTENT_TYPE to TOO_LARGE_RESOURCE_NAME, "image", "Image file size exceeds the maximum allowed size of 51200 bytes"
+            )
+        ) { createUserVm, imageInfo, field, expectedValidationError ->
+
+            When("calling POST /api/user with invalid $field, $createUserVm, $imageInfo") {
                 val response = routeTestContext.runInTestApplicationContext { httpClient ->
                     httpClient.post(API_USER) {
                         contentType(ContentType.MultiPart.FormData)
-                        setBody(createMultiPartFormDataContent(createUserVm))
+                        setBody(createMultiPartFormDataContent(createUserVm, imageInfo))
                     }
                 }
 
@@ -240,7 +256,10 @@ class PostUserRouteTest : BehaviorSpec({
             }
         }
 
-        fun createMultiPartFormDataContent(createUserVm: CreateUserVm) = MultiPartFormDataContent(
+        fun createMultiPartFormDataContent(
+            createUserVm: CreateUserVm,
+            userImageInfo: Pair<String, String>? = null
+        ) = MultiPartFormDataContent(
             formData {
                 append("username", createUserVm.username)
                 append("name", createUserVm.name)
@@ -248,14 +267,18 @@ class PostUserRouteTest : BehaviorSpec({
                 append("password", createUserVm.password)
                 append("recaptchaToken", createUserVm.recaptchaToken)
 
-                append(
-                    "image",
-                    "some-data".toByteArray(),
-                    Headers.build {
-                        append(HttpHeaders.ContentType, ContentType.Image.PNG)
-                        append(HttpHeaders.ContentDisposition, "filename=\"profile-image.png\"")
-                    }
-                )
+                if (userImageInfo != null) {
+                    val (contentType, resourceName) = userImageInfo
+
+                    append(
+                        "image",
+                        getResourceAsByteArray("/$resourceName"),
+                        Headers.build {
+                            append(HttpHeaders.ContentType, ContentType.parse(contentType))
+                            append(HttpHeaders.ContentDisposition, "filename=\"$resourceName\"")
+                        }
+                    )
+                }
             }
         )
     }

@@ -14,10 +14,10 @@ import no.vicx.error.ApiError
 import no.vicx.plugins.VALIDATION_ERROR
 import no.vicx.user.UserTestConstants.API_USER
 import no.vicx.user.vm.UserPatchVm
+import no.vicx.util.MiscTestUtils.userModelInTest
 import no.vicx.util.RouteTestContext
 import no.vicx.util.SecurityTestUtils.USERNAME_IN_TEST
 import no.vicx.util.SecurityTestUtils.tokenStringInTest
-import no.vicx.util.TestConstants.userModelInTest
 
 class PatchUserRouteTest : BehaviorSpec({
     coroutineTestScope = true

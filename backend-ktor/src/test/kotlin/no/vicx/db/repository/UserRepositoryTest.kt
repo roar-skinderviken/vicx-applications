@@ -15,9 +15,9 @@ import no.vicx.db.entity.VicxUserEntity
 import no.vicx.db.model.VicxUser
 import no.vicx.db.repository.UserRepository.Companion.PASSWORD_MUST_BE_ENCRYPTED_MSG
 import no.vicx.db.toModel
-import no.vicx.util.TestConstants.VALID_PLAINTEXT_PASSWORD
-import no.vicx.util.TestConstants.userImageModelInTest
-import no.vicx.util.TestConstants.userModelInTest
+import no.vicx.util.MiscTestUtils.VALID_PLAINTEXT_PASSWORD
+import no.vicx.util.MiscTestUtils.userImageModelInTest
+import no.vicx.util.MiscTestUtils.userModelInTest
 import no.vicx.util.configureTestDb
 import no.vicx.util.insertTestData
 import org.jetbrains.exposed.sql.transactions.transaction

@@ -49,6 +49,7 @@ dependencies {
 
     implementation(libs.spring.security.crypto)
     implementation(libs.caffeine)
+    implementation(libs.tika.core)
 
     testImplementation(libs.ktor.server.test.host)
     implementation(libs.embedded.postgres) // TODO

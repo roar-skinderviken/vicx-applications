@@ -11,6 +11,7 @@ import no.vicx.esport.EsportService
 import no.vicx.esport.HttpClientConfig.defaultClient
 import no.vicx.plugins.*
 import no.vicx.user.service.RecaptchaClient
+import no.vicx.user.service.UserImageService
 import no.vicx.user.service.UserService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -33,6 +34,7 @@ fun Application.module() {
     val recaptchaClient = RecaptchaClient(defaultClient, reCaptchaSecret)
     val userRepository = UserRepository()
     val userService = UserService(recaptchaClient, userRepository)
+    val userImageService = UserImageService()
 
     val esportService = EsportService(EsportClient(defaultClient, esportToken))
 
@@ -49,5 +51,9 @@ fun Application.module() {
 
     configureStatusPage()
     configureGraphQL(calculatorService, calculatorRepository)
-    configureRestApi(esportService, userService)
+    configureRestApi(
+        esportService,
+        userService,
+        userImageService
+    )
 }
