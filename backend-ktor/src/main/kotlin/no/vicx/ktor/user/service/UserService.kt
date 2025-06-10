@@ -92,27 +92,6 @@ class UserService(
         )
     }
 
-    /**
-     * Validates if the provided password matches the user's current password.
-     *
-     * If the user with the specified `username` is not found, a [NotFoundException] is thrown.
-     *
-     * @param username          the username of the user to validate the password for
-     * @param clearTextPassword the password in plain text to validate
-     * @return `true` if the password matches, `false` otherwise
-     */
-    fun isValidPassword(
-        username: String,
-        clearTextPassword: String?
-    ): Boolean {
-        TODO()
-        /*
-                return passwordEncoder.matches(
-                    clearTextPassword,
-                    getUserByUserName(username).getPassword()
-                )
-        */
-    }
 
     /**
      * Updates the password for the specified user.
@@ -122,18 +101,19 @@ class UserService(
      * @param changePasswordVm the [ChangePasswordVm] containing the new password details
      * @param username         the username of the user to update the password for
      */
-    fun updatePassword(
+    suspend fun tryUpdatePassword(
         changePasswordVm: ChangePasswordVm,
         username: String
     ) {
-        TODO()
-        /*
-                userRepository.save<no.vicx.database.user.VicxUser>(
-                    changePasswordVm.applyPatch(
-                        getUserByUserName(username),
-                        passwordEncoder
-                    )
-                )
-        */
+        val user = getUserByUserName(username)
+
+        if (!passwordEncoder.matches(changePasswordVm.currentPassword, user.password))
+            throw RequestValidationException(changePasswordVm, listOf("currentPassword is incorrect"))
+
+        val encodedPassword = passwordEncoder.encode(changePasswordVm.password)
+
+        userRepository.updateUser(
+            id = user.id, password = encodedPassword
+        )
     }
 }

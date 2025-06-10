@@ -41,8 +41,7 @@ fun Application.module() {
 
     val esportService = EsportService(EsportClient(defaultClient, esportToken))
 
-    //install(ContentNegotiation) { json() }
-
+    // for localhost testing
     install(CORS) {
         anyHost()
         allowHeader(HttpHeaders.ContentType)

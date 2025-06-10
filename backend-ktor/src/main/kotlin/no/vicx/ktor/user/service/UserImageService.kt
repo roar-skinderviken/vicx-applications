@@ -13,7 +13,6 @@ class UserImageService(
     private val userRepository: UserRepository,
     private val userImageRepository: UserImageRepository
 ) {
-
     /**
      * Adds or replaces the image associated with the specified user.
      *

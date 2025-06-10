@@ -1,7 +1,12 @@
 package no.vicx.ktor.util
 
+import io.kotest.assertions.assertSoftly
+import io.kotest.matchers.shouldBe
+import io.ktor.http.*
 import no.vicx.ktor.db.model.UserImage
 import no.vicx.ktor.db.model.VicxUser
+import no.vicx.ktor.error.ApiError
+import no.vicx.ktor.plugins.VALIDATION_ERROR
 import no.vicx.ktor.util.SecurityTestUtils.USERNAME_IN_TEST
 
 object MiscTestUtils {
@@ -38,5 +43,19 @@ object MiscTestUtils {
         val resourceAsStream = javaClass.getResourceAsStream(path)
         requireNotNull(resourceAsStream)
         return resourceAsStream.readBytes()
+    }
+
+
+    fun assertValidationErrors(
+        apiError: ApiError,
+        expectedUrl: String,
+        expectedValidationErrors: Map<String, String>,
+    ) {
+        assertSoftly(apiError) {
+            status shouldBe HttpStatusCode.BadRequest.value
+            url shouldBe expectedUrl
+            message shouldBe VALIDATION_ERROR
+            validationErrors shouldBe expectedValidationErrors
+        }
     }
 }

@@ -178,7 +178,11 @@ class UserRepositoryTest : BehaviorSpec({
 
                     application {
                         runBlocking {
-                            sut.updateUser(insertedUser.id, newName, newEmail)
+                            sut.updateUser(
+                                id = insertedUser.id,
+                                name = newName,
+                                email = newEmail
+                            )
                         }
 
                         transaction {

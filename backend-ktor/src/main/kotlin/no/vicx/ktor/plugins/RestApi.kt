@@ -15,6 +15,7 @@ import no.vicx.ktor.esport.EsportService
 import no.vicx.ktor.user.service.UserImageService
 import no.vicx.ktor.user.service.UserService
 import no.vicx.ktor.user.toViewModel
+import no.vicx.ktor.user.vm.ChangePasswordVm
 import no.vicx.ktor.user.vm.UserPatchVm
 import no.vicx.ktor.util.IMAGE_PART
 import no.vicx.ktor.util.UserImageResult
@@ -32,11 +33,17 @@ fun ApplicationCall.getAuthenticatedUsername(): String =
     this.principal<JWTPrincipal>()?.subject
         ?: throw SecurityException("JWTPrincipal or subject is missing for secured endpoint")
 
+private val jsonIgnoreUnknown = Json {
+    ignoreUnknownKeys = true
+}
+
 fun Application.configureRestApi(
     esportService: EsportService,
     userService: UserService,
     userImageService: UserImageService
 ) {
+    // because of GraphQL, we cannot use global ContentNegotiation, hence respondText
+
     routing {
         route("/api") {
 
@@ -83,7 +90,7 @@ fun Application.configureRestApi(
 
                 patch("/user") {
                     val username = call.getAuthenticatedUsername()
-                    val userPatchVm = Json.decodeFromString<UserPatchVm>(call.receiveText())
+                    val userPatchVm = jsonIgnoreUnknown.decodeFromString<UserPatchVm>(call.receiveText())
 
                     userPatchVm.validate().also { validationResult ->
                         if (validationResult is ValidationResult.Invalid) {
@@ -113,10 +120,15 @@ fun Application.configureRestApi(
                             userImageCallback = { userImageResult ->
                                 when (userImageResult) {
                                     is UserImageResult.ValidImageResult ->
-                                        userImageService.addOrReplaceUserImage(userImageResult.userImage, username)
+                                        userImageService.addOrReplaceUserImage(
+                                            userImageResult.userImage, username
+                                        )
 
                                     is UserImageResult.InvalidImageResult ->
-                                        listOf(userImageResult.validationError).throwIfAnyInvalid(IMAGE_PART)
+                                        throw RequestValidationException(
+                                            IMAGE_PART,
+                                            userImageResult.validationError.reasons
+                                        )
                                 }
                             }
                         )
@@ -144,10 +156,29 @@ fun Application.configureRestApi(
                         userImageService.deleteUserImage(username)
                         call.respond(HttpStatusCode.NoContent)
                     }
+
+                    patch("/password") {
+                        val username = call.getAuthenticatedUsername()
+                        val changePasswordVm = jsonIgnoreUnknown.decodeFromString<ChangePasswordVm>(call.receiveText())
+
+                        changePasswordVm.validate().also { validationResult ->
+                            if (validationResult is ValidationResult.Invalid) {
+                                throw RequestValidationException(changePasswordVm, validationResult.reasons)
+                            }
+                        }
+
+                        // will throw validation error when wrong existing password
+                        userService.tryUpdatePassword(changePasswordVm, username)
+
+                        call.respondText(
+                            text = "Your password has been successfully updated.",
+                            contentType = ContentType.Text.Plain,
+                            status = HttpStatusCode.OK
+                        )
+                    }
                 }
             }
 
-            // because of GraphQL, we cannot use ContentNegotiation, hence respondText
             get("/esport") {
                 call.respondText(
                     Json.encodeToString(esportService.getMatches()),

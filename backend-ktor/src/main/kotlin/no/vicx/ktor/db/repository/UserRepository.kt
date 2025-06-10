@@ -47,13 +47,15 @@ class UserRepository {
 
     suspend fun updateUser(
         id: Long,
-        name: String?,
-        email: String?
+        name: String? = null,
+        email: String? = null,
+        password: String? = null
     ): Unit = suspendTransaction {
         no.vicx.ktor.db.entity.VicxUserEntity.findByIdAndUpdate(id) { user ->
             user.apply {
                 name?.let { this.name = it }
                 email?.let { this.email = it }
+                password?.let { this.password = it }
             }
         }
     }

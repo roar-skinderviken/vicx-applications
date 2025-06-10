@@ -11,15 +11,16 @@ import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.mockk.*
 import no.vicx.ktor.error.ApiError
-import no.vicx.ktor.user.UserTestConstants.API_USER
-import no.vicx.ktor.user.vm.UserPatchVm
+import no.vicx.ktor.user.UserTestConstants.API_USER_PASSWORD
+import no.vicx.ktor.user.vm.ChangePasswordVm
+import no.vicx.ktor.util.MiscTestUtils.VALID_PLAINTEXT_PASSWORD
 import no.vicx.ktor.util.MiscTestUtils.assertValidationErrors
 import no.vicx.ktor.util.MiscTestUtils.userModelInTest
 import no.vicx.ktor.util.RouteTestContext
 import no.vicx.ktor.util.SecurityTestUtils.USERNAME_IN_TEST
 import no.vicx.ktor.util.SecurityTestUtils.tokenStringInTest
 
-class PatchUserRouteTest : BehaviorSpec({
+class ChangePasswordRouteTest : BehaviorSpec({
     coroutineTestScope = true
     val routeTestContext = RouteTestContext()
 
@@ -28,9 +29,9 @@ class PatchUserRouteTest : BehaviorSpec({
             clearAllMocks()
         }
 
-        When("calling PATCH /api/user without authentication") {
+        When("calling PATCH /api/user/password without authentication") {
             val response = routeTestContext.runInTestApplicationContext { httpClient ->
-                performPatchRequest(httpClient, userPatchVm, false)
+                performPatchRequest(httpClient, changePasswordVm, false)
             }
 
             Then("expect Unauthorized") {
@@ -40,34 +41,56 @@ class PatchUserRouteTest : BehaviorSpec({
             }
         }
 
-        When("calling PATCH /api/user with authentication and user in db") {
+        When("calling PATCH /api/user/password with authentication and user in db") {
             coEvery { routeTestContext.userRepository.findByUsername(USERNAME_IN_TEST) } returns userModelInTest
             coEvery { routeTestContext.userRepository.updateUser(any(), any(), any(), any()) } just Runs
 
             val response = routeTestContext.runInTestApplicationContext { httpClient ->
-                performPatchRequest(httpClient, userPatchVm)
+                performPatchRequest(httpClient, changePasswordVm)
             }
 
             Then("expect OK") {
                 response.status shouldBe HttpStatusCode.OK
-                response.bodyAsText() shouldBe "User updated successfully."
+                response.bodyAsText() shouldBe "Your password has been successfully updated."
                 coVerify(exactly = 1) {
                     routeTestContext.userRepository.findByUsername(userModelInTest.username)
-                    routeTestContext.userRepository.updateUser(
-                        userModelInTest.id,
-                        userModelInTest.name,
-                        userModelInTest.email,
-                        null
-                    )
+                    routeTestContext.userRepository.updateUser(userModelInTest.id, null, null, any())
                 }
             }
         }
 
-        When("calling PATCH /api/user with authentication and no user in db") {
+        When("calling PATCH /api/user/password with wrong existing password") {
+            coEvery { routeTestContext.userRepository.findByUsername(USERNAME_IN_TEST) } returns userModelInTest
+
+            val response = routeTestContext.runInTestApplicationContext { httpClient ->
+                performPatchRequest(
+                    httpClient, ChangePasswordVm(
+                        "~invalid-existing-password~",
+                        "$VALID_PLAINTEXT_PASSWORD-changed"
+                    )
+                )
+            }
+
+            Then("expect BadRequest") {
+                response.status shouldBe HttpStatusCode.BadRequest
+
+                localAssertValidationErrors(
+                    response.body<ApiError>(),
+                    mapOf("currentPassword" to "currentPassword is incorrect")
+                )
+
+                coVerify(exactly = 1) { routeTestContext.userRepository.findByUsername(userModelInTest.username) }
+                coVerify(exactly = 0) {
+                    routeTestContext.userRepository.updateUser(any(), any(), any(), any())
+                }
+            }
+        }
+
+        When("calling PATCH /api/user/password with no user in db") {
             coEvery { routeTestContext.userRepository.findByUsername(any()) } returns null
 
             val response = routeTestContext.runInTestApplicationContext { httpClient ->
-                performPatchRequest(httpClient, userPatchVm)
+                performPatchRequest(httpClient, changePasswordVm)
             }
 
             Then("expect NotFound") {
@@ -81,56 +104,39 @@ class PatchUserRouteTest : BehaviorSpec({
 
         forAll(
             row(
-                "Empty name and email", UserPatchVm("", ""),
+                "Empty currentPassword and new password", ChangePasswordVm("", ""),
                 mapOf(
-                    "name" to "Name and email cannot both be blank",
-                    "email" to "Email and name cannot both be blank"
+                    "currentPassword" to "currentPassword cannot be blank",
+                    "password" to "Password cannot be blank"
                 )
             ),
             row(
-                "Name with leading blank", UserPatchVm(" user-name", ""),
-                mapOf("name" to "Name cannot have leading or trailing blanks")
+                "currentPassword too short", ChangePasswordVm("P4s", VALID_PLAINTEXT_PASSWORD),
+                mapOf("currentPassword" to "currentPassword must be between 4 and 255 characters")
             ),
             row(
-                "Name with trailing blank", UserPatchVm("user-name ", ""),
-                mapOf("name" to "Name cannot have leading or trailing blanks")
-            ),
-            row(
-                "Name with both leading and trailing blank", UserPatchVm(" user-name ", ""),
-                mapOf("name" to "Name cannot have leading or trailing blanks")
+                "currentPassword too long", ChangePasswordVm("a".repeat(256), VALID_PLAINTEXT_PASSWORD),
+                mapOf("currentPassword" to "currentPassword must be between 4 and 255 characters")
             ),
 
             row(
-                "Name too short", UserPatchVm("a".repeat(3), "user@example.com"),
-                mapOf("name" to "Name must be between 4 and 255 characters")
+                "new password too short", ChangePasswordVm(VALID_PLAINTEXT_PASSWORD, "a".repeat(7)),
+                mapOf("password" to "Password must be between 8 and 255 characters")
             ),
             row(
-                "Name too long", UserPatchVm("a".repeat(256), "user@example.com"),
-                mapOf("name" to "Name must be between 4 and 255 characters")
-            ),
-
-            row(
-                "Blank email address, valid name", UserPatchVm("user1", " ".repeat(10)),
-                mapOf("email" to "Email format is invalid")
+                "new password too long", ChangePasswordVm(VALID_PLAINTEXT_PASSWORD, "a".repeat(256)),
+                mapOf("password" to "Password must be between 8 and 255 characters")
             ),
             row(
-                "Invalid email address", UserPatchVm("", "a".repeat(10)),
-                mapOf("email" to "Email format is invalid")
+                "invalid new password", ChangePasswordVm(VALID_PLAINTEXT_PASSWORD, "a".repeat(8)),
+                mapOf("password" to "Password must contain at least one lowercase letter, one uppercase letter, and one digit")
             ),
-            row(
-                "Email address with leading blank", UserPatchVm("", " user@example.com"),
-                mapOf("email" to "Email format is invalid")
-            ),
-            row(
-                "Email address with trailing blank", UserPatchVm("", "user@example.com "),
-                mapOf("email" to "Email format is invalid")
-            )
-        ) { description, patchVm, expectedValidationErrors ->
-            When("calling PATCH /api/user: $description") {
+        ) { description, changePasswordVm, expectedValidationErrors ->
+            When("calling PATCH /api/user/password: $description") {
                 coEvery { routeTestContext.userRepository.findByUsername(any()) } returns null
 
                 val response = routeTestContext.runInTestApplicationContext { httpClient ->
-                    performPatchRequest(httpClient, patchVm)
+                    performPatchRequest(httpClient, changePasswordVm)
                 }
 
                 Then("expect BadRequest") {
@@ -150,24 +156,25 @@ class PatchUserRouteTest : BehaviorSpec({
     }
 }) {
     companion object {
+
         suspend fun performPatchRequest(
             httpClient: HttpClient,
-            body: UserPatchVm,
+            body: ChangePasswordVm,
             addBearerAuth: Boolean = true,
-        ): HttpResponse = httpClient.patch(API_USER) {
+        ): HttpResponse = httpClient.patch(API_USER_PASSWORD) {
             if (addBearerAuth) bearerAuth(tokenStringInTest)
             contentType(ContentType.Application.Json)
-            setBody<UserPatchVm>(body)
+            setBody<ChangePasswordVm>(body)
         }
 
-        val userPatchVm = UserPatchVm(
-            userModelInTest.name,
-            userModelInTest.email
+        val changePasswordVm = ChangePasswordVm(
+            VALID_PLAINTEXT_PASSWORD,
+            "$VALID_PLAINTEXT_PASSWORD-changed"
         )
 
         fun localAssertValidationErrors(
             apiError: ApiError,
             expectedValidationErrors: Map<String, String>,
-        ) = assertValidationErrors(apiError, API_USER, expectedValidationErrors)
+        ) = assertValidationErrors(apiError, API_USER_PASSWORD, expectedValidationErrors)
     }
 }
