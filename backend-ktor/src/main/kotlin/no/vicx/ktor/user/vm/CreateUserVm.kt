@@ -4,11 +4,10 @@ import io.ktor.server.plugins.requestvalidation.*
 import kotlinx.serialization.Serializable
 import no.vicx.ktor.db.model.UserImage
 import no.vicx.ktor.db.model.VicxUser
-import no.vicx.ktor.user.ValidationUtils.emailRegex
-import no.vicx.ktor.user.ValidationUtils.passwordRegex
-import no.vicx.ktor.user.ValidationUtils.usernameRegex
-import no.vicx.ktor.user.ValidationUtils.validateNameLen
-import no.vicx.ktor.user.ValidationUtils.validatePasswordLen
+import no.vicx.ktor.user.ValidationUtils.validateEmail
+import no.vicx.ktor.user.ValidationUtils.validateName
+import no.vicx.ktor.user.ValidationUtils.validatePassword
+import no.vicx.ktor.user.ValidationUtils.validateUsername
 
 @Serializable
 data class CreateUserVm(
@@ -32,33 +31,10 @@ data class CreateUserVm(
     fun validate(): ValidationResult {
         val validationErrors = mutableListOf<String>()
 
-        // username
-        when {
-            username.isBlank() -> validationErrors.add("Username cannot be blank")
-            username.validateNameLen() -> validationErrors.add("Username must be between 4 and 255 characters")
-            !usernameRegex.matches(username) ->
-                validationErrors.add("Username can only contain letters, numbers, hyphens, and underscores")
-        }
-
-        // password
-        when {
-            password.isBlank() -> validationErrors.add("Password cannot be blank")
-            password.validatePasswordLen() -> validationErrors.add("Password must be between 8 and 255 characters")
-            !passwordRegex.matches(password) ->
-                validationErrors.add("Password must contain at least one lowercase letter, one uppercase letter, and one digit")
-        }
-
-        // name
-        when {
-            name.isBlank() -> validationErrors.add("Name cannot be blank")
-            name.validateNameLen() -> validationErrors.add("Name must be between 4 and 255 characters")
-        }
-
-        // email
-        when {
-            email.isBlank() -> validationErrors.add("Email cannot be blank")
-            !emailRegex.matches(email) -> validationErrors.add("Email format is invalid")
-        }
+        username.validateUsername(validationErrors)
+        password.validatePassword(validationErrors)
+        name.validateName(validationErrors)
+        email.validateEmail(validationErrors)
 
         // reCAPTCHA
         if (recaptchaToken.isBlank()) validationErrors.add("recaptchaToken cannot be blank")

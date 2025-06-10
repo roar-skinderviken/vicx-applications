@@ -9,6 +9,28 @@ import org.apache.tika.Tika
 import java.io.ByteArrayOutputStream
 
 object MultiPartUtils {
+
+    suspend fun consumeAndValidateUserImageFilePart(
+        imagePart: PartData.FileItem
+    ): UserImageResult {
+        val fileContent = readFileItemAsByteArray(imagePart)
+            ?: return UserImageResult.InvalidImageResult(ValidationResult.Invalid(INVALID_FILE_SIZE_MSG))
+
+        val detectedContentType = detectContentType(fileContent)
+            ?: return UserImageResult.InvalidImageResult(ValidationResult.Invalid(FILE_DETECTION_ERROR_MSG))
+
+        if (!allowedContentTypes.contains(ContentType.parse(detectedContentType))) {
+            return UserImageResult.InvalidImageResult(ValidationResult.Invalid(INVALID_CONTENT_TYPE_MSG))
+        }
+
+        return UserImageResult.ValidImageResult(
+            UserImage(
+                contentType = detectedContentType,
+                imageData = fileContent
+            )
+        )
+    }
+
     private val tika: Tika = Tika()
 
     private val allowedContentTypes: Set<ContentType> = setOf(
@@ -33,7 +55,7 @@ object MultiPartUtils {
     private suspend fun readFileItemAsByteArray(
         imagePart: PartData.FileItem,
         maxFileSize: Long = MAX_FILE_SIZE,
-    ): ByteArray {
+    ): ByteArray? {
         var fileSize = 0L
         ByteArrayOutputStream().use { outputStream ->
             val byteReadChannel: ByteReadChannel = imagePart.provider.invoke()
@@ -41,14 +63,10 @@ object MultiPartUtils {
             while (!byteReadChannel.isClosedForRead) {
                 val buffer = ByteArray(FILE_CHUNK_SIZE)
                 val bytesRead = byteReadChannel.readAvailable(buffer)
-                if (bytesRead < 0) break
 
                 fileSize += bytesRead
 
-                if (fileSize > maxFileSize) {
-                    imagePart.dispose()
-                    return ByteArray(0)
-                }
+                if (fileSize > maxFileSize) return null
 
                 outputStream.write(buffer, 0, bytesRead)
             }
@@ -56,25 +74,5 @@ object MultiPartUtils {
             return outputStream.toByteArray()
         }
     }
-
-    suspend fun consumeAndValidateUserImageFilePart(
-        imagePart: PartData.FileItem
-    ): Pair<ValidationResult, UserImage?> {
-        val fileContent: ByteArray = readFileItemAsByteArray(imagePart)
-        if (fileContent.isEmpty()) {
-            return ValidationResult.Invalid(INVALID_FILE_SIZE_MSG) to null
-        }
-
-        val detectedContentType = detectContentType(fileContent)
-            ?: return ValidationResult.Invalid(FILE_DETECTION_ERROR_MSG) to null
-
-        if (!allowedContentTypes.contains(ContentType.parse(detectedContentType))) {
-            return ValidationResult.Invalid(INVALID_CONTENT_TYPE_MSG) to null
-        }
-
-        return ValidationResult.Valid to UserImage(
-            contentType = detectedContentType,
-            imageData = fileContent
-        )
-    }
 }
+

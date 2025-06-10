@@ -2,8 +2,8 @@ package no.vicx.ktor.user.vm
 
 import io.ktor.server.plugins.requestvalidation.*
 import kotlinx.serialization.Serializable
-import no.vicx.ktor.user.ValidationUtils.emailRegex
-import no.vicx.ktor.user.ValidationUtils.validateNameLen
+import no.vicx.ktor.user.ValidationUtils.validateEmail
+import no.vicx.ktor.user.ValidationUtils.validateName
 
 @Serializable
 data class UserPatchVm(
@@ -18,13 +18,13 @@ data class UserPatchVm(
         // name
         when {
             isEmpty -> validationErrors.add("Name and email cannot both be blank")
-            name.isNotBlank() && name.validateNameLen() -> validationErrors.add("Name must be between 4 and 255 characters")
+            name.isNotEmpty() -> name.validateName(validationErrors)
         }
 
         // email
         when {
             isEmpty -> validationErrors.add("Email and name cannot both be blank")
-            email.isNotBlank() && !emailRegex.matches(email) -> validationErrors.add("Email format is invalid")
+            email.isNotEmpty() -> email.validateEmail(validationErrors, false)
         }
 
         return if (validationErrors.isNotEmpty()) ValidationResult.Invalid(validationErrors)

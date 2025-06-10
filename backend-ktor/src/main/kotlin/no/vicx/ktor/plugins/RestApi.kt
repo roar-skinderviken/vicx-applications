@@ -17,6 +17,7 @@ import no.vicx.ktor.user.service.UserService
 import no.vicx.ktor.user.toViewModel
 import no.vicx.ktor.user.vm.UserPatchVm
 import no.vicx.ktor.util.IMAGE_PART
+import no.vicx.ktor.util.UserImageResult
 import no.vicx.ktor.util.extractFormItemsAndFileItem
 
 fun List<ValidationResult>.throwIfAnyInvalid(value: Any) {
@@ -45,9 +46,14 @@ fun Application.configureRestApi(
                 var userImage: UserImage? = null
 
                 multiPartData.extractFormItemsAndFileItem(
-                    userImageCallback = { validationResult, innerUserImage ->
-                        validationErrors.add(validationResult)
-                        userImage = innerUserImage
+                    userImageCallback = { userImageResult ->
+                        when (userImageResult) {
+                            is UserImageResult.ValidImageResult ->
+                                userImage = userImageResult.userImage
+
+                            is UserImageResult.InvalidImageResult ->
+                                validationErrors.add(userImageResult.validationError)
+                        }
                     },
                     userCallback = { validationResult, createUserVm ->
                         validationErrors.add(validationResult)
@@ -104,11 +110,13 @@ fun Application.configureRestApi(
                         val multiPartData = call.receiveMultipart()
 
                         multiPartData.extractFormItemsAndFileItem(
-                            userImageCallback = { validationResult, userImage ->
-                                listOf(validationResult).throwIfAnyInvalid(IMAGE_PART)
+                            userImageCallback = { userImageResult ->
+                                when (userImageResult) {
+                                    is UserImageResult.ValidImageResult ->
+                                        userImageService.addOrReplaceUserImage(userImageResult.userImage, username)
 
-                                if (userImage != null) {
-                                    userImageService.addOrReplaceUserImage(userImage, username)
+                                    is UserImageResult.InvalidImageResult ->
+                                        listOf(userImageResult.validationError).throwIfAnyInvalid(IMAGE_PART)
                                 }
                             }
                         )

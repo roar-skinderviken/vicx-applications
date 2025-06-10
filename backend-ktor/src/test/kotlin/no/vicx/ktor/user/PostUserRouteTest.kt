@@ -192,6 +192,18 @@ class PostUserRouteTest : BehaviorSpec({
                 CreateUserVm("user1", VALID_PLAINTEXT_PASSWORD, "a".repeat(256), "user@example.com", "mock-token"),
                 null, "name", "Name must be between 4 and 255 characters"
             ),
+            row(
+                CreateUserVm("user1", VALID_PLAINTEXT_PASSWORD, " The User", "user@example.com", "mock-token"),
+                null, "name", "Name cannot have leading or trailing blanks"
+            ),
+            row(
+                CreateUserVm("user1", VALID_PLAINTEXT_PASSWORD, "The User ", "user@example.com", "mock-token"),
+                null, "name", "Name cannot have leading or trailing blanks"
+            ),
+            row(
+                CreateUserVm("user1", VALID_PLAINTEXT_PASSWORD, " The User ", "user@example.com", "mock-token"),
+                null, "name", "Name cannot have leading or trailing blanks"
+            ),
 
             row(
                 CreateUserVm("user1", VALID_PLAINTEXT_PASSWORD, "The User", "", "mock-token"),
@@ -199,6 +211,14 @@ class PostUserRouteTest : BehaviorSpec({
             ),
             row(
                 CreateUserVm("user1", VALID_PLAINTEXT_PASSWORD, "The User", "a", "mock-token"),
+                null, "email", "Email format is invalid"
+            ),
+            row(
+                CreateUserVm("user1", VALID_PLAINTEXT_PASSWORD, "The User", " john.doe@example.com", "mock-token"),
+                null, "email", "Email format is invalid"
+            ),
+            row(
+                CreateUserVm("user1", VALID_PLAINTEXT_PASSWORD, "The User", "john.doe@example.com ", "mock-token"),
                 null, "email", "Email format is invalid"
             ),
 
@@ -269,11 +289,11 @@ class PostUserRouteTest : BehaviorSpec({
             userImageInfo: Pair<String, String>? = null
         ) = MultiPartFormDataContent(
             formData {
-                append("username", createUserVm.username)
-                append("name", createUserVm.name)
-                append("email", createUserVm.email)
-                append("password", createUserVm.password)
-                append("recaptchaToken", createUserVm.recaptchaToken)
+                if (createUserVm.username.isNotEmpty()) append("username", createUserVm.username)
+                if (createUserVm.name.isNotEmpty()) append("name", createUserVm.name)
+                if (createUserVm.email.isNotEmpty()) append("email", createUserVm.email)
+                if (createUserVm.password.isNotEmpty()) append("password", createUserVm.password)
+                if (createUserVm.recaptchaToken.isNotEmpty()) append("recaptchaToken", createUserVm.recaptchaToken)
 
                 if (userImageInfo != null) {
                     val (contentType, resourceName) = userImageInfo

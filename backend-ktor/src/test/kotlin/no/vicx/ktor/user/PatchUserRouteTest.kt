@@ -101,6 +101,19 @@ class PatchUserRouteTest : BehaviorSpec({
                 )
             ),
             row(
+                "Name with leading blank", UserPatchVm(" user-name", ""),
+                mapOf("name" to "Name cannot have leading or trailing blanks")
+            ),
+            row(
+                "Name with trailing blank", UserPatchVm("user-name ", ""),
+                mapOf("name" to "Name cannot have leading or trailing blanks")
+            ),
+            row(
+                "Name with both leading and trailing blank", UserPatchVm(" user-name ", ""),
+                mapOf("name" to "Name cannot have leading or trailing blanks")
+            ),
+
+            row(
                 "Name too short", UserPatchVm("a".repeat(3), "user@example.com"),
                 mapOf("name" to "Name must be between 4 and 255 characters")
             ),
@@ -110,7 +123,19 @@ class PatchUserRouteTest : BehaviorSpec({
             ),
 
             row(
+                "Blank email address, valid name", UserPatchVm("user1", " ".repeat(10)),
+                mapOf("email" to "Email format is invalid")
+            ),
+            row(
                 "Invalid email address", UserPatchVm("", "a".repeat(10)),
+                mapOf("email" to "Email format is invalid")
+            ),
+            row(
+                "Email address with leading blank", UserPatchVm("", " user@example.com"),
+                mapOf("email" to "Email format is invalid")
+            ),
+            row(
+                "Email address with trailing blank", UserPatchVm("", "user@example.com "),
                 mapOf("email" to "Email format is invalid")
             )
         ) { description, patchVm, expectedValidationErrors ->
