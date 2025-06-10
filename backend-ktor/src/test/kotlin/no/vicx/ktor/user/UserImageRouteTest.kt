@@ -109,82 +109,82 @@ class UserImageRouteTest : BehaviorSpec({
                     }
                 }
             }
+        }
 
-            When("calling GET /user/image without authentication") {
-                val response = routeTestContext.runInTestApplicationContext { httpClient ->
-                    httpClient.get(API_USER_IMAGE)
-                }
-
-                Then("expect Unauthorized") {
-                    response.status shouldBe HttpStatusCode.Unauthorized
-                }
+        When("calling GET /user/image without authentication") {
+            val response = routeTestContext.runInTestApplicationContext { httpClient ->
+                httpClient.get(API_USER_IMAGE)
             }
 
-            When("calling GET /user/image for user without image") {
-                coEvery {
-                    routeTestContext.userRepository.findByUsername(any())
-                } returns userModelInTest.copy(userImage = null)
+            Then("expect Unauthorized") {
+                response.status shouldBe HttpStatusCode.Unauthorized
+            }
+        }
 
-                val response = routeTestContext.runInTestApplicationContext { httpClient ->
-                    httpClient.get(API_USER_IMAGE) { bearerAuth(tokenStringInTest) }
-                }
+        When("calling GET /user/image for user without image") {
+            coEvery {
+                routeTestContext.userRepository.findByUsername(any())
+            } returns userModelInTest.copy(userImage = null)
 
-                Then("expect NotFound") {
-                    response.status shouldBe HttpStatusCode.NotFound
-
-                    coVerify(exactly = 1) {
-                        routeTestContext.userRepository.findByUsername(USERNAME_IN_TEST)
-                    }
-                }
+            val response = routeTestContext.runInTestApplicationContext { httpClient ->
+                httpClient.get(API_USER_IMAGE) { bearerAuth(tokenStringInTest) }
             }
 
-            When("calling GET /user/image for user with image") {
-                coEvery { routeTestContext.userRepository.findByUsername(any()) } returns userModelInTest
+            Then("expect NotFound") {
+                response.status shouldBe HttpStatusCode.NotFound
 
-                val response = routeTestContext.runInTestApplicationContext { httpClient ->
-                    httpClient.get(API_USER_IMAGE) { bearerAuth(tokenStringInTest) }
-                }
-
-                Then("expect OK") {
-                    response.status shouldBe HttpStatusCode.OK
-
-                    response.headers[HttpHeaders.ContentType] shouldContain userImageModelInTest.contentType
-                    response.body<ByteArray>().contentEquals(userImageModelInTest.imageData)
-
-                    coVerify(exactly = 1) {
-                        routeTestContext.userRepository.findByUsername(USERNAME_IN_TEST)
-                    }
+                coVerify(exactly = 1) {
+                    routeTestContext.userRepository.findByUsername(USERNAME_IN_TEST)
                 }
             }
+        }
 
-            When("calling DELETE /user/image for non-existing user") {
-                coEvery { routeTestContext.userRepository.findIdByUsername(any()) } returns null
+        When("calling GET /user/image for user with image") {
+            coEvery { routeTestContext.userRepository.findByUsername(any()) } returns userModelInTest
 
-                val response = routeTestContext.runInTestApplicationContext { httpClient ->
-                    httpClient.delete(API_USER_IMAGE) { bearerAuth(tokenStringInTest) }
-                }
-
-                Then("expect NotFound") {
-                    response.status shouldBe HttpStatusCode.NotFound
-
-                    coVerify(exactly = 0) { routeTestContext.userImageRepository.deleteById(userModelInTest.id) }
-                }
+            val response = routeTestContext.runInTestApplicationContext { httpClient ->
+                httpClient.get(API_USER_IMAGE) { bearerAuth(tokenStringInTest) }
             }
 
-            When("calling DELETE /user/image for existing user") {
-                coEvery { routeTestContext.userRepository.findIdByUsername(any()) } returns userModelInTest.id
-                coEvery { routeTestContext.userImageRepository.deleteById(any()) } just Runs
+            Then("expect OK") {
+                response.status shouldBe HttpStatusCode.OK
 
-                val response = routeTestContext.runInTestApplicationContext { httpClient ->
-                    httpClient.delete(API_USER_IMAGE) { bearerAuth(tokenStringInTest) }
+                response.headers[HttpHeaders.ContentType] shouldContain userImageModelInTest.contentType
+                response.body<ByteArray>().contentEquals(userImageModelInTest.imageData)
+
+                coVerify(exactly = 1) {
+                    routeTestContext.userRepository.findByUsername(USERNAME_IN_TEST)
                 }
+            }
+        }
 
-                Then("expect NoContent") {
-                    response.status shouldBe HttpStatusCode.NoContent
+        When("calling DELETE /user/image for non-existing user") {
+            coEvery { routeTestContext.userRepository.findIdByUsername(any()) } returns null
 
-                    coVerify(exactly = 1) {
-                        routeTestContext.userImageRepository.deleteById(userModelInTest.id)
-                    }
+            val response = routeTestContext.runInTestApplicationContext { httpClient ->
+                httpClient.delete(API_USER_IMAGE) { bearerAuth(tokenStringInTest) }
+            }
+
+            Then("expect NotFound") {
+                response.status shouldBe HttpStatusCode.NotFound
+
+                coVerify(exactly = 0) { routeTestContext.userImageRepository.deleteById(userModelInTest.id) }
+            }
+        }
+
+        When("calling DELETE /user/image for existing user") {
+            coEvery { routeTestContext.userRepository.findIdByUsername(any()) } returns userModelInTest.id
+            coEvery { routeTestContext.userImageRepository.deleteById(any()) } just Runs
+
+            val response = routeTestContext.runInTestApplicationContext { httpClient ->
+                httpClient.delete(API_USER_IMAGE) { bearerAuth(tokenStringInTest) }
+            }
+
+            Then("expect NoContent") {
+                response.status shouldBe HttpStatusCode.NoContent
+
+                coVerify(exactly = 1) {
+                    routeTestContext.userImageRepository.deleteById(userModelInTest.id)
                 }
             }
         }

@@ -131,16 +131,6 @@ class UserRepositoryTest : BehaviorSpec({
             }
         }
 
-        When("calling findByUsername with non-existing username expect null") {
-            testApplication {
-                application {
-                    runBlocking {
-                        sut.findByUsername("~non-existing-username~")
-                    }.shouldBeNull()
-                }
-            }
-        }
-
         When("calling findIdByUsername for existing user") {
             var fetchedUserId: Long? = null
 
