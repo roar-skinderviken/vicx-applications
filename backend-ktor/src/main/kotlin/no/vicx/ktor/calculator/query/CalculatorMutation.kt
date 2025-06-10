@@ -20,10 +20,10 @@ class CalculatorMutation(
         environment: DataFetchingEnvironment
     ): Boolean {
         val jwtPrincipal = environment.graphQlContext.get<JWTPrincipal>(JWT_PRINCIPAL_KEY)
-            ?: throw RuntimeException("Unauthorized")
+            ?: throw SecurityException("Unauthorized")
 
         if (!calculatorService.isAllowedToDelete(ids, jwtPrincipal.subject!!)) {
-            throw RuntimeException("Forbidden")
+            throw SecurityException("Forbidden")
         }
 
         return calculatorRepository.deleteByIdIn(ids.map { it.toLong() }) > 0
