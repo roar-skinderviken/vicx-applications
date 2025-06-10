@@ -7,7 +7,7 @@ fun CalcEntry.toGraphQLModel() = CalcVm(
     id.toInt(),
     firstValue.toInt(),
     secondValue.toInt(),
-    operation.toString(),
+    operation,
     result.toInt(),
     username,
     createdAt.toString()

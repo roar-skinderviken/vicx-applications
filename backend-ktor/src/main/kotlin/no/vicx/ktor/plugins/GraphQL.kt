@@ -21,7 +21,7 @@ fun Application.configureGraphQL(
             packages = listOf(
                 "no.vicx.ktor.calculator.vm",
                 "no.vicx.ktor.calculator.query",
-                "no.vicx.ktor.db.dto"
+                "no.vicx.ktor.db.model"
             )
 
             queries = listOf(

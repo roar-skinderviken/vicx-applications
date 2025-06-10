@@ -5,6 +5,8 @@ import no.vicx.ktor.db.model.VicxUser
 import no.vicx.ktor.db.suspendTransaction
 import no.vicx.ktor.db.table.VicxUserTable
 import no.vicx.ktor.db.toModel
+import org.jetbrains.exposed.sql.StdOutSqlLogger
+import org.jetbrains.exposed.sql.addLogger
 
 class UserRepository {
 
@@ -31,6 +33,7 @@ class UserRepository {
     }
 
     suspend fun findByUsername(username: String): VicxUser? = suspendTransaction {
+        addLogger(StdOutSqlLogger)
         no.vicx.ktor.db.entity.VicxUserEntity
             .find { VicxUserTable.username eq username }
             .firstOrNull()

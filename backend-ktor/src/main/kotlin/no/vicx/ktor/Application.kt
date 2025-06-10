@@ -17,6 +17,7 @@ import no.vicx.ktor.user.service.UserService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.time.Duration
+import javax.sql.DataSource
 
 inline fun <reified T : Any> loggerFor(): Logger = LoggerFactory.getLogger(T::class.java)
 
@@ -26,8 +27,9 @@ fun main(args: Array<String>) {
 
 fun Application.module() {
 
+    val useEmbeddedPg = environment.config.property("postgres.embedded").getString() == "true"
     val esportToken = environment.config.property("esport.token").getString()
-    val reCaptchaSecret = environment.config.property("user.recaptcha.secret").getString()
+    val reCaptchaSecret = environment.config.property("recaptcha.secret").getString()
 
     val calculatorRepository = CalculatorRepository()
     val calculatorService = CalculatorService(CalculatorRepository(), Duration.ofHours(1))
@@ -48,7 +50,8 @@ fun Application.module() {
         allowHeader(HttpHeaders.Authorization)
     }
 
-    connectToPostgres(true)
+    val dataSource: DataSource = connectToPostgres(useEmbeddedPg)
+    configureHealth(dataSource)
     configureSecurity()
 
     configureStatusPage()

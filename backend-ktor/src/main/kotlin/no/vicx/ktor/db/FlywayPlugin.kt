@@ -10,11 +10,13 @@ val FlywayMigrationStarting: EventDefinition<Application> = EventDefinition()
 val FlywayMigrationFinished: EventDefinition<Application> = EventDefinition()
 
 class FlywayPluginConfig(
-    var dataSource: DataSource? = null
+    var dataSource: DataSource? = null,
+    var defaultSchema: String? = "public"
 )
 
 val FlywayPlugin: ApplicationPlugin<FlywayPluginConfig> = createApplicationPlugin("Flyway", ::FlywayPluginConfig) {
     val dataSource = requireNotNull(pluginConfig.dataSource) { "DataSource is required for Flyway" }
+    val defaultSchema = requireNotNull(pluginConfig.defaultSchema) { "Schema is required for Flyway" }
     val logger = LoggerFactory.getLogger("FlywayPlugin::class.java")
 
     application.monitor.raise(FlywayMigrationStarting, application)
@@ -23,6 +25,7 @@ val FlywayPlugin: ApplicationPlugin<FlywayPluginConfig> = createApplicationPlugi
     Flyway.configure()
         .dataSource(dataSource)
         .locations("classpath:db.migration")
+        .defaultSchema(defaultSchema)
         .load()
         .migrate()
 

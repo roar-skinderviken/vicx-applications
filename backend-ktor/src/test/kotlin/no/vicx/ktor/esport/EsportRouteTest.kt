@@ -10,6 +10,7 @@ import io.mockk.coEvery
 import no.vicx.ktor.esport.EsportServiceTest.Companion.createMatches
 import no.vicx.ktor.esport.vm.EsportVm
 import no.vicx.ktor.esport.vm.MatchType
+import no.vicx.ktor.user.UserTestConstants.API_ESPORT
 import no.vicx.ktor.util.RouteTestContext
 
 class EsportRouteTest : BehaviorSpec({
@@ -21,7 +22,7 @@ class EsportRouteTest : BehaviorSpec({
 
         When("calling GET /api/esport") {
             val response = routeTestApplication.runInTestApplicationContext { httpClient ->
-                httpClient.get("/api/esport")
+                httpClient.get(API_ESPORT)
             }
 
             Then("it should return status OK and the expected body") {

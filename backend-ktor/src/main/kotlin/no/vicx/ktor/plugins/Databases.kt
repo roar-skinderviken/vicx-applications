@@ -1,17 +1,8 @@
 package no.vicx.ktor.plugins
 
-import io.ktor.client.*
-import io.ktor.client.engine.apache.*
-import io.ktor.http.*
-import io.ktor.serialization.kotlinx.json.*
+import com.zaxxer.hikari.HikariConfig
+import com.zaxxer.hikari.HikariDataSource
 import io.ktor.server.application.*
-import io.ktor.server.auth.*
-import io.ktor.server.auth.jwt.*
-import io.ktor.server.plugins.contentnegotiation.*
-import io.ktor.server.request.*
-import io.ktor.server.response.*
-import io.ktor.server.routing.*
-import io.ktor.server.sessions.*
 import io.zonky.test.db.postgres.embedded.EmbeddedPostgres
 import kotlinx.datetime.toJavaLocalDateTime
 import kotlinx.datetime.toKotlinLocalDateTime
@@ -20,14 +11,20 @@ import no.vicx.ktor.db.entity.VicxUserEntity
 import no.vicx.ktor.db.model.CalcEntry
 import no.vicx.ktor.db.model.CalculatorOperation
 import no.vicx.ktor.db.table.CalcEntryTable
-import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.Database
+import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
-import java.sql.Connection
-import java.sql.DriverManager
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 import javax.sql.DataSource
+
+object TestDb {
+    val postgres: DataSource by lazy {
+        EmbeddedPostgres.start().postgresDatabase
+            .also { Database.connect(it) }
+    }
+}
 
 /**
  * Makes a connection to a Postgres database.
@@ -44,21 +41,12 @@ import javax.sql.DataSource
  * user and password values.
  *
  *
- * @param embedded -- if [true] defaults to an embedded database for tests that runs locally in the same process.
+ * @param embedded -- if `true` defaults to an embedded database for tests that runs locally in the same process.
  * In this case you don't have to provide any parameters in configuration file, and you don't have to run a process.
  *
- * @return [Connection] that represent connection to the database. Please, don't forget to close this connection when
- * your application shuts down by calling [Connection.close]
+ * @return [DataSource] that represent connection to the database.
  * */
-
-object TestDb {
-    val postgres: DataSource by lazy {
-        EmbeddedPostgres.start().postgresDatabase
-            .also { Database.connect(it) }
-    }
-}
-
-fun Application.connectToPostgres(embedded: Boolean): Connection =
+fun Application.connectToPostgres(embedded: Boolean): DataSource =
     if (embedded) {
         install(FlywayPlugin) {
             dataSource = TestDb.postgres
@@ -93,13 +81,26 @@ fun Application.connectToPostgres(embedded: Boolean): Connection =
             }
         }
 
-        TestDb.postgres.connection
+        TestDb.postgres
     } else {
-        val url = environment.config.property("postgres.url").getString()
-        log.info("Connecting to postgres database at $url")
-        val user = environment.config.property("postgres.user").getString()
-        val password = environment.config.property("postgres.password").getString()
+        val schema = environment.config.property("postgres.schema").getString()
 
-        DriverManager.getConnection(url, user, password)
+        val hikariConfig = HikariConfig().apply {
+            this.jdbcUrl = environment.config.property("postgres.url").getString()
+            this.username = environment.config.property("postgres.user").getString()
+            this.password = environment.config.property("postgres.password").getString()
+            this.schema = schema
+        }
+
+        val hikariDataSource = HikariDataSource(hikariConfig)
+
+        Database.connect(hikariDataSource)
+
+        install(FlywayPlugin) {
+            dataSource = hikariDataSource
+            defaultSchema = schema
+        }
+
+        hikariDataSource
     }
 

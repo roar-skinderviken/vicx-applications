@@ -19,6 +19,7 @@ graphql-kotlin-version = "8.5.0"
 
 spring-security-crypto-version = "6.5.0"
 caffeine-version = "3.2.0"
+cohort-ktor-version = "2.7.2"
 
 kotlin-test-version = "2.1.10"
 mockk-version = "1.14.2"
@@ -66,7 +67,7 @@ exposed-dao = { module = "org.jetbrains.exposed:exposed-dao", version.ref = "exp
 
 spring-security-crypto = { module = "org.springframework.security:spring-security-crypto", version.ref = "spring-security-crypto-version" }
 caffeine = { module = "com.github.ben-manes.caffeine:caffeine", version.ref = "caffeine-version" }
-
+cohort-ktor = { module = "com.sksamuel.cohort:cohort-ktor", version.ref = "cohort-ktor-version" }
 logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logback-version" }
 
 graphql-kotlin-server = { module = "com.expediagroup:graphql-kotlin-ktor-server", version.ref = "graphql-kotlin-version" }
