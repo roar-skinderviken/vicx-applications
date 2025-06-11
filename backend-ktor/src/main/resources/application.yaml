@@ -1,0 +1,28 @@
+ktor:
+  application:
+    modules:
+      - no.vicx.ktor.ApplicationKt.module
+  deployment:
+    port: 8080
+    rootPath: "/backend-spring-boot" # for easy switching between Spring Boot and Ktor
+
+jwt:
+  issuer: "$OAUTH2_SERVER:http://localhost:9000/auth-server"
+  realm: "ktor sample app"
+
+esport:
+  token: "$ESPORT_TOKEN:~token~"
+
+calculator:
+  rate: "5m"
+  max-age: "6h"
+
+recaptcha:
+  secret: "$RECAPTCHA_SECRET:6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe" # dev secret
+
+postgres:
+  url: "$DATASOURCE_URL:jdbc:postgresql://localhost:5432/app"
+  user: "$DB_USERNAME:app"
+  password: "$DB_PASSWORD:TODO"
+  schema: vicx
+  embedded: "$DB_EMBEDDED:true"

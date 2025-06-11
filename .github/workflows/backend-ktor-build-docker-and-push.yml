@@ -1,0 +1,22 @@
+name: Build backend-ktor Docker and push
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'backend-ktor/**'
+
+  pull_request:
+    paths:
+      - 'backend-ktor/**'
+
+jobs:
+  build-and-push-docker:
+    uses: ./.github/workflows/docker-build-template.yml
+    secrets: inherit
+    with:
+      appName: "backend-ktor"
+    permissions:
+      contents: read
+      packages: write
