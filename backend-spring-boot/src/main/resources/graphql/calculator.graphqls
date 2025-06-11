@@ -10,7 +10,7 @@ type PaginatedCalculations {
 }
 
 type CalcVm {
-    id: ID!
+    id: Int!
     firstValue: Int
     secondValue: Int
     operation: String
@@ -29,5 +29,5 @@ type Mutation {
         secondValue: Int,
         operation: CalculatorOperation): CalcVm
 
-    deleteCalculations(ids: [ID!]!): Boolean
+    deleteCalculations(ids: [Int!]!): Boolean
 }

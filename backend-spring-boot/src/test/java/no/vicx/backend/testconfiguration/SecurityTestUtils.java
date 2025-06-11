@@ -37,7 +37,6 @@ public final class SecurityTestUtils {
                 return "user1";
             }
         };
-
     }
 
     public static Jwt createJwtInTest(List<String> roles) {

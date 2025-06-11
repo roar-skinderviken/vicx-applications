@@ -29,7 +29,7 @@ dependencies {
     implementation(libs.tika.core)
 
     // logging
-    runtimeOnly(libs.logback.access.spring.boot.starter)
+    //runtimeOnly(libs.logback.access.spring.boot.starter)
     runtimeOnly(libs.logstash.logback.encoder)
 
     // database
@@ -60,6 +60,8 @@ dependencies {
     testImplementation(libs.mockito)
     mockitoAgent(libs.mockito) { isTransitive = false }
 }
+
+tasks.withType<Wrapper> {}
 
 tasks.test {
     jvmArgs("-javaagent:${mockitoAgent.asPath}")

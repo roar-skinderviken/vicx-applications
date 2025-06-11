@@ -142,7 +142,7 @@ class CalculatorGraphQLControllerSpringBootTest {
                 : null;
 
         var expectedResponse = String.format("""
-                        {"data":{"createCalculation":{"id":"1","firstValue":1,"secondValue":2,"operation":"PLUS","result":3,"username":%s,"createdAt":"2024-01-01T01:01:01"}}}""",
+                        {"data":{"createCalculation":{"id":1,"firstValue":1,"secondValue":2,"operation":"PLUS","result":3,"username":%s,"createdAt":"2024-01-01T01:01:01"}}}""",
                 wrappedUsername);
 
         assertEquals(
