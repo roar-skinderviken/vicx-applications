@@ -5,6 +5,7 @@ import io.kotest.matchers.shouldBe
 import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.http.*
+import io.mockk.called
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -33,7 +34,7 @@ class GetUserRouteTest : BehaviorSpec({
             Then("expect Unauthorized") {
                 response.status shouldBe HttpStatusCode.Unauthorized
 
-                coVerify(exactly = 0) { routeTestContext.userRepository.findByUsername(any()) }
+                coVerify { routeTestContext.userRepository wasNot called }
             }
         }
 

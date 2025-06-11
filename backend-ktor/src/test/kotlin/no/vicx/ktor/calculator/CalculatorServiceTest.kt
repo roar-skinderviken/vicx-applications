@@ -69,10 +69,7 @@ class CalculatorServiceTest : BehaviorSpec({
 
                 coEvery {
                     calculatorRepository.findAllOrderDesc(expectedPageNumber, DEFAULT_PAGE_SIZE)
-                } returns Pair(
-                    createCalcEntriesInTest(
-                        DEFAULT_PAGE_SIZE
-                    ), expectedTotalCount)
+                } returns Pair(createCalcEntriesInTest(DEFAULT_PAGE_SIZE), expectedTotalCount)
 
                 val paginatedCalculations = sut.getPagedCalculations(expectedPageNumber)
 

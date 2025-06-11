@@ -13,7 +13,7 @@ object TestDb {
     }
 }
 
-fun configureTestDb() {
+fun configureTestDb(): DataSource {
     val flyway = Flyway.configure()
         .cleanDisabled(false)
         .dataSource(TestDb.postgres)
@@ -22,6 +22,8 @@ fun configureTestDb() {
 
     flyway.clean()
     flyway.migrate()
+
+    return TestDb.postgres
 }
 
 fun ApplicationTestBuilder.insertTestData(block: () -> Unit) = application {

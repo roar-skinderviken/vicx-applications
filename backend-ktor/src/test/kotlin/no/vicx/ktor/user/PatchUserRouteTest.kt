@@ -36,7 +36,7 @@ class PatchUserRouteTest : BehaviorSpec({
             Then("expect Unauthorized") {
                 response.status shouldBe HttpStatusCode.Unauthorized
 
-                coVerify(exactly = 0) { routeTestContext.userRepository.updateUser(any(), any(), any(), any()) }
+                coVerify { routeTestContext.userRepository wasNot called }
             }
         }
 
@@ -57,7 +57,7 @@ class PatchUserRouteTest : BehaviorSpec({
                         userModelInTest.id,
                         userModelInTest.name,
                         userModelInTest.email,
-                        null
+                        isNull()
                     )
                 }
             }
@@ -140,10 +140,7 @@ class PatchUserRouteTest : BehaviorSpec({
                         expectedValidationErrors = expectedValidationErrors
                     )
 
-                    coVerify(exactly = 0) {
-                        routeTestContext.userRepository.findByUsername(any())
-                        routeTestContext.userRepository.updateUser(any(), any(), any(), any())
-                    }
+                    coVerify { routeTestContext.userRepository wasNot called }
                 }
             }
         }

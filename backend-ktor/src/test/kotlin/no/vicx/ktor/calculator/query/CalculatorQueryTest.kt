@@ -56,7 +56,7 @@ class CalculatorQueryTest : BehaviorSpec() {
 
                 val responseBody = postGraphQLRequestAndReturnResult<GetAllCalculations>(getAllCalculationsQuery)
 
-                Then("expect result") {
+                Then("expect paginated calculations") {
                     responseBody.data?.getAllCalculations shouldBe expectedPaginatedCalculations
                 }
             }

@@ -1,4 +1,4 @@
-package no.vicx.ktor.repository
+package no.vicx.ktor.db.repository
 
 import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.throwables.shouldThrow
@@ -12,7 +12,6 @@ import io.ktor.server.testing.*
 import kotlinx.coroutines.runBlocking
 import no.vicx.ktor.db.entity.UserImageEntity
 import no.vicx.ktor.db.model.VicxUser
-import no.vicx.ktor.db.repository.UserRepository
 import no.vicx.ktor.db.repository.UserRepository.Companion.PASSWORD_MUST_BE_ENCRYPTED_MSG
 import no.vicx.ktor.db.toModel
 import no.vicx.ktor.util.MiscTestUtils.VALID_PLAINTEXT_PASSWORD

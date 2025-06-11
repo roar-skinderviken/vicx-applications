@@ -10,6 +10,7 @@ import io.ktor.client.request.*
 import io.ktor.client.request.forms.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
+import io.mockk.called
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -55,7 +56,7 @@ class PostUserRouteTest : BehaviorSpec({
                     "recaptchaToken is invalid. Please wait to token expires and try again"
                 )
 
-                coVerify(exactly = 0) { routeTestContext.userRepository.createUser(any()) }
+                coVerify { routeTestContext.userRepository wasNot called }
             }
         }
 
@@ -110,7 +111,7 @@ class PostUserRouteTest : BehaviorSpec({
             }
         }
 
-        When("calling POST /api/user twice with duplicate username") {
+        When("calling POST /api/user twice with same username") {
             coEvery { routeTestContext.recaptchaClient.verifyToken(any()) } returns true
             coEvery { routeTestContext.userRepository.findByUsername(any()) } returns userModelInTest
             coEvery { routeTestContext.userRepository.createUser(any()) } returns validCreateUserVm.toDbModel(
@@ -255,11 +256,8 @@ class PostUserRouteTest : BehaviorSpec({
                     response.status shouldBe HttpStatusCode.BadRequest
                     assertValidationError(response.body<ApiError>(), field, expectedValidationError)
 
-                    coVerify(exactly = 0) {
-                        routeTestContext.recaptchaClient.verifyToken(any())
-                        routeTestContext.userRepository.findByUsername(any())
-                        routeTestContext.userRepository.createUser(any())
-                    }
+                    coVerify { routeTestContext.recaptchaClient wasNot called }
+                    coVerify { routeTestContext.userRepository wasNot called }
                 }
             }
         }

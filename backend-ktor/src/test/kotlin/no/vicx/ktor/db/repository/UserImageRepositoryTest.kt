@@ -1,4 +1,4 @@
-package no.vicx.ktor.repository
+package no.vicx.ktor.db.repository
 
 import io.kotest.assertions.assertSoftly
 import io.kotest.core.spec.style.BehaviorSpec
@@ -7,7 +7,6 @@ import io.ktor.server.testing.*
 import kotlinx.coroutines.runBlocking
 import no.vicx.ktor.db.entity.UserImageEntity
 import no.vicx.ktor.db.model.VicxUser
-import no.vicx.ktor.db.repository.UserImageRepository
 import no.vicx.ktor.db.toModel
 import no.vicx.ktor.util.MiscTestUtils.JPEG_CONTENT_TYPE
 import no.vicx.ktor.util.MiscTestUtils.JPEG_RESOURCE_NAME

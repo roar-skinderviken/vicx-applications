@@ -1,4 +1,4 @@
-package no.vicx.ktor.repository
+package no.vicx.ktor.db.repository
 
 import io.ktor.server.testing.*
 import io.mockk.clearAllMocks
@@ -7,7 +7,6 @@ import io.mockk.mockkObject
 import kotlinx.coroutines.runBlocking
 import kotlinx.datetime.toJavaLocalDateTime
 import no.vicx.ktor.db.entity.CalcEntryEntity
-import no.vicx.ktor.db.repository.CalculatorRepository
 import no.vicx.ktor.db.table.CalcEntryTable
 import no.vicx.ktor.util.CalculatorTestUtils.calcEntryInTest
 import no.vicx.ktor.util.CalculatorTestUtils.generateTestCalcEntries

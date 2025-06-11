@@ -167,8 +167,7 @@ class UserImageRouteTest : BehaviorSpec({
 
             Then("expect NotFound") {
                 response.status shouldBe HttpStatusCode.NotFound
-
-                coVerify(exactly = 0) { routeTestContext.userImageRepository.deleteById(userModelInTest.id) }
+                coVerify { routeTestContext.userImageRepository wasNot called }
             }
         }
 

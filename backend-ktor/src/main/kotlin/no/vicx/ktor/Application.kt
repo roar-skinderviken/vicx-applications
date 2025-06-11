@@ -26,7 +26,6 @@ fun main(args: Array<String>) {
 }
 
 fun Application.module() {
-
     val useEmbeddedPg = environment.config.property("postgres.embedded").getString() == "true"
     val esportToken = environment.config.property("esport.token").getString()
     val reCaptchaSecret = environment.config.property("recaptcha.secret").getString()
@@ -35,7 +34,6 @@ fun Application.module() {
     val calculatorService = CalculatorService(CalculatorRepository(), Duration.ofHours(1))
 
     val recaptchaClient = RecaptchaClient(defaultClient, reCaptchaSecret)
-
     val userRepository = UserRepository()
     val userImageRepository = UserImageRepository()
     val userService = UserService(recaptchaClient, userRepository)
@@ -53,7 +51,6 @@ fun Application.module() {
     val dataSource: DataSource = connectToPostgres(useEmbeddedPg)
     configureHealth(dataSource)
     configureSecurity()
-
     configureStatusPage()
     configureGraphQL(calculatorService, calculatorRepository)
     configureRestApi(

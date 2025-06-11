@@ -16,7 +16,7 @@ fun Application.configureHealth(
         // detects if threads are mutually blocked on each others locks
         register(
             check = ThreadDeadlockHealthCheck(),
-            initialDelay = 10.seconds,
+            initialDelay = 1.seconds,
             checkInterval = 10.seconds
         )
     }
@@ -24,7 +24,7 @@ fun Application.configureHealth(
     val readinessChecks = HealthCheckRegistry(Dispatchers.Default) {
         register(
             check = DatabaseConnectionHealthCheck(dataSource),
-            initialDelay = 10.seconds,
+            initialDelay = 1.seconds,
             checkInterval = 10.seconds
         )
     }

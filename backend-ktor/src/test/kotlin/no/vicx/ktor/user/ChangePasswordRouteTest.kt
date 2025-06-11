@@ -37,7 +37,7 @@ class ChangePasswordRouteTest : BehaviorSpec({
             Then("expect Unauthorized") {
                 response.status shouldBe HttpStatusCode.Unauthorized
 
-                coVerify(exactly = 0) { routeTestContext.userRepository.updateUser(any(), any(), any(), any()) }
+                coVerify { routeTestContext.userRepository wasNot called }
             }
         }
 
@@ -54,7 +54,12 @@ class ChangePasswordRouteTest : BehaviorSpec({
                 response.bodyAsText() shouldBe "Your password has been successfully updated."
                 coVerify(exactly = 1) {
                     routeTestContext.userRepository.findByUsername(userModelInTest.username)
-                    routeTestContext.userRepository.updateUser(userModelInTest.id, null, null, any())
+                    routeTestContext.userRepository.updateUser(
+                        userModelInTest.id,
+                        isNull(),
+                        isNull(),
+                        isNull(inverse = true)
+                    )
                 }
             }
         }
@@ -146,10 +151,7 @@ class ChangePasswordRouteTest : BehaviorSpec({
                         expectedValidationErrors = expectedValidationErrors
                     )
 
-                    coVerify(exactly = 0) {
-                        routeTestContext.userRepository.findByUsername(any())
-                        routeTestContext.userRepository.updateUser(any(), any(), any(), any())
-                    }
+                    coVerify { routeTestContext.userRepository wasNot called }
                 }
             }
         }

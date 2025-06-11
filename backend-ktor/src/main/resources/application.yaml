@@ -21,4 +21,4 @@ postgres:
   user: "$DB_USERNAME:app"
   password: "$DB_PASSWORD:TODO"
   schema: vicx
-  embedded: "$DB_EMBEDDED:false"
+  embedded: "$DB_EMBEDDED:true"
