@@ -14,15 +14,13 @@ import kotlinx.datetime.toKotlinLocalDateTime
 import no.vicx.ktor.calculator.CalculatorService.Companion.DEFAULT_PAGE_SIZE
 import no.vicx.ktor.db.model.CalculatorOperation
 import no.vicx.ktor.db.repository.CalculatorRepository
-import java.time.Duration
 import java.time.LocalDateTime
 
 class CalculatorServiceTest : BehaviorSpec({
     coroutineTestScope = true
 
     val calculatorRepository: CalculatorRepository = mockk()
-    val maxAge = mockk<Duration>()
-    val sut = CalculatorService(calculatorRepository, maxAge)
+    val sut = CalculatorService(calculatorRepository)
 
     Given("a CalculatorService with mocked CalculatorRepository") {
         beforeContainer {

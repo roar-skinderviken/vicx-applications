@@ -36,7 +36,7 @@ class CalculatorMutation(
         environment: DataFetchingEnvironment
     ): CalcVm {
         val jwtPrincipal = environment.graphQlContext.get<JWTPrincipal>(JWT_PRINCIPAL_KEY)
-        val username = jwtPrincipal?.subject ?: ANONYMOUS_USERNAME
+        val username = jwtPrincipal?.subject
 
         return calculatorService.calculate(
             firstValue.toLong(),
@@ -44,9 +44,5 @@ class CalculatorMutation(
             operation,
             username
         )
-    }
-
-    companion object {
-        const val ANONYMOUS_USERNAME = "Anonymous"
     }
 }

@@ -4,6 +4,7 @@ import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.plugins.cors.routing.*
 import no.vicx.ktor.calculator.CalculatorService
+import no.vicx.ktor.calculator.RemoveOldEntriesTask
 import no.vicx.ktor.db.repository.CalculatorRepository
 import no.vicx.ktor.db.repository.UserImageRepository
 import no.vicx.ktor.db.repository.UserRepository
@@ -16,7 +17,6 @@ import no.vicx.ktor.user.service.UserImageService
 import no.vicx.ktor.user.service.UserService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import java.time.Duration
 import javax.sql.DataSource
 
 inline fun <reified T : Any> loggerFor(): Logger = LoggerFactory.getLogger(T::class.java)
@@ -31,7 +31,7 @@ fun Application.module() {
     val reCaptchaSecret = environment.config.property("recaptcha.secret").getString()
 
     val calculatorRepository = CalculatorRepository()
-    val calculatorService = CalculatorService(CalculatorRepository(), Duration.ofHours(1))
+    val calculatorService = CalculatorService(CalculatorRepository())
 
     val recaptchaClient = RecaptchaClient(defaultClient, reCaptchaSecret)
     val userRepository = UserRepository()
@@ -58,4 +58,6 @@ fun Application.module() {
         userService,
         userImageService
     )
+
+    RemoveOldEntriesTask(calculatorRepository).also { it.start(this) }
 }

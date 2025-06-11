@@ -10,6 +10,6 @@ data class CalcVm(
     val secondValue: Int,
     val operation: CalculatorOperation,
     val result: Int,
-    val username: String,
+    val username: String?,
     val createdAt: String // TODO: Add custom serializer for LocalDateTime
 )

@@ -13,6 +13,10 @@ jwt:
 esport:
   token: "$ESPORT_TOKEN:~token~"
 
+calculator:
+  rate: "5m"
+  max-age: "6h"
+
 recaptcha:
   secret: "$RECAPTCHA_SECRET:6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe" # dev secret
 

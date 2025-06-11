@@ -8,7 +8,7 @@ import java.time.LocalDateTime
 object CalculatorTestUtils {
     fun calcEntryInTest(
         id: Long = 0L,
-        username: String = USERNAME_IN_TEST
+        username: String? = USERNAME_IN_TEST
     ) = no.vicx.ktor.db.model.CalcEntry(
         id,
         42,

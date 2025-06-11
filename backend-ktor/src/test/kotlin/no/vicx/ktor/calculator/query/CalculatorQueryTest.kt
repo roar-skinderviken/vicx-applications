@@ -17,7 +17,6 @@ import io.ktor.server.testing.*
 import io.mockk.*
 import kotlinx.serialization.json.Json
 import no.vicx.ktor.calculator.CalculatorService
-import no.vicx.ktor.calculator.query.CalculatorMutation.Companion.ANONYMOUS_USERNAME
 import no.vicx.ktor.calculator.query.wrapper.CreateCalculation
 import no.vicx.ktor.calculator.query.wrapper.DeleteCalculations
 import no.vicx.ktor.calculator.query.wrapper.GetAllCalculations
@@ -62,7 +61,7 @@ class CalculatorQueryTest : BehaviorSpec() {
             }
 
             forAll(
-                row(ANONYMOUS_USERNAME, false),
+                row(null, false),
                 row(USERNAME_IN_TEST, true),
             ) { username, addAuthHeader ->
                 When("sending valid request to createCalculation. $username, $addAuthHeader") {

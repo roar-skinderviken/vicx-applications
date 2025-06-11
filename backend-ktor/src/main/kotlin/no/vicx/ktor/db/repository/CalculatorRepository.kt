@@ -8,6 +8,9 @@ import no.vicx.ktor.db.table.CalcEntryTable
 import no.vicx.ktor.db.toModel
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.inList
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.isNull
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.less
+import java.time.OffsetDateTime
 import java.time.ZoneOffset
 
 class CalculatorRepository {
@@ -55,12 +58,11 @@ class CalculatorRepository {
             .toSet()
     }
 
-    // TODO
-/*    suspend fun deleteAllByCreatedAtBeforeAndUsernameNull(
+    suspend fun deleteAllByCreatedAtBeforeAndUsernameNull(
         createdAt: OffsetDateTime
     ): Int = suspendTransaction {
         CalcEntryTable.deleteWhere {
             (username.isNull()) and (CalcEntryTable.createdAt less createdAt)
         }
-    }*/
+    }
 }

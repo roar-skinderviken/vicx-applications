@@ -15,6 +15,6 @@ object CalcEntryTable : LongIdTable("calc_entry") {
         klass = CalculatorOperation::class
     )
     val result = long("result")
-    val username = varchar("username", 255)
+    val username = varchar("username", 255).nullable()
     val createdAt = timestampWithTimeZone("created_at").defaultExpression(CurrentTimestampWithTimeZone)
 }

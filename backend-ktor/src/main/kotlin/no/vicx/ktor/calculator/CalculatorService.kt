@@ -2,13 +2,12 @@ package no.vicx.ktor.calculator
 
 import no.vicx.ktor.calculator.vm.CalcVm
 import no.vicx.ktor.calculator.vm.PaginatedCalculations
+import no.vicx.ktor.db.model.CalcEntry
 import no.vicx.ktor.db.model.CalculatorOperation
 import no.vicx.ktor.db.repository.CalculatorRepository
-import java.time.Duration
 
 class CalculatorService(
     private val calculatorRepository: CalculatorRepository,
-    private val maxAge: Duration
 ) {
     suspend fun getPagedCalculations(page: Int): PaginatedCalculations {
         val (calculationsInPage, totalCount) =
@@ -25,7 +24,7 @@ class CalculatorService(
         firstValue: Long,
         secondValue: Long,
         operation: CalculatorOperation,
-        username: String
+        username: String?
     ): CalcVm {
         val result = when (operation) {
             CalculatorOperation.PLUS -> (firstValue + secondValue)
@@ -33,7 +32,7 @@ class CalculatorService(
         }
 
         return calculatorRepository.save(
-            no.vicx.ktor.db.model.CalcEntry(
+            CalcEntry(
                 firstValue = firstValue,
                 secondValue = secondValue,
                 operation = operation,

@@ -1,5 +1,6 @@
 package no.vicx.ktor.db.repository
 
+import io.kotest.matchers.shouldBe
 import io.ktor.server.testing.*
 import io.mockk.clearAllMocks
 import io.mockk.every
@@ -17,13 +18,18 @@ import org.jetbrains.exposed.dao.exceptions.EntityNotFoundException
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.insertAndGetId
+import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import java.time.OffsetDateTime
 import java.time.ZoneOffset
+import kotlin.time.Duration.Companion.hours
+import kotlin.time.Duration.Companion.minutes
+import kotlin.time.toJavaDuration
 
 class CalculatorRepositoryTest {
 
@@ -175,6 +181,36 @@ class CalculatorRepositoryTest {
                 }
 
                 assertEquals("Entity CalcEntryEntity, id=1 not found in the database", thrown.message)
+            }
+
+        @Test
+        fun `given old calc entry when calling deleteAllByCreatedAtBeforeAndUsernameNull expect delete`() =
+            testApplication {
+                val calcEntry = calcEntryInTest(1L)
+
+                insertTestData {
+                    CalcEntryTable.insert { row ->
+                        row[firstValue] = calcEntry.firstValue
+                        row[secondValue] = calcEntry.secondValue
+                        row[operation] = calcEntry.operation
+                        row[result] = calcEntry.result
+                        row[username] = null
+                        row[createdAt] = OffsetDateTime.now().minus(1.hours.toJavaDuration())
+                    }
+                }
+
+                application {
+                    transaction {
+                        CalcEntryTable.selectAll().count() shouldBe 1
+                    }
+
+                    val deleteRecordsBefore = OffsetDateTime.now().minus(5.minutes.toJavaDuration())
+                    runBlocking { sut.deleteAllByCreatedAtBeforeAndUsernameNull(deleteRecordsBefore) }
+
+                    transaction {
+                        CalcEntryTable.selectAll().count() shouldBe 0
+                    }
+                }
             }
     }
 }

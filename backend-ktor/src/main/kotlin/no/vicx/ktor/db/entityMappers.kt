@@ -4,6 +4,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.datetime.toKotlinLocalDateTime
 import no.vicx.ktor.db.entity.CalcEntryEntity
 import no.vicx.ktor.db.entity.UserImageEntity
+import no.vicx.ktor.db.entity.VicxUserEntity
+import no.vicx.ktor.db.model.CalcEntry
 import no.vicx.ktor.db.model.UserImage
 import no.vicx.ktor.db.model.VicxUser
 import org.jetbrains.exposed.sql.Transaction
@@ -12,7 +14,7 @@ import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransacti
 suspend fun <T> suspendTransaction(block: Transaction.() -> T): T =
     newSuspendedTransaction(Dispatchers.IO, statement = block)
 
-fun CalcEntryEntity.toModel() = no.vicx.ktor.db.model.CalcEntry(
+fun CalcEntryEntity.toModel() = CalcEntry(
     id.value,
     firstValue,
     secondValue,
@@ -22,7 +24,7 @@ fun CalcEntryEntity.toModel() = no.vicx.ktor.db.model.CalcEntry(
     createdAt.toLocalDateTime().toKotlinLocalDateTime()
 )
 
-fun no.vicx.ktor.db.entity.VicxUserEntity.toModel() = VicxUser(
+fun VicxUserEntity.toModel() = VicxUser(
     id.value,
     username,
     name,
