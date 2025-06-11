@@ -4,7 +4,7 @@ ktor:
       - no.vicx.ktor.ApplicationKt.module
   deployment:
     port: 8080
-    rootPath: "/backend-ktor"
+    rootPath: "/backend-spring-boot" # for easy switching between Spring Boot and Ktor
 
 jwt:
   issuer: "$OAUTH2_SERVER:http://localhost:9000/auth-server"
