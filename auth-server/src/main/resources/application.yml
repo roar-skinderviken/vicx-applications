@@ -23,6 +23,9 @@ oauth:
   refresh-token-time-to-live: PT5M
 
 spring:
+  main:
+    banner-mode: off
+
   application:
     name: auth-server
 

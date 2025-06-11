@@ -18,6 +18,9 @@ recaptcha:
   secret: ${RECAPTCHA_SECRET:6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe} # dev secret
 
 spring:
+  main:
+    banner-mode: off
+
   security:
     oauth2:
       resourceserver:

@@ -54,7 +54,7 @@ jobs:
 
       - name: Build with Gradle
         if : ${{ inputs.buildWithGradle }}
-        run: ./gradlew build --build-cache --info
+        run: ./gradlew build -p ${{ inputs.appName }} --build-cache --info
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3

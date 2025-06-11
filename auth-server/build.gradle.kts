@@ -21,7 +21,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-validation")
 
     // logging
-    runtimeOnly(libs.logback.access.spring.boot.starter)
+    //runtimeOnly(libs.logback.access.spring.boot.starter)
     runtimeOnly(libs.logstash.logback.encoder)
 
     // database

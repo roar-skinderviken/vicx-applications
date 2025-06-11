@@ -8,7 +8,6 @@ import no.vicx.ktor.calculator.vm.PaginatedCalculations
 class CalculatorQuery(
     private val calculatorService: CalculatorService
 ) : Query {
-
     suspend fun getAllCalculations(page: Int): PaginatedCalculations =
         calculatorService.getPagedCalculations(page)
 }
