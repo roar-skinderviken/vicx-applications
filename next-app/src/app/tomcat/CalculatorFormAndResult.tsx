@@ -68,10 +68,12 @@ const nextClient = () => createClient({
 const calculatorYupSchema = yup.object({
     firstValue: yup
         .number()
-        .typeError("First value must be a number"),
+        .typeError("First value must be a number")
+        .required("First value is required"),
     secondValue: yup
         .number()
-        .typeError("Second value must be a number"),
+        .typeError("Second value must be a number")
+        .required("Second value is required"),
     operation: yup
         .string()
         .required("Operation is required"),

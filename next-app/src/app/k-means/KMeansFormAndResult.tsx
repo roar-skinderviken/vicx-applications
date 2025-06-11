@@ -16,11 +16,13 @@ const kMeansSchema = yup.object({
     maxScore: yup
         .number()
         .typeError("Max Score must be a number")
+        .required("Max Score is required")
         .min(10, "Max Score must be greater than 10")
         .max(1000, "Max Score must be less than 1000"),
     failScore: yup
         .number()
         .typeError("Fail Score must be a number")
+        .required("Fail Score is required")
         .min(0, "Fail Score must be equal or greater than 0"),
     scores: yup
         .string()
@@ -32,6 +34,7 @@ const kMeansSchema = yup.object({
     maxIter: yup
         .number()
         .typeError("Max Iterations must be a number")
+        .required("Max Iterations is required")
         .min(1, "Max Iterations must be greater than 0")
         .max(999, "Max Iterations must be less than 1000"),
 })

@@ -42,6 +42,7 @@ const profileImageUploadSchema = yup.object({
                     : true
             }
         )
+        .required()
 })
 
 type ProfileImageData = InferType<typeof profileImageUploadSchema>

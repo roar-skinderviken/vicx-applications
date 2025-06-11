@@ -44,7 +44,7 @@ export const userRegistrationSchema = yup.object({
                     ? file.size < MAX_IMAGE_FILE_SIZE
                     : true
             }
-        ),
+        ).required(),
 
     reCaptchaToken: yup
         .string()
