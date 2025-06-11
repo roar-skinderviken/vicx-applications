@@ -61,3 +61,4 @@ fun Application.module() {
 
     RemoveOldEntriesTask(calculatorRepository).also { it.start(this) }
 }
+
