@@ -18,7 +18,7 @@ embedded-postgres-version = "2.1.0"
 graphql-kotlin-version = "8.5.0"
 
 spring-security-crypto-version = "6.5.0"
-caffeine-version = "3.2.0"
+caffeine-version = "3.2.1"
 cohort-ktor-version = "2.7.2"
 
 kotlin-test-version = "2.1.10"
