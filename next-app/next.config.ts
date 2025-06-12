@@ -23,7 +23,7 @@ const nextConfig: NextConfig = {
                 headers: [
                     {
                         key: "Cache-Control",
-                        value: "public, max-age=3600",
+                        value: "public, max-age=3600"
                     },
                 ],
             },
@@ -37,7 +37,7 @@ const nextConfig: NextConfig = {
                 ],
             },
             {
-                source: "/api/calculator",
+                source: "/api/user(.*)",
                 headers: [
                     {
                         key: "Cache-Control",
@@ -50,7 +50,7 @@ const nextConfig: NextConfig = {
                 headers: [
                     {
                         key: "Cache-Control",
-                        value: "public, max-age=30",
+                        value: "public, max-age=30"
                     },
                 ],
             },
