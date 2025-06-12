@@ -21,7 +21,7 @@ spring-security-crypto-version = "6.5.0"
 caffeine-version = "3.2.0"
 cohort-ktor-version = "2.7.2"
 
-kotlin-test-version = "2.1.10"
+kotlin-test-version = "2.1.21"
 mockk-version = "1.14.2"
 kotest-runner-junit5-version = "5.9.1"
 
