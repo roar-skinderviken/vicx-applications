@@ -26,7 +26,7 @@ val FlywayPlugin: ApplicationPlugin<FlywayPluginConfig> = createApplicationPlugi
         .dataSource(dataSource)
         .locations("classpath:db.migration")
         .defaultSchema(defaultSchema)
-        .validateMigrationNaming(true)
+        // .validateMigrationNaming(true) TODO: Some issues with Flyway plugin in JAR
         .load()
         .migrate()
 
