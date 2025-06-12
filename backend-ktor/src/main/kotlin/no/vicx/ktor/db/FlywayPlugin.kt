@@ -26,6 +26,7 @@ val FlywayPlugin: ApplicationPlugin<FlywayPluginConfig> = createApplicationPlugi
         .dataSource(dataSource)
         .locations("classpath:db.migration")
         .defaultSchema(defaultSchema)
+        .validateMigrationNaming(true)
         .load()
         .migrate()
 

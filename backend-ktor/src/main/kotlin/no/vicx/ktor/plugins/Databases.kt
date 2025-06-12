@@ -86,10 +86,15 @@ fun Application.connectToPostgres(embedded: Boolean): DataSource =
         val schema = environment.config.property("postgres.schema").getString()
 
         val hikariConfig = HikariConfig().apply {
-            this.jdbcUrl = environment.config.property("postgres.url").getString()
-            this.username = environment.config.property("postgres.user").getString()
-            this.password = environment.config.property("postgres.password").getString()
+            driverClassName = "org.postgresql.Driver"
+            jdbcUrl = environment.config.property("postgres.url").getString()
+            username = environment.config.property("postgres.user").getString()
+            password = environment.config.property("postgres.password").getString()
             this.schema = schema
+            maximumPoolSize = 20
+            isAutoCommit = true
+            initializationFailTimeout = 5000
+            minimumIdle = 1
         }
 
         val hikariDataSource = HikariDataSource(hikariConfig)
