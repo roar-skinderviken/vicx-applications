@@ -15,7 +15,7 @@ postgres-version = "42.7.5"
 flyway-version = "11.5.0"
 hikari-version = "6.3.0"
 embedded-postgres-version = "2.1.0"
-graphql-kotlin-version = "8.5.0"
+graphql-kotlin-version = "8.8.0"
 
 spring-security-crypto-version = "6.5.0"
 caffeine-version = "3.2.0"
