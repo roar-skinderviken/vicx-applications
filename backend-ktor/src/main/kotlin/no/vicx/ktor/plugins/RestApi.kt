@@ -133,7 +133,6 @@ fun Application.configureRestApi(
                             }
                         )
 
-                        call.response.header(HttpHeaders.Location, "/api/user/image")
                         call.respond(HttpStatusCode.Created)
                     }
 
@@ -143,7 +142,9 @@ fun Application.configureRestApi(
                         val user = userService.getUserByUserName(username)
                         val userImage = user.userImage ?: throw NotFoundException("User image for $username not found")
 
-                        call.response.header(HttpHeaders.CacheControl, "no-store")
+                        call.response.headers.append(HttpHeaders.CacheControl, "no-store, no-cache, must-revalidate")
+                        call.response.headers.append(HttpHeaders.Expires, "0")
+
                         call.respondBytes(
                             contentType = ContentType.parse(userImage.contentType),
                             status = HttpStatusCode.OK,
