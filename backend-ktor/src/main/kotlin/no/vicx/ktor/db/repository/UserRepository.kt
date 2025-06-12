@@ -1,6 +1,7 @@
 package no.vicx.ktor.db.repository
 
 import no.vicx.ktor.db.entity.UserImageEntity
+import no.vicx.ktor.db.entity.VicxUserEntity
 import no.vicx.ktor.db.model.VicxUser
 import no.vicx.ktor.db.suspendTransaction
 import no.vicx.ktor.db.table.VicxUserTable
@@ -15,7 +16,7 @@ class UserRepository {
     ): VicxUser = suspendTransaction {
         require(bcryptRegex.matches(userModel.password)) { PASSWORD_MUST_BE_ENCRYPTED_MSG }
 
-        val insertedUser = no.vicx.ktor.db.entity.VicxUserEntity.new {
+        val insertedUser = VicxUserEntity.new {
             username = userModel.username
             name = userModel.name
             password = userModel.password
@@ -34,7 +35,7 @@ class UserRepository {
 
     suspend fun findByUsername(username: String): VicxUser? = suspendTransaction {
         addLogger(StdOutSqlLogger)
-        no.vicx.ktor.db.entity.VicxUserEntity
+        VicxUserEntity
             .find { VicxUserTable.username eq username }
             .firstOrNull()
             ?.toModel()
@@ -54,7 +55,7 @@ class UserRepository {
         email: String? = null,
         password: String? = null
     ): Unit = suspendTransaction {
-        no.vicx.ktor.db.entity.VicxUserEntity.findByIdAndUpdate(id) { user ->
+        VicxUserEntity.findByIdAndUpdate(id) { user ->
             user.apply {
                 name?.let { this.name = it }
                 email?.let { this.email = it }

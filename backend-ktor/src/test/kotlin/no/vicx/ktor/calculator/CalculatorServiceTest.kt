@@ -12,6 +12,7 @@ import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.datetime.toKotlinLocalDateTime
 import no.vicx.ktor.calculator.CalculatorService.Companion.DEFAULT_PAGE_SIZE
+import no.vicx.ktor.db.model.CalcEntry
 import no.vicx.ktor.db.model.CalculatorOperation
 import no.vicx.ktor.db.repository.CalculatorRepository
 import java.time.LocalDateTime
@@ -34,7 +35,7 @@ class CalculatorServiceTest : BehaviorSpec({
             When("calculate is called with valid parameters, operation: $operation") {
                 val expected =
                     expectedCalcEntry(operation, expectedResult)
-                coEvery { calculatorRepository.save(any<no.vicx.ktor.db.model.CalcEntry>()) } returns expected
+                coEvery { calculatorRepository.save(any<CalcEntry>()) } returns expected
 
                 sut.calculate(
                     firstValue = expected.firstValue,
@@ -86,7 +87,7 @@ class CalculatorServiceTest : BehaviorSpec({
         fun expectedCalcEntry(
             operation: CalculatorOperation,
             result: Long
-        ) = no.vicx.ktor.db.model.CalcEntry(
+        ) = CalcEntry(
             firstValue = 2L,
             secondValue = 1L,
             operation = operation,
@@ -95,12 +96,12 @@ class CalculatorServiceTest : BehaviorSpec({
         )
 
         fun createCalcEntriesInTest(size: Int) = List(size) { index ->
-            no.vicx.ktor.db.model.CalcEntry(
+            CalcEntry(
                 index.toLong(), 42, 43, CalculatorOperation.PLUS,
                 85,
                 "~username~",
                 LocalDateTime.now().plusSeconds(index.toLong()).toKotlinLocalDateTime()
             )
-        }.sortedByDescending(no.vicx.ktor.db.model.CalcEntry::id)
+        }.sortedByDescending(CalcEntry::id)
     }
 }

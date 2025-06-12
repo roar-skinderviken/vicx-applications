@@ -11,6 +11,7 @@ import io.kotest.matchers.shouldNotBe
 import io.ktor.server.testing.*
 import kotlinx.coroutines.runBlocking
 import no.vicx.ktor.db.entity.UserImageEntity
+import no.vicx.ktor.db.entity.VicxUserEntity
 import no.vicx.ktor.db.model.VicxUser
 import no.vicx.ktor.db.repository.UserRepository.Companion.PASSWORD_MUST_BE_ENCRYPTED_MSG
 import no.vicx.ktor.db.toModel
@@ -99,7 +100,7 @@ class UserRepositoryTest : BehaviorSpec({
 
             testApplication {
                 insertTestData {
-                    val insertedUser = no.vicx.ktor.db.entity.VicxUserEntity.new {
+                    val insertedUser = VicxUserEntity.new {
                         username = userModelInTest.username
                         name = userModelInTest.name
                         email = userModelInTest.email
@@ -135,7 +136,7 @@ class UserRepositoryTest : BehaviorSpec({
 
             testApplication {
                 insertTestData {
-                    no.vicx.ktor.db.entity.VicxUserEntity.new {
+                    VicxUserEntity.new {
                         username = userModelInTest.username
                         name = userModelInTest.name
                         email = userModelInTest.email
@@ -167,7 +168,7 @@ class UserRepositoryTest : BehaviorSpec({
 
                 testApplication {
                     insertTestData {
-                        insertedUser = no.vicx.ktor.db.entity.VicxUserEntity.new {
+                        insertedUser = VicxUserEntity.new {
                             username = userModelInTest.username
                             name = userModelInTest.name
                             email = userModelInTest.email
@@ -185,7 +186,7 @@ class UserRepositoryTest : BehaviorSpec({
                         }
 
                         transaction {
-                            updatedUser = no.vicx.ktor.db.entity.VicxUserEntity[1L].toModel()
+                            updatedUser = VicxUserEntity[1L].toModel()
                         }
                     }
                 }

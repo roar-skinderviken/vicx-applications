@@ -92,7 +92,6 @@ class UserService(
         )
     }
 
-
     /**
      * Updates the password for the specified user.
      *

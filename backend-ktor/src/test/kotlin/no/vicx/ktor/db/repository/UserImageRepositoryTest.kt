@@ -6,6 +6,7 @@ import io.kotest.matchers.shouldBe
 import io.ktor.server.testing.*
 import kotlinx.coroutines.runBlocking
 import no.vicx.ktor.db.entity.UserImageEntity
+import no.vicx.ktor.db.entity.VicxUserEntity
 import no.vicx.ktor.db.model.VicxUser
 import no.vicx.ktor.db.toModel
 import no.vicx.ktor.util.MiscTestUtils.JPEG_CONTENT_TYPE
@@ -33,7 +34,7 @@ class UserImageRepositoryTest : BehaviorSpec({
 
             testApplication {
                 insertTestData {
-                    userInTest = no.vicx.ktor.db.entity.VicxUserEntity.new {
+                    userInTest = VicxUserEntity.new {
                         username = userModelInTest.username
                         name = userModelInTest.name
                         email = userModelInTest.email
@@ -45,7 +46,7 @@ class UserImageRepositoryTest : BehaviorSpec({
                     runBlocking { sut.saveUserImage(userImageModelInTest) }
 
                     transaction {
-                        userInTest = no.vicx.ktor.db.entity.VicxUserEntity[userInTest.id].toModel()
+                        userInTest = VicxUserEntity[userInTest.id].toModel()
                     }
                 }
             }
@@ -65,7 +66,7 @@ class UserImageRepositoryTest : BehaviorSpec({
 
             testApplication {
                 insertTestData {
-                    userInTest = no.vicx.ktor.db.entity.VicxUserEntity.new {
+                    userInTest = VicxUserEntity.new {
                         username = userModelInTest.username
                         name = userModelInTest.name
                         email = userModelInTest.email
@@ -89,7 +90,7 @@ class UserImageRepositoryTest : BehaviorSpec({
                     }
 
                     transaction {
-                        userInTest = no.vicx.ktor.db.entity.VicxUserEntity[userInTest.id].toModel()
+                        userInTest = VicxUserEntity[userInTest.id].toModel()
                     }
                 }
             }
@@ -108,7 +109,7 @@ class UserImageRepositoryTest : BehaviorSpec({
 
             testApplication {
                 insertTestData {
-                    userInTest = no.vicx.ktor.db.entity.VicxUserEntity.new {
+                    userInTest = VicxUserEntity.new {
                         username = userModelInTest.username
                         name = userModelInTest.name
                         email = userModelInTest.email
@@ -125,7 +126,7 @@ class UserImageRepositoryTest : BehaviorSpec({
                     runBlocking { sut.deleteById(userInTest.id) }
 
                     transaction {
-                        userInTest = no.vicx.ktor.db.entity.VicxUserEntity[userInTest.id].toModel()
+                        userInTest = VicxUserEntity[userInTest.id].toModel()
                     }
                 }
             }
