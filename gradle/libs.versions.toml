@@ -21,7 +21,6 @@ spring-security-crypto-version = "6.5.0"
 caffeine-version = "3.2.1"
 cohort-ktor-version = "2.7.2"
 
-kotlin-test-version = "2.1.10"
 mockk-version = "1.14.2"
 kotest-runner-junit5-version = "5.9.1"
 
@@ -73,7 +72,7 @@ logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "lo
 graphql-kotlin-server = { module = "com.expediagroup:graphql-kotlin-ktor-server", version.ref = "graphql-kotlin-version" }
 graphql-kotlin-schema-generator = { module = "com.expediagroup:graphql-kotlin-schema-generator", version.ref = "graphql-kotlin-version" }
 
-kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin-test-version" }
+kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin-version" }
 kotest-runner-junit5 = { module = "io.kotest:kotest-runner-junit5-jvm", version.ref = "kotest-runner-junit5-version" }
 mockk = { module = "io.mockk:mockk-jvm", version.ref = "mockk-version" }
 
