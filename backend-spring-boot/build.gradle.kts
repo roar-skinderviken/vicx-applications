@@ -1,8 +1,9 @@
 plugins {
-    java
     alias(libs.plugins.springframework.boot)
     alias(libs.plugins.spring.dependency.management)
     alias(libs.plugins.git.properties)
+    alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.kotlin.plugin.spring)
 }
 
 java {
@@ -25,6 +26,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-graphql")
     implementation(libs.springdoc.openapi)
 
+    implementation(libs.jackson.module.kotlin)
     implementation("com.github.ben-manes.caffeine:caffeine")
     implementation(libs.tika.core)
 
@@ -39,6 +41,16 @@ dependencies {
     runtimeOnly("org.postgresql:postgresql")
 
     // test
+    testImplementation(libs.kotest.runner.junit5)
+    testImplementation(libs.kotest.assertions.core)
+    testImplementation(libs.kotest.extensions.spring)
+    testImplementation(libs.mockk)
+    testImplementation(libs.springmockk)
+
+    testImplementation("org.springframework.boot:spring-boot-starter-test") {
+        exclude(module = "mockito-core")
+    }
+
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.graphql:spring-graphql-test")
@@ -46,25 +58,19 @@ dependencies {
 }
 
 springBoot {
-    mainClass = "no.vicx.backend.VicxBackendApplication"
+    mainClass = "no.vicx.backend.VicxBackendApplicationKt"
 }
 
 tasks.jar {
     enabled = false
 }
 
-// https://javadoc.io/doc/org.mockito/mockito-core/latest/org/mockito/Mockito.html#0.3
-val mockitoAgent = configurations.create("mockitoAgent")
-
-dependencies {
-    testImplementation(libs.mockito)
-    mockitoAgent(libs.mockito) { isTransitive = false }
-}
-
-tasks.withType<Wrapper> {}
-
 tasks.test {
-    jvmArgs("-javaagent:${mockitoAgent.asPath}")
+    jvmArgs(
+        "-Xshare:off",
+        "-XX:+EnableDynamicAgentLoading",
+        "-Dkotest.framework.classpath.scanning.autoscan.disable=true",
+        "-Dkotest.framework.config.fqn=no.vicx.backend.KotestConfig"
+    )
     useJUnitPlatform()
-    systemProperty("spring.profiles.active", "test")
 }

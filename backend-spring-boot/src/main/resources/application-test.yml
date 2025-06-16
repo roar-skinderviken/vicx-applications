@@ -5,5 +5,5 @@ app:
 
 spring:
   cache:
-    cache-names: [GITHUB_TOKENS, RECAPTCHA_TOKENS]
+    cache-names: [ GITHUB_TOKENS, RECAPTCHA_TOKENS ]
     type: none
