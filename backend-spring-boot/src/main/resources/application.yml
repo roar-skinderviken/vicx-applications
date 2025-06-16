@@ -5,6 +5,7 @@ server:
 logging:
   level:
     root: INFO
+    io.micrometer.core.instrument.binder.cache: error
 
 app:
   calculator:
@@ -51,6 +52,11 @@ spring:
     open-in-view: false
     hibernate.ddl-auto: create
     show-sql: false
+    properties:
+      jakarta:
+        persistence:
+          validation:
+            mode: none
 
   h2:
     console:
