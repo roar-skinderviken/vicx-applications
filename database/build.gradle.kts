@@ -1,18 +1,13 @@
 plugins {
     id("java-library")
-    id("org.springframework.boot") version "3.5.0" apply false
-    id("io.spring.dependency-management") version "1.1.7"
-    id("io.freefair.lombok") version "8.13.1"
+    alias(libs.plugins.freefair.lombok)
+    // remaining plugins are added in parent
 }
 
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(21)
     }
-}
-
-repositories {
-    mavenCentral()
 }
 
 dependencyManagement {

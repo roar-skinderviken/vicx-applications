@@ -1,18 +1,9 @@
 plugins {
     java
-    alias(libs.plugins.springframework.boot)
-    alias(libs.plugins.spring.dependency.management)
+    // remaining plugins are added in parent
 }
 
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
-    }
-}
-
-repositories {
-    mavenCentral()
-}
+java { toolchain { languageVersion = JavaLanguageVersion.of(21) } }
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")

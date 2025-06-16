@@ -1,22 +1,12 @@
-
 plugins {
-    alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.ktor)
     alias(libs.plugins.kotlin.plugin.serialization)
+    // remaining plugins are added in parent
 }
-
-group = "no.vicx"
-version = "0.0.1"
 
 application {
     mainClass = "io.ktor.server.netty.EngineMain"
 }
-
-repositories {
-    mavenCentral()
-}
-
-val mockitoAgent = configurations.create("mockitoAgent")
 
 dependencies {
     implementation(libs.ktor.server.auth)
@@ -58,10 +48,6 @@ dependencies {
     testImplementation(libs.kotest.runner.junit5)
     testImplementation(libs.mockk)
     testImplementation(libs.kotlin.test)
-}
-
-kotlin {
-    jvmToolchain(21)
 }
 
 tasks.shadowJar {
