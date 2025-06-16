@@ -58,7 +58,7 @@ dependencies {
 }
 
 springBoot {
-    mainClass = "no.vicx.backend.VicxBackendApplication"
+    mainClass = "no.vicx.backend.VicxBackendApplicationKt"
 }
 
 tasks.jar {
