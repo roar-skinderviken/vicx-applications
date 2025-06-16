@@ -1,8 +1,8 @@
 package no.vicx.ktor.user
 
 import io.kotest.core.spec.style.BehaviorSpec
+import io.kotest.data.Row3
 import io.kotest.data.forAll
-import io.kotest.data.row
 import io.kotest.matchers.shouldBe
 import io.ktor.client.*
 import io.ktor.client.call.*
@@ -108,31 +108,31 @@ class ChangePasswordRouteTest : BehaviorSpec({
         }
 
         forAll(
-            row(
+            Row3(
                 "Empty currentPassword and new password", ChangePasswordVm("", ""),
                 mapOf(
                     "currentPassword" to "currentPassword cannot be blank",
                     "password" to "Password cannot be blank"
                 )
             ),
-            row(
+            Row3(
                 "currentPassword too short", ChangePasswordVm("P4s", VALID_PLAINTEXT_PASSWORD),
                 mapOf("currentPassword" to "currentPassword must be between 4 and 255 characters")
             ),
-            row(
+            Row3(
                 "currentPassword too long", ChangePasswordVm("a".repeat(256), VALID_PLAINTEXT_PASSWORD),
                 mapOf("currentPassword" to "currentPassword must be between 4 and 255 characters")
             ),
 
-            row(
+            Row3(
                 "new password too short", ChangePasswordVm(VALID_PLAINTEXT_PASSWORD, "a".repeat(7)),
                 mapOf("password" to "Password must be between 8 and 255 characters")
             ),
-            row(
+            Row3(
                 "new password too long", ChangePasswordVm(VALID_PLAINTEXT_PASSWORD, "a".repeat(256)),
                 mapOf("password" to "Password must be between 8 and 255 characters")
             ),
-            row(
+            Row3(
                 "invalid new password", ChangePasswordVm(VALID_PLAINTEXT_PASSWORD, "a".repeat(8)),
                 mapOf("password" to "Password must contain at least one lowercase letter, one uppercase letter, and one digit")
             ),

@@ -1,6 +1,7 @@
 package no.vicx.ktor.user
 
 import io.kotest.core.spec.style.BehaviorSpec
+import io.kotest.data.Row3
 import io.kotest.data.forAll
 import io.kotest.data.row
 import io.kotest.matchers.shouldBe
@@ -49,11 +50,11 @@ class UserImageRouteTest : BehaviorSpec({
         }
 
         forAll(
-            row(
+            Row3(
                 GIF_CONTENT_TYPE, GIF_RESOURCE_NAME,
                 "Image file type: Only PNG and JPG files are allowed"
             ),
-            row(
+            Row3(
                 PNG_CONTENT_TYPE, TOO_LARGE_RESOURCE_NAME,
                 "Image file size exceeds the maximum allowed size of 51200 bytes"
             ),

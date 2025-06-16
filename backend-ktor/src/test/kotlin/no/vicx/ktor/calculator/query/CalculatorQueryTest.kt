@@ -1,8 +1,8 @@
 package no.vicx.ktor.calculator.query
 
 import io.kotest.core.spec.style.BehaviorSpec
+import io.kotest.data.Row2
 import io.kotest.data.forAll
-import io.kotest.data.row
 import io.kotest.matchers.ints.shouldBeGreaterThan
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
@@ -61,8 +61,8 @@ class CalculatorQueryTest : BehaviorSpec() {
             }
 
             forAll(
-                row(null, false),
-                row(USERNAME_IN_TEST, true),
+                Row2(null, false),
+                Row2(USERNAME_IN_TEST, true),
             ) { username, addAuthHeader ->
                 When("sending valid request to createCalculation. $username, $addAuthHeader") {
                     val expectedCalcEntry = calcEntryInTest(username = username).toGraphQLModel()

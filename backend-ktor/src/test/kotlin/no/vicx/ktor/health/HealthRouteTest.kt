@@ -3,8 +3,8 @@ package no.vicx.ktor.health
 import io.kotest.assertions.nondeterministic.eventually
 import io.kotest.assertions.nondeterministic.eventuallyConfig
 import io.kotest.core.spec.style.BehaviorSpec
+import io.kotest.data.Row1
 import io.kotest.data.forAll
-import io.kotest.data.row
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import io.ktor.client.plugins.contentnegotiation.*
@@ -21,8 +21,8 @@ class HealthRouteTest : BehaviorSpec({
     Given("application context with Cohort") {
 
         forAll(
-            row("/readiness"),
-            row("/liveness")
+            Row1("/readiness"),
+            Row1("/liveness")
         ) { endpoint ->
             When("calling endpoint $endpoint") {
                 lateinit var response: HttpResponse

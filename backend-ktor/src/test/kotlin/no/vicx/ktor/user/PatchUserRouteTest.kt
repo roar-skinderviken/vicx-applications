@@ -1,8 +1,8 @@
 package no.vicx.ktor.user
 
 import io.kotest.core.spec.style.BehaviorSpec
+import io.kotest.data.Row3
 import io.kotest.data.forAll
-import io.kotest.data.row
 import io.kotest.matchers.shouldBe
 import io.ktor.client.*
 import io.ktor.client.call.*
@@ -80,48 +80,48 @@ class PatchUserRouteTest : BehaviorSpec({
         }
 
         forAll(
-            row(
+            Row3(
                 "Empty name and email", UserPatchVm("", ""),
                 mapOf(
                     "name" to "Name and email cannot both be blank",
                     "email" to "Email and name cannot both be blank"
                 )
             ),
-            row(
+            Row3(
                 "Name with leading blank", UserPatchVm(" user-name", ""),
                 mapOf("name" to "Name cannot have leading or trailing blanks")
             ),
-            row(
+            Row3(
                 "Name with trailing blank", UserPatchVm("user-name ", ""),
                 mapOf("name" to "Name cannot have leading or trailing blanks")
             ),
-            row(
+            Row3(
                 "Name with both leading and trailing blank", UserPatchVm(" user-name ", ""),
                 mapOf("name" to "Name cannot have leading or trailing blanks")
             ),
 
-            row(
+            Row3(
                 "Name too short", UserPatchVm("a".repeat(3), "user@example.com"),
                 mapOf("name" to "Name must be between 4 and 255 characters")
             ),
-            row(
+            Row3(
                 "Name too long", UserPatchVm("a".repeat(256), "user@example.com"),
                 mapOf("name" to "Name must be between 4 and 255 characters")
             ),
 
-            row(
+            Row3(
                 "Blank email address, valid name", UserPatchVm("user1", " ".repeat(10)),
                 mapOf("email" to "Email format is invalid")
             ),
-            row(
+            Row3(
                 "Invalid email address", UserPatchVm("", "a".repeat(10)),
                 mapOf("email" to "Email format is invalid")
             ),
-            row(
+            Row3(
                 "Email address with leading blank", UserPatchVm("", " user@example.com"),
                 mapOf("email" to "Email format is invalid")
             ),
-            row(
+            Row3(
                 "Email address with trailing blank", UserPatchVm("", "user@example.com "),
                 mapOf("email" to "Email format is invalid")
             )

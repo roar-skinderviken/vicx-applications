@@ -1,8 +1,8 @@
 package no.vicx.backend.jwt.github.vm
 
 import io.kotest.core.spec.style.BehaviorSpec
+import io.kotest.data.Row1
 import io.kotest.data.forAll
-import io.kotest.data.row
 import io.kotest.matchers.shouldBe
 
 class GitHubUserVmTest : BehaviorSpec({
@@ -21,11 +21,11 @@ class GitHubUserVmTest : BehaviorSpec({
 
     Given("a GitHubUserVm with at least one value") {
         forAll(
-            row(GitHubUserVm("~id~", "", "", "", "")),
-            row(GitHubUserVm("", "~login~", "", "", "")),
-            row(GitHubUserVm("", "", "~name~", "", "")),
-            row(GitHubUserVm("", "", "", "~email~", "")),
-            row(GitHubUserVm("", "", "", "", "~avatar~"))
+            Row1(GitHubUserVm("~id~", "", "", "", "")),
+            Row1(GitHubUserVm("", "~login~", "", "", "")),
+            Row1(GitHubUserVm("", "", "~name~", "", "")),
+            Row1(GitHubUserVm("", "", "", "~email~", "")),
+            Row1(GitHubUserVm("", "", "", "", "~avatar~"))
         ) { sut ->
 
             When("calling isEmpty: $sut") {

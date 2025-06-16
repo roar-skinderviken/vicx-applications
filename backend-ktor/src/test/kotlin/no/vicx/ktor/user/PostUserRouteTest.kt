@@ -2,8 +2,8 @@ package no.vicx.ktor.user
 
 import io.kotest.assertions.assertSoftly
 import io.kotest.core.spec.style.BehaviorSpec
+import io.kotest.data.Row4
 import io.kotest.data.forAll
-import io.kotest.data.row
 import io.kotest.matchers.shouldBe
 import io.ktor.client.call.*
 import io.ktor.client.request.*
@@ -133,110 +133,110 @@ class PostUserRouteTest : BehaviorSpec({
         }
 
         forAll(
-            row(
+            Row4(
                 CreateUserVm("", VALID_PLAINTEXT_PASSWORD, "The User", "user@example.com", "mock-token"),
                 null, "username", "Username cannot be blank"
             ),
-            row(
+            Row4(
                 CreateUserVm(" ".repeat(4), VALID_PLAINTEXT_PASSWORD, "The User", "user@example.com", "mock-token"),
                 null, "username", "Username cannot be blank"
             ),
-            row(
+            Row4(
                 CreateUserVm("a", VALID_PLAINTEXT_PASSWORD, "The User", "user@example.com", "mock-token"),
                 null, "username", "Username must be between 4 and 255 characters"
             ),
-            row(
+            Row4(
                 CreateUserVm("a".repeat(256), VALID_PLAINTEXT_PASSWORD, "The User", "user@example.com", "mock-token"),
                 null, "username", "Username must be between 4 and 255 characters"
             ),
-            row(
+            Row4(
                 CreateUserVm("John Doe", VALID_PLAINTEXT_PASSWORD, "The User", "user@example.com", "mock-token"),
                 null, "username", "Username can only contain letters, numbers, hyphens, and underscores"
             ),
 
-            row(
+            Row4(
                 CreateUserVm("user1", "", "The User", "user@example.com", "mock-token"),
                 null, "password", "Password cannot be blank"
             ),
-            row(
+            Row4(
                 CreateUserVm("user1", " ".repeat(4), "The User", "user@example.com", "mock-token"),
                 null, "password", "Password cannot be blank"
             ),
-            row(
+            Row4(
                 CreateUserVm("user1", "Aa1Aa1", "The User", "user@example.com", "mock-token"),
                 null, "password", "Password must be between 8 and 255 characters"
             ),
-            row(
+            Row4(
                 CreateUserVm("user1", "Aa1".repeat(90), "The User", "user@example.com", "mock-token"),
                 null, "password", "Password must be between 8 and 255 characters"
             ),
-            row(
+            Row4(
                 CreateUserVm("user1", "a".repeat(8), "The User", "user@example.com", "mock-token"),
                 null,
                 "password",
                 "Password must contain at least one lowercase letter, one uppercase letter, and one digit"
             ),
 
-            row(
+            Row4(
                 CreateUserVm("user1", VALID_PLAINTEXT_PASSWORD, "", "user@example.com", "mock-token"),
                 null, "name", "Name cannot be blank"
             ),
-            row(
+            Row4(
                 CreateUserVm("user1", VALID_PLAINTEXT_PASSWORD, " ".repeat(4), "user@example.com", "mock-token"),
                 null, "name", "Name cannot be blank"
             ),
-            row(
+            Row4(
                 CreateUserVm("user1", VALID_PLAINTEXT_PASSWORD, "a".repeat(3), "user@example.com", "mock-token"),
                 null, "name", "Name must be between 4 and 255 characters"
             ),
-            row(
+            Row4(
                 CreateUserVm("user1", VALID_PLAINTEXT_PASSWORD, "a".repeat(256), "user@example.com", "mock-token"),
                 null, "name", "Name must be between 4 and 255 characters"
             ),
-            row(
+            Row4(
                 CreateUserVm("user1", VALID_PLAINTEXT_PASSWORD, " The User", "user@example.com", "mock-token"),
                 null, "name", "Name cannot have leading or trailing blanks"
             ),
-            row(
+            Row4(
                 CreateUserVm("user1", VALID_PLAINTEXT_PASSWORD, "The User ", "user@example.com", "mock-token"),
                 null, "name", "Name cannot have leading or trailing blanks"
             ),
-            row(
+            Row4(
                 CreateUserVm("user1", VALID_PLAINTEXT_PASSWORD, " The User ", "user@example.com", "mock-token"),
                 null, "name", "Name cannot have leading or trailing blanks"
             ),
 
-            row(
+            Row4(
                 CreateUserVm("user1", VALID_PLAINTEXT_PASSWORD, "The User", "", "mock-token"),
                 null, "email", "Email cannot be blank"
             ),
-            row(
+            Row4(
                 CreateUserVm("user1", VALID_PLAINTEXT_PASSWORD, "The User", "a", "mock-token"),
                 null, "email", "Email format is invalid"
             ),
-            row(
+            Row4(
                 CreateUserVm("user1", VALID_PLAINTEXT_PASSWORD, "The User", " john.doe@example.com", "mock-token"),
                 null, "email", "Email format is invalid"
             ),
-            row(
+            Row4(
                 CreateUserVm("user1", VALID_PLAINTEXT_PASSWORD, "The User", "john.doe@example.com ", "mock-token"),
                 null, "email", "Email format is invalid"
             ),
 
-            row(
+            Row4(
                 CreateUserVm("user1", VALID_PLAINTEXT_PASSWORD, "The User", "user@example.com", ""),
                 null, "recaptchaToken", "recaptchaToken cannot be blank"
             ),
-            row(
+            Row4(
                 CreateUserVm("user1", VALID_PLAINTEXT_PASSWORD, "The User", "user@example.com", " ".repeat(4)),
                 null, "recaptchaToken", "recaptchaToken cannot be blank"
             ),
 
-            row(
+            Row4(
                 CreateUserVm("user1", VALID_PLAINTEXT_PASSWORD, "The User", "user@example.com", "mock-token"),
                 GIF_CONTENT_TYPE to GIF_RESOURCE_NAME, "image", "Image file type: Only PNG and JPG files are allowed"
             ),
-            row(
+            Row4(
                 CreateUserVm("user1", VALID_PLAINTEXT_PASSWORD, "The User", "user@example.com", "mock-token"),
                 PNG_CONTENT_TYPE to TOO_LARGE_RESOURCE_NAME,
                 "image",

@@ -18,5 +18,4 @@ object CalculatorTestUtils {
         username = "user1"
         if (addCreatedAt) createdAt = LocalDateTime.now()
     }
-
 }

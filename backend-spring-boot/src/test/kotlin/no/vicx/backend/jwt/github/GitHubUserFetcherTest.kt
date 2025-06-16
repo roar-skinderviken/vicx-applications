@@ -3,8 +3,8 @@ package no.vicx.backend.jwt.github
 import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.BehaviorSpec
+import io.kotest.data.Row4
 import io.kotest.data.forAll
-import io.kotest.data.row
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.instanceOf
@@ -84,10 +84,10 @@ class GitHubUserFetcherTest(
         }
 
         forAll(
-            row("Empty response string", "", true, "User is null"),
-            row("Empty JSON object response", "{}", true, "User is empty"),
-            row("JSON object with null field", "{\"id\": null}", true, "User is empty"),
-            row("Valid body without scopes header", successBody, false, "No scopes header found")
+            Row4("Empty response string", "", true, "User is null"),
+            Row4("Empty JSON object response", "{}", true, "User is empty"),
+            Row4("JSON object with null field", "{\"id\": null}", true, "User is empty"),
+            Row4("Valid body without scopes header", successBody, false, "No scopes header found")
         ) { description, responseBody, addScopesHeader, expectedErrorMessage ->
             When("calling fetchUser: $description") {
                 mockServer.expect(requestTo(GitHubUserFetcher.GITHUB_USER_URL))

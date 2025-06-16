@@ -2,8 +2,8 @@ package no.vicx.ktor.calculator
 
 import io.kotest.assertions.asClue
 import io.kotest.core.spec.style.BehaviorSpec
+import io.kotest.data.Row2
 import io.kotest.data.forAll
-import io.kotest.data.row
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
 import io.mockk.clearAllMocks
@@ -29,8 +29,8 @@ class CalculatorServiceTest : BehaviorSpec({
         }
 
         forAll(
-            row(CalculatorOperation.PLUS, 3L),
-            row(CalculatorOperation.MINUS, 1L),
+            Row2(CalculatorOperation.PLUS, 3L),
+            Row2(CalculatorOperation.MINUS, 1L),
         ) { operation, expectedResult ->
             When("calculate is called with valid parameters, operation: $operation") {
                 val expected =
@@ -59,8 +59,8 @@ class CalculatorServiceTest : BehaviorSpec({
         }
 
         forAll(
-            row(100, 10),
-            row(101, 11),
+            Row2(100, 10),
+            Row2(101, 11),
         ) { expectedTotalCount, expectedTotalPages ->
 
             When("getPagedCalculations is called and totalCount: $expectedTotalCount and totalPages: $expectedTotalPages") {

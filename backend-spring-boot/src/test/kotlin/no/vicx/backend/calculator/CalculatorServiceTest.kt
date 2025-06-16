@@ -2,8 +2,8 @@ package no.vicx.backend.calculator
 
 import io.kotest.assertions.assertSoftly
 import io.kotest.core.spec.style.BehaviorSpec
+import io.kotest.data.Row6
 import io.kotest.data.forAll
-import io.kotest.data.row
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.mockk.every
@@ -79,10 +79,10 @@ class CalculatorServiceTest : BehaviorSpec({
             }
 
             forAll(
-                row("plus operation with username", 1L, 2L, CalculatorOperation.PLUS, "user1", 3L),
-                row("minus operation with username", 4L, 3L, CalculatorOperation.MINUS, "user1", 1L),
-                row("plus operation without username", 5L, 6L, CalculatorOperation.PLUS, null, 11L),
-                row("minus operation without username", 8L, 6L, CalculatorOperation.MINUS, null, 2L),
+                Row6("plus operation with username", 1L, 2L, CalculatorOperation.PLUS, "user1", 3L),
+                Row6("minus operation with username", 4L, 3L, CalculatorOperation.MINUS, "user1", 1L),
+                Row6("plus operation without username", 5L, 6L, CalculatorOperation.PLUS, null, 11L),
+                Row6("minus operation without username", 8L, 6L, CalculatorOperation.MINUS, null, 2L),
             ) { description, first, second, operation, expectedUsername, expectedResult ->
                 When("calling calculate: $description") {
                     val calcVm = sut.calculate(first, second, operation, expectedUsername)

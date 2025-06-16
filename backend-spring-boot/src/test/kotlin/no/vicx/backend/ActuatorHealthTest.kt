@@ -1,8 +1,8 @@
 package no.vicx.backend
 
 import io.kotest.core.spec.style.BehaviorSpec
+import io.kotest.data.Row2
 import io.kotest.data.forAll
-import io.kotest.data.row
 import io.kotest.matchers.collections.shouldContainAll
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient
 import org.springframework.boot.test.context.SpringBootTest
@@ -20,8 +20,8 @@ class ActuatorHealthTest(
 
     Given("context with health checks") {
         forAll(
-            row("readiness", setOf("db", "readinessState")),
-            row("liveness", setOf("livenessState")),
+            Row2("readiness", setOf("db", "readinessState")),
+            Row2("liveness", setOf("livenessState")),
         ) { probeName, expectedComponents ->
             val uri = UriComponentsBuilder
                 .fromUriString("http://localhost:{port}/actuator/health/{probeName}")

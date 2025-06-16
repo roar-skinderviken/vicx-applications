@@ -2,14 +2,14 @@ package no.vicx.backend.calculator
 
 import com.ninjasquad.springmockk.MockkBean
 import io.kotest.core.spec.style.BehaviorSpec
+import io.kotest.data.Row3
 import io.kotest.data.forAll
-import io.kotest.data.row
 import io.mockk.called
 import io.mockk.every
 import io.mockk.verify
-import no.vicx.backend.calculator.vm.CalcVm
 import no.vicx.backend.SecurityTestUtils.AUTH_HEADER_IN_TEST
 import no.vicx.backend.SecurityTestUtils.createPrincipalInTest
+import no.vicx.backend.calculator.vm.CalcVm
 import no.vicx.database.calculator.CalculatorOperation
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
@@ -83,8 +83,8 @@ class CalculatorGraphQLControllerSpringBootTest(
 
     Given("createCalculation") {
         forAll(
-            row("authenticated user", true, "user1"),
-            row("anonymous user", false, null)
+            Row3("authenticated user", true, "user1"),
+            Row3("anonymous user", false, null)
         ) { description, useAuthenticatedUser, expectedUsername ->
 
             When("createCalculation, $description") {

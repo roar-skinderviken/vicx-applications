@@ -3,8 +3,8 @@ package no.vicx.ktor.db.repository
 import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.BehaviorSpec
+import io.kotest.data.Row3
 import io.kotest.data.forAll
-import io.kotest.data.row
 import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
@@ -157,10 +157,10 @@ class UserRepositoryTest : BehaviorSpec({
         }
 
         forAll(
-            row("Both values changed", "~new-name~", "~new-email~"),
-            row("Name changed", "~new-name~", null),
-            row("Email changed", null, "~new-email~"),
-            row("No values changed", null, null),
+            Row3("Both values changed", "~new-name~", "~new-email~"),
+            Row3("Name changed", "~new-name~", null),
+            Row3("Email changed", null, "~new-email~"),
+            Row3("No values changed", null, null),
         ) { description, newName, newEmail ->
             When("calling update user, $description") {
                 lateinit var insertedUser: VicxUser
