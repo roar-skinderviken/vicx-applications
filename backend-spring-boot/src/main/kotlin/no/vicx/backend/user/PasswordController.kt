@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/api/user/password")
-@Validated
 @Tag(name = "Password", description = "API for updating user password")
 @SecurityRequirement(name = "security_auth")
 class PasswordController(
