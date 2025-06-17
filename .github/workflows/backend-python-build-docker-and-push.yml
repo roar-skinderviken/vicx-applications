@@ -13,7 +13,7 @@ jobs:
     uses: ./.github/workflows/docker-build-template.yml
     secrets: inherit
     with:
-      appName: "backend-python"
+      moduleName: "backend-python"
       buildWithGradle: false
     permissions:
       contents: read
