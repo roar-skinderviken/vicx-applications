@@ -3,7 +3,7 @@ name: Build artifact and push
 on:
   workflow_call:
     inputs:
-      appName:
+      moduleName:
         description: "Application module name"
         required: true
         type: string
@@ -33,7 +33,7 @@ jobs:
           printf "DOCKER_IMAGE=%s/%s/%s:%s\n" \
             "${REGISTRY}" \
             "${{ github.repository_owner }}" \
-            "${{ inputs.appName }}" \
+            "${{ inputs.moduleName }}" \
             "${{ env.IS_TAG_BUILD == 'true' && github.ref_name || format('main-{0}', github.event.pull_request.head.sha || github.sha) }}" >> $GITHUB_ENV
 
       - name: Set up QEMU
@@ -54,7 +54,7 @@ jobs:
 
       - name: Build with Gradle
         if : ${{ inputs.buildWithGradle }}
-        run: ./gradlew build -p ${{ inputs.appName }} --build-cache --info
+        run: ./gradlew build -p ${{ inputs.moduleName }} --build-cache --info
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -69,7 +69,7 @@ jobs:
       - name: Build and push Docker images
         uses: docker/build-push-action@v6
         with:
-          context: ./${{ inputs.appName }}
+          context: ./${{ inputs.moduleName }}
           platforms: linux/amd64,linux/arm64
           push: true
           provenance: false # to avoid unknown/unknown

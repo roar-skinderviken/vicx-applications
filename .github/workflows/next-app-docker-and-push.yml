@@ -38,7 +38,7 @@ jobs:
     uses: ./.github/workflows/docker-build-template.yml
     secrets: inherit
     with:
-      appName: "next-app"
+      moduleName: "next-app"
       buildWithGradle: false
     permissions:
       contents: read

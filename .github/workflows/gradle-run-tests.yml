@@ -1,0 +1,30 @@
+name: Build artifact and push
+
+on:
+  workflow_call:
+    inputs:
+      moduleName:
+        description: "Application module name"
+        required: true
+        type: string
+
+jobs:
+  run-tests:
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Run tests with Gradle
+        run: ./gradlew clean check -p ${{ inputs.moduleName }} --build-cache --info
