@@ -6,7 +6,6 @@ on:
       - '*'
     paths:
       - 'backend-python/**'
-      - 'gradle/libs.versions.toml'
 
 jobs:
   build-and-push-docker:
