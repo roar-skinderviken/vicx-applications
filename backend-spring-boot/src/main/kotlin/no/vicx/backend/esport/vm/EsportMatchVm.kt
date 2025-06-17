@@ -2,10 +2,11 @@ package no.vicx.backend.esport.vm
 
 import com.fasterxml.jackson.annotation.JsonProperty
 
+// using nullables due to an unresolved issue with WebFlux
 data class EsportMatchVm(
-    val id: Long,
-    val name: String,
+    val id: Long? = null,
+    val name: String? = null,
     @field:JsonProperty("begin_at")
-    val beginAt: String,
-    val status: String
+    val beginAt: String? = null,
+    val status: String? = null,
 )
