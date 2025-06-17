@@ -12,16 +12,13 @@ on:
       - 'auth-server/**'
       - 'gradle/libs.versions.toml'
 
-env:
-  MODULE_NAME: "auth-server"
-
 jobs:
   run-tests:
     if: ${{ github.event.pull_request }}
     uses: ./.github/workflows/gradle-run-tests.yml
     secrets: inherit
     with:
-      moduleName: ${{ env.MODULE_NAME }}
+      moduleName: "auth-server"
     permissions:
       contents: read
 
@@ -30,7 +27,7 @@ jobs:
     uses: ./.github/workflows/docker-build-template.yml
     secrets: inherit
     with:
-      moduleName: ${{ env.MODULE_NAME }}
+      moduleName: "auth-server"
     permissions:
       contents: read
       packages: write
