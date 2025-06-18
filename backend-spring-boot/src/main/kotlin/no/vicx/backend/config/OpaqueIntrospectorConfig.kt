@@ -11,5 +11,5 @@ class OpaqueIntrospectorConfig {
 
     @Bean
     fun opaqueTokenIntrospector(fromOpaqueProducer: GitHubFromOpaqueProducer) =
-        OpaqueTokenIntrospector { token: String -> fromOpaqueProducer.createPrincipal(token) }
+        OpaqueTokenIntrospector { token -> fromOpaqueProducer.createPrincipal(token) }
 }
