@@ -1,6 +1,5 @@
 plugins {
     alias(libs.plugins.git.properties)
-    alias(libs.plugins.kotlin.plugin.spring)
     // remaining plugins are added in parent
 }
 
