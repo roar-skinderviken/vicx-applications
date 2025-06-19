@@ -9,7 +9,7 @@ jackson-module-kotlin-version = "2.19.1"
 freefair-lombok-version = "8.14"
 
 # spring-boot-client
-webjars-bootstrap-version = "5.3.6"
+webjars-bootstrap-version = "5.3.7"
 webjars-popper-js-version = "2.11.7"
 webjars-query-version = "3.7.1"
 
