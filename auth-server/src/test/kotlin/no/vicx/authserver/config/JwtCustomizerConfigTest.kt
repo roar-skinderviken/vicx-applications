@@ -103,7 +103,6 @@ class JwtCustomizerConfigTest : BehaviorSpec({
         ) { description, scopes, hasImage, expectedClaims ->
 
             When("calling customize: $description") {
-                every { authentication.authorities } returns listOf(SimpleGrantedAuthority("USER"))
                 every { jwtEncodingContext.authorizedScopes } returns scopes
                 every { authentication.principal } returns customUserDetailsInTest(hasImage)
 
