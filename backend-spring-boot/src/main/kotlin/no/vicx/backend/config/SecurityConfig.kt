@@ -66,34 +66,32 @@ class SecurityConfig {
     fun securityFilterChain(
         http: HttpSecurity,
         tokenAuthenticationManagerResolver: AuthenticationManagerResolver<HttpServletRequest>
-    ): SecurityFilterChain {
-        return http
-            .sessionManagement { session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
-            .csrf { csrfConfigurer -> csrfConfigurer.disable() }
-            .cors {}
-            .formLogin { formLoginConfigurer -> formLoginConfigurer.disable() }
-            .authorizeHttpRequests { authorize ->
-                authorize
-                    .requestMatchers(EndpointRequest.to(HealthEndpoint::class.java)).permitAll()
+    ): SecurityFilterChain = http
+        .sessionManagement { session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
+        .csrf { csrfConfigurer -> csrfConfigurer.disable() }
+        .cors {}
+        .formLogin { formLoginConfigurer -> formLoginConfigurer.disable() }
+        .authorizeHttpRequests { authorize ->
+            authorize
+                .requestMatchers(EndpointRequest.to(HealthEndpoint::class.java)).permitAll()
 
-                    .requestMatchers(HttpMethod.GET, "/gitproperties").permitAll()
+                .requestMatchers(HttpMethod.GET, "/gitproperties").permitAll()
 
-                    .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+                .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
 
-                    .requestMatchers(HttpMethod.GET, "/api/esport").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/esport").permitAll()
 
-                    .requestMatchers(HttpMethod.POST, "/api/user").permitAll()
-                    .requestMatchers("/graphiql", "/graphql").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/user").permitAll()
+                .requestMatchers("/graphiql", "/graphql").permitAll()
 
-                    .requestMatchers("/messages").hasRole("USER")
-                    .requestMatchers("/api/**").hasRole("USER")
+                .requestMatchers("/messages").hasRole("USER")
+                .requestMatchers("/api/**").hasRole("USER")
 
-                    .requestMatchers("/error").permitAll()
-                    .anyRequest().authenticated()
-            }
-            .oauth2ResourceServer { oauth2 ->
-                oauth2.authenticationManagerResolver(tokenAuthenticationManagerResolver)
-            }
-            .build()
-    }
+                .requestMatchers("/error").permitAll()
+                .anyRequest().authenticated()
+        }
+        .oauth2ResourceServer { oauth2 ->
+            oauth2.authenticationManagerResolver(tokenAuthenticationManagerResolver)
+        }
+        .build()
 }

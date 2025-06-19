@@ -9,10 +9,11 @@ plugins {
     alias(libs.plugins.kotlin.jvm) apply false
     alias(libs.plugins.springframework.boot) apply false
     alias(libs.plugins.spring.dependency.management) apply false
+    alias(libs.plugins.kotlin.plugin.spring) apply false
 }
 
 val javaVersion = 21
-val kotlinProjects = setOf("backend-spring-boot", "backend-ktor")
+val kotlinProjects = setOf("auth-server", "backend-ktor", "backend-spring-boot")
 val springBootProjects = setOf("auth-server", "backend-spring-boot", "spring-boot-client", "database")
 
 subprojects {
@@ -28,5 +29,9 @@ subprojects {
         configure<KotlinJvmProjectExtension> {
             jvmToolchain(javaVersion)
         }
+    }
+
+    if (name in springBootProjects && name in kotlinProjects) {
+        apply(plugin = "org.jetbrains.kotlin.plugin.spring")
     }
 }
