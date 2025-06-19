@@ -42,35 +42,42 @@ class DefaultAuthorizationServerConsentTests(
             )
         }
 
-        When("user consents to all scopes") {
+        When("consent page is displayed") {
+            val titleText = consentPage.titleText
+
             val scopesInPage = consentPage
                 .querySelectorAll("input[name='scope']")
                 .filterIsInstance<HtmlCheckBoxInput>()
-                .map { checkBox ->
-                    checkBox.click<Page>()
-                    checkBox.id
-                }
+                .map { it.id }
+
+            Then("title text should be 'Consent required'") {
+                titleText shouldBe "Consent required"
+            }
+
+            Then("scopes should be as expected") {
+                scopesInPage.shouldContainExactlyInAnyOrder("profile", "email")
+            }
+        }
+
+        When("user consents to all scopes") {
+            consentPage
+                .querySelectorAll("input[name='scope']")
+                .filterIsInstance<HtmlCheckBoxInput>()
+                .forEach { checkBox -> checkBox.click<Page>() }
 
             val approveConsentResponse = consentPage
                 .querySelector<DomElement>("button[id='submit-consent']")
                 .click<Page>()
                 .webResponse
 
-            Then("title text should be 'Consent required'") {
-                consentPage.titleText shouldBe "Consent required"
-            }
-
-            Then("scopes should be as expected") {
-                scopesInPage.shouldContainExactlyInAnyOrder("profile", "email")
-            }
-
             Then("approve response should be as expected") {
                 assertSoftly(approveConsentResponse) {
                     statusCode shouldBe HttpStatus.MOVED_PERMANENTLY.value()
 
-                    val location = getResponseHeaderValue("location")
-                    location shouldStartWith REDIRECT_URI
-                    location shouldContain "code="
+                    assertSoftly(getResponseHeaderValue("location")) {
+                        it shouldStartWith REDIRECT_URI
+                        it shouldContain "code="
+                    }
                 }
             }
         }
@@ -83,8 +90,10 @@ class DefaultAuthorizationServerConsentTests(
                 .getResponseHeaderValue("location")
 
             Then("expect access denied error") {
-                location shouldStartWith REDIRECT_URI
-                location shouldContain "error=access_denied"
+                assertSoftly(location) {
+                    it shouldStartWith REDIRECT_URI
+                    it shouldContain "error=access_denied"
+                }
             }
         }
     }

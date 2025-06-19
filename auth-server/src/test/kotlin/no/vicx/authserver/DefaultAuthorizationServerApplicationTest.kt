@@ -1,5 +1,6 @@
 package no.vicx.authserver
 
+import io.kotest.assertions.assertSoftly
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
@@ -25,19 +26,21 @@ class DefaultAuthorizationServerApplicationTest(
 ) : BehaviorSpec({
 
     Given("Authorization Server Application") {
+        lateinit var loginPage: HtmlPage
 
         beforeContainer {
             webClient.options.isThrowExceptionOnFailingStatusCode = true
             webClient.options.isRedirectEnabled = true
             webClient.cookieManager.clearCookies() // log out
+
+            loginPage = webClient.getPage("/")
+            assertLoginPage(loginPage)
         }
 
         When("login successful") {
-            val htmlPage = webClient.getPage<HtmlPage>("/")
-            assertLoginPage(htmlPage)
-
             webClient.options.isThrowExceptionOnFailingStatusCode = false
-            val signInResponse = signIn<Page>(htmlPage, "password").webResponse
+
+            val signInResponse = signIn<Page>(loginPage, "password").webResponse
 
             Then("display NotFound") {
                 signInResponse.statusCode shouldBe HttpStatus.NOT_FOUND.value()
@@ -45,9 +48,7 @@ class DefaultAuthorizationServerApplicationTest(
         }
 
         When("login fails") {
-            val page = webClient.getPage<HtmlPage>("/")
-
-            val loginErrorPage = signIn<HtmlPage>(page, "wrong-password")
+            val loginErrorPage = signIn<HtmlPage>(loginPage, "wrong-password")
 
             Then("expect invalid credentials message") {
                 loginErrorPage
@@ -65,21 +66,25 @@ class DefaultAuthorizationServerApplicationTest(
         }
 
         When("when logging in and requesting token") {
-            // Log in
-            webClient.options.isThrowExceptionOnFailingStatusCode = false
-            webClient.options.isRedirectEnabled = false
+            with (webClient) {
+                options.isThrowExceptionOnFailingStatusCode = false
+                options.isRedirectEnabled = false
+            }
 
             signIn<Page>(webClient.getPage("/login"), "password")
 
             // Request token
-            val response = webClient.getPage<Page>(authorizationRequestUri()).webResponse
+            val loginResponse = webClient.getPage<Page>(authorizationRequestUri()).webResponse
 
             Then("redirects to client application") {
-                response.statusCode shouldBe HttpStatus.MOVED_PERMANENTLY.value()
+                assertSoftly(loginResponse) {
+                    statusCode shouldBe HttpStatus.MOVED_PERMANENTLY.value()
 
-                val location = response.getResponseHeaderValue("location")
-                location shouldStartWith REDIRECT_URI
-                location shouldContain "code="
+                    assertSoftly(getResponseHeaderValue("location")) {
+                        it shouldStartWith REDIRECT_URI
+                        it shouldContain "code="
+                    }
+                }
             }
         }
     }
@@ -88,23 +93,20 @@ class DefaultAuthorizationServerApplicationTest(
         private fun <P : Page> signIn(
             page: HtmlPage,
             password: String
-        ): P {
-            val usernameInput = page.querySelector<HtmlInput>("input[name=\"username\"]")
-            val passwordInput = page.querySelector<HtmlInput>("input[name=\"password\"]")
-            val signInButton = page.querySelector<HtmlButton>("button")
-
-            usernameInput.type("user1")
-            passwordInput.type(password)
-
-            return signInButton.click()
+        ): P = page.run {
+            querySelector<HtmlInput>("input[name=\"username\"]").type("user1")
+            querySelector<HtmlInput>("input[name=\"password\"]").type(password)
+            querySelector<HtmlButton>("button").click()
         }
 
         private fun assertLoginPage(page: HtmlPage) {
-            page.url.toString() shouldEndWith "/login"
+            assertSoftly(page) {
+                url.toString() shouldEndWith "/login"
 
-            page.querySelector<HtmlInput>("input[name=\"username\"]").shouldNotBeNull()
-            page.querySelector<HtmlInput>("input[name=\"password\"]").shouldNotBeNull()
-            page.querySelector<DomNode>("button").textContent shouldBe "Sign in"
+                querySelector<HtmlInput>("input[name=\"username\"]").shouldNotBeNull()
+                querySelector<HtmlInput>("input[name=\"password\"]").shouldNotBeNull()
+                querySelector<DomNode>("button").textContent shouldBe "Sign in"
+            }
         }
     }
 }
