@@ -56,14 +56,11 @@ class UserRepositoryTest : BehaviorSpec({
             Then("expect saved user to be returned") {
                 insertedUser.userImage shouldNotBe null
                 insertedUser shouldBe userModelInTest
-                insertedUser.userImage.shouldNotBeNull()
 
-                insertedUser.userImage?.let { userImage ->
-                    assertSoftly(userImage) {
-                        id shouldBe insertedUser.id
-                        contentType shouldBe userImageModelInTest.contentType
-                        userImageModelInTest.imageData.contentEquals(imageData) shouldBe true
-                    }
+                assertSoftly(insertedUser.userImage.shouldNotBeNull()) {
+                    id shouldBe insertedUser.id
+                    contentType shouldBe userImageModelInTest.contentType
+                    userImageModelInTest.imageData.contentEquals(imageData) shouldBe true
                 }
             }
         }

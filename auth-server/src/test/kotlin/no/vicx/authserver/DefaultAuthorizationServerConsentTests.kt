@@ -31,9 +31,11 @@ class DefaultAuthorizationServerConsentTests(
         lateinit var consentPage: HtmlPage
 
         beforeContainer {
-            webClient.options.isThrowExceptionOnFailingStatusCode = false
-            webClient.options.isRedirectEnabled = false
-            webClient.cookieManager.clearCookies() // log out
+            with(webClient) {
+                options.isThrowExceptionOnFailingStatusCode = false
+                options.isRedirectEnabled = false
+                cookieManager.clearCookies() // log out
+            }
 
             withMockUser("user1")
 

@@ -53,13 +53,10 @@ class UserImageRepositoryTest : BehaviorSpec({
             }
 
             Then("expect saved user image to be returned") {
-                userInTest.userImage.shouldNotBeNull()
-                userInTest.userImage?.let { userImage ->
-                    assertSoftly(userImage) {
-                        id shouldBe userInTest.id
-                        contentType shouldBe userImageModelInTest.contentType
-                        userImageModelInTest.imageData.contentEquals(imageData) shouldBe true
-                    }
+                assertSoftly(userInTest.userImage.shouldNotBeNull()) {
+                    id shouldBe userInTest.id
+                    contentType shouldBe userImageModelInTest.contentType
+                    userImageModelInTest.imageData.contentEquals(imageData) shouldBe true
                 }
             }
         }
@@ -100,13 +97,10 @@ class UserImageRepositoryTest : BehaviorSpec({
             }
 
             Then("expect user image to be updated") {
-                userInTest.userImage.shouldNotBeNull()
-                userInTest.userImage?.let { userImage ->
-                    assertSoftly(userImage) {
-                        id shouldBe userInTest.id
-                        contentType shouldBe JPEG_CONTENT_TYPE
-                        expectedImageData.contentEquals(imageData) shouldBe true
-                    }
+                assertSoftly(userInTest.userImage.shouldNotBeNull()) {
+                    id shouldBe userInTest.id
+                    contentType shouldBe JPEG_CONTENT_TYPE
+                    expectedImageData.contentEquals(imageData) shouldBe true
                 }
             }
         }

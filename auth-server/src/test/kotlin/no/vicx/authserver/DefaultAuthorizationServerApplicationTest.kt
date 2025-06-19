@@ -29,9 +29,11 @@ class DefaultAuthorizationServerApplicationTest(
         lateinit var loginPage: HtmlPage
 
         beforeContainer {
-            webClient.options.isThrowExceptionOnFailingStatusCode = true
-            webClient.options.isRedirectEnabled = true
-            webClient.cookieManager.clearCookies() // log out
+            with(webClient) {
+                options.isThrowExceptionOnFailingStatusCode = true
+                options.isRedirectEnabled = true
+                cookieManager.clearCookies() // log out
+            }
 
             loginPage = webClient.getPage("/")
             assertLoginPage(loginPage)
@@ -66,7 +68,7 @@ class DefaultAuthorizationServerApplicationTest(
         }
 
         When("when logging in and requesting token") {
-            with (webClient) {
+            with(webClient) {
                 options.isThrowExceptionOnFailingStatusCode = false
                 options.isRedirectEnabled = false
             }
