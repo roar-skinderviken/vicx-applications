@@ -2,6 +2,7 @@ package no.vicx.ktor.db.repository
 
 import io.kotest.assertions.assertSoftly
 import io.kotest.core.spec.style.BehaviorSpec
+import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.ktor.server.testing.*
 import kotlinx.coroutines.runBlocking
@@ -52,10 +53,13 @@ class UserImageRepositoryTest : BehaviorSpec({
             }
 
             Then("expect saved user image to be returned") {
-                assertSoftly(userInTest.userImage!!) {
-                    id shouldBe userInTest.id
-                    contentType shouldBe userImageModelInTest.contentType
-                    userImageModelInTest.imageData.contentEquals(imageData) shouldBe true
+                userInTest.userImage.shouldNotBeNull()
+                userInTest.userImage?.let { userImage ->
+                    assertSoftly(userImage) {
+                        id shouldBe userInTest.id
+                        contentType shouldBe userImageModelInTest.contentType
+                        userImageModelInTest.imageData.contentEquals(imageData) shouldBe true
+                    }
                 }
             }
         }
@@ -96,10 +100,13 @@ class UserImageRepositoryTest : BehaviorSpec({
             }
 
             Then("expect user image to be updated") {
-                assertSoftly(userInTest.userImage!!) {
-                    id shouldBe userInTest.id
-                    contentType shouldBe JPEG_CONTENT_TYPE
-                    expectedImageData.contentEquals(imageData) shouldBe true
+                userInTest.userImage.shouldNotBeNull()
+                userInTest.userImage?.let { userImage ->
+                    assertSoftly(userImage) {
+                        id shouldBe userInTest.id
+                        contentType shouldBe JPEG_CONTENT_TYPE
+                        expectedImageData.contentEquals(imageData) shouldBe true
+                    }
                 }
             }
         }

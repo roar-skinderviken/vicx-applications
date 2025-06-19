@@ -6,6 +6,7 @@ import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.data.Row3
 import io.kotest.data.forAll
 import io.kotest.matchers.nulls.shouldBeNull
+import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.ktor.server.testing.*
@@ -55,11 +56,14 @@ class UserRepositoryTest : BehaviorSpec({
             Then("expect saved user to be returned") {
                 insertedUser.userImage shouldNotBe null
                 insertedUser shouldBe userModelInTest
+                insertedUser.userImage.shouldNotBeNull()
 
-                assertSoftly(insertedUser.userImage!!) {
-                    id shouldBe insertedUser.id
-                    contentType shouldBe userImageModelInTest.contentType
-                    userImageModelInTest.imageData.contentEquals(imageData) shouldBe true
+                insertedUser.userImage?.let { userImage ->
+                    assertSoftly(userImage) {
+                        id shouldBe insertedUser.id
+                        contentType shouldBe userImageModelInTest.contentType
+                        userImageModelInTest.imageData.contentEquals(imageData) shouldBe true
+                    }
                 }
             }
         }
@@ -115,7 +119,7 @@ class UserRepositoryTest : BehaviorSpec({
 
                 application {
                     runBlocking {
-                        fetchedUser = sut.findByUsername(userModelInTest.username)!!
+                        fetchedUser = sut.findByUsername(userModelInTest.username) ?: error("User not found")
                     }
                 }
             }

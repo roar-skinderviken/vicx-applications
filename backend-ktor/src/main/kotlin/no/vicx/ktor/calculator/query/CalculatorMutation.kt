@@ -22,9 +22,10 @@ class CalculatorMutation(
         val jwtPrincipal = environment.graphQlContext.get<JWTPrincipal>(JWT_PRINCIPAL_KEY)
             ?: throw SecurityException("Unauthorized")
 
-        if (!calculatorService.isAllowedToDelete(ids, jwtPrincipal.subject!!)) {
+        val username = jwtPrincipal.subject ?: error("Subject is null")
+
+        if (!calculatorService.isAllowedToDelete(ids, username))
             throw SecurityException("Forbidden")
-        }
 
         return calculatorRepository.deleteByIdIn(ids.map { it.toLong() }) > 0
     }
