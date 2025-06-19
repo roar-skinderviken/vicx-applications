@@ -36,9 +36,6 @@ class ActuatorHealthTest(
                     .expectBody<Map<String, Any>>()
                     .consumeWith { result ->
                         val actualComponents = result.responseBody?.get("components") as Map<*, *>
-
-                        println(actualComponents)
-
                         actualComponents.keys shouldContainAll expectedComponents
                     }
             }
