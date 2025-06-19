@@ -1,10 +1,3 @@
-plugins {
-    java
-    // remaining plugins are added in parent
-}
-
-java { toolchain { languageVersion = JavaLanguageVersion.of(21) } }
-
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-oauth2-authorization-server")
@@ -20,31 +13,37 @@ dependencies {
     runtimeOnly("com.h2database:h2")
     runtimeOnly("org.postgresql:postgresql")
 
+    implementation(libs.jackson.module.kotlin)
+
     // test
     testImplementation("org.htmlunit:htmlunit")
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.springframework.boot:spring-boot-starter-test") {
+        exclude(module = "mockito-core")
+    }
     testImplementation("org.springframework.security:spring-security-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
+    testImplementation(libs.kotest.runner.junit5)
+    testImplementation(libs.kotest.assertions.core)
+    testImplementation(libs.kotest.extensions.spring)
+    testImplementation(libs.mockk)
+    testImplementation(libs.springmockk)
 }
 
 springBoot {
-    mainClass = "no.vicx.authserver.AuthServerApplication"
+    mainClass = "no.vicx.authserver.AuthServerApplicationKt"
 }
 
 tasks.jar {
     enabled = false
 }
 
-// https://javadoc.io/doc/org.mockito/mockito-core/latest/org/mockito/Mockito.html#0.3
-val mockitoAgent = configurations.create("mockitoAgent")
-
-dependencies {
-    testImplementation(libs.mockito)
-    mockitoAgent(libs.mockito) { isTransitive = false }
-}
-
 tasks.test {
-    jvmArgs("-javaagent:${mockitoAgent.asPath}")
+    jvmArgs(
+        "-Xshare:off",
+        "-XX:+EnableDynamicAgentLoading",
+        "-Dkotest.framework.classpath.scanning.autoscan.disable=true",
+        "-Dkotest.framework.config.fqn=no.vicx.authserver.KotestConfig"
+    )
     useJUnitPlatform()
-    systemProperty("spring.profiles.active", "test")
 }
