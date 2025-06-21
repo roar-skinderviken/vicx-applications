@@ -1,6 +1,6 @@
 plugins {
+    id("vicx-library")
     java
-    // remaining plugins are added in parent
 }
 
 java {
