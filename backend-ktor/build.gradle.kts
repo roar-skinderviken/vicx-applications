@@ -1,7 +1,7 @@
 plugins {
+    id("vicx-library")
     alias(libs.plugins.ktor)
     alias(libs.plugins.kotlin.plugin.serialization)
-    // remaining plugins are added in parent
 }
 
 application {
@@ -45,15 +45,9 @@ dependencies {
     testImplementation(libs.ktor.server.test.host)
     implementation(libs.embedded.postgres) // TODO
 
-    testImplementation(libs.kotest.runner.junit5)
-    testImplementation(libs.mockk)
     testImplementation(libs.kotlin.test)
 }
 
 tasks.shadowJar {
     mergeServiceFiles()
-}
-
-tasks.test {
-    useJUnitPlatform()
 }

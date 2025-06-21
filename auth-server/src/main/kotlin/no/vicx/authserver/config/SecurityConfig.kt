@@ -7,7 +7,6 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.annotation.Order
 import org.springframework.http.MediaType
-import org.springframework.security.config.Customizer
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -22,6 +21,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 
 @Configuration(proxyBeanMethods = false)
 class SecurityConfig {
+
     // required for Swagger on localhost
     @Bean
     fun corsConfigurationSource(): CorsConfigurationSource {
@@ -83,7 +83,7 @@ class SecurityConfig {
                     .anyRequest().authenticated()
             }
             .logout { logout -> logout.logoutSuccessUrl(postLogoutRedirectUri) }
-            .formLogin(Customizer.withDefaults())
+            .formLogin {}
 
         return http.build()
     }
