@@ -97,15 +97,23 @@ webjars-bootstrap = { module = "org.webjars:bootstrap", version.ref = "webjars-b
 webjars-popper-js = { module = "org.webjars:popper.js", version.ref = "webjars-popper-js-version" }
 webjars-jquery = { module = "org.webjars:jquery", version.ref = "webjars-query-version" }
 
+# plugins used in convention plugin
+kotlin-jvm = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin-version" }
+springframework-boot = { module = "org.springframework.boot:spring-boot-gradle-plugin", version.ref = "spring-boot-version" }
+spring-dependency-management = { module = "io.spring.gradle:dependency-management-plugin", version.ref = "spring-dependency-management-version" }
+kotlin-plugin-spring = { module = "org.jetbrains.kotlin.plugin.spring:org.jetbrains.kotlin.plugin.spring.gradle.plugin", version.ref = "kotlin-version" }
+
 [plugins]
-springframework-boot = { id = "org.springframework.boot", version.ref = "spring-boot-version" }
-spring-dependency-management = { id = "io.spring.dependency-management", version.ref = "spring-dependency-management-version" }
-kotlin-plugin-spring = { id = "org.jetbrains.kotlin.plugin.spring", version.ref = "kotlin-version" }
+# These are now added by the convention plugin
+# kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin-version" }
+# springframework-boot = { id = "org.springframework.boot", version.ref = "spring-boot-version" }
+# spring-dependency-management = { id = "io.spring.dependency-management", version.ref = "spring-dependency-management-version" }
+# kotlin-plugin-spring = { id = "org.jetbrains.kotlin.plugin.spring", version.ref = "kotlin-version" }
+
 git-properties = { id = "com.gorylenko.gradle-git-properties", version.ref = "git-properties-version" }
 freefair-lombok = { id = "io.freefair.lombok", version.ref = "freefair-lombok-version" }
 
 # Ktor
-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin-version" }
 ktor = { id = "io.ktor.plugin", version.ref = "ktor-version" }
 kotlin-plugin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin-version" }
 # expedia-graphql = { id = "com.expediagroup.graphql", version.ref = "graphql-kotlin-version" }

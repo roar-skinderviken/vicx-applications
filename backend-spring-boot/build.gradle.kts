@@ -1,6 +1,6 @@
 plugins {
+    id("vicx-library")
     alias(libs.plugins.git.properties)
-    // remaining plugins are added in parent
 }
 
 dependencies {
@@ -13,7 +13,6 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-graphql")
     implementation(libs.springdoc.openapi)
 
-    implementation(libs.jackson.module.kotlin)
     implementation("com.github.ben-manes.caffeine:caffeine")
     implementation(libs.tika.core)
 
@@ -28,18 +27,10 @@ dependencies {
     runtimeOnly("org.postgresql:postgresql")
 
     // test
-    testImplementation(libs.kotest.runner.junit5)
-    testImplementation(libs.kotest.assertions.core)
-    testImplementation(libs.kotest.extensions.spring)
-    testImplementation(libs.mockk)
-    testImplementation(libs.springmockk)
-
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(module = "mockito-core")
     }
 
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.graphql:spring-graphql-test")
     testImplementation("io.projectreactor:reactor-test")
 }
@@ -59,5 +50,4 @@ tasks.test {
         "-Dkotest.framework.classpath.scanning.autoscan.disable=true",
         "-Dkotest.framework.config.fqn=no.vicx.backend.KotestConfig"
     )
-    useJUnitPlatform()
 }
