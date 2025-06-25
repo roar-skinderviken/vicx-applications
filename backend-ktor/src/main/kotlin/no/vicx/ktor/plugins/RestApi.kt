@@ -1,14 +1,28 @@
 package no.vicx.ktor.plugins
 
-import io.ktor.http.*
-import io.ktor.server.application.*
-import io.ktor.server.auth.*
-import io.ktor.server.auth.jwt.*
-import io.ktor.server.plugins.*
-import io.ktor.server.plugins.requestvalidation.*
-import io.ktor.server.request.*
-import io.ktor.server.response.*
-import io.ktor.server.routing.*
+import io.ktor.http.ContentType
+import io.ktor.http.HttpHeaders
+import io.ktor.http.HttpStatusCode
+import io.ktor.server.application.Application
+import io.ktor.server.application.ApplicationCall
+import io.ktor.server.auth.AuthenticationStrategy
+import io.ktor.server.auth.authenticate
+import io.ktor.server.auth.jwt.JWTPrincipal
+import io.ktor.server.auth.principal
+import io.ktor.server.plugins.NotFoundException
+import io.ktor.server.plugins.requestvalidation.RequestValidationException
+import io.ktor.server.plugins.requestvalidation.ValidationResult
+import io.ktor.server.request.receiveMultipart
+import io.ktor.server.request.receiveText
+import io.ktor.server.response.respond
+import io.ktor.server.response.respondBytes
+import io.ktor.server.response.respondText
+import io.ktor.server.routing.delete
+import io.ktor.server.routing.get
+import io.ktor.server.routing.patch
+import io.ktor.server.routing.post
+import io.ktor.server.routing.route
+import io.ktor.server.routing.routing
 import kotlinx.serialization.json.Json
 import no.vicx.ktor.db.model.UserImage
 import no.vicx.ktor.esport.EsportService
@@ -22,9 +36,10 @@ import no.vicx.ktor.util.UserImageResult
 import no.vicx.ktor.util.extractFormItemsAndFileItem
 
 fun List<ValidationResult>.throwIfAnyInvalid(value: Any) {
-    val reasons = this
-        .filterIsInstance<ValidationResult.Invalid>()
-        .flatMap { it.reasons }
+    val reasons =
+        this
+            .filterIsInstance<ValidationResult.Invalid>()
+            .flatMap { it.reasons }
 
     if (reasons.isNotEmpty()) throw RequestValidationException(value, reasons)
 }
@@ -33,20 +48,20 @@ fun ApplicationCall.getAuthenticatedUsername(): String =
     this.principal<JWTPrincipal>()?.subject
         ?: throw SecurityException("JWTPrincipal or subject is missing for secured endpoint")
 
-private val jsonIgnoreUnknown = Json {
-    ignoreUnknownKeys = true
-}
+private val jsonIgnoreUnknown =
+    Json {
+        ignoreUnknownKeys = true
+    }
 
 fun Application.configureRestApi(
     esportService: EsportService,
     userService: UserService,
-    userImageService: UserImageService
+    userImageService: UserImageService,
 ) {
     // because of GraphQL, we cannot use global ContentNegotiation, hence respondText
 
     routing {
         route("/api") {
-
             post("/user") {
                 val multiPartData = call.receiveMultipart()
                 val validationErrors = mutableListOf<ValidationResult>()
@@ -66,25 +81,24 @@ fun Application.configureRestApi(
                         validationErrors.add(validationResult)
                         validationErrors.throwIfAnyInvalid(createUserVm)
                         userService.createUser(createUserVm, userImage)
-                    }
+                    },
                 )
 
                 call.respondText(
                     "User created successfully.",
                     ContentType.Text.Plain,
-                    HttpStatusCode.OK
+                    HttpStatusCode.OK,
                 )
             }
 
             authenticate(strategy = AuthenticationStrategy.Required) {
-
                 get("/user") {
                     val username = call.getAuthenticatedUsername()
 
                     call.respondText(
                         Json.encodeToString(userService.getUserByUserName(username).toViewModel()),
                         ContentType.Application.Json,
-                        HttpStatusCode.OK
+                        HttpStatusCode.OK,
                     )
                 }
 
@@ -100,18 +114,17 @@ fun Application.configureRestApi(
 
                     userService.updateUser(
                         userPatchVm,
-                        username
+                        username,
                     )
 
                     call.respondText(
                         text = "User updated successfully.",
                         contentType = ContentType.Text.Plain,
-                        status = HttpStatusCode.OK
+                        status = HttpStatusCode.OK,
                     )
                 }
 
                 route("/user") {
-
                     post("/image") {
                         val username = call.getAuthenticatedUsername()
                         val multiPartData = call.receiveMultipart()
@@ -121,16 +134,17 @@ fun Application.configureRestApi(
                                 when (userImageResult) {
                                     is UserImageResult.ValidImageResult ->
                                         userImageService.addOrReplaceUserImage(
-                                            userImageResult.userImage, username
+                                            userImageResult.userImage,
+                                            username,
                                         )
 
                                     is UserImageResult.InvalidImageResult ->
                                         throw RequestValidationException(
                                             IMAGE_PART,
-                                            userImageResult.validationError.reasons
+                                            userImageResult.validationError.reasons,
                                         )
                                 }
-                            }
+                            },
                         )
 
                         call.respond(HttpStatusCode.Created)
@@ -148,7 +162,7 @@ fun Application.configureRestApi(
                         call.respondBytes(
                             contentType = ContentType.parse(userImage.contentType),
                             status = HttpStatusCode.OK,
-                            bytes = userImage.imageData
+                            bytes = userImage.imageData,
                         )
                     }
 
@@ -174,7 +188,7 @@ fun Application.configureRestApi(
                         call.respondText(
                             text = "Your password has been successfully updated.",
                             contentType = ContentType.Text.Plain,
-                            status = HttpStatusCode.OK
+                            status = HttpStatusCode.OK,
                         )
                     }
                 }
@@ -184,7 +198,7 @@ fun Application.configureRestApi(
                 call.respondText(
                     Json.encodeToString(esportService.getMatches()),
                     ContentType.Application.Json,
-                    HttpStatusCode.OK
+                    HttpStatusCode.OK,
                 )
             }
         }

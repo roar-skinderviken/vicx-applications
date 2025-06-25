@@ -6,5 +6,5 @@ import kotlinx.serialization.Serializable
 data class PaginatedCalculations(
     val calculations: List<CalcVm>,
     val page: Int,
-    val totalPages: Int
+    val totalPages: Int,
 )

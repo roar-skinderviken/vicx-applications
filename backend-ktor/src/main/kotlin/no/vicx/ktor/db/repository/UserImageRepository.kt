@@ -8,30 +8,26 @@ import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.deleteWhere
 
 class UserImageRepository {
-
-    suspend fun saveUserImage(
-        userImageModel: UserImage
-    ): Unit = suspendTransaction {
-        UserImageEntity.new(userImageModel.id) {
-            contentType = userImageModel.contentType
-            imageData = userImageModel.imageData
-        }
-    }
-
-    suspend fun updateUserImage(
-        userImageModel: UserImage
-    ): Unit = suspendTransaction {
-        UserImageEntity.findByIdAndUpdate(userImageModel.id) { userImageToUpdate ->
-            userImageToUpdate.apply {
-                imageData = userImageModel.imageData
+    suspend fun saveUserImage(userImageModel: UserImage): Unit =
+        suspendTransaction {
+            UserImageEntity.new(userImageModel.id) {
                 contentType = userImageModel.contentType
+                imageData = userImageModel.imageData
             }
         }
-    }
 
-    suspend fun deleteById(
-        id: Long
-    ): Unit = suspendTransaction {
-        UserImageTable.deleteWhere { UserImageTable.id eq id }
-    }
+    suspend fun updateUserImage(userImageModel: UserImage): Unit =
+        suspendTransaction {
+            UserImageEntity.findByIdAndUpdate(userImageModel.id) { userImageToUpdate ->
+                userImageToUpdate.apply {
+                    imageData = userImageModel.imageData
+                    contentType = userImageModel.contentType
+                }
+            }
+        }
+
+    suspend fun deleteById(id: Long): Unit =
+        suspendTransaction {
+            UserImageTable.deleteWhere { UserImageTable.id eq id }
+        }
 }

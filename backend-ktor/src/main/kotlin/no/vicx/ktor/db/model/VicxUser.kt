@@ -9,5 +9,5 @@ data class VicxUser(
     val name: String,
     val password: String,
     val email: String,
-    val userImage: UserImage? = null
+    val userImage: UserImage? = null,
 )

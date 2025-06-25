@@ -1,6 +1,6 @@
 package no.vicx.ktor.user.service
 
-import io.ktor.server.plugins.*
+import io.ktor.server.plugins.NotFoundException
 import no.vicx.ktor.db.model.UserImage
 import no.vicx.ktor.db.repository.UserImageRepository
 import no.vicx.ktor.db.repository.UserRepository
@@ -11,7 +11,7 @@ import no.vicx.ktor.db.repository.UserRepository
 class UserImageService(
     private val userService: UserService,
     private val userRepository: UserRepository,
-    private val userImageRepository: UserImageRepository
+    private val userImageRepository: UserImageRepository,
 ) {
     /**
      * Adds or replaces the image associated with the specified user.
@@ -21,13 +21,16 @@ class UserImageService(
      */
     suspend fun addOrReplaceUserImage(
         userImageModel: UserImage,
-        username: String
+        username: String,
     ) {
         val user = userService.getUserByUserName(username)
         val userImageModelWithId = userImageModel.copy(id = user.id)
 
-        if (user.userImage == null) userImageRepository.saveUserImage(userImageModelWithId)
-        else userImageRepository.updateUserImage(userImageModelWithId)
+        if (user.userImage == null) {
+            userImageRepository.saveUserImage(userImageModelWithId)
+        } else {
+            userImageRepository.updateUserImage(userImageModelWithId)
+        }
     }
 
     /**

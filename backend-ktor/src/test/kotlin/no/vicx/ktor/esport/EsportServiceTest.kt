@@ -40,8 +40,9 @@ class EsportServiceTest {
     }
 
     companion object {
-        fun createMatches(matchType: MatchType): List<EsportMatchVm> = listOf(
-            EsportMatchVm(1, "~match-1~", "beginAt", matchType.toString())
-        )
+        fun createMatches(matchType: MatchType): List<EsportMatchVm> =
+            listOf(
+                EsportMatchVm(1, "~match-1~", "beginAt", matchType.toString()),
+            )
     }
 }

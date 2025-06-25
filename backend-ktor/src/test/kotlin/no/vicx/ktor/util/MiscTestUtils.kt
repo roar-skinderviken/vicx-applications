@@ -2,7 +2,7 @@ package no.vicx.ktor.util
 
 import io.kotest.assertions.assertSoftly
 import io.kotest.matchers.shouldBe
-import io.ktor.http.*
+import io.ktor.http.HttpStatusCode
 import no.vicx.ktor.db.model.UserImage
 import no.vicx.ktor.db.model.VicxUser
 import no.vicx.ktor.error.ApiError
@@ -10,7 +10,6 @@ import no.vicx.ktor.plugins.VALIDATION_ERROR
 import no.vicx.ktor.util.SecurityTestUtils.USERNAME_IN_TEST
 
 object MiscTestUtils {
-
     const val GIF_RESOURCE_NAME = "test-gif.gif"
     const val JPEG_RESOURCE_NAME = "test-jpg.jpg"
     const val PNG_RESOURCE_NAME = "test-png.png"
@@ -24,27 +23,28 @@ object MiscTestUtils {
     const val VALID_PLAINTEXT_PASSWORD: String = "P4ssword"
     const val VALID_BCRYPT_PASSWORD: String = "$2a$10\$sOuu7.j.dOykTbMoXwQpgulTjqUf0EutXqEj8YcZrsNkIzlyZGIry"
 
-    val userImageModelInTest = UserImage(
-        id = 1L,
-        contentType = PNG_CONTENT_TYPE,
-        imageData = getResourceAsByteArray("/$PNG_RESOURCE_NAME")
-    )
+    val userImageModelInTest =
+        UserImage(
+            id = 1L,
+            contentType = PNG_CONTENT_TYPE,
+            imageData = getResourceAsByteArray("/$PNG_RESOURCE_NAME"),
+        )
 
-    val userModelInTest = VicxUser(
-        id = 1L,
-        username = USERNAME_IN_TEST,
-        name = "~name~",
-        password = VALID_BCRYPT_PASSWORD,
-        email = "john.doe@example.com",
-        userImage = userImageModelInTest
-    )
+    val userModelInTest =
+        VicxUser(
+            id = 1L,
+            username = USERNAME_IN_TEST,
+            name = "~name~",
+            password = VALID_BCRYPT_PASSWORD,
+            email = "john.doe@example.com",
+            userImage = userImageModelInTest,
+        )
 
     fun getResourceAsByteArray(path: String): ByteArray {
         val resourceAsStream = javaClass.getResourceAsStream(path)
         requireNotNull(resourceAsStream)
         return resourceAsStream.readBytes()
     }
-
 
     fun assertValidationErrors(
         apiError: ApiError,

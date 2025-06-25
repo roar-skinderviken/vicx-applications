@@ -1,13 +1,13 @@
 package no.vicx.ktor.user.vm
 
-import io.ktor.server.plugins.requestvalidation.*
+import io.ktor.server.plugins.requestvalidation.ValidationResult
 import kotlinx.serialization.Serializable
 import no.vicx.ktor.user.ValidationUtils.validatePassword
 
 @Serializable
 data class ChangePasswordVm(
     val currentPassword: String = "",
-    val password: String = ""
+    val password: String = "",
 ) {
     fun validate(): ValidationResult {
         val validationErrors = mutableListOf<String>()
@@ -19,7 +19,10 @@ data class ChangePasswordVm(
 
         password.validatePassword(validationErrors)
 
-        return if (validationErrors.isNotEmpty()) ValidationResult.Invalid(validationErrors)
-        else ValidationResult.Valid
+        return if (validationErrors.isNotEmpty()) {
+            ValidationResult.Invalid(validationErrors)
+        } else {
+            ValidationResult.Valid
+        }
     }
 }

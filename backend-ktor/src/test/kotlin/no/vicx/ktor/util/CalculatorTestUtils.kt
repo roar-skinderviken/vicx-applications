@@ -9,7 +9,7 @@ import java.time.LocalDateTime
 object CalculatorTestUtils {
     fun calcEntryInTest(
         id: Long = 0L,
-        username: String? = USERNAME_IN_TEST
+        username: String? = USERNAME_IN_TEST,
     ) = CalcEntry(
         id,
         42,
@@ -17,7 +17,7 @@ object CalculatorTestUtils {
         CalculatorOperation.PLUS,
         85,
         username,
-        LocalDateTime.now().plusSeconds(id).toKotlinLocalDateTime()
+        LocalDateTime.now().plusSeconds(id).toKotlinLocalDateTime(),
     )
 
     fun generateTestCalcEntries(
@@ -26,7 +26,7 @@ object CalculatorTestUtils {
     ) = List(size) { index ->
         calcEntryInTest(
             id = index.toLong(),
-            username = username
+            username = username,
         )
     }
 }

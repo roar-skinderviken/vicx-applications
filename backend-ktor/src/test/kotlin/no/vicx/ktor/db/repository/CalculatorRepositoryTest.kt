@@ -1,7 +1,7 @@
 package no.vicx.ktor.db.repository
 
 import io.kotest.matchers.shouldBe
-import io.ktor.server.testing.*
+import io.ktor.server.testing.testApplication
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockkObject
@@ -32,104 +32,74 @@ import kotlin.time.Duration.Companion.minutes
 import kotlin.time.toJavaDuration
 
 class CalculatorRepositoryTest {
-
     private lateinit var sut: CalculatorRepository
 
     @BeforeEach
-    fun setup() = testApplication {
-        clearAllMocks()
-        configureTestDb()
-        sut = CalculatorRepository()
-    }
+    fun setup() =
+        testApplication {
+            clearAllMocks()
+            configureTestDb()
+            sut = CalculatorRepository()
+        }
 
     @Nested
     inner class SaveTests {
-
         @Test
-        fun `given valid CalcEntry when calling save expect returned CalcEntry`() = testApplication {
-            val expectedCalcEntry = calcEntryInTest(1)
+        fun `given valid CalcEntry when calling save expect returned CalcEntry`() =
+            testApplication {
+                val expectedCalcEntry = calcEntryInTest(1)
 
-            application {
-                val savedCalcEntry = runBlocking { sut.save(expectedCalcEntry) }
+                application {
+                    val savedCalcEntry = runBlocking { sut.save(expectedCalcEntry) }
 
-                assertEquals(
-                    expectedCalcEntry.copy(
-                        id = savedCalcEntry.id,
-                        createdAt = savedCalcEntry.createdAt
-                    ),
-                    savedCalcEntry
-                )
+                    assertEquals(
+                        expectedCalcEntry.copy(
+                            id = savedCalcEntry.id,
+                            createdAt = savedCalcEntry.createdAt,
+                        ),
+                        savedCalcEntry,
+                    )
+                }
             }
-        }
 
         @Test
-        fun `given valid CalcEntry when calling save then expect EntityNotFoundException`() = testApplication {
-            val expectedCalcEntry = calcEntryInTest(2)
-            val expectedEntityId = EntityID(
-                expectedCalcEntry.id,
-                CalcEntryTable
-            )
+        fun `given valid CalcEntry when calling save then expect EntityNotFoundException`() =
+            testApplication {
+                val expectedCalcEntry = calcEntryInTest(2)
+                val expectedEntityId =
+                    EntityID(
+                        expectedCalcEntry.id,
+                        CalcEntryTable,
+                    )
 
-            mockkObject(CalcEntryEntity)
+                mockkObject(CalcEntryEntity)
 
-            every { CalcEntryEntity[any<EntityID<Long>>()] } throws
+                every { CalcEntryEntity[any<EntityID<Long>>()] } throws
                     EntityNotFoundException(expectedEntityId, CalcEntryEntity)
 
-            application {
-                val thrown = runBlocking {
-                    assertThrows<EntityNotFoundException> { sut.save(expectedCalcEntry) }
-                }
+                application {
+                    val thrown =
+                        runBlocking {
+                            assertThrows<EntityNotFoundException> { sut.save(expectedCalcEntry) }
+                        }
 
-                assertEquals(
-                    "Entity CalcEntryEntity, id=${expectedCalcEntry.id} not found in the database",
-                    thrown.message
-                )
+                    assertEquals(
+                        "Entity CalcEntryEntity, id=${expectedCalcEntry.id} not found in the database",
+                        thrown.message,
+                    )
+                }
             }
-        }
     }
 
     @Nested
     inner class FindAllOrderDescTests {
-
         @Test
-        fun `given a populated calc_entry table when calling findAllOrderDesc expect result`() = testApplication {
-            val expectedTotalCount = 101
+        fun `given a populated calc_entry table when calling findAllOrderDesc expect result`() =
+            testApplication {
+                val expectedTotalCount = 101
 
-            insertTestData {
-                generateTestCalcEntries(expectedTotalCount).forEach { calcEntry ->
-                    CalcEntryTable.insert { row ->
-                        row[firstValue] = calcEntry.firstValue
-                        row[secondValue] = calcEntry.secondValue
-                        row[operation] = calcEntry.operation
-                        row[result] = calcEntry.result
-                        row[username] = calcEntry.username
-                        row[createdAt] = calcEntry.createdAt.toJavaLocalDateTime().atOffset(ZoneOffset.UTC)
-                    }
-                }
-            }
-
-            application {
-                val expectedPageSize = 10
-                val (list, totalCount) = runBlocking { sut.findAllOrderDesc(10, expectedPageSize) }
-
-                assertEquals(expectedTotalCount, totalCount)
-                assertEquals(expectedPageSize, list.size)
-                assertEquals(2, list.last().id, "last record in page should be the second oldest record")
-            }
-        }
-    }
-
-    @Nested
-    inner class FindAllIdsByUsernameTests {
-
-        @Test
-        fun `given a populated calc_entry table when calling findAllOrderDesc expect result`() = testApplication {
-            val expectedItemCount = 5
-
-            insertTestData {
-                generateTestCalcEntries(expectedItemCount)
-                    .plus(generateTestCalcEntries(expectedItemCount, "~otherUser~"))
-                    .forEach { calcEntry ->
+                insertTestData {
+                    generateTestCalcEntries(expectedTotalCount).forEach { calcEntry ->
                         CalcEntryTable.insert { row ->
                             row[firstValue] = calcEntry.firstValue
                             row[secondValue] = calcEntry.secondValue
@@ -139,22 +109,53 @@ class CalculatorRepositoryTest {
                             row[createdAt] = calcEntry.createdAt.toJavaLocalDateTime().atOffset(ZoneOffset.UTC)
                         }
                     }
-            }
+                }
 
-            application {
-                val idsForUser = runBlocking { sut.findAllIdsByUsername(USERNAME_IN_TEST) }
-                assertEquals(expectedItemCount, idsForUser.size)
+                application {
+                    val expectedPageSize = 10
+                    val (list, totalCount) = runBlocking { sut.findAllOrderDesc(10, expectedPageSize) }
+
+                    assertEquals(expectedTotalCount, totalCount)
+                    assertEquals(expectedPageSize, list.size)
+                    assertEquals(2, list.last().id, "last record in page should be the second oldest record")
+                }
             }
-        }
+    }
+
+    @Nested
+    inner class FindAllIdsByUsernameTests {
+        @Test
+        fun `given a populated calc_entry table when calling findAllOrderDesc expect result`() =
+            testApplication {
+                val expectedItemCount = 5
+
+                insertTestData {
+                    generateTestCalcEntries(expectedItemCount)
+                        .plus(generateTestCalcEntries(expectedItemCount, "~otherUser~"))
+                        .forEach { calcEntry ->
+                            CalcEntryTable.insert { row ->
+                                row[firstValue] = calcEntry.firstValue
+                                row[secondValue] = calcEntry.secondValue
+                                row[operation] = calcEntry.operation
+                                row[result] = calcEntry.result
+                                row[username] = calcEntry.username
+                                row[createdAt] = calcEntry.createdAt.toJavaLocalDateTime().atOffset(ZoneOffset.UTC)
+                            }
+                        }
+                }
+
+                application {
+                    val idsForUser = runBlocking { sut.findAllIdsByUsername(USERNAME_IN_TEST) }
+                    assertEquals(expectedItemCount, idsForUser.size)
+                }
+            }
     }
 
     @Nested
     inner class DeleteTests {
-
         @Test
         fun `given list of calc entry ids to delete then expect call to calculatorRepository#deleteByIdIn`() =
             testApplication {
-
                 val calcEntry = calcEntryInTest(1L)
 
                 insertTestData {
@@ -174,11 +175,12 @@ class CalculatorRepositoryTest {
                     runBlocking { sut.deleteByIdIn(calcEntryIdsToDelete) }
                 }
 
-                val thrown = transaction {
-                    assertThrows<EntityNotFoundException> {
-                        CalcEntryEntity[1L]
+                val thrown =
+                    transaction {
+                        assertThrows<EntityNotFoundException> {
+                            CalcEntryEntity[1L]
+                        }
                     }
-                }
 
                 assertEquals("Entity CalcEntryEntity, id=1 not found in the database", thrown.message)
             }

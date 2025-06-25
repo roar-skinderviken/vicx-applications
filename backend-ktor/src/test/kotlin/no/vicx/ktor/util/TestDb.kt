@@ -1,6 +1,6 @@
 package no.vicx.ktor.util
 
-import io.ktor.server.testing.*
+import io.ktor.server.testing.ApplicationTestBuilder
 import io.zonky.test.db.postgres.embedded.EmbeddedPostgres
 import org.flywaydb.core.Flyway
 import org.jetbrains.exposed.sql.Database
@@ -14,11 +14,13 @@ object TestDb {
 }
 
 fun configureTestDb(): DataSource {
-    val flyway = Flyway.configure()
-        .cleanDisabled(false)
-        .dataSource(TestDb.postgres)
-        .locations("classpath:db.migration")
-        .load()
+    val flyway =
+        Flyway
+            .configure()
+            .cleanDisabled(false)
+            .dataSource(TestDb.postgres)
+            .locations("classpath:db.migration")
+            .load()
 
     flyway.clean()
     flyway.migrate()
@@ -26,9 +28,10 @@ fun configureTestDb(): DataSource {
     return TestDb.postgres
 }
 
-fun ApplicationTestBuilder.insertTestData(block: () -> Unit) = application {
-    transaction {
-        //addLogger(StdOutSqlLogger)
-        block()
+fun ApplicationTestBuilder.insertTestData(block: () -> Unit) =
+    application {
+        transaction {
+            // addLogger(StdOutSqlLogger)
+            block()
+        }
     }
-}

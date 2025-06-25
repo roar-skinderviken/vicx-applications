@@ -1,7 +1,9 @@
 package no.vicx.ktor.util
 
-import io.ktor.http.content.*
-import io.ktor.server.plugins.requestvalidation.*
+import io.ktor.http.content.MultiPartData
+import io.ktor.http.content.PartData
+import io.ktor.http.content.forEachPart
+import io.ktor.server.plugins.requestvalidation.ValidationResult
 import no.vicx.ktor.user.vm.CreateUserVm
 import no.vicx.ktor.util.MultiPartUtils.consumeAndValidateUserImageFilePart
 
@@ -14,7 +16,7 @@ const val IMAGE_PART = "image"
 
 suspend fun MultiPartData.extractFormItemsAndFileItem(
     userImageCallback: suspend (UserImageResult) -> Unit,
-    userCallback: (suspend (ValidationResult, CreateUserVm) -> Unit)? = null
+    userCallback: (suspend (ValidationResult, CreateUserVm) -> Unit)? = null,
 ) {
     val capturedFormItems = mutableMapOf<String, String>()
 
@@ -28,13 +30,14 @@ suspend fun MultiPartData.extractFormItemsAndFileItem(
     }
 
     if (userCallback != null) {
-        val createUserVm = CreateUserVm(
-            username = capturedFormItems[USERNAME_PART].orEmpty(),
-            name = capturedFormItems[NAME_PART].orEmpty(),
-            email = capturedFormItems[EMAIL_PART].orEmpty(),
-            password = capturedFormItems[PASSWORD_PART].orEmpty(),
-            recaptchaToken = capturedFormItems[RECAPTCHA_PART].orEmpty()
-        )
+        val createUserVm =
+            CreateUserVm(
+                username = capturedFormItems[USERNAME_PART].orEmpty(),
+                name = capturedFormItems[NAME_PART].orEmpty(),
+                email = capturedFormItems[EMAIL_PART].orEmpty(),
+                password = capturedFormItems[PASSWORD_PART].orEmpty(),
+                recaptchaToken = capturedFormItems[RECAPTCHA_PART].orEmpty(),
+            )
 
         userCallback(createUserVm.validate(), createUserVm)
     }

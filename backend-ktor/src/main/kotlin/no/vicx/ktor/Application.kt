@@ -1,8 +1,9 @@
 package no.vicx.ktor
 
-import io.ktor.http.*
-import io.ktor.server.application.*
-import io.ktor.server.plugins.cors.routing.*
+import io.ktor.http.HttpHeaders
+import io.ktor.server.application.Application
+import io.ktor.server.application.install
+import io.ktor.server.plugins.cors.routing.CORS
 import no.vicx.ktor.calculator.CalculatorService
 import no.vicx.ktor.calculator.RemoveOldEntriesTask
 import no.vicx.ktor.db.repository.CalculatorRepository
@@ -11,7 +12,12 @@ import no.vicx.ktor.db.repository.UserRepository
 import no.vicx.ktor.esport.EsportClient
 import no.vicx.ktor.esport.EsportService
 import no.vicx.ktor.esport.HttpClientConfig.defaultClient
-import no.vicx.ktor.plugins.*
+import no.vicx.ktor.plugins.configureGraphQL
+import no.vicx.ktor.plugins.configureHealth
+import no.vicx.ktor.plugins.configureRestApi
+import no.vicx.ktor.plugins.configureSecurity
+import no.vicx.ktor.plugins.configureStatusPage
+import no.vicx.ktor.plugins.connectToPostgres
 import no.vicx.ktor.user.service.RecaptchaClient
 import no.vicx.ktor.user.service.UserImageService
 import no.vicx.ktor.user.service.UserService
@@ -22,7 +28,8 @@ import javax.sql.DataSource
 inline fun <reified T : Any> loggerFor(): Logger = LoggerFactory.getLogger(T::class.java)
 
 fun main(args: Array<String>) {
-    io.ktor.server.netty.EngineMain.main(args)
+    io.ktor.server.netty.EngineMain
+        .main(args)
 }
 
 fun Application.module() {
@@ -56,9 +63,8 @@ fun Application.module() {
     configureRestApi(
         esportService,
         userService,
-        userImageService
+        userImageService,
     )
 
     RemoveOldEntriesTask(calculatorRepository).also { it.start(this) }
 }
-

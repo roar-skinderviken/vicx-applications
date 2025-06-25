@@ -2,7 +2,7 @@ package no.vicx.ktor.calculator.query
 
 import com.expediagroup.graphql.server.operations.Mutation
 import graphql.schema.DataFetchingEnvironment
-import io.ktor.server.auth.jwt.*
+import io.ktor.server.auth.jwt.JWTPrincipal
 import no.vicx.ktor.calculator.CalculatorService
 import no.vicx.ktor.calculator.vm.CalcVm
 import no.vicx.ktor.db.model.CalculatorOperation
@@ -12,20 +12,21 @@ import no.vicx.ktor.plugins.CustomGraphQLContextFactory.Companion.JWT_PRINCIPAL_
 @Suppress("unused")
 class CalculatorMutation(
     private val calculatorService: CalculatorService,
-    private val calculatorRepository: CalculatorRepository
+    private val calculatorRepository: CalculatorRepository,
 ) : Mutation {
-
     suspend fun deleteCalculations(
         ids: List<Int>,
-        environment: DataFetchingEnvironment
+        environment: DataFetchingEnvironment,
     ): Boolean {
-        val jwtPrincipal = environment.graphQlContext.get<JWTPrincipal>(JWT_PRINCIPAL_KEY)
-            ?: throw SecurityException("Unauthorized")
+        val jwtPrincipal =
+            environment.graphQlContext.get<JWTPrincipal>(JWT_PRINCIPAL_KEY)
+                ?: throw SecurityException("Unauthorized")
 
         val username = jwtPrincipal.subject ?: error("Subject is null")
 
-        if (!calculatorService.isAllowedToDelete(ids, username))
+        if (!calculatorService.isAllowedToDelete(ids, username)) {
             throw SecurityException("Forbidden")
+        }
 
         return calculatorRepository.deleteByIdIn(ids.map { it.toLong() }) > 0
     }
@@ -34,7 +35,7 @@ class CalculatorMutation(
         firstValue: Int,
         secondValue: Int,
         operation: CalculatorOperation,
-        environment: DataFetchingEnvironment
+        environment: DataFetchingEnvironment,
     ): CalcVm {
         val jwtPrincipal = environment.graphQlContext.get<JWTPrincipal>(JWT_PRINCIPAL_KEY)
         val username = jwtPrincipal?.subject
@@ -43,7 +44,7 @@ class CalculatorMutation(
             firstValue.toLong(),
             secondValue.toLong(),
             operation,
-            username
+            username,
         )
     }
 }

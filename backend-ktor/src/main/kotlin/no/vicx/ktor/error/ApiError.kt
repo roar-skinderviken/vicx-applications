@@ -8,5 +8,5 @@ data class ApiError(
     val status: Int,
     val message: String,
     val url: String,
-    val validationErrors: Map<String, String> = emptyMap()
+    val validationErrors: Map<String, String> = emptyMap(),
 )

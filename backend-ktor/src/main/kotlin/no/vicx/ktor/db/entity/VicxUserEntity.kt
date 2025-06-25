@@ -6,7 +6,9 @@ import org.jetbrains.exposed.dao.LongEntity
 import org.jetbrains.exposed.dao.LongEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 
-class VicxUserEntity(id: EntityID<Long>) : LongEntity(id) {
+class VicxUserEntity(
+    id: EntityID<Long>,
+) : LongEntity(id) {
     companion object : LongEntityClass<VicxUserEntity>(VicxUserTable)
 
     var username by VicxUserTable.username

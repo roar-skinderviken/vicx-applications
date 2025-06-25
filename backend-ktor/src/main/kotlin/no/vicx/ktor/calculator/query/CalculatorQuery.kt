@@ -6,8 +6,7 @@ import no.vicx.ktor.calculator.vm.PaginatedCalculations
 
 @Suppress("unused")
 class CalculatorQuery(
-    private val calculatorService: CalculatorService
+    private val calculatorService: CalculatorService,
 ) : Query {
-    suspend fun getAllCalculations(page: Int): PaginatedCalculations =
-        calculatorService.getPagedCalculations(page)
+    suspend fun getAllCalculations(page: Int): PaginatedCalculations = calculatorService.getPagedCalculations(page)
 }

@@ -7,14 +7,22 @@ import io.kotest.matchers.ints.shouldBeGreaterThan
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
-import io.ktor.client.call.*
-import io.ktor.client.plugins.contentnegotiation.*
-import io.ktor.client.request.*
-import io.ktor.client.statement.*
-import io.ktor.http.*
-import io.ktor.serialization.kotlinx.json.*
-import io.ktor.server.testing.*
-import io.mockk.*
+import io.ktor.client.call.body
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.request.bearerAuth
+import io.ktor.client.request.post
+import io.ktor.client.request.setBody
+import io.ktor.client.statement.HttpResponse
+import io.ktor.http.ContentType
+import io.ktor.http.HttpStatusCode
+import io.ktor.http.contentType
+import io.ktor.serialization.kotlinx.json.json
+import io.ktor.server.testing.testApplication
+import io.mockk.Called
+import io.mockk.clearAllMocks
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.mockk
 import kotlinx.serialization.json.Json
 import no.vicx.ktor.calculator.CalculatorService
 import no.vicx.ktor.calculator.query.wrapper.CreateCalculation
@@ -45,11 +53,12 @@ class CalculatorQueryTest : BehaviorSpec() {
             }
 
             When("sending valid request to getAllCalculations") {
-                val expectedPaginatedCalculations = PaginatedCalculations(
-                    calculations = generateTestCalcEntries(1).map { it.toGraphQLModel() },
-                    page = 1,
-                    totalPages = 1,
-                )
+                val expectedPaginatedCalculations =
+                    PaginatedCalculations(
+                        calculations = generateTestCalcEntries(1).map { it.toGraphQLModel() },
+                        page = 1,
+                        totalPages = 1,
+                    )
 
                 coEvery { calculatorService.getPagedCalculations(1) } returns expectedPaginatedCalculations
 
@@ -71,9 +80,11 @@ class CalculatorQueryTest : BehaviorSpec() {
                         calculatorService.calculate(2, 1, CalculatorOperation.PLUS, username)
                     } returns expectedCalcEntry
 
-                    val responseBody = postGraphQLRequestAndReturnResult<CreateCalculation>(
-                        createCalculationMutation, addAuthHeader
-                    )
+                    val responseBody =
+                        postGraphQLRequestAndReturnResult<CreateCalculation>(
+                            createCalculationMutation,
+                            addAuthHeader,
+                        )
 
                     Then("expect result") {
                         responseBody.data?.createCalculation shouldBe expectedCalcEntry
@@ -82,9 +93,11 @@ class CalculatorQueryTest : BehaviorSpec() {
             }
 
             When("deleteCalculations request without auth") {
-                val responseBody = postGraphQLRequestAndReturnResult<DeleteCalculations>(
-                    deleteCalculationsMutation, false
-                )
+                val responseBody =
+                    postGraphQLRequestAndReturnResult<DeleteCalculations>(
+                        deleteCalculationsMutation,
+                        false,
+                    )
 
                 Then("expect Unauthorized") {
                     responseBody.errors.shouldNotBeNull().apply {
@@ -99,9 +112,11 @@ class CalculatorQueryTest : BehaviorSpec() {
             When("deleteCalculations request for other user") {
                 coEvery { calculatorService.isAllowedToDelete(listOf(1, 2), USERNAME_IN_TEST) } returns false
 
-                val responseBody = postGraphQLRequestAndReturnResult<DeleteCalculations>(
-                    deleteCalculationsMutation, true
-                )
+                val responseBody =
+                    postGraphQLRequestAndReturnResult<DeleteCalculations>(
+                        deleteCalculationsMutation,
+                        true,
+                    )
 
                 Then("expect Forbidden") {
                     responseBody.errors.shouldNotBeNull().apply {
@@ -117,9 +132,11 @@ class CalculatorQueryTest : BehaviorSpec() {
                 coEvery { calculatorService.isAllowedToDelete(listOf(1, 2), USERNAME_IN_TEST) } returns true
                 coEvery { calculatorRepository.deleteByIdIn(listOf(1, 2)) } returns 2
 
-                val responseBody = postGraphQLRequestAndReturnResult<DeleteCalculations>(
-                    deleteCalculationsMutation, true
-                )
+                val responseBody =
+                    postGraphQLRequestAndReturnResult<DeleteCalculations>(
+                        deleteCalculationsMutation,
+                        true,
+                    )
 
                 Then("expect success") {
                     responseBody.data?.deleteCalculations shouldBe true
@@ -148,26 +165,29 @@ class CalculatorQueryTest : BehaviorSpec() {
                 configureTestSecurity()
                 configureGraphQL(
                     calculatorService,
-                    calculatorRepository
+                    calculatorRepository,
                 )
             }
 
-            val client = createClient {
-                install(ContentNegotiation) { json() }
-            }
+            val client =
+                createClient {
+                    install(ContentNegotiation) { json() }
+                }
 
-            response = client.post("/graphql") {
-                if (addAuthHeader) bearerAuth(tokenStringInTest)
-                contentType(ContentType.Application.Json)
-                setBody(Json.encodeToString(mapOf("query" to query)))
-            }
+            response =
+                client.post("/graphql") {
+                    if (addAuthHeader) bearerAuth(tokenStringInTest)
+                    contentType(ContentType.Application.Json)
+                    setBody(Json.encodeToString(mapOf("query" to query)))
+                }
         }
 
         return response
     }
 
     companion object {
-        val getAllCalculationsQuery = """
+        val getAllCalculationsQuery =
+            """
             query {
                 getAllCalculations(page: 1) {
                     calculations {
@@ -182,9 +202,11 @@ class CalculatorQueryTest : BehaviorSpec() {
                     page
                     totalPages
                 }
-            }""".trimIndent()
+            }
+            """.trimIndent()
 
-        val createCalculationMutation = """
+        val createCalculationMutation =
+            """
             mutation {
                 createCalculation(firstValue: 2, secondValue: 1, operation: PLUS) {
                     id
@@ -195,11 +217,14 @@ class CalculatorQueryTest : BehaviorSpec() {
                     username
                     createdAt
                 }
-            }""".trimIndent()
+            }
+            """.trimIndent()
 
-        val deleteCalculationsMutation = """
+        val deleteCalculationsMutation =
+            """
             mutation {
                 deleteCalculations(ids: [1,2])
-            }""".trimIndent()
+            }
+            """.trimIndent()
     }
 }

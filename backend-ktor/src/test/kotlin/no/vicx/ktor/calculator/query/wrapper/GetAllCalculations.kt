@@ -5,5 +5,5 @@ import no.vicx.ktor.calculator.vm.PaginatedCalculations
 
 @Serializable
 data class GetAllCalculations(
-    val getAllCalculations: PaginatedCalculations
+    val getAllCalculations: PaginatedCalculations,
 )

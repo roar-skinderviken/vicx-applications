@@ -1,6 +1,6 @@
 package no.vicx.ktor.user.vm
 
-import io.ktor.server.plugins.requestvalidation.*
+import io.ktor.server.plugins.requestvalidation.ValidationResult
 import kotlinx.serialization.Serializable
 import no.vicx.ktor.db.model.UserImage
 import no.vicx.ktor.db.model.VicxUser
@@ -19,14 +19,15 @@ data class CreateUserVm(
 ) {
     fun toDbModel(
         encryptedPassword: String,
-        userImage: UserImage? = null
-    ): VicxUser = VicxUser(
-        username = username,
-        password = encryptedPassword,
-        name = name,
-        email = email,
-        userImage = userImage
-    )
+        userImage: UserImage? = null,
+    ): VicxUser =
+        VicxUser(
+            username = username,
+            password = encryptedPassword,
+            name = name,
+            email = email,
+            userImage = userImage,
+        )
 
     fun validate(): ValidationResult {
         val validationErrors = mutableListOf<String>()
@@ -39,7 +40,10 @@ data class CreateUserVm(
         // reCAPTCHA
         if (recaptchaToken.isBlank()) validationErrors.add("recaptchaToken cannot be blank")
 
-        return if (validationErrors.isNotEmpty()) ValidationResult.Invalid(validationErrors)
-        else ValidationResult.Valid
+        return if (validationErrors.isNotEmpty()) {
+            ValidationResult.Invalid(validationErrors)
+        } else {
+            ValidationResult.Valid
+        }
     }
 }
