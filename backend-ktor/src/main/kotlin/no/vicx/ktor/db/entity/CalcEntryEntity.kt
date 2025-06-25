@@ -5,7 +5,9 @@ import org.jetbrains.exposed.dao.Entity
 import org.jetbrains.exposed.dao.ImmutableEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 
-class CalcEntryEntity(id: EntityID<Long>) : Entity<Long>(id) {
+class CalcEntryEntity(
+    id: EntityID<Long>,
+) : Entity<Long>(id) {
     companion object : ImmutableEntityClass<Long, CalcEntryEntity>(CalcEntryTable)
 
     val firstValue by CalcEntryTable.firstValue

@@ -1,23 +1,23 @@
 package no.vicx.ktor.util
 
-import io.ktor.http.*
-import io.ktor.http.content.*
-import io.ktor.server.plugins.requestvalidation.*
-import io.ktor.utils.io.*
+import io.ktor.http.ContentType
+import io.ktor.http.content.PartData
+import io.ktor.server.plugins.requestvalidation.ValidationResult
+import io.ktor.utils.io.ByteReadChannel
+import io.ktor.utils.io.readAvailable
 import no.vicx.ktor.db.model.UserImage
 import org.apache.tika.Tika
 import java.io.ByteArrayOutputStream
 
 object MultiPartUtils {
+    suspend fun consumeAndValidateUserImageFilePart(imagePart: PartData.FileItem): UserImageResult {
+        val fileContent =
+            readFileItemAsByteArray(imagePart)
+                ?: return UserImageResult.InvalidImageResult(ValidationResult.Invalid(INVALID_FILE_SIZE_MSG))
 
-    suspend fun consumeAndValidateUserImageFilePart(
-        imagePart: PartData.FileItem
-    ): UserImageResult {
-        val fileContent = readFileItemAsByteArray(imagePart)
-            ?: return UserImageResult.InvalidImageResult(ValidationResult.Invalid(INVALID_FILE_SIZE_MSG))
-
-        val detectedContentType = detectContentType(fileContent)
-            ?: return UserImageResult.InvalidImageResult(ValidationResult.Invalid(FILE_DETECTION_ERROR_MSG))
+        val detectedContentType =
+            detectContentType(fileContent)
+                ?: return UserImageResult.InvalidImageResult(ValidationResult.Invalid(FILE_DETECTION_ERROR_MSG))
 
         if (!allowedContentTypes.contains(ContentType.parse(detectedContentType))) {
             return UserImageResult.InvalidImageResult(ValidationResult.Invalid(INVALID_CONTENT_TYPE_MSG))
@@ -26,17 +26,18 @@ object MultiPartUtils {
         return UserImageResult.ValidImageResult(
             UserImage(
                 contentType = detectedContentType,
-                imageData = fileContent
-            )
+                imageData = fileContent,
+            ),
         )
     }
 
     private val tika: Tika = Tika()
 
-    private val allowedContentTypes: Set<ContentType> = setOf(
-        ContentType.Image.PNG,
-        ContentType.Image.JPEG
-    )
+    private val allowedContentTypes: Set<ContentType> =
+        setOf(
+            ContentType.Image.PNG,
+            ContentType.Image.JPEG,
+        )
 
     private const val FILE_CHUNK_SIZE = 4_096
     private const val MAX_FILE_SIZE: Long = 50 * 1_024 // Default: 50KB;
@@ -46,11 +47,10 @@ object MultiPartUtils {
     private const val INVALID_FILE_SIZE_MSG =
         "Image file size exceeds the maximum allowed size of $MAX_FILE_SIZE bytes"
 
-    private fun detectContentType(
-        fileContent: ByteArray
-    ): String? = runCatching {
-        tika.detect(fileContent)
-    }.getOrNull()
+    private fun detectContentType(fileContent: ByteArray): String? =
+        runCatching {
+            tika.detect(fileContent)
+        }.getOrNull()
 
     private suspend fun readFileItemAsByteArray(
         imagePart: PartData.FileItem,
@@ -75,4 +75,3 @@ object MultiPartUtils {
         }
     }
 }
-

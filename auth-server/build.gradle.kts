@@ -1,4 +1,4 @@
-plugins{
+plugins {
     id("vicx-library")
 }
 
@@ -9,7 +9,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-validation")
 
     // logging
-    //runtimeOnly(libs.logback.access.spring.boot.starter)
+    // runtimeOnly(libs.logback.access.spring.boot.starter)
     runtimeOnly(libs.logstash.logback.encoder)
 
     // database
@@ -38,6 +38,6 @@ tasks.test {
         "-Xshare:off",
         "-XX:+EnableDynamicAgentLoading",
         "-Dkotest.framework.classpath.scanning.autoscan.disable=true",
-        "-Dkotest.framework.config.fqn=no.vicx.authserver.KotestConfig"
+        "-Dkotest.framework.config.fqn=no.vicx.authserver.KotestConfig",
     )
 }

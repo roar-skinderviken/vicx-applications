@@ -14,21 +14,21 @@ import org.springframework.transaction.annotation.Transactional
 import java.time.Duration
 import java.time.LocalDateTime
 
-
 @Service
 @Transactional
 class CalculatorService(
     private val calculatorRepository: CalculatorRepository,
-    @Value("\${app.calculator.max-age}") private val maxAge: Duration
+    @Value("\${app.calculator.max-age}") private val maxAge: Duration,
 ) {
     fun getAllCalculations(page: Int): Page<CalcVm> {
-        val entryPage: Page<CalcEntry> = calculatorRepository.findAllBy(
-            PageRequest.of(
-                page,
-                10,
-                Sort.by("id").descending()
+        val entryPage: Page<CalcEntry> =
+            calculatorRepository.findAllBy(
+                PageRequest.of(
+                    page,
+                    10,
+                    Sort.by("id").descending(),
+                ),
             )
-        )
         return entryPage.map(CalcVm::fromEntity)
     }
 
@@ -36,29 +36,31 @@ class CalculatorService(
 
     fun deleteOldAnonymousCalculations() =
         calculatorRepository.deleteAllByCreatedAtBeforeAndUsernameNull(
-            LocalDateTime.now().minus(maxAge)
+            LocalDateTime.now().minus(maxAge),
         )
 
     fun calculate(
         firstValue: Long,
         secondValue: Long,
         operation: CalculatorOperation,
-        username: String?
+        username: String?,
     ): CalcVm {
-        val result = when (operation) {
-            CalculatorOperation.PLUS -> firstValue + secondValue
-            CalculatorOperation.MINUS -> firstValue - secondValue
-        }
+        val result =
+            when (operation) {
+                CalculatorOperation.PLUS -> firstValue + secondValue
+                CalculatorOperation.MINUS -> firstValue - secondValue
+            }
 
-        val savedEntity = calculatorRepository.save(
-            CalcEntry(
-                firstValue,
-                secondValue,
-                operation,
-                result,
-                username
+        val savedEntity =
+            calculatorRepository.save(
+                CalcEntry(
+                    firstValue,
+                    secondValue,
+                    operation,
+                    result,
+                    username,
+                ),
             )
-        )
 
         return fromEntity(savedEntity)
     }

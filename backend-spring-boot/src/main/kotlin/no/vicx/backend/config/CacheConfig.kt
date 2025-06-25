@@ -9,28 +9,31 @@ import java.util.concurrent.TimeUnit
 
 @Configuration(proxyBeanMethods = false)
 class CacheConfig {
-
     @Bean
-    fun cacheManager(): CacheManager = CaffeineCacheManager().apply {
-        registerCustomCache(
-            "GITHUB_OPAQUE_PRINCIPALS",
-            Caffeine.newBuilder()
-                .expireAfterWrite(1, TimeUnit.HOURS)
-                .build()
-        )
+    fun cacheManager(): CacheManager =
+        CaffeineCacheManager().apply {
+            registerCustomCache(
+                "GITHUB_OPAQUE_PRINCIPALS",
+                Caffeine
+                    .newBuilder()
+                    .expireAfterWrite(1, TimeUnit.HOURS)
+                    .build(),
+            )
 
-        registerCustomCache(
-            "RECAPTCHA_TOKENS",
-            Caffeine.newBuilder()
-                .expireAfterWrite(5, TimeUnit.MINUTES)
-                .build()
-        )
+            registerCustomCache(
+                "RECAPTCHA_TOKENS",
+                Caffeine
+                    .newBuilder()
+                    .expireAfterWrite(5, TimeUnit.MINUTES)
+                    .build(),
+            )
 
-        registerCustomCache(
-            "ESPORT",
-            Caffeine.newBuilder()
-                .expireAfterWrite(30, TimeUnit.SECONDS)
-                .buildAsync()
-        )
-    }
+            registerCustomCache(
+                "ESPORT",
+                Caffeine
+                    .newBuilder()
+                    .expireAfterWrite(30, TimeUnit.SECONDS)
+                    .buildAsync(),
+            )
+        }
 }

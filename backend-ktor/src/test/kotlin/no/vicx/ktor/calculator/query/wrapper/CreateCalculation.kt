@@ -5,5 +5,5 @@ import no.vicx.ktor.calculator.vm.CalcVm
 
 @Serializable
 data class CreateCalculation(
-    val createCalculation: CalcVm
+    val createCalculation: CalcVm,
 )

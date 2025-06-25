@@ -18,27 +18,30 @@ class ActuatorHealthTest(
     webTestClient: WebTestClient,
 ) : BehaviorSpec({
 
-    Given("context with health checks") {
-        forAll(
-            Row2("readiness", setOf("db", "readinessState")),
-            Row2("liveness", setOf("livenessState")),
-        ) { probeName, expectedComponents ->
-            val uri = UriComponentsBuilder
-                .fromUriString("http://localhost:{port}/actuator/health/{probeName}")
-                .buildAndExpand(managementPort, probeName)
-                .toUri()
+        Given("context with health checks") {
+            forAll(
+                Row2("readiness", setOf("db", "readinessState")),
+                Row2("liveness", setOf("livenessState")),
+            ) { probeName, expectedComponents ->
+                val uri =
+                    UriComponentsBuilder
+                        .fromUriString("http://localhost:{port}/actuator/health/{probeName}")
+                        .buildAndExpand(managementPort, probeName)
+                        .toUri()
 
-            Then("$probeName should have $expectedComponents") {
-                webTestClient.get()
-                    .uri(uri)
-                    .exchange()
-                    .expectStatus().isOk()
-                    .expectBody<Map<String, Any>>()
-                    .consumeWith { result ->
-                        val actualComponents = result.responseBody?.get("components") as Map<*, *>
-                        actualComponents.keys shouldContainAll expectedComponents
-                    }
+                Then("$probeName should have $expectedComponents") {
+                    webTestClient
+                        .get()
+                        .uri(uri)
+                        .exchange()
+                        .expectStatus()
+                        .isOk()
+                        .expectBody<Map<String, Any>>()
+                        .consumeWith { result ->
+                            val actualComponents = result.responseBody?.get("components") as Map<*, *>
+                            actualComponents.keys shouldContainAll expectedComponents
+                        }
+                }
             }
         }
-    }
-})
+    })

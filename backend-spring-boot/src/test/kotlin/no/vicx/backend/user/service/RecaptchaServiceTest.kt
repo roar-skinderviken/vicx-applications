@@ -23,56 +23,41 @@ import org.springframework.web.util.UriComponentsBuilder
 class RecaptchaServiceTest(
     mockServer: MockRestServiceServer,
     sut: RecaptchaService,
-    @Value("\${recaptcha.secret}") recaptchaSecret: String
+    @Value("\${recaptcha.secret}") recaptchaSecret: String,
 ) : BehaviorSpec({
 
-    val expectedUrl = UriComponentsBuilder.fromUriString("$RECAPTCHA_VERIFY_BASE_URL$SITE_VERIFY_PATH")
-        .queryParam(SECRET_REQUEST_PARAMETER, recaptchaSecret)
-        .queryParam(TOKEN_RESPONSE_PARAMETER, TOKEN_IN_TEST)
-        .build().toUri()
+        val expectedUrl =
+            UriComponentsBuilder
+                .fromUriString("$RECAPTCHA_VERIFY_BASE_URL$SITE_VERIFY_PATH")
+                .queryParam(SECRET_REQUEST_PARAMETER, recaptchaSecret)
+                .queryParam(TOKEN_RESPONSE_PARAMETER, TOKEN_IN_TEST)
+                .build()
+                .toUri()
 
-    Given("request with valid reCAPTCHA token") {
-        mockServer.expect(requestTo(expectedUrl))
-            .andRespond(
-                withSuccess(validResponseBody, MediaType.APPLICATION_JSON)
-            )
+        Given("request with valid reCAPTCHA token") {
+            mockServer
+                .expect(requestTo(expectedUrl))
+                .andRespond(
+                    withSuccess(validResponseBody, MediaType.APPLICATION_JSON),
+                )
 
-        When("calling verifyToken") {
-            val result = sut.verifyToken(TOKEN_IN_TEST)
+            When("calling verifyToken") {
+                val result = sut.verifyToken(TOKEN_IN_TEST)
 
-            Then("expect true") {
-                result shouldBe true
+                Then("expect true") {
+                    result shouldBe true
+                }
             }
         }
-    }
 
-    Given("error response") {
-        mockServer.expect(requestTo(expectedUrl))
-            .andRespond(
-                withSuccess(errorResponseBody, MediaType.APPLICATION_JSON)
-            )
+        Given("error response") {
+            mockServer
+                .expect(requestTo(expectedUrl))
+                .andRespond(
+                    withSuccess(errorResponseBody, MediaType.APPLICATION_JSON),
+                )
 
-        When("calling verifyToken") {
-            val result = sut.verifyToken(TOKEN_IN_TEST)
-
-            Then("expect false") {
-                result shouldBe false
-            }
-        }
-    }
-
-    Given("partial responses") {
-        forAll(
-            Row2("Empty body", ""),
-            Row2("Empty JSON object", "{}"),
-            Row2("JSON object with null field", "{\"success\": null}")
-        ) { description, body ->
-            When("calling verifyToken: $description") {
-                mockServer.expect(requestTo(expectedUrl))
-                    .andRespond(
-                        withSuccess(body, MediaType.APPLICATION_JSON)
-                    )
-
+            When("calling verifyToken") {
                 val result = sut.verifyToken(TOKEN_IN_TEST)
 
                 Then("expect false") {
@@ -80,25 +65,50 @@ class RecaptchaServiceTest(
                 }
             }
         }
-    }
-}) {
+
+        Given("partial responses") {
+            forAll(
+                Row2("Empty body", ""),
+                Row2("Empty JSON object", "{}"),
+                Row2("JSON object with null field", "{\"success\": null}"),
+            ) { description, body ->
+                When("calling verifyToken: $description") {
+                    mockServer
+                        .expect(requestTo(expectedUrl))
+                        .andRespond(
+                            withSuccess(body, MediaType.APPLICATION_JSON),
+                        )
+
+                    val result = sut.verifyToken(TOKEN_IN_TEST)
+
+                    Then("expect false") {
+                        result shouldBe false
+                    }
+                }
+            }
+        }
+    }) {
     companion object {
         private const val TOKEN_IN_TEST = "~token~"
 
-        private val validResponseBody = """
+        private val validResponseBody =
+            """
             {
                 "success": true,
                 "challenge_ts": "~challenge_ts~",
                 "hostname": "~hostname~",
                 "error-codes": []
-            }""".trimIndent()
+            }
+            """.trimIndent()
 
-        private val errorResponseBody = """
+        private val errorResponseBody =
+            """
             {
                 "success": false,
                 "challenge_ts": "~challenge_ts~",
                 "hostname": "~hostname~",
                 "error-codes": ["Some error"]
-            }""".trimIndent()
+            }
+            """.trimIndent()
     }
 }

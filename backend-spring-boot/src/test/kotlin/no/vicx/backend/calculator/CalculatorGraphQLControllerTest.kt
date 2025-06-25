@@ -15,27 +15,28 @@ import java.time.LocalDateTime
 @GraphQlTest(value = [CalculatorGraphQLController::class])
 class CalculatorGraphQLControllerTest(
     graphQlTester: GraphQlTester,
-    @MockkBean private val calculatorService: CalculatorService
+    @MockkBean private val calculatorService: CalculatorService,
 ) : BehaviorSpec({
-    Given("a mocked GraphQL controller") {
-        every { calculatorService.getAllCalculations(0) } returns PageImpl(
-            calcVmList,
-            PageRequest.of(0, 10),
-            calcVmList.size.toLong()
-        )
+        Given("a mocked GraphQL controller") {
+            every { calculatorService.getAllCalculations(0) } returns
+                PageImpl(
+                    calcVmList,
+                    PageRequest.of(0, 10),
+                    calcVmList.size.toLong(),
+                )
 
-        val expected = PaginatedCalculations(calcVmList, 0, 1)
+            val expected = PaginatedCalculations(calcVmList, 0, 1)
 
-        Then("Should return the correct result") {
-            graphQlTester
-                .document(QUERY_STRING)
-                .execute()
-                .path("data.getAllCalculations")
-                .entity(PaginatedCalculations::class.java)
-                .isEqualTo(expected)
+            Then("Should return the correct result") {
+                graphQlTester
+                    .document(QUERY_STRING)
+                    .execute()
+                    .path("data.getAllCalculations")
+                    .entity(PaginatedCalculations::class.java)
+                    .isEqualTo(expected)
+            }
         }
-    }
-}) {
+    }) {
     companion object {
         const val QUERY_STRING = """
             {
@@ -55,16 +56,17 @@ class CalculatorGraphQLControllerTest(
             }
             """
 
-        val calcVmList = listOf(
-            CalcVm(
-                id = 1,
-                firstValue = 1,
-                secondValue = 2,
-                operation = CalculatorOperation.PLUS,
-                result = 3,
-                username = "user1",
-                createdAt = LocalDateTime.now()
+        val calcVmList =
+            listOf(
+                CalcVm(
+                    id = 1,
+                    firstValue = 1,
+                    secondValue = 2,
+                    operation = CalculatorOperation.PLUS,
+                    result = 3,
+                    username = "user1",
+                    createdAt = LocalDateTime.now(),
+                ),
             )
-        )
     }
 }

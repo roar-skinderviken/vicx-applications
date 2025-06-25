@@ -4,5 +4,5 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class DeleteCalculations(
-    val deleteCalculations: Boolean
+    val deleteCalculations: Boolean,
 )

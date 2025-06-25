@@ -9,39 +9,41 @@ import org.springframework.stereotype.Service
 import org.springframework.web.client.HttpClientErrorException
 import org.springframework.web.client.RestClient
 
-
 @Service
 class GitHubUserFetcher(
-    restClientBuilder: RestClient.Builder
+    restClientBuilder: RestClient.Builder,
 ) {
-    private val restClient = restClientBuilder
-        .baseUrl(GITHUB_USER_URL)
-        .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
-        .build()
+    private val restClient =
+        restClientBuilder
+            .baseUrl(GITHUB_USER_URL)
+            .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
+            .build()
 
     fun fetchUser(token: String): GitHubUserResponseVm {
-        val responseEntity = runCatching {
-            restClient
-                .get()
-                .header(HttpHeaders.AUTHORIZATION, "${BEARER_PREFIX}$token")
-                .retrieve()
-                .toEntity(GitHubUserVm::class.java)
-        }.getOrElse { thrown ->
-            if (thrown is HttpClientErrorException) throw thrown
-            throw IllegalStateException("Failed to fetch user: ${thrown.message}", thrown)
-        }
+        val responseEntity =
+            runCatching {
+                restClient
+                    .get()
+                    .header(HttpHeaders.AUTHORIZATION, "${BEARER_PREFIX}$token")
+                    .retrieve()
+                    .toEntity(GitHubUserVm::class.java)
+            }.getOrElse { thrown ->
+                if (thrown is HttpClientErrorException) throw thrown
+                throw IllegalStateException("Failed to fetch user: ${thrown.message}", thrown)
+            }
 
         val gitHubUserVm = checkNotNull(responseEntity.body) { "User is null" }
         check(!gitHubUserVm.isEmpty) { "User is empty" }
 
-        val scopes = checkNotNull(
-            responseEntity.headers.getFirst(SCOPES_HEADER)
-        ) { "No scopes header found" }
+        val scopes =
+            checkNotNull(
+                responseEntity.headers.getFirst(SCOPES_HEADER),
+            ) { "No scopes header found" }
 
         return GitHubUserResponseVm(
             user = gitHubUserVm,
             grantedScopes = scopes,
-            token = token
+            token = token,
         )
     }
 

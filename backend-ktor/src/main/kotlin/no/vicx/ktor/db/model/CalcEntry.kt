@@ -12,5 +12,8 @@ data class CalcEntry(
     val operation: CalculatorOperation,
     val result: Long,
     val username: String?,
-    val createdAt: LocalDateTime = java.time.LocalDateTime.now().toKotlinLocalDateTime()
+    val createdAt: LocalDateTime =
+        java.time.LocalDateTime
+            .now()
+            .toKotlinLocalDateTime(),
 )

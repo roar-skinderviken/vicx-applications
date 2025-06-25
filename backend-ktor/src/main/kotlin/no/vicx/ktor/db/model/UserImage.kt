@@ -7,5 +7,5 @@ import kotlinx.serialization.Serializable
 data class UserImage(
     val id: Long = 0L,
     val contentType: String,
-    val imageData: ByteArray
+    val imageData: ByteArray,
 )

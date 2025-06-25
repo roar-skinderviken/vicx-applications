@@ -6,22 +6,24 @@ import org.springframework.security.oauth2.server.resource.introspection.BadOpaq
 import org.springframework.stereotype.Service
 import org.springframework.web.client.HttpClientErrorException
 
-
 @Service
 class GitHubFromOpaqueProducer(
-    private val userFetcher: GitHubUserFetcher
+    private val userFetcher: GitHubUserFetcher,
 ) {
     @Cacheable(value = ["GITHUB_OPAQUE_PRINCIPALS"])
-    fun createPrincipal(
-        token: String
-    ): OAuth2AuthenticatedPrincipal = runCatching {
-        userFetcher
-            .fetchUser(token)
-            .toPrincipal()
-    }.getOrElse { thrown ->
-        val message = if (thrown is HttpClientErrorException) "Invalid or expired GitHub access token"
-        else "Error validating GitHub token"
+    fun createPrincipal(token: String): OAuth2AuthenticatedPrincipal =
+        runCatching {
+            userFetcher
+                .fetchUser(token)
+                .toPrincipal()
+        }.getOrElse { thrown ->
+            val message =
+                if (thrown is HttpClientErrorException) {
+                    "Invalid or expired GitHub access token"
+                } else {
+                    "Error validating GitHub token"
+                }
 
-        throw BadOpaqueTokenException(message, thrown)
-    }
+            throw BadOpaqueTokenException(message, thrown)
+        }
 }

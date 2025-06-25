@@ -17,28 +17,29 @@ class ActuatorHealthTest(
     restTemplate: TestRestTemplate,
 ) : BehaviorSpec({
 
-    Given("an actuator") {
+        Given("an actuator") {
 
-        forAll(
-            Row1("liveness"),
-            Row1("readiness")
-        ) { probeName ->
+            forAll(
+                Row1("liveness"),
+                Row1("readiness"),
+            ) { probeName ->
 
-            When("calling getForEntity: $probeName") {
-                val uri = UriComponentsBuilder
-                    .fromUriString("http://localhost:{port}/actuator/health/{probeName}")
-                    .buildAndExpand(managementPort, probeName)
-                    .toUri()
+                When("calling getForEntity: $probeName") {
+                    val uri =
+                        UriComponentsBuilder
+                            .fromUriString("http://localhost:{port}/actuator/health/{probeName}")
+                            .buildAndExpand(managementPort, probeName)
+                            .toUri()
 
-                val response = restTemplate.getForEntity(uri, String::class.java)
+                    val response = restTemplate.getForEntity(uri, String::class.java)
 
-                Then("Health endpoint probes should return OK") {
-                    assertSoftly(response) {
-                        statusCode shouldBe HttpStatus.OK
-                        body shouldBe "{\"status\":\"UP\"}"
+                    Then("Health endpoint probes should return OK") {
+                        assertSoftly(response) {
+                            statusCode shouldBe HttpStatus.OK
+                            body shouldBe "{\"status\":\"UP\"}"
+                        }
                     }
                 }
             }
         }
-    }
-})
+    })

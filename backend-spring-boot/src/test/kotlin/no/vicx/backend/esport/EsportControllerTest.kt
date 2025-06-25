@@ -19,41 +19,45 @@ import java.time.Year
 @WebFluxTest(EsportController::class)
 class EsportControllerTest(
     webTestClient: WebTestClient,
-    @MockkBean private val esportService: EsportService
+    @MockkBean private val esportService: EsportService,
 ) : StringSpec({
 
-    "when GET /api/esport when there are matches then expect matches in response" {
-        val expectedResult = EsportVm(
-            listOf(createMatch(MatchType.RUNNING)),
-            listOf(createMatch(MatchType.UPCOMING))
-        )
+        "when GET /api/esport when there are matches then expect matches in response" {
+            val expectedResult =
+                EsportVm(
+                    listOf(createMatch(MatchType.RUNNING)),
+                    listOf(createMatch(MatchType.UPCOMING)),
+                )
 
-        every { esportService.getMatches() } answers { Mono.just(expectedResult) }
+            every { esportService.getMatches() } answers { Mono.just(expectedResult) }
 
-        webTestClient.get()
-            .uri("/api/esport")
-            .exchange()
-            .expectStatus().isOk()
-            .expectBody(EsportVm::class.java).isEqualTo(expectedResult)
-    }
-
-}) {
+            webTestClient
+                .get()
+                .uri("/api/esport")
+                .exchange()
+                .expectStatus()
+                .isOk()
+                .expectBody(EsportVm::class.java)
+                .isEqualTo(expectedResult)
+        }
+    }) {
     @TestConfiguration
     @EnableWebFluxSecurity
     class EsportControllerTestConfiguration {
-
         @Bean
-        fun webFluxSecurityFilterChain(http: ServerHttpSecurity): SecurityWebFilterChain = http
-            .authorizeExchange { exchanges -> exchanges.anyExchange().permitAll() }
-            .build()
+        fun webFluxSecurityFilterChain(http: ServerHttpSecurity): SecurityWebFilterChain =
+            http
+                .authorizeExchange { exchanges -> exchanges.anyExchange().permitAll() }
+                .build()
     }
 
     companion object {
-        private fun createMatch(status: MatchType): EsportMatchVm = EsportMatchVm(
-            42L,
-            "Team 1 vs Team 2",
-            "01/01/${Year.now()}",
-            status.name.lowercase()
-        )
+        private fun createMatch(status: MatchType): EsportMatchVm =
+            EsportMatchVm(
+                42L,
+                "Team 1 vs Team 2",
+                "01/01/${Year.now()}",
+                status.name.lowercase(),
+            )
     }
 }

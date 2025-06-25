@@ -23,75 +23,84 @@ import org.springframework.security.web.SecurityFilterChain
 import org.springframework.web.servlet.config.annotation.CorsRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 
-
 @Configuration(proxyBeanMethods = false)
 @EnableMethodSecurity
 class SecurityConfig {
-
     @Bean
     fun passwordEncoder(): PasswordEncoder = BCryptPasswordEncoder()
 
     @Bean
-    fun corsConfigurer(): WebMvcConfigurer = object : WebMvcConfigurer {
-        override fun addCorsMappings(registry: CorsRegistry) {
-            registry.addMapping("/**")
-                .allowedOrigins("http://localhost:3000")
-                .allowedMethods("GET", "POST", "OPTIONS", "HEAD")
+    fun corsConfigurer(): WebMvcConfigurer =
+        object : WebMvcConfigurer {
+            override fun addCorsMappings(registry: CorsRegistry) {
+                registry
+                    .addMapping("/**")
+                    .allowedOrigins("http://localhost:3000")
+                    .allowedMethods("GET", "POST", "OPTIONS", "HEAD")
+            }
         }
-    }
 
     // https://docs.spring.io/spring-security/reference/servlet/oauth2/resource-server/multitenancy.html#oauth2reourceserver-opaqueandjwt
     @Bean
     fun tokenAuthenticationManagerResolver(
         jwtDecoder: JwtDecoder,
         opaqueTokenIntrospector: OpaqueTokenIntrospector,
-        jwtAuthenticationConverter: JwtAuthenticationConverter
+        jwtAuthenticationConverter: JwtAuthenticationConverter,
     ): AuthenticationManagerResolver<HttpServletRequest> {
-        val jwtProviderManager = ProviderManager(
-            JwtAuthenticationProvider(jwtDecoder).apply {
-                setJwtAuthenticationConverter(jwtAuthenticationConverter)
-            })
+        val jwtProviderManager =
+            ProviderManager(
+                JwtAuthenticationProvider(jwtDecoder).apply {
+                    setJwtAuthenticationConverter(jwtAuthenticationConverter)
+                },
+            )
 
-        val opaqueTokenProviderManager = ProviderManager(
-            OpaqueTokenAuthenticationProvider(opaqueTokenIntrospector)
-        )
+        val opaqueTokenProviderManager =
+            ProviderManager(
+                OpaqueTokenAuthenticationProvider(opaqueTokenIntrospector),
+            )
 
         return AuthenticationManagerResolver { request ->
-            if (JwtUtils.detectJwtToken(request)) jwtProviderManager
-            else opaqueTokenProviderManager
+            if (JwtUtils.detectJwtToken(request)) {
+                jwtProviderManager
+            } else {
+                opaqueTokenProviderManager
+            }
         }
     }
 
     @Bean
     fun securityFilterChain(
         http: HttpSecurity,
-        tokenAuthenticationManagerResolver: AuthenticationManagerResolver<HttpServletRequest>
-    ): SecurityFilterChain = http
-        .sessionManagement { session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
-        .csrf { csrfConfigurer -> csrfConfigurer.disable() }
-        .cors {}
-        .formLogin { formLoginConfigurer -> formLoginConfigurer.disable() }
-        .authorizeHttpRequests { authorize ->
-            authorize
-                .requestMatchers(EndpointRequest.to(HealthEndpoint::class.java)).permitAll()
-
-                .requestMatchers(HttpMethod.GET, "/gitproperties").permitAll()
-
-                .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
-
-                .requestMatchers(HttpMethod.GET, "/api/esport").permitAll()
-
-                .requestMatchers(HttpMethod.POST, "/api/user").permitAll()
-                .requestMatchers("/graphiql", "/graphql").permitAll()
-
-                .requestMatchers("/messages").hasRole("USER")
-                .requestMatchers("/api/**").hasRole("USER")
-
-                .requestMatchers("/error").permitAll()
-                .anyRequest().authenticated()
-        }
-        .oauth2ResourceServer { oauth2 ->
-            oauth2.authenticationManagerResolver(tokenAuthenticationManagerResolver)
-        }
-        .build()
+        tokenAuthenticationManagerResolver: AuthenticationManagerResolver<HttpServletRequest>,
+    ): SecurityFilterChain =
+        http
+            .sessionManagement { session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
+            .csrf { csrfConfigurer -> csrfConfigurer.disable() }
+            .cors {}
+            .formLogin { formLoginConfigurer -> formLoginConfigurer.disable() }
+            .authorizeHttpRequests { authorize ->
+                authorize
+                    .requestMatchers(EndpointRequest.to(HealthEndpoint::class.java))
+                    .permitAll()
+                    .requestMatchers(HttpMethod.GET, "/gitproperties")
+                    .permitAll()
+                    .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html")
+                    .permitAll()
+                    .requestMatchers(HttpMethod.GET, "/api/esport")
+                    .permitAll()
+                    .requestMatchers(HttpMethod.POST, "/api/user")
+                    .permitAll()
+                    .requestMatchers("/graphiql", "/graphql")
+                    .permitAll()
+                    .requestMatchers("/messages")
+                    .hasRole("USER")
+                    .requestMatchers("/api/**")
+                    .hasRole("USER")
+                    .requestMatchers("/error")
+                    .permitAll()
+                    .anyRequest()
+                    .authenticated()
+            }.oauth2ResourceServer { oauth2 ->
+                oauth2.authenticationManagerResolver(tokenAuthenticationManagerResolver)
+            }.build()
 }

@@ -7,11 +7,10 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import reactor.core.publisher.Mono
 
-
 @RestController
 @RequestMapping("/api/esport")
 class EsportController(
-    private val esportService: EsportService
+    private val esportService: EsportService,
 ) {
     @GetMapping(produces = [MediaType.APPLICATION_JSON_VALUE])
     fun matches(): Mono<EsportVm> = esportService.getMatches()

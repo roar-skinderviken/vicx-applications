@@ -1,8 +1,8 @@
 package no.vicx.ktor.util
 
-import io.ktor.client.*
-import io.ktor.serialization.kotlinx.json.*
-import io.ktor.server.testing.*
+import io.ktor.client.HttpClient
+import io.ktor.serialization.kotlinx.json.json
+import io.ktor.server.testing.testApplication
 import io.mockk.mockk
 import no.vicx.ktor.db.repository.UserImageRepository
 import no.vicx.ktor.db.repository.UserRepository
@@ -33,13 +33,14 @@ class RouteTestContext(
                 configureRestApi(
                     esportService,
                     userService,
-                    UserImageService(userService, userRepository, userImageRepository)
+                    UserImageService(userService, userRepository, userImageRepository),
                 )
             }
 
-            val httpClient = createClient {
-                install(ClientContentNegotiation) { json() }
-            }
+            val httpClient =
+                createClient {
+                    install(ClientContentNegotiation) { json() }
+                }
 
             result = block(httpClient)
         }

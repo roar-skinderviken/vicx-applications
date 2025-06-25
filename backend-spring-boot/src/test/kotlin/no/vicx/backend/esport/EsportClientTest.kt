@@ -15,51 +15,58 @@ import org.springframework.web.reactive.function.client.WebClient
 import reactor.core.publisher.Mono
 import reactor.test.StepVerifier
 
-class EsportClientTest : StringSpec({
-    val exchangeFunction: ExchangeFunction = mockk()
+class EsportClientTest :
+    StringSpec({
+        val exchangeFunction: ExchangeFunction = mockk()
 
-    val webClientBuilder = WebClient.builder()
-        .exchangeFunction(exchangeFunction)
+        val webClientBuilder =
+            WebClient
+                .builder()
+                .exchangeFunction(exchangeFunction)
 
-    val sut = EsportClient(webClientBuilder, "~token~")
+        val sut = EsportClient(webClientBuilder, "~token~")
 
-    "getMatches when there are matches then expect match in result" {
-        every { exchangeFunction.exchange(any()) } answers {
-            Mono.just(
-                createClientResponse(objectMapper.writeValueAsString(listOf(expectedMatch)))
-            )
+        "getMatches when there are matches then expect match in result" {
+            every { exchangeFunction.exchange(any()) } answers {
+                Mono.just(
+                    createClientResponse(objectMapper.writeValueAsString(listOf(expectedMatch))),
+                )
+            }
+
+            val runningMatches = sut.getMatches(MatchType.RUNNING)
+
+            StepVerifier
+                .create(runningMatches)
+                .expectNext(expectedMatch)
+                .verifyComplete()
         }
 
-        val runningMatches = sut.getMatches(MatchType.RUNNING)
+        "getMatches when there are no matches then expect empty result" {
+            every { exchangeFunction.exchange(any()) } answers {
+                Mono.just(createClientResponse("[]"))
+            }
 
-        StepVerifier.create(runningMatches)
-            .expectNext(expectedMatch)
-            .verifyComplete()
-    }
+            val runningMatches = sut.getMatches(MatchType.UPCOMING)
 
-    "getMatches when there are no matches then expect empty result" {
-        every { exchangeFunction.exchange(any()) } answers {
-            Mono.just(createClientResponse("[]"))
+            StepVerifier
+                .create(runningMatches)
+                .verifyComplete()
         }
-
-        val runningMatches = sut.getMatches(MatchType.UPCOMING)
-
-        StepVerifier.create(runningMatches)
-            .verifyComplete()
-    }
-}) {
+    }) {
     companion object {
         private val objectMapper = ObjectMapper()
 
-        private val expectedMatch = EsportMatchVm(
-            42L,
-            "Team 1 vs Team 2",
-            "01/01/2024",
-            "running"
-        )
+        private val expectedMatch =
+            EsportMatchVm(
+                42L,
+                "Team 1 vs Team 2",
+                "01/01/2024",
+                "running",
+            )
 
         private fun createClientResponse(body: String): ClientResponse =
-            ClientResponse.create(HttpStatus.OK)
+            ClientResponse
+                .create(HttpStatus.OK)
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
                 .build()

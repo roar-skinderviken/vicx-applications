@@ -1,7 +1,7 @@
 package no.vicx.ktor.user.service
 
-import io.ktor.server.plugins.*
-import io.ktor.server.plugins.requestvalidation.*
+import io.ktor.server.plugins.NotFoundException
+import io.ktor.server.plugins.requestvalidation.RequestValidationException
 import no.vicx.ktor.cache.AsyncCacheWrapper
 import no.vicx.ktor.db.model.UserImage
 import no.vicx.ktor.db.model.VicxUser
@@ -16,11 +16,13 @@ import java.util.concurrent.TimeUnit
 class UserService(
     recaptchaClient: RecaptchaClient,
     private val userRepository: UserRepository,
-    private val passwordEncoder: PasswordEncoder = BCryptPasswordEncoder()
+    private val passwordEncoder: PasswordEncoder = BCryptPasswordEncoder(),
 ) {
-    private val recaptchaCache = AsyncCacheWrapper<String, Boolean>(
-        1, TimeUnit.MINUTES,
-    ) { recaptchaToken -> recaptchaClient.verifyToken(recaptchaToken) }
+    private val recaptchaCache =
+        AsyncCacheWrapper<String, Boolean>(
+            1,
+            TimeUnit.MINUTES,
+        ) { recaptchaToken -> recaptchaClient.verifyToken(recaptchaToken) }
 
     /**
      * Creates a new user with the specified details.
@@ -34,19 +36,19 @@ class UserService(
      */
     suspend fun createUser(
         createUserVm: CreateUserVm,
-        userImage: UserImage?
+        userImage: UserImage?,
     ): VicxUser {
         if (!recaptchaCache.getOrCompute(createUserVm.recaptchaToken)) {
             throw RequestValidationException(
                 value = createUserVm,
-                reasons = listOf("recaptchaToken is invalid. Please wait to token expires and try again")
+                reasons = listOf("recaptchaToken is invalid. Please wait to token expires and try again"),
             )
         }
 
         if (userRepository.findIdByUsername(createUserVm.username) != null) {
             throw RequestValidationException(
                 value = createUserVm,
-                reasons = listOf("Username is already in use")
+                reasons = listOf("Username is already in use"),
             )
         }
 
@@ -55,8 +57,8 @@ class UserService(
         return userRepository.createUser(
             createUserVm.toDbModel(
                 encryptedPassword = passwordEncoder.encode(createUserVm.password),
-                userImage = userImage
-            )
+                userImage = userImage,
+            ),
         )
     }
 
@@ -82,7 +84,7 @@ class UserService(
      */
     suspend fun updateUser(
         requestVm: UserPatchVm,
-        username: String
+        username: String,
     ) {
         val userToPatch = getUserByUserName(username)
         userRepository.updateUser(
@@ -102,17 +104,19 @@ class UserService(
      */
     suspend fun tryUpdatePassword(
         changePasswordVm: ChangePasswordVm,
-        username: String
+        username: String,
     ) {
         val user = getUserByUserName(username)
 
-        if (!passwordEncoder.matches(changePasswordVm.currentPassword, user.password))
+        if (!passwordEncoder.matches(changePasswordVm.currentPassword, user.password)) {
             throw RequestValidationException(changePasswordVm, listOf("currentPassword is incorrect"))
+        }
 
         val encodedPassword = passwordEncoder.encode(changePasswordVm.password)
 
         userRepository.updateUser(
-            id = user.id, password = encodedPassword
+            id = user.id,
+            password = encodedPassword,
         )
     }
 }

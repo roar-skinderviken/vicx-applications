@@ -7,23 +7,21 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
 
-
 /**
  * Service class for managing user images, including adding, replacing, and deleting images associated with a user.
- */
-@Transactional
-@Service
-/**
+ *
  * Constructs a `UserImageService` with the required dependencies.
  *
  * @param userService         the service for managing user operations
  * @param userRepository      the repository for user entities
  * @param userImageRepository the repository for user image entities
  */
+@Transactional
+@Service
 class UserImageService(
     private val userService: UserService,
     private val userRepository: UserRepository,
-    private val userImageRepository: UserImageRepository
+    private val userImageRepository: UserImageRepository,
 ) {
     /**
      * Adds or replaces the image associated with the specified user.
@@ -33,14 +31,15 @@ class UserImageService(
      */
     fun addOrReplaceUserImage(
         file: MultipartFile,
-        username: String
+        username: String,
     ) {
         val user = userService.getUserByUserName(username)
 
-        user.userImage = UserImage(
-            file.bytes,
-            file.contentType
-        )
+        user.userImage =
+            UserImage(
+                file.bytes,
+                file.contentType,
+            )
 
         userRepository.save(user)
     }

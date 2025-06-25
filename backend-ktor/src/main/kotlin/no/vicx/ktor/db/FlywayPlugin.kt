@@ -1,7 +1,9 @@
 package no.vicx.ktor.db
 
 import io.ktor.events.EventDefinition
-import io.ktor.server.application.*
+import io.ktor.server.application.Application
+import io.ktor.server.application.ApplicationPlugin
+import io.ktor.server.application.createApplicationPlugin
 import org.flywaydb.core.Flyway
 import org.slf4j.LoggerFactory
 import javax.sql.DataSource
@@ -11,26 +13,27 @@ val FlywayMigrationFinished: EventDefinition<Application> = EventDefinition()
 
 class FlywayPluginConfig(
     var dataSource: DataSource? = null,
-    var defaultSchema: String? = "public"
+    var defaultSchema: String? = "public",
 )
 
-val FlywayPlugin: ApplicationPlugin<FlywayPluginConfig> = createApplicationPlugin("Flyway", ::FlywayPluginConfig) {
-    val dataSource = requireNotNull(pluginConfig.dataSource) { "DataSource is required for Flyway" }
-    val defaultSchema = requireNotNull(pluginConfig.defaultSchema) { "Schema is required for Flyway" }
-    val logger = LoggerFactory.getLogger("FlywayPlugin::class.java")
+val FlywayPlugin: ApplicationPlugin<FlywayPluginConfig> =
+    createApplicationPlugin("Flyway", ::FlywayPluginConfig) {
+        val dataSource = requireNotNull(pluginConfig.dataSource) { "DataSource is required for Flyway" }
+        val defaultSchema = requireNotNull(pluginConfig.defaultSchema) { "Schema is required for Flyway" }
+        val logger = LoggerFactory.getLogger("FlywayPlugin::class.java")
 
-    application.monitor.raise(FlywayMigrationStarting, application)
-    logger.info("Starting Flyway migration")
+        application.monitor.raise(FlywayMigrationStarting, application)
+        logger.info("Starting Flyway migration")
 
-    Flyway.configure()
-        .dataSource(dataSource)
-        .locations("classpath:db.migration")
-        .defaultSchema(defaultSchema)
-        .validateMigrationNaming(true)
-        .load()
-        .migrate()
+        Flyway
+            .configure()
+            .dataSource(dataSource)
+            .locations("classpath:db.migration")
+            .defaultSchema(defaultSchema)
+            .validateMigrationNaming(true)
+            .load()
+            .migrate()
 
-
-    logger.info("Flyway migration finished")
-    application.monitor.raise(FlywayMigrationFinished, application)
-}
+        logger.info("Flyway migration finished")
+        application.monitor.raise(FlywayMigrationFinished, application)
+    }

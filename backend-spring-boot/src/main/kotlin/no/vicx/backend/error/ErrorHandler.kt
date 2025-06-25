@@ -7,24 +7,26 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.context.request.WebRequest
 
-
 @RestController
-class ErrorHandler(private val errorAttributes: ErrorAttributes) : ErrorController {
-
+class ErrorHandler(
+    private val errorAttributes: ErrorAttributes,
+) : ErrorController {
     @RequestMapping(ERROR_PATH)
     fun handleError(webRequest: WebRequest): ApiError {
-        val attrs = errorAttributes.getErrorAttributes(
-            webRequest, ErrorAttributeOptions.of(
-                ErrorAttributeOptions.Include.STATUS,
-                ErrorAttributeOptions.Include.MESSAGE,
-                ErrorAttributeOptions.Include.PATH
+        val attrs =
+            errorAttributes.getErrorAttributes(
+                webRequest,
+                ErrorAttributeOptions.of(
+                    ErrorAttributeOptions.Include.STATUS,
+                    ErrorAttributeOptions.Include.MESSAGE,
+                    ErrorAttributeOptions.Include.PATH,
+                ),
             )
-        )
 
         return ApiError(
             status = attrs["status"] as Int,
             message = attrs["message"] as String,
-            url = attrs["path"] as String
+            url = attrs["path"] as String,
         )
     }
 

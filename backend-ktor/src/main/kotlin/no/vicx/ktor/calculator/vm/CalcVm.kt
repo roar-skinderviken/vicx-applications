@@ -11,5 +11,5 @@ data class CalcVm(
     val operation: CalculatorOperation,
     val result: Int,
     val username: String?,
-    val createdAt: String // TODO: Add custom serializer for LocalDateTime
+    val createdAt: String, // TODO: Add custom serializer for LocalDateTime
 )

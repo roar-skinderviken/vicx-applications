@@ -4,30 +4,31 @@ import com.sksamuel.cohort.Cohort
 import com.sksamuel.cohort.HealthCheckRegistry
 import com.sksamuel.cohort.db.DatabaseConnectionHealthCheck
 import com.sksamuel.cohort.threads.ThreadDeadlockHealthCheck
-import io.ktor.server.application.*
+import io.ktor.server.application.Application
+import io.ktor.server.application.install
 import kotlinx.coroutines.Dispatchers
 import javax.sql.DataSource
 import kotlin.time.Duration.Companion.seconds
 
-fun Application.configureHealth(
-    dataSource: DataSource
-) {
-    val livenessChecks = HealthCheckRegistry(Dispatchers.Default) {
-        // detects if threads are mutually blocked on each others locks
-        register(
-            check = ThreadDeadlockHealthCheck(),
-            initialDelay = 1.seconds,
-            checkInterval = 10.seconds
-        )
-    }
+fun Application.configureHealth(dataSource: DataSource) {
+    val livenessChecks =
+        HealthCheckRegistry(Dispatchers.Default) {
+            // detects if threads are mutually blocked on each others locks
+            register(
+                check = ThreadDeadlockHealthCheck(),
+                initialDelay = 1.seconds,
+                checkInterval = 10.seconds,
+            )
+        }
 
-    val readinessChecks = HealthCheckRegistry(Dispatchers.Default) {
-        register(
-            check = DatabaseConnectionHealthCheck(dataSource),
-            initialDelay = 1.seconds,
-            checkInterval = 10.seconds
-        )
-    }
+    val readinessChecks =
+        HealthCheckRegistry(Dispatchers.Default) {
+            register(
+                check = DatabaseConnectionHealthCheck(dataSource),
+                initialDelay = 1.seconds,
+                checkInterval = 10.seconds,
+            )
+        }
 
     install(Cohort) {
         healthcheck("/liveness", livenessChecks)

@@ -9,9 +9,8 @@ class CustomUserDetails(
     password: String,
     val name: String,
     val email: String,
-    val hasImage: Boolean
+    val hasImage: Boolean,
 ) : User(username, password, GRANTED_AUTHORITIES) {
-
     /**
      * Convenient constructor for creating a CustomUserDetails instance from a VicxUser.
      *
@@ -22,7 +21,7 @@ class CustomUserDetails(
         password = user.password,
         name = user.name,
         email = user.email,
-        hasImage = user.userImage != null
+        hasImage = user.userImage != null,
     )
 
     companion object {

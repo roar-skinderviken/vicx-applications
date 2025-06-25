@@ -22,75 +22,76 @@ class UserControllerPatchTest(
     @MockkBean(relaxed = true) private val userService: UserService,
 ) : BaseWebMvcTest({
 
-    Given("PATCH /api/user") {
-        When("performing patch request without auth header") {
-            val resultActions = mockMvc.perform(patch("/api/user"))
+        Given("PATCH /api/user") {
+            When("performing patch request without auth header") {
+                val resultActions = mockMvc.perform(patch("/api/user"))
 
-            Then("expect Unauthorized") {
-                resultActions.andExpect(status().isUnauthorized)
+                Then("expect Unauthorized") {
+                    resultActions.andExpect(status().isUnauthorized)
+                }
             }
-        }
 
-        When("performing patch request without required role") {
-            val resultActions = mockMvc.perform(patch("/api/user")
-                .content("{}")
-                .contentType(MediaType.APPLICATION_JSON)
-                .header(HttpHeaders.AUTHORIZATION, SecurityTestUtils.AUTH_HEADER_IN_TEST_GITHUB))
+            When("performing patch request without required role") {
+                val resultActions =
+                    mockMvc.perform(
+                        patch("/api/user")
+                            .content("{}")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .header(HttpHeaders.AUTHORIZATION, SecurityTestUtils.AUTH_HEADER_IN_TEST_GITHUB),
+                    )
 
-            Then("expect Forbidden") {
-                resultActions.andExpect(status().isForbidden)
+                Then("expect Forbidden") {
+                    resultActions.andExpect(status().isForbidden)
+                }
             }
-        }
 
-        When("performing patch request with empty body") {
-            val resultActions = mockMvc.perform(createValidCPatchRequest("{}"))
+            When("performing patch request with empty body") {
+                val resultActions = mockMvc.perform(createValidCPatchRequest("{}"))
 
-            Then("expect BadRequest") {
-                resultActions.andExpect(status().isBadRequest)
+                Then("expect BadRequest") {
+                    resultActions.andExpect(status().isBadRequest)
+                }
             }
-        }
 
-        forAll(
-            Row1(UserPatchVm("~name~", "foo@bar.com")),
-            Row1(UserPatchVm("~name~", null)),
-            Row1(UserPatchVm(null, "foo@bar.com")),
-        ) { userPatchVm ->
+            forAll(
+                Row1(UserPatchVm("~name~", "foo@bar.com")),
+                Row1(UserPatchVm("~name~", null)),
+                Row1(UserPatchVm(null, "foo@bar.com")),
+            ) { userPatchVm ->
 
-            When("performing patch request with valid body: $userPatchVm") {
-                val resultActions = mockMvc.perform(createValidCPatchRequest(userPatchVm))
+                When("performing patch request with valid body: $userPatchVm") {
+                    val resultActions = mockMvc.perform(createValidCPatchRequest(userPatchVm))
 
-                Then("expect OK") {
-                    resultActions.andExpect(status().isOk)
+                    Then("expect OK") {
+                        resultActions.andExpect(status().isOk)
 
-                    verify { userService.updateUser(userPatchVm, "user1") }
+                        verify { userService.updateUser(userPatchVm, "user1") }
+                    }
+                }
+            }
+
+            forAll(
+                Row3(UserPatchVm(null, null), "patchRequestBody", "At least one field must be provided"),
+                Row3(UserPatchVm("a".repeat(3), null), "name", "It must have minimum 4 and maximum 255 characters"),
+                Row3(UserPatchVm("a".repeat(256), null), "name", "It must have minimum 4 and maximum 255 characters"),
+                Row3(UserPatchVm(null, "a"), "email", "It must be a well-formed email address"),
+            ) { userPatchVm, field, expectedError ->
+                When("performing invalid patch request: $userPatchVm $field") {
+                    val resultActions = mockMvc.perform(createValidCPatchRequest(userPatchVm))
+
+                    Then("expect BadRequest and validation error") {
+                        resultActions
+                            .andExpect(status().isBadRequest)
+                            .andExpect(jsonPath("$.validationErrors.$field").value(expectedError))
+                    }
                 }
             }
         }
-
-        forAll(
-            Row3(UserPatchVm(null, null), "patchRequestBody", "At least one field must be provided"),
-            Row3(UserPatchVm("a".repeat(3), null), "name", "It must have minimum 4 and maximum 255 characters"),
-            Row3(UserPatchVm("a".repeat(256), null), "name", "It must have minimum 4 and maximum 255 characters"),
-            Row3(UserPatchVm(null, "a"), "email", "It must be a well-formed email address")
-        ) { userPatchVm, field, expectedError ->
-            When("performing invalid patch request: $userPatchVm $field") {
-                val resultActions = mockMvc.perform(createValidCPatchRequest(userPatchVm))
-
-                Then("expect BadRequest and validation error") {
-                    resultActions
-                        .andExpect(status().isBadRequest)
-                        .andExpect(jsonPath("$.validationErrors.$field").value(expectedError))
-                }
-            }
-        }
-    }
-}) {
+    }) {
     companion object {
         private val objectMapper = ObjectMapper()
 
-        private fun createValidCPatchRequest(
-            content: UserPatchVm
-        ) = createValidCPatchRequest(objectMapper.writeValueAsString(content))
+        private fun createValidCPatchRequest(content: UserPatchVm) = createValidCPatchRequest(objectMapper.writeValueAsString(content))
 
         private fun createValidCPatchRequest(content: String) =
             patch("/api/user")

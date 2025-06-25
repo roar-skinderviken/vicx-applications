@@ -2,7 +2,8 @@ package no.vicx.ktor.plugins
 
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
-import io.ktor.server.application.*
+import io.ktor.server.application.Application
+import io.ktor.server.application.install
 import io.zonky.test.db.postgres.embedded.EmbeddedPostgres
 import kotlinx.datetime.toJavaLocalDateTime
 import kotlinx.datetime.toKotlinLocalDateTime
@@ -21,7 +22,9 @@ import javax.sql.DataSource
 
 object TestDb {
     val postgres: DataSource by lazy {
-        EmbeddedPostgres.start().postgresDatabase
+        EmbeddedPostgres
+            .start()
+            .postgresDatabase
             .also { Database.connect(it) }
     }
 }
@@ -52,12 +55,18 @@ fun Application.connectToPostgres(embedded: Boolean): DataSource =
             dataSource = TestDb.postgres
         }
 
-        fun calcEntries(size: Int) = List(size) { index ->
-            CalcEntry(
-                index.toLong(), 42, 43, CalculatorOperation.PLUS,
-                85, "~username~", LocalDateTime.now().plusSeconds(index.toLong()).toKotlinLocalDateTime()
-            )
-        }
+        fun calcEntries(size: Int) =
+            List(size) { index ->
+                CalcEntry(
+                    index.toLong(),
+                    42,
+                    43,
+                    CalculatorOperation.PLUS,
+                    85,
+                    "~username~",
+                    LocalDateTime.now().plusSeconds(index.toLong()).toKotlinLocalDateTime(),
+                )
+            }
 
         transaction {
             // add some initial data for localhost testing
@@ -85,17 +94,18 @@ fun Application.connectToPostgres(embedded: Boolean): DataSource =
     } else {
         val schema = environment.config.property("postgres.schema").getString()
 
-        val hikariConfig = HikariConfig().apply {
-            driverClassName = "org.postgresql.Driver"
-            jdbcUrl = environment.config.property("postgres.url").getString()
-            username = environment.config.property("postgres.user").getString()
-            password = environment.config.property("postgres.password").getString()
-            this.schema = schema
-            maximumPoolSize = 20
-            isAutoCommit = true
-            initializationFailTimeout = 5000
-            minimumIdle = 1
-        }
+        val hikariConfig =
+            HikariConfig().apply {
+                driverClassName = "org.postgresql.Driver"
+                jdbcUrl = environment.config.property("postgres.url").getString()
+                username = environment.config.property("postgres.user").getString()
+                password = environment.config.property("postgres.password").getString()
+                this.schema = schema
+                maximumPoolSize = 20
+                isAutoCommit = true
+                initializationFailTimeout = 5000
+                minimumIdle = 1
+            }
 
         val hikariDataSource = HikariDataSource(hikariConfig)
 
@@ -108,4 +118,3 @@ fun Application.connectToPostgres(embedded: Boolean): DataSource =
 
         hikariDataSource
     }
-

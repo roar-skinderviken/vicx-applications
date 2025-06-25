@@ -16,7 +16,7 @@ class CalculatorService(
         return PaginatedCalculations(
             calculations = calculationsInPage.map { it.toGraphQLModel() },
             page = page,
-            totalPages = totalPages(totalCount)
+            totalPages = totalPages(totalCount),
         )
     }
 
@@ -24,27 +24,29 @@ class CalculatorService(
         firstValue: Long,
         secondValue: Long,
         operation: CalculatorOperation,
-        username: String?
+        username: String?,
     ): CalcVm {
-        val result = when (operation) {
-            CalculatorOperation.PLUS -> (firstValue + secondValue)
-            CalculatorOperation.MINUS -> (firstValue - secondValue)
-        }
+        val result =
+            when (operation) {
+                CalculatorOperation.PLUS -> (firstValue + secondValue)
+                CalculatorOperation.MINUS -> (firstValue - secondValue)
+            }
 
-        return calculatorRepository.save(
-            CalcEntry(
-                firstValue = firstValue,
-                secondValue = secondValue,
-                operation = operation,
-                result = result,
-                username = username,
-            )
-        ).toGraphQLModel()
+        return calculatorRepository
+            .save(
+                CalcEntry(
+                    firstValue = firstValue,
+                    secondValue = secondValue,
+                    operation = operation,
+                    result = result,
+                    username = username,
+                ),
+            ).toGraphQLModel()
     }
 
     suspend fun isAllowedToDelete(
         idsToDelete: List<Int>,
-        username: String
+        username: String,
     ): Boolean {
         if (idsToDelete.isEmpty()) return false
 

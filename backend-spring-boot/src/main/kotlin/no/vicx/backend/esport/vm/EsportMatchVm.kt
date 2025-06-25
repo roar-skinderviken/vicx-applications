@@ -8,5 +8,5 @@ data class EsportMatchVm(
     val name: String = "",
     @field:JsonProperty("begin_at")
     val beginAt: String? = null,
-    val status: String = ""
+    val status: String = "",
 )

@@ -18,18 +18,17 @@ import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 
-
 @Configuration(proxyBeanMethods = false)
 class SecurityConfig {
-
     // required for Swagger on localhost
     @Bean
     fun corsConfigurationSource(): CorsConfigurationSource {
-        val configuration = CorsConfiguration().apply {
-            allowedOrigins = listOf("http://localhost:8080")
-            allowedMethods = listOf("POST")
-            allowedHeaders = listOf("Access-Control-Allow-Origin", "x-requested-with")
-        }
+        val configuration =
+            CorsConfiguration().apply {
+                allowedOrigins = listOf("http://localhost:8080")
+                allowedMethods = listOf("POST")
+                allowedHeaders = listOf("Access-Control-Allow-Origin", "x-requested-with")
+            }
 
         return UrlBasedCorsConfigurationSource().apply {
             registerCorsConfiguration("/**", configuration)
@@ -50,11 +49,10 @@ class SecurityConfig {
             .cors {} // required for Swagger on localhost
             .securityMatcher(authorizationServerConfigurer.endpointsMatcher)
             .with(
-                authorizationServerConfigurer
+                authorizationServerConfigurer,
             ) { authorizationServer ->
                 authorizationServer.oidc {}
-            }
-            .authorizeHttpRequests { authorize ->
+            }.authorizeHttpRequests { authorize ->
                 authorize.anyRequest().authenticated()
             }
             // Redirect to the login page when not authenticated from the authorization endpoint
@@ -62,7 +60,7 @@ class SecurityConfig {
                 exceptions
                     .defaultAuthenticationEntryPointFor(
                         LoginUrlAuthenticationEntryPoint("/login"),
-                        MediaTypeRequestMatcher(MediaType.TEXT_HTML)
+                        MediaTypeRequestMatcher(MediaType.TEXT_HTML),
                     )
             }
 
@@ -73,16 +71,17 @@ class SecurityConfig {
     @Order(2)
     fun defaultSecurityFilterChain(
         http: HttpSecurity,
-        @Value("\${oauth.post-logout-redirect-uri}") postLogoutRedirectUri: String?
+        @Value("\${oauth.post-logout-redirect-uri}") postLogoutRedirectUri: String?,
     ): SecurityFilterChain {
         http
             .cors {} // required for Swagger on localhost
             .authorizeHttpRequests { authorize ->
                 authorize
-                    .requestMatchers(EndpointRequest.to(HealthEndpoint::class.java)).permitAll()
-                    .anyRequest().authenticated()
-            }
-            .logout { logout -> logout.logoutSuccessUrl(postLogoutRedirectUri) }
+                    .requestMatchers(EndpointRequest.to(HealthEndpoint::class.java))
+                    .permitAll()
+                    .anyRequest()
+                    .authenticated()
+            }.logout { logout -> logout.logoutSuccessUrl(postLogoutRedirectUri) }
             .formLogin {}
 
         return http.build()

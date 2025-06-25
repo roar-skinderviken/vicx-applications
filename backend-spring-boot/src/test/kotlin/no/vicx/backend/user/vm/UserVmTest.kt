@@ -8,27 +8,28 @@ import no.vicx.backend.user.vm.UserVm.Companion.fromVicxUser
 import no.vicx.database.user.UserImage
 import org.springframework.data.jpa.domain.AbstractPersistable_.id
 
-class UserVmTest : StringSpec({
+class UserVmTest :
+    StringSpec({
 
-    "fromVicxUser given valid user without user image then expect populate view model" {
-        val vicxUser = createValidVicxUser()
+        "fromVicxUser given valid user without user image then expect populate view model" {
+            val vicxUser = createValidVicxUser()
 
-        val viewModel = fromVicxUser(vicxUser)
+            val viewModel = fromVicxUser(vicxUser)
 
-        assertSoftly(viewModel) {
-            id shouldBe vicxUser.id
-            username shouldBe vicxUser.username
-            name shouldBe vicxUser.name
-            email shouldBe vicxUser.email
-            hasImage shouldBe false
+            assertSoftly(viewModel) {
+                id shouldBe vicxUser.id
+                username shouldBe vicxUser.username
+                name shouldBe vicxUser.name
+                email shouldBe vicxUser.email
+                hasImage shouldBe false
+            }
         }
-    }
 
-    "fromVicxUser given valid user with user image then expect populate view model" {
-        val vicxUser = createValidVicxUser().apply { userImage = UserImage() }
+        "fromVicxUser given valid user with user image then expect populate view model" {
+            val vicxUser = createValidVicxUser().apply { userImage = UserImage() }
 
-        val viewModel = fromVicxUser(vicxUser)
+            val viewModel = fromVicxUser(vicxUser)
 
-        viewModel.hasImage shouldBe true
-    }
-})
+            viewModel.hasImage shouldBe true
+        }
+    })

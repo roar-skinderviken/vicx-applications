@@ -7,15 +7,15 @@ import org.springframework.stereotype.Service
 import org.springframework.web.client.RestClient
 import org.springframework.web.util.UriComponentsBuilder
 
-
 @Service
 class RecaptchaService(
     restClientBuilder: RestClient.Builder,
-    @Value("\${recaptcha.secret}") private val recaptchaSecret: String
+    @Value("\${recaptcha.secret}") private val recaptchaSecret: String,
 ) {
-    private val restClient = restClientBuilder
-        .baseUrl(RECAPTCHA_VERIFY_BASE_URL)
-        .build()
+    private val restClient =
+        restClientBuilder
+            .baseUrl(RECAPTCHA_VERIFY_BASE_URL)
+            .build()
 
     /**
      * Validates a reCAPTCHA token against the Google reCAPTCHA verification service.
@@ -31,16 +31,20 @@ class RecaptchaService(
      */
     @Cacheable("RECAPTCHA_TOKENS")
     fun verifyToken(token: String): Boolean {
-        val uri = UriComponentsBuilder.fromPath(SITE_VERIFY_PATH)
-            .queryParam(SECRET_REQUEST_PARAMETER, recaptchaSecret)
-            .queryParam(TOKEN_RESPONSE_PARAMETER, token)
-            .build().toUriString()
+        val uri =
+            UriComponentsBuilder
+                .fromPath(SITE_VERIFY_PATH)
+                .queryParam(SECRET_REQUEST_PARAMETER, recaptchaSecret)
+                .queryParam(TOKEN_RESPONSE_PARAMETER, token)
+                .build()
+                .toUriString()
 
-        val recaptchaResponseVm = restClient
-            .post()
-            .uri(uri)
-            .retrieve()
-            .body(RecaptchaResponseVm::class.java)
+        val recaptchaResponseVm =
+            restClient
+                .post()
+                .uri(uri)
+                .retrieve()
+                .body(RecaptchaResponseVm::class.java)
 
         return recaptchaResponseVm?.success ?: false
     }

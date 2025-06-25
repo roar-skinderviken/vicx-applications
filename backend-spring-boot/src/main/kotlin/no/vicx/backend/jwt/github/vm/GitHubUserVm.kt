@@ -7,12 +7,13 @@ data class GitHubUserVm(
     val login: String = "",
     val name: String = "",
     val email: String = "",
-    @JsonProperty("avatar_url") val avatarUrl: String = "" // TODO: Check if this should be init with null
+    @JsonProperty("avatar_url") val avatarUrl: String = "", // TODO: Check if this should be init with null
 ) {
     val isEmpty: Boolean
-        get() = id.isBlank()
-                && login.isBlank()
-                && name.isBlank()
-                && email.isBlank()
-                && avatarUrl.isBlank()
+        get() =
+            id.isBlank() &&
+                login.isBlank() &&
+                name.isBlank() &&
+                email.isBlank() &&
+                avatarUrl.isBlank()
 }

@@ -21,60 +21,63 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.crypto.password.PasswordEncoder
 import java.util.Optional
 
-class UserDetailsServiceTest : BehaviorSpec({
+class UserDetailsServiceTest :
+    BehaviorSpec({
 
-    Given("UserDetails") {
-        val passwordEncoder: PasswordEncoder = mockk(relaxed = true)
-        val userRepository: UserRepository = mockk()
+        Given("UserDetails") {
+            val passwordEncoder: PasswordEncoder = mockk(relaxed = true)
+            val userRepository: UserRepository = mockk()
 
-        val sut = UserDetailsConfig().userDetailsService(
-            userProperties = defaultUserProperties,
-            passwordEncoder = passwordEncoder,
-            userRepository = userRepository
-        )
+            val sut =
+                UserDetailsConfig().userDetailsService(
+                    userProperties = defaultUserProperties,
+                    passwordEncoder = passwordEncoder,
+                    userRepository = userRepository,
+                )
 
-        When("loadUserByUsername with default username") {
-            sut.loadUserByUsername(DEFAULT_USERNAME_IN_TEST)
+            When("loadUserByUsername with default username") {
+                sut.loadUserByUsername(DEFAULT_USERNAME_IN_TEST)
 
-            Then("expect no calls to repository") {
-                verify { userRepository wasNot called }
-            }
-        }
-
-        When("loadUserByUsername with username for non-existing user") {
-            every { userRepository.findByUsername(any()) } returns Optional.empty()
-
-            val thrown = shouldThrow<UsernameNotFoundException> {
-                sut.loadUserByUsername("~unknown-username~")
+                Then("expect no calls to repository") {
+                    verify { userRepository wasNot called }
+                }
             }
 
-            Then("exception should be as expected") {
-                thrown.message shouldBe "User not found"
+            When("loadUserByUsername with username for non-existing user") {
+                every { userRepository.findByUsername(any()) } returns Optional.empty()
+
+                val thrown =
+                    shouldThrow<UsernameNotFoundException> {
+                        sut.loadUserByUsername("~unknown-username~")
+                    }
+
+                Then("exception should be as expected") {
+                    thrown.message shouldBe "User not found"
+                }
             }
-        }
 
-        forAll(
-            row("User with image", createUserInTest()),
-            row("User without image", createUserInTest(null)),
-        ) { description, userInTest ->
+            forAll(
+                row("User with image", createUserInTest()),
+                row("User without image", createUserInTest(null)),
+            ) { description, userInTest ->
 
-            When("loadUserByUsername with username for existing user, $description") {
-                every { userRepository.findByUsername(EXISTING_USERNAME) } returns Optional.of(userInTest)
+                When("loadUserByUsername with username for existing user, $description") {
+                    every { userRepository.findByUsername(EXISTING_USERNAME) } returns Optional.of(userInTest)
 
-                val userDetails = sut.loadUserByUsername(EXISTING_USERNAME)
+                    val userDetails = sut.loadUserByUsername(EXISTING_USERNAME)
 
-                Then("userDetails should be as expected") {
-                    userDetails.shouldBeInstanceOf<CustomUserDetails>()
+                    Then("userDetails should be as expected") {
+                        userDetails.shouldBeInstanceOf<CustomUserDetails>()
 
-                    assertSoftly(userDetails) {
-                        username shouldBe userInTest.username
-                        password shouldBe userInTest.password
-                        name shouldBe userInTest.name
-                        email shouldBe userInTest.email
-                        hasImage shouldBe (userInTest.userImage != null)
+                        assertSoftly(userDetails) {
+                            username shouldBe userInTest.username
+                            password shouldBe userInTest.password
+                            name shouldBe userInTest.name
+                            email shouldBe userInTest.email
+                            hasImage shouldBe (userInTest.userImage != null)
+                        }
                     }
                 }
             }
         }
-    }
-})
+    })

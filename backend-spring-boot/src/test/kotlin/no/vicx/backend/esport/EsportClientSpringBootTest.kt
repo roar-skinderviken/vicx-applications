@@ -21,57 +21,62 @@ import reactor.test.StepVerifier
 @SpringBootTest
 class EsportClientSpringBootTest(
     objectMapper: ObjectMapper,
-    builder: WebClient.Builder
+    builder: WebClient.Builder,
 ) : StringSpec({
 
-    val exchangeFunction: ExchangeFunction = mockk()
+        val exchangeFunction: ExchangeFunction = mockk()
 
-    val webClientBuilder = builder
-        .exchangeFunction(exchangeFunction)
+        val webClientBuilder =
+            builder
+                .exchangeFunction(exchangeFunction)
 
-    val sut = EsportClient(webClientBuilder, "~token~")
+        val sut = EsportClient(webClientBuilder, "~token~")
 
-    // disabled for now until this issue is resolved
-    // https://stackoverflow.com/questions/79668983/spring-reactive-webclient-is-not-respecting-kotlinfeature-nullissameasdefault
-    "getMatches when matches have null values then expect result"
-        .config(enabled = false) {
-            val mockJsonWithNullValues = """
+        // disabled for now until this issue is resolved
+        // https://stackoverflow.com/questions/79668983/spring-reactive-webclient-is-not-respecting-kotlinfeature-nullissameasdefault
+        "getMatches when matches have null values then expect result"
+            .config(enabled = false) {
+                val mockJsonWithNullValues =
+                    """
                     [{
                         "id": null,
                         "name": null,
                         "begin_at": "",
                         "status": null
-                    }]""".trimIndent()
+                    }]
+                    """.trimIndent()
 
+                // this is working
+                val parsed = objectMapper.readValue<List<EsportMatchVm>>(mockJsonWithNullValues)
+                parsed.shouldNotBeNull()
 
-            // this is working
-            val parsed = objectMapper.readValue<List<EsportMatchVm>>(mockJsonWithNullValues)
-            parsed.shouldNotBeNull()
+                every { exchangeFunction.exchange(any()) } answers {
+                    Mono.just(
+                        createClientResponse(mockJsonWithNullValues),
+                    )
+                }
 
-            every { exchangeFunction.exchange(any()) } answers {
-                Mono.just(
-                    createClientResponse(mockJsonWithNullValues)
-                )
+                val runningMatches = sut.getMatches(MatchType.RUNNING)
+
+                val expectedMatch =
+                    EsportMatchVm(
+                        id = null,
+                        name = "",
+                        beginAt = "",
+                        status = "",
+                    )
+
+                StepVerifier
+                    .create(runningMatches)
+                    // org.springframework.core.codec.DecodingException: JSON decoding error
+                    .expectNext(expectedMatch)
+                    .verifyComplete()
             }
-
-            val runningMatches = sut.getMatches(MatchType.RUNNING)
-
-            val expectedMatch = EsportMatchVm(
-                id = null,
-                name = "",
-                beginAt = "",
-                status = ""
-            )
-
-            StepVerifier.create(runningMatches)
-                // org.springframework.core.codec.DecodingException: JSON decoding error
-                .expectNext(expectedMatch)
-                .verifyComplete()
-        }
-}) {
+    }) {
     companion object {
         private fun createClientResponse(body: String) =
-            ClientResponse.create(HttpStatus.OK)
+            ClientResponse
+                .create(HttpStatus.OK)
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
                 .build()

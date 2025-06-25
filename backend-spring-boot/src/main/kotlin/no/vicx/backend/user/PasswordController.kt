@@ -23,40 +23,43 @@ import org.springframework.web.bind.annotation.RestController
 @Tag(name = "Password", description = "API for updating user password")
 @SecurityRequirement(name = "security_auth")
 class PasswordController(
-    private val userService: UserService
+    private val userService: UserService,
 ) {
     @Operation(
         summary = "Change user password",
         description = "Allows the authenticated user to update their password.",
-        responses = [ApiResponse(
-            responseCode = "200",
-            description = "Password updated successfully.",
-            content = arrayOf(
-                Content(
-                    mediaType = MediaType.TEXT_PLAIN_VALUE,
-                    schema = Schema(type = "string", example = PASSWORD_CHANGED_BODY_TEXT)
-                )
-            )
-        ), ApiResponse(responseCode = "400", description = "Invalid input data", content = [Content()]), ApiResponse(
-            responseCode = "401",
-            description = "User not authenticated",
-            content = [Content()]
-        ), ApiResponse(
-            responseCode = "403",
-            description = "Access denied",
-            content = [Content()]
-        ), ApiResponse(responseCode = "500", description = "Server error", content = [Content()])]
+        responses = [
+            ApiResponse(
+                responseCode = "200",
+                description = "Password updated successfully.",
+                content =
+                    arrayOf(
+                        Content(
+                            mediaType = MediaType.TEXT_PLAIN_VALUE,
+                            schema = Schema(type = "string", example = PASSWORD_CHANGED_BODY_TEXT),
+                        ),
+                    ),
+            ), ApiResponse(responseCode = "400", description = "Invalid input data", content = [Content()]), ApiResponse(
+                responseCode = "401",
+                description = "User not authenticated",
+                content = [Content()],
+            ), ApiResponse(
+                responseCode = "403",
+                description = "Access denied",
+                content = [Content()],
+            ), ApiResponse(responseCode = "500", description = "Server error", content = [Content()]),
+        ],
     )
     @PatchMapping(consumes = [MediaType.APPLICATION_JSON_VALUE], produces = [MediaType.TEXT_PLAIN_VALUE])
     fun changePassword(
         @Parameter(
             description = "The new password and confirmation provided by the user.",
-            required = true
+            required = true,
         )
         @Validated
         @RequestBody
         changePasswordVm: ChangePasswordVm,
-        authentication: Authentication
+        authentication: Authentication,
     ): ResponseEntity<String> {
         userService.updatePassword(changePasswordVm, authentication.name)
         return ResponseEntity.ok(PASSWORD_CHANGED_BODY_TEXT)

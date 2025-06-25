@@ -4,10 +4,9 @@ import no.vicx.backend.loggerFor
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 
-
 @Component
 class RemoveOldEntriesTask(
-    private val calculatorService: CalculatorService
+    private val calculatorService: CalculatorService,
 ) {
     @Scheduled(fixedRateString = "\${app.calculator.rate}")
     fun removeOldCalculatorEntries() {

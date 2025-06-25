@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
+import org.jlleitschuh.gradle.ktlint.KtlintExtension
 import kotlin.jvm.optionals.getOrNull
 
 repositories {
@@ -17,15 +18,27 @@ val kotlinProjectTestDependencies = setOf("kotest.runner.junit5", "kotest.assert
 val springBootTestDependencies = setOf("kotest.extensions.spring", "springmockk")
 
 // Retrieve the version catalog
-val libs = project.extensions
-    .findByType<VersionCatalogsExtension>()
-    ?.named("libs")
-    ?: error("Version catalog 'libs' not found")
+val libs =
+    project.extensions
+        .findByType<VersionCatalogsExtension>()
+        ?.named("libs")
+        ?: error("Version catalog 'libs' not found")
 
 fun String.getLibraryValue(): MinimalExternalModuleDependency =
-    libs.findLibrary(this).getOrNull()
+    libs
+        .findLibrary(this)
+        .getOrNull()
         ?.get()
         ?: error("Library '$this' not found in version catalog")
+
+fun String.getLibraryVersion(): String =
+    libs
+        .findVersion(this)
+        .getOrNull()
+        ?.toString()
+        ?: error("Library '$this' not found in version catalog")
+
+val ktlintVersion = "ktlint-version".getLibraryVersion()
 
 // Spring Boot + Kotlin Projects
 if (name in springBootProjects && name in kotlinProjects) {
@@ -52,8 +65,14 @@ if (name in springBootProjects) {
 // Kotlin Projects
 if (name in kotlinProjects) {
     apply(plugin = "org.jetbrains.kotlin.jvm")
+    apply(plugin = "org.jlleitschuh.gradle.ktlint")
+
     configure<KotlinJvmProjectExtension> {
         jvmToolchain(javaVersion)
+    }
+
+    configure<KtlintExtension> {
+        version = ktlintVersion
     }
 
     dependencies {

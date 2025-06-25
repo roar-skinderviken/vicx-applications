@@ -9,12 +9,12 @@ import kotlin.time.Duration.Companion.seconds
 
 @SpringBootTest
 class RemoveOldEntriesTaskTest(
-    @MockkBean(relaxed = true) private val calculatorService: CalculatorService
+    @MockkBean(relaxed = true) private val calculatorService: CalculatorService,
 ) : StringSpec({
 
-    "expect remove old entries task to fire" {
-        eventually(10.seconds) {
-            verify(atLeast = 1) { calculatorService.deleteOldAnonymousCalculations() }
+        "expect remove old entries task to fire" {
+            eventually(10.seconds) {
+                verify(atLeast = 1) { calculatorService.deleteOldAnonymousCalculations() }
+            }
         }
-    }
-})
+    })

@@ -4,7 +4,7 @@ import io.kotest.assertions.assertSoftly
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
-import io.ktor.server.testing.*
+import io.ktor.server.testing.testApplication
 import kotlinx.coroutines.runBlocking
 import no.vicx.ktor.db.entity.UserImageEntity
 import no.vicx.ktor.db.entity.VicxUserEntity
@@ -19,122 +19,129 @@ import no.vicx.ktor.util.configureTestDb
 import no.vicx.ktor.util.insertTestData
 import org.jetbrains.exposed.sql.transactions.transaction
 
-class UserImageRepositoryTest : BehaviorSpec({
-    coroutineTestScope = true
+class UserImageRepositoryTest :
+    BehaviorSpec({
+        coroutineTestScope = true
 
-    Given("User Image Repository") {
-        lateinit var sut: UserImageRepository
+        Given("User Image Repository") {
+            lateinit var sut: UserImageRepository
 
-        beforeContainer {
-            configureTestDb()
-            sut = UserImageRepository()
-        }
+            beforeContainer {
+                configureTestDb()
+                sut = UserImageRepository()
+            }
 
-        When("saving valid user image") {
-            lateinit var userInTest: VicxUser
+            When("saving valid user image") {
+                lateinit var userInTest: VicxUser
 
-            testApplication {
-                insertTestData {
-                    userInTest = VicxUserEntity.new {
-                        username = userModelInTest.username
-                        name = userModelInTest.name
-                        email = userModelInTest.email
-                        password = userModelInTest.password
-                    }.toModel()
+                testApplication {
+                    insertTestData {
+                        userInTest =
+                            VicxUserEntity
+                                .new {
+                                    username = userModelInTest.username
+                                    name = userModelInTest.name
+                                    email = userModelInTest.email
+                                    password = userModelInTest.password
+                                }.toModel()
+                    }
+
+                    application {
+                        runBlocking { sut.saveUserImage(userImageModelInTest) }
+
+                        transaction {
+                            userInTest = VicxUserEntity[userInTest.id].toModel()
+                        }
+                    }
                 }
 
-                application {
-                    runBlocking { sut.saveUserImage(userImageModelInTest) }
-
-                    transaction {
-                        userInTest = VicxUserEntity[userInTest.id].toModel()
+                Then("expect saved user image to be returned") {
+                    assertSoftly(userInTest.userImage.shouldNotBeNull()) {
+                        id shouldBe userInTest.id
+                        contentType shouldBe userImageModelInTest.contentType
+                        userImageModelInTest.imageData.contentEquals(imageData) shouldBe true
                     }
                 }
             }
 
-            Then("expect saved user image to be returned") {
-                assertSoftly(userInTest.userImage.shouldNotBeNull()) {
-                    id shouldBe userInTest.id
-                    contentType shouldBe userImageModelInTest.contentType
-                    userImageModelInTest.imageData.contentEquals(imageData) shouldBe true
-                }
-            }
-        }
+            When("updating user image") {
+                lateinit var userInTest: VicxUser
+                val expectedImageData = getResourceAsByteArray("/$JPEG_RESOURCE_NAME")
 
-        When("updating user image") {
-            lateinit var userInTest: VicxUser
-            val expectedImageData = getResourceAsByteArray("/$JPEG_RESOURCE_NAME")
+                testApplication {
+                    insertTestData {
+                        userInTest =
+                            VicxUserEntity
+                                .new {
+                                    username = userModelInTest.username
+                                    name = userModelInTest.name
+                                    email = userModelInTest.email
+                                    password = userModelInTest.password
+                                }.toModel()
 
-            testApplication {
-                insertTestData {
-                    userInTest = VicxUserEntity.new {
-                        username = userModelInTest.username
-                        name = userModelInTest.name
-                        email = userModelInTest.email
-                        password = userModelInTest.password
-                    }.toModel()
-
-                    UserImageEntity.new(userInTest.id) {
-                        this.contentType = userImageModelInTest.contentType
-                        this.imageData = userImageModelInTest.imageData
+                        UserImageEntity.new(userInTest.id) {
+                            this.contentType = userImageModelInTest.contentType
+                            this.imageData = userImageModelInTest.imageData
+                        }
                     }
-                }
 
-                application {
-                    runBlocking {
-                        sut.updateUserImage(
-                            userImageModelInTest.copy(
-                                contentType = JPEG_CONTENT_TYPE,
-                                imageData = expectedImageData
+                    application {
+                        runBlocking {
+                            sut.updateUserImage(
+                                userImageModelInTest.copy(
+                                    contentType = JPEG_CONTENT_TYPE,
+                                    imageData = expectedImageData,
+                                ),
                             )
-                        )
-                    }
+                        }
 
-                    transaction {
-                        userInTest = VicxUserEntity[userInTest.id].toModel()
+                        transaction {
+                            userInTest = VicxUserEntity[userInTest.id].toModel()
+                        }
+                    }
+                }
+
+                Then("expect user image to be updated") {
+                    assertSoftly(userInTest.userImage.shouldNotBeNull()) {
+                        id shouldBe userInTest.id
+                        contentType shouldBe JPEG_CONTENT_TYPE
+                        expectedImageData.contentEquals(imageData) shouldBe true
                     }
                 }
             }
 
-            Then("expect user image to be updated") {
-                assertSoftly(userInTest.userImage.shouldNotBeNull()) {
-                    id shouldBe userInTest.id
-                    contentType shouldBe JPEG_CONTENT_TYPE
-                    expectedImageData.contentEquals(imageData) shouldBe true
+            When("deleting user image") {
+                lateinit var userInTest: VicxUser
+
+                testApplication {
+                    insertTestData {
+                        userInTest =
+                            VicxUserEntity
+                                .new {
+                                    username = userModelInTest.username
+                                    name = userModelInTest.name
+                                    email = userModelInTest.email
+                                    password = userModelInTest.password
+                                }.toModel()
+
+                        UserImageEntity.new(userInTest.id) {
+                            this.contentType = userImageModelInTest.contentType
+                            this.imageData = userImageModelInTest.imageData
+                        }
+                    }
+
+                    application {
+                        runBlocking { sut.deleteById(userInTest.id) }
+
+                        transaction {
+                            userInTest = VicxUserEntity[userInTest.id].toModel()
+                        }
+                    }
+                }
+
+                Then("expect user image to be deleted") {
+                    userInTest.userImage shouldBe null
                 }
             }
         }
-
-        When("deleting user image") {
-            lateinit var userInTest: VicxUser
-
-            testApplication {
-                insertTestData {
-                    userInTest = VicxUserEntity.new {
-                        username = userModelInTest.username
-                        name = userModelInTest.name
-                        email = userModelInTest.email
-                        password = userModelInTest.password
-                    }.toModel()
-
-                    UserImageEntity.new(userInTest.id) {
-                        this.contentType = userImageModelInTest.contentType
-                        this.imageData = userImageModelInTest.imageData
-                    }
-                }
-
-                application {
-                    runBlocking { sut.deleteById(userInTest.id) }
-
-                    transaction {
-                        userInTest = VicxUserEntity[userInTest.id].toModel()
-                    }
-                }
-            }
-
-            Then("expect user image to be deleted") {
-                userInTest.userImage shouldBe null
-            }
-        }
-    }
-})
+    })

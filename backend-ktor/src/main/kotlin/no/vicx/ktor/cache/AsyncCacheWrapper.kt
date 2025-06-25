@@ -12,13 +12,16 @@ class AsyncCacheWrapper<in K : Any, out V : Any>(
     expireAfterWriteUnit: TimeUnit,
     val computeFunc: suspend (K) -> V,
 ) {
-    private val cache: AsyncCache<K, V> = Caffeine.newBuilder()
-        .expireAfterWrite(expireAfterWrite, expireAfterWriteUnit)
-        .buildAsync()
+    private val cache: AsyncCache<K, V> =
+        Caffeine
+            .newBuilder()
+            .expireAfterWrite(expireAfterWrite, expireAfterWriteUnit)
+            .buildAsync()
 
-    suspend fun getOrCompute(key: K): V = coroutineScope {
-        cache.get(key) { _, _ -> future { computeFunc(key) } }.await()
-    }
+    suspend fun getOrCompute(key: K): V =
+        coroutineScope {
+            cache.get(key) { _, _ -> future { computeFunc(key) } }.await()
+        }
 
     fun invalidate(key: K) = cache.synchronous().invalidate(key)
 }

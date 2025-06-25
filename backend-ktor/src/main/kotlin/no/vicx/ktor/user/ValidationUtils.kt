@@ -17,7 +17,7 @@ object ValidationUtils {
 
     fun String.validateEmail(
         validationErrors: MutableList<String>,
-        checkForBlank: Boolean = true
+        checkForBlank: Boolean = true,
     ) {
         when {
             checkForBlank && isBlank() -> validationErrors.add("Email cannot be blank")

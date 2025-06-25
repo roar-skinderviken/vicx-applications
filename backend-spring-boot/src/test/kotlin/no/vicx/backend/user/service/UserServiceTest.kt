@@ -25,161 +25,167 @@ import org.springframework.http.MediaType
 import org.springframework.security.crypto.password.PasswordEncoder
 import java.util.Optional
 
-class UserServiceTest : BehaviorSpec({
-    val userRepository: UserRepository = mockk()
-    val passwordEncoder: PasswordEncoder = mockk()
-    val cacheManager: CacheManager = mockk()
-    val reCaptchaCache: Cache = mockk(relaxed = true)
+class UserServiceTest :
+    BehaviorSpec({
+        val userRepository: UserRepository = mockk()
+        val passwordEncoder: PasswordEncoder = mockk()
+        val cacheManager: CacheManager = mockk()
+        val reCaptchaCache: Cache = mockk(relaxed = true)
 
-    lateinit var sut: UserService
+        lateinit var sut: UserService
 
-    val userSlot = slot<VicxUser>()
+        val userSlot = slot<VicxUser>()
 
-    beforeContainer {
-        every { cacheManager.getCache("RECAPTCHA_TOKENS") } returns reCaptchaCache
-        every { userRepository.findByUsername("user1") } returns Optional.of(createValidVicxUser())
-        every { passwordEncoder.encode(VicxUser.VALID_PLAINTEXT_PASSWORD) } returns VicxUser.VALID_BCRYPT_PASSWORD
-        every { userRepository.save(capture(userSlot)) } answers {
-            userSlot.captured
-        }
-
-        sut = UserService(
-            userRepository = userRepository,
-            passwordEncoder = passwordEncoder,
-            cacheManager = cacheManager,
-        )
-    }
-
-    Given("UserService construction without reCAPTCHA cache") {
         beforeContainer {
-            every { cacheManager.getCache("RECAPTCHA_TOKENS") } returns null
-        }
+            every { cacheManager.getCache("RECAPTCHA_TOKENS") } returns reCaptchaCache
+            every { userRepository.findByUsername("user1") } returns Optional.of(createValidVicxUser())
+            every { passwordEncoder.encode(VicxUser.VALID_PLAINTEXT_PASSWORD) } returns VicxUser.VALID_BCRYPT_PASSWORD
+            every { userRepository.save(capture(userSlot)) } answers {
+                userSlot.captured
+            }
 
-        When("constructing UserService") {
-            val thrown = shouldThrow<IllegalArgumentException> {
+            sut =
                 UserService(
                     userRepository = userRepository,
                     passwordEncoder = passwordEncoder,
                     cacheManager = cacheManager,
                 )
-            }
-
-            Then("exception should contain expected message") {
-                thrown.message shouldBe "Cache 'RECAPTCHA_TOKENS' is not configured. Application cannot start."
-            }
         }
-    }
 
-    Given("createUser") {
-        When("creating a new user without user image") {
-            sut.createUser(VALID_USER_VM, null)
+        Given("UserService construction without reCAPTCHA cache") {
+            beforeContainer {
+                every { cacheManager.getCache("RECAPTCHA_TOKENS") } returns null
+            }
 
-            Then("should create a new user") {
-                assertSoftly(userSlot.captured) {
-                    name shouldBe VALID_USER_VM.name
-                    userImage shouldBe null
-                }
+            When("constructing UserService") {
+                val thrown =
+                    shouldThrow<IllegalArgumentException> {
+                        UserService(
+                            userRepository = userRepository,
+                            passwordEncoder = passwordEncoder,
+                            cacheManager = cacheManager,
+                        )
+                    }
 
-                verify {
-                    passwordEncoder.encode(VicxUser.VALID_PLAINTEXT_PASSWORD)
-                    reCaptchaCache.evictIfPresent(any())
+                Then("exception should contain expected message") {
+                    thrown.message shouldBe "Cache 'RECAPTCHA_TOKENS' is not configured. Application cannot start."
                 }
             }
         }
 
-        When("creating a new user with user image") {
-            sut.createUser(
-                createUserVm = VALID_USER_VM,
-                image = createMockMultipartFile(
-                    "test-png.png",
-                    MediaType.IMAGE_PNG_VALUE
+        Given("createUser") {
+            When("creating a new user without user image") {
+                sut.createUser(VALID_USER_VM, null)
+
+                Then("should create a new user") {
+                    assertSoftly(userSlot.captured) {
+                        name shouldBe VALID_USER_VM.name
+                        userImage shouldBe null
+                    }
+
+                    verify {
+                        passwordEncoder.encode(VicxUser.VALID_PLAINTEXT_PASSWORD)
+                        reCaptchaCache.evictIfPresent(any())
+                    }
+                }
+            }
+
+            When("creating a new user with user image") {
+                sut.createUser(
+                    createUserVm = VALID_USER_VM,
+                    image =
+                        createMockMultipartFile(
+                            "test-png.png",
+                            MediaType.IMAGE_PNG_VALUE,
+                        ),
                 )
-            )
 
-            Then("should create a new user") {
-                userSlot.captured.userImage shouldNotBe null
+                Then("should create a new user") {
+                    userSlot.captured.userImage shouldNotBe null
 
-                verify {
-                    passwordEncoder.encode(VicxUser.VALID_PLAINTEXT_PASSWORD)
-                    reCaptchaCache.evictIfPresent(any())
+                    verify {
+                        passwordEncoder.encode(VicxUser.VALID_PLAINTEXT_PASSWORD)
+                        reCaptchaCache.evictIfPresent(any())
+                    }
                 }
             }
         }
-    }
 
-    Given("getUserByUserName") {
-        When("getting user by username for existing user") {
-            val user = sut.getUserByUserName("user1")
+        Given("getUserByUserName") {
+            When("getting user by username for existing user") {
+                val user = sut.getUserByUserName("user1")
 
-            Then("it should return a User") {
-                user shouldNotBe null
-            }
-        }
-
-        When("getting user by username for non-existing user") {
-            every { userRepository.findByUsername("user1") } returns Optional.empty()
-
-            val thrown = shouldThrow<NotFoundException> {
-                sut.getUserByUserName("user1")
-            }
-
-            Then("expect user not found error") {
-                thrown.message shouldBe "User user1 not found"
-            }
-        }
-    }
-
-    Given("updateUser") {
-        val patchVm = UserPatchVm("~name~", "foo@bar.com")
-
-        When("updating user") {
-            sut.updateUser(patchVm, "user1")
-
-            Then("expect user to be updated") {
-                assertSoftly(userSlot.captured) {
-                    name shouldBe patchVm.name
-                    email shouldBe patchVm.email
+                Then("it should return a User") {
+                    user shouldNotBe null
                 }
-
-                verify { userRepository.save(any()) }
             }
-        }
-    }
 
-    Given("isValidPassword") {
-        forAll(
-            Row1(true),
-            Row1(false)
-        ) { isValidPassword ->
-            every { passwordEncoder.matches(any(), any()) } returns isValidPassword
+            When("getting user by username for non-existing user") {
+                every { userRepository.findByUsername("user1") } returns Optional.empty()
 
-            When("checking if password is valid: $isValidPassword") {
-                val result = sut.isValidPassword("user1", "~password~")
+                val thrown =
+                    shouldThrow<NotFoundException> {
+                        sut.getUserByUserName("user1")
+                    }
 
-                Then("result should be") {
-                    result shouldBe isValidPassword
-
-                    verify { passwordEncoder.matches(any(), any()) }
+                Then("expect user not found error") {
+                    thrown.message shouldBe "User user1 not found"
                 }
             }
         }
-    }
 
-    Given("updatePassword") {
-        val changePasswordVm = ChangePasswordVm(
-            currentPassword = "~current-password~",
-            password = VicxUser.VALID_PLAINTEXT_PASSWORD
-        )
+        Given("updateUser") {
+            val patchVm = UserPatchVm("~name~", "foo@bar.com")
 
-        When("updating password") {
-            sut.updatePassword(changePasswordVm, "user1")
+            When("updating user") {
+                sut.updateUser(patchVm, "user1")
 
-            Then("expect user to be updated") {
-                verify {
-                    passwordEncoder.encode(changePasswordVm.password)
-                    userRepository.save(any())
+                Then("expect user to be updated") {
+                    assertSoftly(userSlot.captured) {
+                        name shouldBe patchVm.name
+                        email shouldBe patchVm.email
+                    }
+
+                    verify { userRepository.save(any()) }
                 }
             }
         }
-    }
-})
+
+        Given("isValidPassword") {
+            forAll(
+                Row1(true),
+                Row1(false),
+            ) { isValidPassword ->
+                every { passwordEncoder.matches(any(), any()) } returns isValidPassword
+
+                When("checking if password is valid: $isValidPassword") {
+                    val result = sut.isValidPassword("user1", "~password~")
+
+                    Then("result should be") {
+                        result shouldBe isValidPassword
+
+                        verify { passwordEncoder.matches(any(), any()) }
+                    }
+                }
+            }
+        }
+
+        Given("updatePassword") {
+            val changePasswordVm =
+                ChangePasswordVm(
+                    currentPassword = "~current-password~",
+                    password = VicxUser.VALID_PLAINTEXT_PASSWORD,
+                )
+
+            When("updating password") {
+                sut.updatePassword(changePasswordVm, "user1")
+
+                Then("expect user to be updated") {
+                    verify {
+                        passwordEncoder.encode(changePasswordVm.password)
+                        userRepository.save(any())
+                    }
+                }
+            }
+        }
+    })

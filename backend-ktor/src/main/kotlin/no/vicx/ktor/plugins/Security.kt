@@ -2,9 +2,10 @@ package no.vicx.ktor.plugins
 
 import com.auth0.jwk.JwkProvider
 import com.auth0.jwk.JwkProviderBuilder
-import io.ktor.server.application.*
-import io.ktor.server.auth.*
-import io.ktor.server.auth.jwt.*
+import io.ktor.server.application.Application
+import io.ktor.server.auth.authentication
+import io.ktor.server.auth.jwt.JWTPrincipal
+import io.ktor.server.auth.jwt.jwt
 import org.slf4j.LoggerFactory
 import java.net.URI
 import java.util.concurrent.TimeUnit
@@ -16,9 +17,10 @@ fun Application.configureSecurity() {
     val jwtRealm = environment.config.property("jwt.realm").getString()
     val jwtJwks = "$jwtIssuer/oauth2/jwks"
 
-    val jwkProvider: JwkProvider = JwkProviderBuilder(URI(jwtJwks).toURL())
-        .cached(10, 24, TimeUnit.HOURS) // Cache up to 10 JWKs for 24 hours
-        .build()
+    val jwkProvider: JwkProvider =
+        JwkProviderBuilder(URI(jwtJwks).toURL())
+            .cached(10, 24, TimeUnit.HOURS) // Cache up to 10 JWKs for 24 hours
+            .build()
 
     authentication {
         jwt {

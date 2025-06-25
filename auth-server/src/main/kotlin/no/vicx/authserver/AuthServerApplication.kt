@@ -17,4 +17,3 @@ class AuthServerApplication
 fun main(args: Array<String>) {
     SpringApplication.run(AuthServerApplication::class.java, *args)
 }
-

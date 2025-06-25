@@ -17,8 +17,9 @@ import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.test.web.servlet.MockMvc
 
 @Import(SecurityConfig::class, JsonCustomizerConfig::class)
-abstract class BaseWebMvcTest(body: BaseWebMvcTest.() -> Unit) : BehaviorSpec() {
-
+abstract class BaseWebMvcTest(
+    body: BaseWebMvcTest.() -> Unit,
+) : BehaviorSpec() {
     @Autowired
     lateinit var mockMvc: MockMvc
 
@@ -34,11 +35,12 @@ abstract class BaseWebMvcTest(body: BaseWebMvcTest.() -> Unit) : BehaviorSpec() 
 
             val tokenSlot = slot<String>()
             every { opaqueTokenIntrospector.introspect(capture(tokenSlot)) } answers {
-                val roles = when (tokenSlot.captured) {
-                    VICX_USER_TOKEN -> listOf("ROLE_USER")
-                    GITHUB_USER_TOKEN -> listOf("ROLE_GITHUB_USER")
-                    else -> emptyList()
-                }
+                val roles =
+                    when (tokenSlot.captured) {
+                        VICX_USER_TOKEN -> listOf("ROLE_USER")
+                        GITHUB_USER_TOKEN -> listOf("ROLE_GITHUB_USER")
+                        else -> emptyList()
+                    }
 
                 createPrincipalInTest(roles)
             }

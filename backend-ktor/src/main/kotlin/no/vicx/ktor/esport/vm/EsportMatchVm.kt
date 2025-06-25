@@ -9,5 +9,5 @@ data class EsportMatchVm(
     val name: String,
     @SerialName("begin_at")
     val beginAt: String? = null,
-    val status: String
+    val status: String,
 )
