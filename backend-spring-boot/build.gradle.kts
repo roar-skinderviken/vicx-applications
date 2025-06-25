@@ -43,11 +43,18 @@ tasks.jar {
     enabled = false
 }
 
+kotlin {
+    compilerOptions {
+        freeCompilerArgs
+            .addAll(
+                "-Xjsr305=strict",
+                "-Xannotation-default-target=param-property"
+            )
+    }
+}
+
 tasks.test {
     jvmArgs(
-        "-Xshare:off",
-        "-XX:+EnableDynamicAgentLoading",
-        "-Dkotest.framework.classpath.scanning.autoscan.disable=true",
         "-Dkotest.framework.config.fqn=no.vicx.backend.KotestConfig"
     )
 }

@@ -44,3 +44,7 @@ tasks.test {
     jvmArgs("-javaagent:${mockitoAgent.asPath}")
     systemProperty("spring.profiles.active", "test")
 }
+
+tasks.bootJar {
+    enabled = false
+}
