@@ -1,9 +1,10 @@
 package no.vicx.backend.jwt.github
 
-import no.vicx.backend.jwt.JwtUtils
+import no.vicx.backend.jwt.JwtUtils.BEARER_PREFIX
 import no.vicx.backend.jwt.github.vm.GitHubUserResponseVm
 import no.vicx.backend.jwt.github.vm.GitHubUserVm
 import org.springframework.http.HttpHeaders
+import org.springframework.http.MediaType
 import org.springframework.stereotype.Service
 import org.springframework.web.client.HttpClientErrorException
 import org.springframework.web.client.RestClient
@@ -11,14 +12,18 @@ import org.springframework.web.client.RestClient
 
 @Service
 class GitHubUserFetcher(
-    private val restClient: RestClient
+    restClientBuilder: RestClient.Builder
 ) {
+    private val restClient = restClientBuilder
+        .baseUrl(GITHUB_USER_URL)
+        .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
+        .build()
+
     fun fetchUser(token: String): GitHubUserResponseVm {
         val responseEntity = runCatching {
             restClient
                 .get()
-                .uri(GITHUB_USER_URL)
-                .header(HttpHeaders.AUTHORIZATION, "${JwtUtils.BEARER_PREFIX}$token")
+                .header(HttpHeaders.AUTHORIZATION, "${BEARER_PREFIX}$token")
                 .retrieve()
                 .toEntity(GitHubUserVm::class.java)
         }.getOrElse { thrown ->

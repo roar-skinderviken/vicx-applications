@@ -10,9 +10,13 @@ import org.springframework.web.util.UriComponentsBuilder
 
 @Service
 class RecaptchaService(
-    private val restClient: RestClient,
+    restClientBuilder: RestClient.Builder,
     @Value("\${recaptcha.secret}") private val recaptchaSecret: String
 ) {
+    private val restClient = restClientBuilder
+        .baseUrl(RECAPTCHA_VERIFY_BASE_URL)
+        .build()
+
     /**
      * Validates a reCAPTCHA token against the Google reCAPTCHA verification service.
      *
@@ -27,9 +31,10 @@ class RecaptchaService(
      */
     @Cacheable("RECAPTCHA_TOKENS")
     fun verifyToken(token: String): Boolean {
-        val uri = baseUriBuilder.cloneBuilder()
+        val uri = UriComponentsBuilder.fromPath(SITE_VERIFY_PATH)
+            .queryParam(SECRET_REQUEST_PARAMETER, recaptchaSecret)
             .queryParam(TOKEN_RESPONSE_PARAMETER, token)
-            .build().toUri()
+            .build().toUriString()
 
         val recaptchaResponseVm = restClient
             .post()
@@ -40,12 +45,9 @@ class RecaptchaService(
         return recaptchaResponseVm?.success ?: false
     }
 
-    private val baseUriBuilder: UriComponentsBuilder =
-        UriComponentsBuilder.fromUriString(RECAPTCHA_VERIFY_URL)
-            .queryParam(SECRET_REQUEST_PARAMETER, recaptchaSecret)
-
     companion object {
-        const val RECAPTCHA_VERIFY_URL = "https://www.google.com/recaptcha/api/siteverify"
+        const val RECAPTCHA_VERIFY_BASE_URL = "https://www.google.com/recaptcha/api"
+        const val SITE_VERIFY_PATH = "/siteverify"
         const val SECRET_REQUEST_PARAMETER = "secret"
         const val TOKEN_RESPONSE_PARAMETER = "response"
     }

@@ -5,9 +5,9 @@ import io.kotest.data.Row2
 import io.kotest.data.forAll
 import io.kotest.matchers.shouldBe
 import no.vicx.backend.config.JsonCustomizerConfig
-import no.vicx.backend.config.RestClientConfig
-import no.vicx.backend.user.service.RecaptchaService.Companion.RECAPTCHA_VERIFY_URL
+import no.vicx.backend.user.service.RecaptchaService.Companion.RECAPTCHA_VERIFY_BASE_URL
 import no.vicx.backend.user.service.RecaptchaService.Companion.SECRET_REQUEST_PARAMETER
+import no.vicx.backend.user.service.RecaptchaService.Companion.SITE_VERIFY_PATH
 import no.vicx.backend.user.service.RecaptchaService.Companion.TOKEN_RESPONSE_PARAMETER
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.autoconfigure.web.client.RestClientTest
@@ -19,14 +19,14 @@ import org.springframework.test.web.client.response.MockRestResponseCreators.wit
 import org.springframework.web.util.UriComponentsBuilder
 
 @RestClientTest(RecaptchaService::class)
-@Import(RestClientConfig::class, JsonCustomizerConfig::class)
+@Import(JsonCustomizerConfig::class)
 class RecaptchaServiceTest(
     mockServer: MockRestServiceServer,
     sut: RecaptchaService,
     @Value("\${recaptcha.secret}") recaptchaSecret: String
 ) : BehaviorSpec({
 
-    val expectedUrl = UriComponentsBuilder.fromUriString(RECAPTCHA_VERIFY_URL)
+    val expectedUrl = UriComponentsBuilder.fromUriString("$RECAPTCHA_VERIFY_BASE_URL$SITE_VERIFY_PATH")
         .queryParam(SECRET_REQUEST_PARAMETER, recaptchaSecret)
         .queryParam(TOKEN_RESPONSE_PARAMETER, TOKEN_IN_TEST)
         .build().toUri()
