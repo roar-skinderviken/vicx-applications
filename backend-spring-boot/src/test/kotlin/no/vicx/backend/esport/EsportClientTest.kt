@@ -16,13 +16,12 @@ import reactor.core.publisher.Mono
 import reactor.test.StepVerifier
 
 class EsportClientTest : StringSpec({
-
     val exchangeFunction: ExchangeFunction = mockk()
-    val webClient = WebClient.builder()
-        .exchangeFunction(exchangeFunction)
-        .build()
 
-    val sut = EsportClient(webClient, "~token~")
+    val webClientBuilder = WebClient.builder()
+        .exchangeFunction(exchangeFunction)
+
+    val sut = EsportClient(webClientBuilder, "~token~")
 
     "getMatches when there are matches then expect match in result" {
         every { exchangeFunction.exchange(any()) } answers {

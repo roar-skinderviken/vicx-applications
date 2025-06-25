@@ -19,7 +19,7 @@ import java.util.Properties
 
 @WebMvcTest(GitPropertiesController::class)
 @Import(SecurityConfig::class)
-class GitPropertiesControllerTest2(
+class GitPropertiesControllerTest(
     mockMvc: MockMvc,
     @MockkBean private val opaqueTokenIntrospector: OpaqueTokenIntrospector,
 ) : StringSpec({
