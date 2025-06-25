@@ -4,14 +4,13 @@ import no.vicx.database.calculator.CalculatorRepository
 import org.springframework.security.core.Authentication
 import org.springframework.stereotype.Service
 
-
 @Service
 class CalculatorSecurityService(
-    private val calculatorRepository: CalculatorRepository
+    private val calculatorRepository: CalculatorRepository,
 ) {
     fun isAllowedToDelete(
         idsToDelete: Collection<Long>,
-        authentication: Authentication
+        authentication: Authentication,
     ): Boolean {
         if (idsToDelete.isEmpty()) return true // let validation handle this
 

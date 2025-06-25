@@ -6,14 +6,15 @@ import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Mono
 
-
 @Service
 class EsportService(
-    private val esportClient: EsportClient
+    private val esportClient: EsportClient,
 ) {
     @Cacheable(value = ["ESPORT"])
-    fun getMatches(): Mono<EsportVm> = Mono.zip(
-        esportClient.getMatches(MatchType.RUNNING).collectList(),
-        esportClient.getMatches(MatchType.UPCOMING).collectList()
-    ).map { tuple -> EsportVm(tuple.t1, tuple.t2) }
+    fun getMatches(): Mono<EsportVm> =
+        Mono
+            .zip(
+                esportClient.getMatches(MatchType.RUNNING).collectList(),
+                esportClient.getMatches(MatchType.UPCOMING).collectList(),
+            ).map { tuple -> EsportVm(tuple.t1, tuple.t2) }
 }

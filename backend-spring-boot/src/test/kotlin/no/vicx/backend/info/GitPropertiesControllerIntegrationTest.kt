@@ -11,14 +11,15 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 @SpringBootTest
 @AutoConfigureMockMvc
 class GitPropertiesControllerIntegrationTest(
-    mockMvc: MockMvc
+    mockMvc: MockMvc,
 ) : StringSpec({
-    "when calling GET /gitproperties then expect result" {
-        mockMvc.perform(get("/gitproperties"))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.branch").exists())
-            .andExpect(jsonPath("$.commitId").exists())
-            .andExpect(jsonPath("$.shortCommitId").exists())
-            .andExpect(jsonPath("$.commitTime").exists())
-    }
-})
+        "when calling GET /gitproperties then expect result" {
+            mockMvc
+                .perform(get("/gitproperties"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.branch").exists())
+                .andExpect(jsonPath("$.commitId").exists())
+                .andExpect(jsonPath("$.shortCommitId").exists())
+                .andExpect(jsonPath("$.commitTime").exists())
+        }
+    })

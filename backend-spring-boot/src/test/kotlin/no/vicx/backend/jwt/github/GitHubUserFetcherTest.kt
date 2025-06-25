@@ -26,101 +26,110 @@ import org.springframework.web.client.HttpClientErrorException
 @Import(JsonCustomizerConfig::class)
 class GitHubUserFetcherTest(
     mockServer: MockRestServiceServer,
-    sut: GitHubUserFetcher
+    sut: GitHubUserFetcher,
 ) : BehaviorSpec({
 
-    Given("fetchUser, mockServer with success response") {
-        mockServer.expect(requestTo(GitHubUserFetcher.GITHUB_USER_URL))
-            .andRespond(createResponseCreator(successBody, true))
+        Given("fetchUser, mockServer with success response") {
+            mockServer
+                .expect(requestTo(GitHubUserFetcher.GITHUB_USER_URL))
+                .andRespond(createResponseCreator(successBody, true))
 
-        When("calling fetchUser") {
-            val gitHubUserResponseVm = sut.fetchUser("~valid-token~")
+            When("calling fetchUser") {
+                val gitHubUserResponseVm = sut.fetchUser("~valid-token~")
 
-            Then("the response should be as expected") {
-                gitHubUserResponseVm.grantedScopes shouldBe "repo, user"
+                Then("the response should be as expected") {
+                    gitHubUserResponseVm.grantedScopes shouldBe "repo, user"
 
-                assertSoftly(gitHubUserResponseVm.user) {
-                    id shouldBe "12345"
-                    login shouldBe "john-doe"
-                    name shouldBe "John Doe"
-                    email shouldBe "john.doe@example.com"
-                    avatarUrl shouldBe "https://example.com/avatar.jpg"
-                }
-            }
-        }
-    }
-
-    Given("fetchUser, failure responses") {
-        When("calling fetchUser and response is 401") {
-            mockServer.expect(requestTo(GitHubUserFetcher.GITHUB_USER_URL))
-                .andRespond(withStatus(HttpStatusCode.valueOf(HttpStatus.UNAUTHORIZED.value())))
-
-            val thrown = shouldThrow<HttpClientErrorException> {
-                sut.fetchUser("~token~")
-            }
-
-            Then("exception message should be as expected") {
-                thrown.message shouldBe "401 Unauthorized: [no body]"
-            }
-        }
-
-        When("calling fetchUser with a non-HttpClientErrorException failure") {
-            mockServer.expect(requestTo(GitHubUserFetcher.GITHUB_USER_URL))
-                .andRespond { throw RuntimeException("Unexpected error") }
-
-            val thrown = shouldThrow<IllegalStateException> {
-                sut.fetchUser("~token~")
-            }
-
-            Then("exception message should indicate failure to fetch user") {
-                assertSoftly(thrown) {
-                    message shouldBe "Failed to fetch user: Unexpected error"
-                    cause.shouldNotBeNull()
-                    cause shouldBe instanceOf<RuntimeException>()
-                    cause?.message shouldBe "Unexpected error"
+                    assertSoftly(gitHubUserResponseVm.user) {
+                        id shouldBe "12345"
+                        login shouldBe "john-doe"
+                        name shouldBe "John Doe"
+                        email shouldBe "john.doe@example.com"
+                        avatarUrl shouldBe "https://example.com/avatar.jpg"
+                    }
                 }
             }
         }
 
-        forAll(
-            Row4("Empty response string", "", true, "User is null"),
-            Row4("Empty JSON object response", "{}", true, "User is empty"),
-            Row4("JSON object with null field", "{\"id\": null}", true, "User is empty"),
-            Row4("Valid body without scopes header", successBody, false, "No scopes header found")
-        ) { description, responseBody, addScopesHeader, expectedErrorMessage ->
-            When("calling fetchUser: $description") {
-                mockServer.expect(requestTo(GitHubUserFetcher.GITHUB_USER_URL))
-                    .andRespond(
-                        createResponseCreator(responseBody, addScopesHeader)
-                    )
+        Given("fetchUser, failure responses") {
+            When("calling fetchUser and response is 401") {
+                mockServer
+                    .expect(requestTo(GitHubUserFetcher.GITHUB_USER_URL))
+                    .andRespond(withStatus(HttpStatusCode.valueOf(HttpStatus.UNAUTHORIZED.value())))
 
-                val thrown = shouldThrow<IllegalStateException> {
-                    sut.fetchUser("~token~")
-                }
+                val thrown =
+                    shouldThrow<HttpClientErrorException> {
+                        sut.fetchUser("~token~")
+                    }
 
                 Then("exception message should be as expected") {
-                    thrown.message shouldBe expectedErrorMessage
+                    thrown.message shouldBe "401 Unauthorized: [no body]"
+                }
+            }
+
+            When("calling fetchUser with a non-HttpClientErrorException failure") {
+                mockServer
+                    .expect(requestTo(GitHubUserFetcher.GITHUB_USER_URL))
+                    .andRespond { throw RuntimeException("Unexpected error") }
+
+                val thrown =
+                    shouldThrow<IllegalStateException> {
+                        sut.fetchUser("~token~")
+                    }
+
+                Then("exception message should indicate failure to fetch user") {
+                    assertSoftly(thrown) {
+                        message shouldBe "Failed to fetch user: Unexpected error"
+                        cause.shouldNotBeNull()
+                        cause shouldBe instanceOf<RuntimeException>()
+                        cause?.message shouldBe "Unexpected error"
+                    }
+                }
+            }
+
+            forAll(
+                Row4("Empty response string", "", true, "User is null"),
+                Row4("Empty JSON object response", "{}", true, "User is empty"),
+                Row4("JSON object with null field", "{\"id\": null}", true, "User is empty"),
+                Row4("Valid body without scopes header", successBody, false, "No scopes header found"),
+            ) { description, responseBody, addScopesHeader, expectedErrorMessage ->
+                When("calling fetchUser: $description") {
+                    mockServer
+                        .expect(requestTo(GitHubUserFetcher.GITHUB_USER_URL))
+                        .andRespond(
+                            createResponseCreator(responseBody, addScopesHeader),
+                        )
+
+                    val thrown =
+                        shouldThrow<IllegalStateException> {
+                            sut.fetchUser("~token~")
+                        }
+
+                    Then("exception message should be as expected") {
+                        thrown.message shouldBe expectedErrorMessage
+                    }
                 }
             }
         }
-    }
-}) {
+    }) {
     companion object {
-        private val successBody = """
+        private val successBody =
+            """
             {
                 "id": "12345",
                 "login": "john-doe",
                 "name": "John Doe",
                 "email": "john.doe@example.com",
                 "avatar_url": "https://example.com/avatar.jpg"
-            }""".trimIndent()
-
+            }
+            """.trimIndent()
 
         private fun createResponseCreator(
             body: String,
-            addScopesHeader: Boolean
-        ): ResponseCreator = withSuccess(body, MediaType.APPLICATION_JSON).apply {
-            if (addScopesHeader) header(SCOPES_HEADER, "repo, user")
-        }
+            addScopesHeader: Boolean,
+        ): ResponseCreator =
+            withSuccess(body, MediaType.APPLICATION_JSON).apply {
+                if (addScopesHeader) header(SCOPES_HEADER, "repo, user")
+            }
     }
 }

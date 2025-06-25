@@ -13,7 +13,6 @@ import reactor.test.StepVerifier
 
 @ExtendWith(MockKExtension::class)
 class EsportServiceTest : StringSpec() {
-
     @MockK
     lateinit var esportClient: EsportClient
 
@@ -26,7 +25,8 @@ class EsportServiceTest : StringSpec() {
 
             val matches = sut.getMatches()
 
-            StepVerifier.create(matches)
+            StepVerifier
+                .create(matches)
                 .expectNextCount(1)
                 .verifyComplete()
 

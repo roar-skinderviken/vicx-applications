@@ -11,19 +11,21 @@ import org.springframework.security.authentication.AnonymousAuthenticationToken
 import org.springframework.security.core.Authentication
 import org.springframework.stereotype.Controller
 
-
 @Controller
 class CalculatorGraphQLController(
-    private val calculatorService: CalculatorService
+    private val calculatorService: CalculatorService,
 ) {
     @QueryMapping
-    fun getAllCalculations(@Argument page: Int): PaginatedCalculations =
-        calculatorService.getAllCalculations(page)
+    fun getAllCalculations(
+        @Argument page: Int,
+    ): PaginatedCalculations =
+        calculatorService
+            .getAllCalculations(page)
             .let { result ->
                 PaginatedCalculations(
                     result.content,
                     result.number,
-                    result.totalPages
+                    result.totalPages,
                 )
             }
 
@@ -32,23 +34,26 @@ class CalculatorGraphQLController(
         @Argument firstValue: Long,
         @Argument secondValue: Long,
         @Argument operation: CalculatorOperation,
-        authentication: Authentication?
+        authentication: Authentication?,
     ): CalcVm {
-        val username = authentication
-            ?.takeUnless { it is AnonymousAuthenticationToken }
-            ?.name
+        val username =
+            authentication
+                ?.takeUnless { it is AnonymousAuthenticationToken }
+                ?.name
 
         return calculatorService.calculate(
             firstValue,
             secondValue,
             operation,
-            username
+            username,
         )
     }
 
     @MutationMapping
     @PreAuthorize("hasAnyRole('USER', 'GITHUB_USER') and @calculatorSecurityService.isAllowedToDelete(#ids, authentication)")
-    fun deleteCalculations(@Argument ids: List<Long>): Boolean {
+    fun deleteCalculations(
+        @Argument ids: List<Long>,
+    ): Boolean {
         calculatorService.deleteByIds(ids)
         return true
     }

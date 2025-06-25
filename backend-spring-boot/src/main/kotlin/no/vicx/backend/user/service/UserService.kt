@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
 
-
 /**
  * Service for managing user-related operations, such as user creation, updating user details, and password management.
  *
@@ -30,19 +29,18 @@ import org.springframework.web.multipart.MultipartFile
 class UserService(
     private val userRepository: UserRepository,
     private val passwordEncoder: PasswordEncoder,
-    cacheManager: CacheManager
+    cacheManager: CacheManager,
 ) {
     private val recaptchaTokensCache: Cache =
-        requireNotNull(cacheManager.getCache("RECAPTCHA_TOKENS"))
-        { "Cache 'RECAPTCHA_TOKENS' is not configured. Application cannot start." }
+        requireNotNull(
+            cacheManager.getCache("RECAPTCHA_TOKENS"),
+        ) { "Cache 'RECAPTCHA_TOKENS' is not configured. Application cannot start." }
 
     /**
      * Creates a new user with the specified details.
      *
-     *
      * The user's password is encoded using the provided [PasswordEncoder].
      * If an image file is provided, it will be associated with the user.
-     *
      *
      * @param createUserVm the [CreateUserVm] containing the user details
      * @param image        the image file associated with the user (optional)
@@ -50,20 +48,24 @@ class UserService(
      */
     fun createUser(
         createUserVm: CreateUserVm,
-        image: MultipartFile?
+        image: MultipartFile?,
     ): VicxUser {
-        val savedUser = userRepository.save(
-            VicxUser.builder()
-                .username(createUserVm.username)
-                .password(passwordEncoder.encode(createUserVm.password))
-                .name(createUserVm.name)
-                .email(createUserVm.email)
-                .userImage(
-                    if (image != null && !image.isEmpty) UserImage(image.bytes, image.contentType)
-                    else null
-                )
-                .build()
-        )
+        val savedUser =
+            userRepository.save(
+                VicxUser
+                    .builder()
+                    .username(createUserVm.username)
+                    .password(passwordEncoder.encode(createUserVm.password))
+                    .name(createUserVm.name)
+                    .email(createUserVm.email)
+                    .userImage(
+                        if (image != null && !image.isEmpty) {
+                            UserImage(image.bytes, image.contentType)
+                        } else {
+                            null
+                        },
+                    ).build(),
+            )
 
         recaptchaTokensCache.evictIfPresent(createUserVm.recaptchaToken)
 
@@ -93,7 +95,7 @@ class UserService(
      */
     fun updateUser(
         requestVm: UserPatchVm,
-        username: String
+        username: String,
     ) {
         val user = getUserByUserName(username)
         userRepository.save(requestVm.applyPatch(user))
@@ -108,11 +110,12 @@ class UserService(
      */
     fun isValidPassword(
         username: String,
-        clearTextPassword: String?
-    ): Boolean = passwordEncoder.matches(
-        clearTextPassword,
-        getUserByUserName(username).password
-    )
+        clearTextPassword: String?,
+    ): Boolean =
+        passwordEncoder.matches(
+            clearTextPassword,
+            getUserByUserName(username).password,
+        )
 
     /**
      * Updates the password for the specified user.
@@ -122,13 +125,13 @@ class UserService(
      */
     fun updatePassword(
         changePasswordVm: ChangePasswordVm,
-        username: String
+        username: String,
     ) {
         userRepository.save(
             changePasswordVm.applyPatch(
                 getUserByUserName(username),
-                passwordEncoder
-            )
+                passwordEncoder,
+            ),
         )
     }
 }

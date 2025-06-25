@@ -9,28 +9,30 @@ import org.springframework.boot.test.autoconfigure.json.JsonTest
 
 @JsonTest
 class RecaptchaResponseVmTest(
-    objectMapper: ObjectMapper
+    objectMapper: ObjectMapper,
 ) : BehaviorSpec({
-    Given("valid reCAPTCHA response JSON") {
-        val json = """
+        Given("valid reCAPTCHA response JSON") {
+            val json =
+                """
                 {
                     "success": true,
                     "challenge_ts": "2024-12-09T14:30:00+00:00",
                     "hostname": "~hostname~",
                     "error-codes": ["~error-code1~","~error-code2~"]
-                }""".trimIndent()
+                }
+                """.trimIndent()
 
-        When("mapping JSON to view model") {
-            val viewModel = objectMapper.readValue<RecaptchaResponseVm>(json)
+            When("mapping JSON to view model") {
+                val viewModel = objectMapper.readValue<RecaptchaResponseVm>(json)
 
-            Then("view model should be as expected") {
-                assertSoftly(viewModel) {
-                    success shouldBe true
-                    challengeTimestamp shouldBe "2024-12-09T14:30:00+00:00"
-                    hostname shouldBe "~hostname~"
-                    errorCodes shouldBe listOf("~error-code1~", "~error-code2~")
+                Then("view model should be as expected") {
+                    assertSoftly(viewModel) {
+                        success shouldBe true
+                        challengeTimestamp shouldBe "2024-12-09T14:30:00+00:00"
+                        hostname shouldBe "~hostname~"
+                        errorCodes shouldBe listOf("~error-code1~", "~error-code2~")
+                    }
                 }
             }
         }
-    }
-})
+    })

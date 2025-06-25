@@ -5,7 +5,6 @@ import no.vicx.database.calculator.CalcEntry
 import no.vicx.database.calculator.CalculatorOperation
 import java.time.LocalDateTime
 
-
 /**
  * Represents a detailed view of a calculator operation, including metadata.
  */
@@ -13,57 +12,52 @@ import java.time.LocalDateTime
 data class CalcVm(
     @Schema(
         description = "The unique identifier of the calculation.",
-        example = "12345"
+        example = "12345",
     )
     val id: Int,
-
     @Schema(
         description = "The first value used in the calculation.",
-        example = "10"
+        example = "10",
     )
     val firstValue: Int,
-
     @Schema(
         description = "The second value used in the calculation.",
-        example = "5"
+        example = "5",
     )
     val secondValue: Int,
-
     @Schema(
         description = "The operation performed on the values (e.g., ADD, SUBTRACT).",
-        implementation = CalculatorOperation::class
+        implementation = CalculatorOperation::class,
     )
     val operation: CalculatorOperation,
-
     @Schema(
         description = "The result of the calculation.",
-        example = "15"
+        example = "15",
     )
     val result: Int,
-
     @Schema(
         description = "The username of the person who performed the calculation.",
-        example = "john_doe"
+        example = "john_doe",
     )
     val username: String?,
-
     @Schema(
         description = "The timestamp when the calculation was created.",
-        example = "2024-12-07T10:15:30"
+        example = "2024-12-07T10:15:30",
     )
-    val createdAt: LocalDateTime
+    val createdAt: LocalDateTime,
 ) {
     companion object {
-        fun fromEntity(source: CalcEntry) = with(source) {
-            CalcVm(
-                id = id.toInt(),
-                firstValue = firstValue.toInt(),
-                secondValue = secondValue.toInt(),
-                operation = operation ?: error("operation cannot be null"),
-                result = result.toInt(),
-                username = username,
-                createdAt = createdAt ?: error("createdAt cannot be null")
-            )
-        }
+        fun fromEntity(source: CalcEntry) =
+            with(source) {
+                CalcVm(
+                    id = id.toInt(),
+                    firstValue = firstValue.toInt(),
+                    secondValue = secondValue.toInt(),
+                    operation = operation ?: error("operation cannot be null"),
+                    result = result.toInt(),
+                    username = username,
+                    createdAt = createdAt ?: error("createdAt cannot be null"),
+                )
+            }
     }
 }

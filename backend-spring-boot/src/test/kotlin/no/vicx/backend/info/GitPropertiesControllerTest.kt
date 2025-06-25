@@ -24,25 +24,27 @@ class GitPropertiesControllerTest(
     @MockkBean private val opaqueTokenIntrospector: OpaqueTokenIntrospector,
 ) : StringSpec({
 
-    "when calling GET /gitproperties then expect result" {
-        mockMvc.perform(get("/gitproperties"))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.branch").value("main"))
-            .andExpect(jsonPath("$.commitId").value("1"))
-            .andExpect(jsonPath("$.shortCommitId").value("1"))
-            .andExpect(jsonPath("$.commitTime").value(commitTimeAsString))
-    }
-}) {
+        "when calling GET /gitproperties then expect result" {
+            mockMvc
+                .perform(get("/gitproperties"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.branch").value("main"))
+                .andExpect(jsonPath("$.commitId").value("1"))
+                .andExpect(jsonPath("$.shortCommitId").value("1"))
+                .andExpect(jsonPath("$.commitTime").value(commitTimeAsString))
+        }
+    }) {
     @TestConfiguration
     class GitPropertiesControllerTestConfiguration {
-
         @Bean
-        fun mockGitProperties(): GitProperties = GitProperties(
-            Properties().apply {
-                setProperty("branch", "main")
-                setProperty("commit.id", "1")
-                setProperty("commit.time", commitTimeAsString)
-            })
+        fun mockGitProperties(): GitProperties =
+            GitProperties(
+                Properties().apply {
+                    setProperty("branch", "main")
+                    setProperty("commit.id", "1")
+                    setProperty("commit.time", commitTimeAsString)
+                },
+            )
     }
 
     companion object {

@@ -5,9 +5,8 @@ import jakarta.validation.ConstraintValidatorContext
 import no.vicx.backend.user.service.UserService
 import org.springframework.security.core.context.SecurityContextHolder
 
-
 class CurrentPasswordValidator(
-    private val userService: UserService
+    private val userService: UserService,
 ) : ConstraintValidator<CurrentPassword, String> {
     private var passwordMinLength: Int = 0
     private var passwordMaxLength: Int = 0
@@ -19,9 +18,10 @@ class CurrentPasswordValidator(
 
     override fun isValid(
         value: String?,
-        context: ConstraintValidatorContext
-    ): Boolean = value == null
-            || value.length < passwordMinLength
-            || value.length > passwordMaxLength
-            || userService.isValidPassword(SecurityContextHolder.getContext().authentication.name, value)
+        context: ConstraintValidatorContext,
+    ): Boolean =
+        value == null ||
+            value.length < passwordMinLength ||
+            value.length > passwordMaxLength ||
+            userService.isValidPassword(SecurityContextHolder.getContext().authentication.name, value)
 }

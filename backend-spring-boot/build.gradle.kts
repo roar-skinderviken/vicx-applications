@@ -1,6 +1,7 @@
 plugins {
     id("vicx-library")
     alias(libs.plugins.git.properties)
+    alias(libs.plugins.ktlint)
 }
 
 dependencies {
@@ -17,7 +18,7 @@ dependencies {
     implementation(libs.tika.core)
 
     // logging
-    //runtimeOnly(libs.logback.access.spring.boot.starter)
+    // runtimeOnly(libs.logback.access.spring.boot.starter)
     runtimeOnly(libs.logstash.logback.encoder)
 
     // database
@@ -43,18 +44,24 @@ tasks.jar {
     enabled = false
 }
 
+ktlint {
+    version =
+        libs.versions.ktlint.version
+            .get()
+}
+
 kotlin {
     compilerOptions {
         freeCompilerArgs
             .addAll(
                 "-Xjsr305=strict",
-                "-Xannotation-default-target=param-property"
+                "-Xannotation-default-target=param-property",
             )
     }
 }
 
 tasks.test {
     jvmArgs(
-        "-Dkotest.framework.config.fqn=no.vicx.backend.KotestConfig"
+        "-Dkotest.framework.config.fqn=no.vicx.backend.KotestConfig",
     )
 }

@@ -8,24 +8,27 @@ import io.swagger.v3.oas.annotations.security.OAuthFlows
 import io.swagger.v3.oas.annotations.security.OAuthScope
 import io.swagger.v3.oas.annotations.security.SecurityScheme
 
-
 @OpenAPIDefinition(
-    info = Info(
-        title = "Vicx API",
-        description = "The Vicx API provides endpoints for managing resources, performing operations, " +
-                "and accessing features of the Vicx platform.",
-        version = "v1"
-    )
+    info =
+        Info(
+            title = "Vicx API",
+            description =
+                "The Vicx API provides endpoints for managing resources, performing operations, " +
+                    "and accessing features of the Vicx platform.",
+            version = "v1",
+        ),
 )
 @SecurityScheme(
     name = "security_auth",
     type = SecuritySchemeType.OAUTH2,
-    flows = OAuthFlows(
-        authorizationCode = OAuthFlow(
-            authorizationUrl = "\${springdoc.oAuthFlow.authorizationUrl}",
-            tokenUrl = "\${springdoc.oAuthFlow.tokenUrl}",
-            scopes = [OAuthScope(name = "openid", description = "openid scope")]
-        )
-    )
+    flows =
+        OAuthFlows(
+            authorizationCode =
+                OAuthFlow(
+                    authorizationUrl = "\${springdoc.oAuthFlow.authorizationUrl}",
+                    tokenUrl = "\${springdoc.oAuthFlow.tokenUrl}",
+                    scopes = [OAuthScope(name = "openid", description = "openid scope")],
+                ),
+        ),
 )
 class OpenApiConfig

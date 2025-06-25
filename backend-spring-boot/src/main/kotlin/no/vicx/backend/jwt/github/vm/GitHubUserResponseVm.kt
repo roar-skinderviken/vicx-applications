@@ -6,11 +6,12 @@ import org.springframework.security.oauth2.core.DefaultOAuth2AuthenticatedPrinci
 data class GitHubUserResponseVm(
     val user: GitHubUserVm,
     val grantedScopes: String,
-    val token: String
+    val token: String,
 ) {
-    fun toPrincipal() = DefaultOAuth2AuthenticatedPrincipal(
-        user.login,
-        mapOf("sub" to user.login),
-        listOf(SimpleGrantedAuthority("ROLE_GITHUB_USER"))
-    )
+    fun toPrincipal() =
+        DefaultOAuth2AuthenticatedPrincipal(
+            user.login,
+            mapOf("sub" to user.login),
+            listOf(SimpleGrantedAuthority("ROLE_GITHUB_USER")),
+        )
 }

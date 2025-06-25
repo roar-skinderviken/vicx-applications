@@ -7,7 +7,6 @@ import org.springframework.http.MediaType
 import org.springframework.web.multipart.MultipartFile
 import java.io.IOException
 
-
 class ProfileImageValidator : ConstraintValidator<ProfileImage, MultipartFile?> {
     private var maxFileSize: Long = 0
     private var invalidFileTypeMessage: String = ""
@@ -19,22 +18,27 @@ class ProfileImageValidator : ConstraintValidator<ProfileImage, MultipartFile?> 
         this.invalidSizeMessage = constraintAnnotation.invalidSizeMessage
     }
 
-    override fun isValid(file: MultipartFile?, context: ConstraintValidatorContext): Boolean {
+    override fun isValid(
+        file: MultipartFile?,
+        context: ConstraintValidatorContext,
+    ): Boolean {
         // Null or empty check upfront
         if (file == null) return true
 
         context.disableDefaultConstraintViolation()
 
         // Size check: Ensure the file is within the allowed size limit
-        if (file.size > maxFileSize)
+        if (file.size > maxFileSize) {
             return setValidationError(invalidSizeMessage, context)
+        }
 
         // Validate file type
         try {
             val mimeType = TIKA.detect(file.bytes)
-            if (!ALLOWED_FILETYPES.contains(mimeType))
+            if (!ALLOWED_FILETYPES.contains(mimeType)) {
                 return setValidationError(invalidFileTypeMessage, context)
-        } catch (e: IOException) {
+            }
+        } catch (_: IOException) {
             // Handle error if file type detection fails
             return setValidationError("Unable to detect file type", context)
         }
@@ -51,7 +55,7 @@ class ProfileImageValidator : ConstraintValidator<ProfileImage, MultipartFile?> 
 
         private fun setValidationError(
             message: String,
-            context: ConstraintValidatorContext
+            context: ConstraintValidatorContext,
         ): Boolean {
             context.buildConstraintViolationWithTemplate(message).addConstraintViolation()
             return false

@@ -5,10 +5,9 @@ import no.vicx.database.calculator.CalculatorOperation
 import java.time.LocalDateTime
 
 object CalculatorTestUtils {
-
     fun createCalcEntryInTest(
         addOperation: Boolean = true,
-        addCreatedAt: Boolean = true
+        addCreatedAt: Boolean = true,
     ) = CalcEntry().apply {
         id = 42L
         firstValue = 1L
