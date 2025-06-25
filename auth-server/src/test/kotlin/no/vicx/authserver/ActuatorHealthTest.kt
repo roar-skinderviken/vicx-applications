@@ -13,7 +13,7 @@ import org.springframework.web.util.UriComponentsBuilder
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class ActuatorHealthTest(
-    @LocalManagementPort val managementPort: Int,
+    @LocalManagementPort managementPort: Int,
     restTemplate: TestRestTemplate,
 ) : BehaviorSpec({
 
