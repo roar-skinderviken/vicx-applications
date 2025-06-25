@@ -13,19 +13,23 @@ import reactor.core.publisher.Flux
 
 @Service
 class EsportClient(
-    private val webClient: WebClient,
+    webClientBuilder: WebClient.Builder,
     @Value("\${esport.token}") private val token: String
 ) {
+    private val webClient = webClientBuilder
+        .baseUrl(PANDASCORE_BASE_URL)
+        .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
+        .defaultHeader(HttpHeaders.AUTHORIZATION, "$BEARER_PREFIX$token")
+        .build()
+
     fun getMatches(matchType: MatchType): Flux<EsportMatchVm> = webClient
         .get()
-        .uri("$PANDASCORE_BASE_URL${matchType.name.lowercase()}")
-        .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
-        .header(HttpHeaders.AUTHORIZATION, "$BEARER_PREFIX$token")
+        .uri("/${matchType.name.lowercase()}")
         .retrieve()
         .bodyToFlux<EsportMatchVm>()
 
     companion object {
-        private const val PANDASCORE_BASE_URL = "https://api.pandascore.co/csgo/matches/"
+        private const val PANDASCORE_BASE_URL = "https://api.pandascore.co/csgo/matches"
         private const val BEARER_PREFIX = "Bearer "
     }
 }

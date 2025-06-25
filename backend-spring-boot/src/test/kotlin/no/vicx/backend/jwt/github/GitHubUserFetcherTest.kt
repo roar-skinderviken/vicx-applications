@@ -9,7 +9,6 @@ import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.instanceOf
 import no.vicx.backend.config.JsonCustomizerConfig
-import no.vicx.backend.config.RestClientConfig
 import no.vicx.backend.jwt.github.GitHubUserFetcher.Companion.SCOPES_HEADER
 import org.springframework.boot.test.autoconfigure.web.client.RestClientTest
 import org.springframework.context.annotation.Import
@@ -24,7 +23,7 @@ import org.springframework.test.web.client.response.MockRestResponseCreators.wit
 import org.springframework.web.client.HttpClientErrorException
 
 @RestClientTest(GitHubUserFetcher::class)
-@Import(RestClientConfig::class, JsonCustomizerConfig::class)
+@Import(JsonCustomizerConfig::class)
 class GitHubUserFetcherTest(
     mockServer: MockRestServiceServer,
     sut: GitHubUserFetcher
