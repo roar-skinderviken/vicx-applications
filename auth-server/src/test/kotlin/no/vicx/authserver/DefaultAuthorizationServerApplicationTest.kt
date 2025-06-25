@@ -22,84 +22,85 @@ import org.springframework.http.HttpStatus
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 class DefaultAuthorizationServerApplicationTest(
-    webClient: WebClient
+    webClient: WebClient,
 ) : BehaviorSpec({
 
-    Given("Authorization Server Application") {
-        lateinit var loginPage: HtmlPage
+        Given("Authorization Server Application") {
+            lateinit var loginPage: HtmlPage
 
-        beforeContainer {
-            with(webClient) {
-                options.isThrowExceptionOnFailingStatusCode = true
-                options.isRedirectEnabled = true
-                cookieManager.clearCookies() // log out
+            beforeContainer {
+                with(webClient) {
+                    options.isThrowExceptionOnFailingStatusCode = true
+                    options.isRedirectEnabled = true
+                    cookieManager.clearCookies() // log out
+                }
+
+                loginPage = webClient.getPage("/")
+                assertLoginPage(loginPage)
             }
 
-            loginPage = webClient.getPage("/")
-            assertLoginPage(loginPage)
-        }
+            When("login successful") {
+                webClient.options.isThrowExceptionOnFailingStatusCode = false
 
-        When("login successful") {
-            webClient.options.isThrowExceptionOnFailingStatusCode = false
+                val signInResponse = signIn<Page>(loginPage, "password").webResponse
 
-            val signInResponse = signIn<Page>(loginPage, "password").webResponse
-
-            Then("display NotFound") {
-                signInResponse.statusCode shouldBe HttpStatus.NOT_FOUND.value()
-            }
-        }
-
-        When("login fails") {
-            val loginErrorPage = signIn<HtmlPage>(loginPage, "wrong-password")
-
-            Then("expect invalid credentials message") {
-                loginErrorPage
-                    .querySelector<DomNode>("div[role=\"alert\"]")
-                    .textContent shouldBe "Invalid credentials"
-            }
-        }
-
-        When("not logged in and requesting token") {
-            val page = webClient.getPage<HtmlPage>(authorizationRequestUri())
-
-            Then("expect login page") {
-                assertLoginPage(page)
-            }
-        }
-
-        When("when logging in and requesting token") {
-            with(webClient) {
-                options.isThrowExceptionOnFailingStatusCode = false
-                options.isRedirectEnabled = false
+                Then("display NotFound") {
+                    signInResponse.statusCode shouldBe HttpStatus.NOT_FOUND.value()
+                }
             }
 
-            signIn<Page>(webClient.getPage("/login"), "password")
+            When("login fails") {
+                val loginErrorPage = signIn<HtmlPage>(loginPage, "wrong-password")
 
-            // Request token
-            val loginResponse = webClient.getPage<Page>(authorizationRequestUri()).webResponse
+                Then("expect invalid credentials message") {
+                    loginErrorPage
+                        .querySelector<DomNode>("div[role=\"alert\"]")
+                        .textContent shouldBe "Invalid credentials"
+                }
+            }
 
-            Then("redirects to client application") {
-                assertSoftly(loginResponse) {
-                    statusCode shouldBe HttpStatus.MOVED_PERMANENTLY.value()
+            When("not logged in and requesting token") {
+                val page = webClient.getPage<HtmlPage>(authorizationRequestUri())
 
-                    assertSoftly(getResponseHeaderValue("location")) {
-                        it shouldStartWith REDIRECT_URI
-                        it shouldContain "code="
+                Then("expect login page") {
+                    assertLoginPage(page)
+                }
+            }
+
+            When("when logging in and requesting token") {
+                with(webClient) {
+                    options.isThrowExceptionOnFailingStatusCode = false
+                    options.isRedirectEnabled = false
+                }
+
+                signIn<Page>(webClient.getPage("/login"), "password")
+
+                // Request token
+                val loginResponse = webClient.getPage<Page>(authorizationRequestUri()).webResponse
+
+                Then("redirects to client application") {
+                    assertSoftly(loginResponse) {
+                        statusCode shouldBe HttpStatus.MOVED_PERMANENTLY.value()
+
+                        assertSoftly(getResponseHeaderValue("location")) {
+                            it shouldStartWith REDIRECT_URI
+                            it shouldContain "code="
+                        }
                     }
                 }
             }
         }
-    }
-}) {
+    }) {
     companion object {
         private fun <P : Page> signIn(
             page: HtmlPage,
-            password: String
-        ): P = page.run {
-            querySelector<HtmlInput>("input[name=\"username\"]").type("user1")
-            querySelector<HtmlInput>("input[name=\"password\"]").type(password)
-            querySelector<HtmlButton>("button").click()
-        }
+            password: String,
+        ): P =
+            page.run {
+                querySelector<HtmlInput>("input[name=\"username\"]").type("user1")
+                querySelector<HtmlInput>("input[name=\"password\"]").type(password)
+                querySelector<HtmlButton>("button").click()
+            }
 
         private fun assertLoginPage(page: HtmlPage) {
             assertSoftly(page) {

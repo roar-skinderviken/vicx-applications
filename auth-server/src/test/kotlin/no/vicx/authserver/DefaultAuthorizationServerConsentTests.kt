@@ -24,79 +24,83 @@ import org.springframework.security.oauth2.server.authorization.OAuth2Authorizat
 @AutoConfigureMockMvc
 class DefaultAuthorizationServerConsentTests(
     webClient: WebClient,
-    @MockkBean(relaxed = true) private val authorizationConsentService: OAuth2AuthorizationConsentService
+    @MockkBean(relaxed = true) private val authorizationConsentService: OAuth2AuthorizationConsentService,
 ) : BehaviorSpec({
 
-    Given("Authorization Server Application") {
-        lateinit var consentPage: HtmlPage
+        Given("Authorization Server Application") {
+            lateinit var consentPage: HtmlPage
 
-        beforeContainer {
-            with(webClient) {
-                options.isThrowExceptionOnFailingStatusCode = false
-                options.isRedirectEnabled = false
-                cookieManager.clearCookies() // log out
+            beforeContainer {
+                with(webClient) {
+                    options.isThrowExceptionOnFailingStatusCode = false
+                    options.isRedirectEnabled = false
+                    cookieManager.clearCookies() // log out
+                }
+
+                withMockUser("user1")
+
+                consentPage =
+                    webClient.getPage(
+                        authorizationRequestUri("openid profile email"),
+                    )
             }
 
-            withMockUser("user1")
+            When("consent page is displayed") {
+                val titleText = consentPage.titleText
 
-            consentPage = webClient.getPage(
-                authorizationRequestUri("openid profile email")
-            )
-        }
+                val scopesInPage =
+                    consentPage
+                        .querySelectorAll("input[name='scope']")
+                        .filterIsInstance<HtmlCheckBoxInput>()
+                        .map { it.id }
 
-        When("consent page is displayed") {
-            val titleText = consentPage.titleText
+                Then("title text should be 'Consent required'") {
+                    titleText shouldBe "Consent required"
+                }
 
-            val scopesInPage = consentPage
-                .querySelectorAll("input[name='scope']")
-                .filterIsInstance<HtmlCheckBoxInput>()
-                .map { it.id }
-
-            Then("title text should be 'Consent required'") {
-                titleText shouldBe "Consent required"
+                Then("scopes should be as expected") {
+                    scopesInPage.shouldContainExactlyInAnyOrder("profile", "email")
+                }
             }
 
-            Then("scopes should be as expected") {
-                scopesInPage.shouldContainExactlyInAnyOrder("profile", "email")
+            When("user consents to all scopes") {
+                consentPage
+                    .querySelectorAll("input[name='scope']")
+                    .filterIsInstance<HtmlCheckBoxInput>()
+                    .forEach { checkBox -> checkBox.click<Page>() }
+
+                val approveConsentResponse =
+                    consentPage
+                        .querySelector<DomElement>("button[id='submit-consent']")
+                        .click<Page>()
+                        .webResponse
+
+                Then("approve response should be as expected") {
+                    assertSoftly(approveConsentResponse) {
+                        statusCode shouldBe HttpStatus.MOVED_PERMANENTLY.value()
+
+                        assertSoftly(getResponseHeaderValue("location")) {
+                            it shouldStartWith REDIRECT_URI
+                            it shouldContain "code="
+                        }
+                    }
+                }
             }
-        }
 
-        When("user consents to all scopes") {
-            consentPage
-                .querySelectorAll("input[name='scope']")
-                .filterIsInstance<HtmlCheckBoxInput>()
-                .forEach { checkBox -> checkBox.click<Page>() }
+            When("user cancels consent") {
+                val location =
+                    consentPage
+                        .querySelector<DomElement>("button[id='cancel-consent']")
+                        .click<Page>()
+                        .webResponse
+                        .getResponseHeaderValue("location")
 
-            val approveConsentResponse = consentPage
-                .querySelector<DomElement>("button[id='submit-consent']")
-                .click<Page>()
-                .webResponse
-
-            Then("approve response should be as expected") {
-                assertSoftly(approveConsentResponse) {
-                    statusCode shouldBe HttpStatus.MOVED_PERMANENTLY.value()
-
-                    assertSoftly(getResponseHeaderValue("location")) {
+                Then("expect access denied error") {
+                    assertSoftly(location) {
                         it shouldStartWith REDIRECT_URI
-                        it shouldContain "code="
+                        it shouldContain "error=access_denied"
                     }
                 }
             }
         }
-
-        When("user cancels consent") {
-            val location = consentPage
-                .querySelector<DomElement>("button[id='cancel-consent']")
-                .click<Page>()
-                .webResponse
-                .getResponseHeaderValue("location")
-
-            Then("expect access denied error") {
-                assertSoftly(location) {
-                    it shouldStartWith REDIRECT_URI
-                    it shouldContain "error=access_denied"
-                }
-            }
-        }
-    }
-})
+    })

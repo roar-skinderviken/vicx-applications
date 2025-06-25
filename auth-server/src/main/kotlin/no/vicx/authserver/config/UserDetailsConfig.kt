@@ -8,10 +8,8 @@ import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.crypto.password.PasswordEncoder
 
-
 @Configuration(proxyBeanMethods = false)
 class UserDetailsConfig {
-
     /**
      * Creates a [UserDetailsService] bean that retrieves user details based on the username.
      * If the username matches the default user defined in the configuration, the default user is returned.
@@ -26,7 +24,7 @@ class UserDetailsConfig {
     fun userDetailsService(
         userProperties: DefaultUserProperties,
         passwordEncoder: PasswordEncoder,
-        userRepository: UserRepository
+        userRepository: UserRepository,
     ) = UserDetailsService { username ->
 
         if (username.equals(userProperties.username, ignoreCase = true)) {
@@ -35,7 +33,7 @@ class UserDetailsConfig {
                 passwordEncoder.encode(userProperties.password),
                 userProperties.name,
                 userProperties.email,
-                false
+                false,
             )
         } else {
             userRepository

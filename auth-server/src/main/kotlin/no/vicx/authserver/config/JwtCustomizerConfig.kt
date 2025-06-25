@@ -13,33 +13,35 @@ import org.springframework.security.oauth2.server.authorization.token.OAuth2Toke
 
 @Configuration(proxyBeanMethods = false)
 class JwtCustomizerConfig {
-
     @Bean
-    fun jwtCustomizer() = OAuth2TokenCustomizer { jwtEncodingContext: JwtEncodingContext ->
-        log.info("Received token type: {} (value={})",
-            jwtEncodingContext.tokenType,
-            jwtEncodingContext.tokenType.value
-        )
+    fun jwtCustomizer() =
+        OAuth2TokenCustomizer { jwtEncodingContext: JwtEncodingContext ->
+            log.info(
+                "Received token type: {} (value={})",
+                jwtEncodingContext.tokenType,
+                jwtEncodingContext.tokenType.value,
+            )
 
-        val authentication = jwtEncodingContext.getPrincipal<Authentication?>() ?: return@OAuth2TokenCustomizer
-        val builder: JwtClaimsSet.Builder = jwtEncodingContext.claims
+            val authentication = jwtEncodingContext.getPrincipal<Authentication?>() ?: return@OAuth2TokenCustomizer
+            val builder: JwtClaimsSet.Builder = jwtEncodingContext.claims
 
-        builder.claim(
-            ROLES_CLAIM,
-            authentication.authorities
-                .map { grantedAuthority -> grantedAuthority.authority }
-        )
+            builder.claim(
+                ROLES_CLAIM,
+                authentication.authorities
+                    .map { grantedAuthority -> grantedAuthority.authority },
+            )
 
-        if (jwtEncodingContext.tokenType.value != OidcParameterNames.ID_TOKEN)
-            return@OAuth2TokenCustomizer
+            if (jwtEncodingContext.tokenType.value != OidcParameterNames.ID_TOKEN) {
+                return@OAuth2TokenCustomizer
+            }
 
-        val userDetails = authentication.principal as? CustomUserDetails ?: return@OAuth2TokenCustomizer
+            val userDetails = authentication.principal as? CustomUserDetails ?: return@OAuth2TokenCustomizer
 
-        builder.addIdTokenClaims(
-            userDetails = userDetails,
-            authorizedScopes = jwtEncodingContext.authorizedScopes
-        )
-    }
+            builder.addIdTokenClaims(
+                userDetails = userDetails,
+                authorizedScopes = jwtEncodingContext.authorizedScopes,
+            )
+        }
 
     companion object {
         const val ROLES_CLAIM = "roles"
@@ -51,16 +53,18 @@ class JwtCustomizerConfig {
 
         private fun JwtClaimsSet.Builder.addIdTokenClaims(
             userDetails: CustomUserDetails,
-            authorizedScopes: Set<String>
+            authorizedScopes: Set<String>,
         ) {
-            if (OidcScopes.EMAIL in authorizedScopes)
+            if (OidcScopes.EMAIL in authorizedScopes) {
                 claim(EMAIL_CLAIM, userDetails.email)
+            }
 
             if (OidcScopes.PROFILE in authorizedScopes) {
                 claim(NAME_CLAIM, userDetails.name)
 
-                if (userDetails.hasImage)
+                if (userDetails.hasImage) {
                     claim(IMAGE_CLAIM, userDetails.username)
+                }
             }
         }
     }

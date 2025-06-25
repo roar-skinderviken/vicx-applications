@@ -10,8 +10,9 @@ object KotestConfig : AbstractProjectConfig() {
         System.setProperty(AbstractEnvironment.ACTIVE_PROFILES_PROPERTY_NAME, "test")
     }
 
-    override fun extensions() = listOf(
-        SpringExtension,
-        SpringAutowireConstructorExtension
-    )
+    override fun extensions() =
+        listOf(
+            SpringExtension,
+            SpringAutowireConstructorExtension,
+        )
 }

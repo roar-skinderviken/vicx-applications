@@ -7,13 +7,14 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
-
 @RestController
 class TokenStatusController(
-    private val authorizationService: OAuth2AuthorizationService
+    private val authorizationService: OAuth2AuthorizationService,
 ) {
     @GetMapping("token-status")
-    fun tokenStatus(@RequestParam token: String): ResponseEntity<*> {
+    fun tokenStatus(
+        @RequestParam token: String,
+    ): ResponseEntity<*> {
         val authorization =
             authorizationService.findByToken(token, OAuth2TokenType.ACCESS_TOKEN)
 

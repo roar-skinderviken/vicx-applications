@@ -1,5 +1,6 @@
 plugins {
     id("vicx-library")
+    alias(libs.plugins.ktlint)
 }
 
 dependencies {
@@ -27,6 +28,12 @@ dependencies {
 
 springBoot {
     mainClass = "no.vicx.authserver.AuthServerApplicationKt"
+}
+
+ktlint {
+    version =
+        libs.versions.ktlint.version
+            .get()
 }
 
 tasks.jar {

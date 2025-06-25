@@ -15,5 +15,5 @@ data class OAuthProperties(
     @field:NotBlank val postLogoutRedirectUri: String,
     @field:NotBlank val resourceServer: String,
     @field:NotNull val accessTokenTimeToLive: Duration?,
-    @field:NotNull val refreshTokenTimeToLive: Duration?
+    @field:NotNull val refreshTokenTimeToLive: Duration?,
 )
