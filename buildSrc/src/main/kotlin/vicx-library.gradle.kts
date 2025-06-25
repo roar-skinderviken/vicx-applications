@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
+import org.jlleitschuh.gradle.ktlint.KtlintExtension
 import kotlin.jvm.optionals.getOrNull
 
 repositories {
@@ -30,6 +31,15 @@ fun String.getLibraryValue(): MinimalExternalModuleDependency =
         ?.get()
         ?: error("Library '$this' not found in version catalog")
 
+fun String.getLibraryVersion(): String =
+    libs
+        .findVersion(this)
+        .getOrNull()
+        ?.toString()
+        ?: error("Library '$this' not found in version catalog")
+
+val ktlintVersion = "ktlint-version".getLibraryVersion()
+
 // Spring Boot + Kotlin Projects
 if (name in springBootProjects && name in kotlinProjects) {
     apply(plugin = "org.jetbrains.kotlin.plugin.spring")
@@ -55,8 +65,14 @@ if (name in springBootProjects) {
 // Kotlin Projects
 if (name in kotlinProjects) {
     apply(plugin = "org.jetbrains.kotlin.jvm")
+    apply(plugin = "org.jlleitschuh.gradle.ktlint")
+
     configure<KotlinJvmProjectExtension> {
         jvmToolchain(javaVersion)
+    }
+
+    configure<KtlintExtension> {
+        version = ktlintVersion
     }
 
     dependencies {

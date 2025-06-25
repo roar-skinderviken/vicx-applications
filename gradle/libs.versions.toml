@@ -104,6 +104,7 @@ kotlin-jvm = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref
 springframework-boot = { module = "org.springframework.boot:spring-boot-gradle-plugin", version.ref = "spring-boot-version" }
 spring-dependency-management = { module = "io.spring.gradle:dependency-management-plugin", version.ref = "spring-dependency-management-version" }
 kotlin-plugin-spring = { module = "org.jetbrains.kotlin.plugin.spring:org.jetbrains.kotlin.plugin.spring.gradle.plugin", version.ref = "kotlin-version" }
+ktlint-gradle-plugin = {module="org.jlleitschuh.gradle.ktlint:org.jlleitschuh.gradle.ktlint.gradle.plugin", version.ref="ktlint-plugin-version"}
 
 [plugins]
 # These are now added by the convention plugin
@@ -111,10 +112,10 @@ kotlin-plugin-spring = { module = "org.jetbrains.kotlin.plugin.spring:org.jetbra
 # springframework-boot = { id = "org.springframework.boot", version.ref = "spring-boot-version" }
 # spring-dependency-management = { id = "io.spring.dependency-management", version.ref = "spring-dependency-management-version" }
 # kotlin-plugin-spring = { id = "org.jetbrains.kotlin.plugin.spring", version.ref = "kotlin-version" }
+# ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint-plugin-version" }
 
 git-properties = { id = "com.gorylenko.gradle-git-properties", version.ref = "git-properties-version" }
 freefair-lombok = { id = "io.freefair.lombok", version.ref = "freefair-lombok-version" }
-ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint-plugin-version" }
 
 # Ktor
 ktor = { id = "io.ktor.plugin", version.ref = "ktor-version" }

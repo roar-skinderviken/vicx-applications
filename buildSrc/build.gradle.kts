@@ -13,4 +13,5 @@ dependencies {
     implementation(libs.springframework.boot)
     implementation(libs.spring.dependency.management)
     implementation(libs.kotlin.plugin.spring)
+    implementation(libs.ktlint.gradle.plugin)
 }

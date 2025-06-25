@@ -2,7 +2,6 @@ plugins {
     id("vicx-library")
     alias(libs.plugins.ktor)
     alias(libs.plugins.kotlin.plugin.serialization)
-    alias(libs.plugins.ktlint)
 }
 
 application {
@@ -47,12 +46,6 @@ dependencies {
     implementation(libs.embedded.postgres) // TODO
 
     testImplementation(libs.kotlin.test)
-}
-
-ktlint {
-    version =
-        libs.versions.ktlint.version
-            .get()
 }
 
 tasks.shadowJar {

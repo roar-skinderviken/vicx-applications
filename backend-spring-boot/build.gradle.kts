@@ -1,7 +1,6 @@
 plugins {
     id("vicx-library")
     alias(libs.plugins.git.properties)
-    alias(libs.plugins.ktlint)
 }
 
 dependencies {
@@ -42,12 +41,6 @@ springBoot {
 
 tasks.jar {
     enabled = false
-}
-
-ktlint {
-    version =
-        libs.versions.ktlint.version
-            .get()
 }
 
 kotlin {
