@@ -10,7 +10,6 @@ import no.vicx.backend.user.UserTestUtils.createMockMultipartFile
 import no.vicx.backend.user.service.UserImageService
 import no.vicx.database.user.UserImage
 import no.vicx.database.user.UserImageRepository
-import org.hamcrest.Matchers.`is`
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
@@ -71,9 +70,8 @@ class UserImageControllerTest(
                     resultActions
                         .andExpect(status().isBadRequest)
                         .andExpect(
-                            jsonPath(
-                                "$.validationErrors.image",
-                                `is`("Only PNG and JPG files are allowed"),
+                            jsonPath("$.validationErrors.image").value(
+                                "Only PNG and JPG files are allowed",
                             ),
                         )
                 }
@@ -87,9 +85,8 @@ class UserImageControllerTest(
                     resultActions
                         .andExpect(status().isBadRequest)
                         .andExpect(
-                            jsonPath(
-                                "$.validationErrors.image",
-                                `is`("File size exceeds the maximum allowed size of 51200 bytes"),
+                            jsonPath("$.validationErrors.image").value(
+                                "File size exceeds the maximum allowed size of 51200 bytes",
                             ),
                         )
                 }
@@ -101,9 +98,7 @@ class UserImageControllerTest(
                 Then("expect BadRequest and validation error") {
                     resultActions
                         .andExpect(status().isBadRequest)
-                        .andExpect(
-                            jsonPath("$.validationErrors.image", `is`("Cannot be null")),
-                        )
+                        .andExpect(jsonPath("$.validationErrors.image").value("Cannot be null"))
                 }
             }
         }
@@ -123,7 +118,10 @@ class UserImageControllerTest(
 
                 val resultActions =
                     mockMvc
-                        .perform(get("/api/user/image").header(HttpHeaders.AUTHORIZATION, AUTH_HEADER_IN_TEST))
+                        .perform(
+                            get("/api/user/image")
+                                .header(HttpHeaders.AUTHORIZATION, AUTH_HEADER_IN_TEST),
+                        )
 
                 Then("expect OK") {
                     resultActions.andExpect(status().isOk)
@@ -134,8 +132,10 @@ class UserImageControllerTest(
                 every { userImageRepository.findByUserUsername(any()) } returns Optional.empty()
 
                 val resultActions =
-                    mockMvc
-                        .perform(get("/api/user/image").header(HttpHeaders.AUTHORIZATION, AUTH_HEADER_IN_TEST))
+                    mockMvc.perform(
+                        get("/api/user/image")
+                            .header(HttpHeaders.AUTHORIZATION, AUTH_HEADER_IN_TEST),
+                    )
 
                 Then("expect NotFound") {
                     resultActions.andExpect(status().isNotFound)

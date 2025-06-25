@@ -9,7 +9,6 @@ import no.vicx.backend.user.UserTestUtils.createValidVicxUser
 import no.vicx.backend.user.service.UserService
 import no.vicx.backend.user.vm.UserVm
 import no.vicx.backend.user.vm.UserVm.Companion.fromVicxUser
-import org.hamcrest.Matchers.`is`
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.http.HttpHeaders
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
@@ -68,10 +67,10 @@ class UserControllerGetTest(
                 Then("expect OK") {
                     resultActions
                         .andExpect(status().isOk())
-                        .andExpect(jsonPath("$.username", `is`("user1")))
-                        .andExpect(jsonPath("$.name", `is`("The User")))
-                        .andExpect(jsonPath("$.email", `is`("user@example.com")))
-                        .andExpect(jsonPath("$.hasImage", `is`(false)))
+                        .andExpect(jsonPath("$.username").value("user1"))
+                        .andExpect(jsonPath("$.name").value("The User"))
+                        .andExpect(jsonPath("$.email").value("user@example.com"))
+                        .andExpect(jsonPath("$.hasImage").value(false))
                 }
             }
 
