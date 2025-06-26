@@ -17,7 +17,7 @@ dependencies {
     implementation(libs.tika.core)
 
     // logging
-    // runtimeOnly(libs.logback.access.spring.boot.starter)
+    // runtimeOnly(libs.logback.access.spring.boot.starter) TODO
     runtimeOnly(libs.logstash.logback.encoder)
 
     // database
