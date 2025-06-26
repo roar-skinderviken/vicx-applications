@@ -55,3 +55,16 @@ tasks.jar {
 tasks.shadowJar {
     mergeServiceFiles()
 }
+
+tasks.register<Copy>("copyMigrations") {
+    from(
+        project(":database")
+            .layout.projectDirectory
+            .dir("src/main/resources/db/migration"),
+    )
+    into(layout.buildDirectory.dir("resources/main/db.migration"))
+}
+
+tasks.named("processResources").configure {
+    dependsOn("copyMigrations")
+}
