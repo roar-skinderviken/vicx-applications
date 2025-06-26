@@ -1,11 +1,15 @@
 package no.vicx.ktor.db.repository
 
+import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.ktor.server.testing.testApplication
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockkObject
 import kotlinx.coroutines.runBlocking
+import kotlinx.datetime.Clock
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import no.vicx.ktor.db.entity.CalcEntryEntity
 import no.vicx.ktor.db.table.CalcEntryTable
 import no.vicx.ktor.util.CalculatorTestUtils.calcEntryInTest
@@ -25,8 +29,10 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import java.time.OffsetDateTime
+import java.time.ZoneOffset
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
+import kotlin.time.ExperimentalTime
 import kotlin.time.toJavaDuration
 
 class CalculatorRepositoryTest {
@@ -42,6 +48,7 @@ class CalculatorRepositoryTest {
 
     @Nested
     inner class SaveTests {
+        @OptIn(ExperimentalTime::class)
         @Test
         fun `given valid CalcEntry when calling save expect returned CalcEntry`() =
             testApplication {
@@ -57,6 +64,18 @@ class CalculatorRepositoryTest {
                         ),
                         savedCalcEntry,
                     )
+
+                    val expectedCreatedAt =
+                        Clock.System
+                            .now()
+                            .toLocalDateTime(TimeZone.currentSystemDefault())
+
+                    with(savedCalcEntry.createdAt.shouldNotBeNull()) {
+                        val actualCreatedAt = this
+
+                        actualCreatedAt.minute shouldBe expectedCreatedAt.minute
+                        actualCreatedAt.hour shouldBe expectedCreatedAt.hour
+                    }
                 }
             }
 
@@ -104,7 +123,7 @@ class CalculatorRepositoryTest {
                             row[operation] = calcEntry.operation
                             row[result] = calcEntry.result
                             row[username] = calcEntry.username
-                            row[createdAt] = OffsetDateTime.now()
+                            row[createdAt] = OffsetDateTime.now(ZoneOffset.UTC)
                         }
                     }
                 }
@@ -115,7 +134,11 @@ class CalculatorRepositoryTest {
 
                     assertEquals(expectedTotalCount, totalCount)
                     assertEquals(expectedPageSize, list.size)
-                    assertEquals(2, list.last().id, "last record in page should be the second oldest record")
+                    assertEquals(
+                        2,
+                        list.last().id,
+                        "last record in page should be the second oldest record",
+                    )
                 }
             }
     }
@@ -137,7 +160,7 @@ class CalculatorRepositoryTest {
                                 row[operation] = calcEntry.operation
                                 row[result] = calcEntry.result
                                 row[username] = calcEntry.username
-                                row[createdAt] = OffsetDateTime.now()
+                                row[createdAt] = OffsetDateTime.now(ZoneOffset.UTC)
                             }
                         }
                 }
@@ -163,7 +186,7 @@ class CalculatorRepositoryTest {
                         row[operation] = calcEntry.operation
                         row[result] = calcEntry.result
                         row[username] = calcEntry.username
-                        row[createdAt] = OffsetDateTime.now()
+                        row[createdAt] = OffsetDateTime.now(ZoneOffset.UTC)
                     }
                 }
 
@@ -195,7 +218,10 @@ class CalculatorRepositoryTest {
                         row[operation] = calcEntry.operation
                         row[result] = calcEntry.result
                         row[username] = null
-                        row[createdAt] = OffsetDateTime.now().minus(1.hours.toJavaDuration())
+                        row[createdAt] =
+                            OffsetDateTime
+                                .now(ZoneOffset.UTC)
+                                .minus(1.hours.toJavaDuration())
                     }
                 }
 
@@ -204,7 +230,11 @@ class CalculatorRepositoryTest {
                         CalcEntryTable.selectAll().count() shouldBe 1
                     }
 
-                    val deleteRecordsBefore = OffsetDateTime.now().minus(5.minutes.toJavaDuration())
+                    val deleteRecordsBefore =
+                        OffsetDateTime
+                            .now(ZoneOffset.UTC)
+                            .minus(5.minutes.toJavaDuration())
+
                     runBlocking { sut.deleteAllByCreatedAtBeforeAndUsernameNull(deleteRecordsBefore) }
 
                     transaction {

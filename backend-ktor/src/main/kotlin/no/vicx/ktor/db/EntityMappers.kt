@@ -10,6 +10,7 @@ import no.vicx.ktor.db.model.UserImage
 import no.vicx.ktor.db.model.VicxUser
 import org.jetbrains.exposed.sql.Transaction
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
+import java.time.ZoneId
 
 suspend fun <T> suspendTransaction(block: Transaction.() -> T): T = newSuspendedTransaction(Dispatchers.IO, statement = block)
 
@@ -21,7 +22,10 @@ fun CalcEntryEntity.toModel() =
         operation,
         result,
         username,
-        createdAt.toLocalDateTime().toKotlinLocalDateTime(),
+        createdAt
+            .atZoneSameInstant(ZoneId.systemDefault())
+            .toLocalDateTime()
+            .toKotlinLocalDateTime(),
     )
 
 fun VicxUserEntity.toModel() =
