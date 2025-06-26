@@ -6,10 +6,12 @@ on:
       - main
     paths:
       - 'backend-spring-boot/**'
+      - 'database/**'
 
   pull_request:
     paths:
       - 'backend-spring-boot/**'
+      - 'database/**'
       - 'gradle/libs.versions.toml'
 
 jobs:
