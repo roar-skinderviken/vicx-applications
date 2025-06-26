@@ -48,6 +48,10 @@ dependencies {
     testImplementation(libs.kotlin.test)
 }
 
+tasks.jar {
+    enabled = false
+}
+
 tasks.shadowJar {
     mergeServiceFiles()
 }
