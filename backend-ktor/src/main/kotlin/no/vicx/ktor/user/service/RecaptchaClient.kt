@@ -5,33 +5,31 @@ import io.ktor.client.call.body
 import io.ktor.client.request.post
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.URLBuilder
+import io.ktor.http.Url
 import no.vicx.ktor.user.vm.RecaptchaResponseVm
 
 class RecaptchaClient(
     private val httpClient: HttpClient,
     private val reCaptchaSecret: String,
 ) {
-    suspend fun verifyToken(token: String): Boolean {
-        val url =
-            urlBuilder
-                .apply {
-                    parameters.append(TOKEN_RESPONSE_PARAMETER, token)
-                }.build()
+    suspend fun verifyToken(token: String): Boolean =
+        httpClient
+            .post(buildUrl(token))
+            .run {
+                status == HttpStatusCode.OK &&
+                    body<RecaptchaResponseVm>().success
+            }
 
-        val response = httpClient.post(url)
-
-        return response.status == HttpStatusCode.OK &&
-            response.body<RecaptchaResponseVm>().success
-    }
-
-    private val urlBuilder =
-        URLBuilder(RECAPTCHA_VERIFY_URL).apply {
-            parameters.append(SECRET_REQUEST_PARAMETER, reCaptchaSecret)
-        }
+    private fun buildUrl(token: String): Url =
+        URLBuilder(RECAPTCHA_VERIFY_URL)
+            .apply {
+                parameters.append(TOKEN_RESPONSE_PARAMETER, token)
+                parameters.append(SECRET_REQUEST_PARAMETER, reCaptchaSecret)
+            }.build()
 
     companion object {
+        const val RECAPTCHA_VERIFY_URL = "https://www.google.com/recaptcha/api/siteverify"
         const val SECRET_REQUEST_PARAMETER = "secret"
         const val TOKEN_RESPONSE_PARAMETER = "response"
-        const val RECAPTCHA_VERIFY_URL: String = "https://www.google.com/recaptcha/api/siteverify"
     }
 }
