@@ -36,7 +36,7 @@ fun String.getLibraryVersion(): String =
         .findVersion(this)
         .getOrNull()
         ?.toString()
-        ?: error("Library '$this' not found in version catalog")
+        ?: error("Version '$this' not found in version catalog")
 
 val ktlintVersion = "ktlint-version".getLibraryVersion()
 
