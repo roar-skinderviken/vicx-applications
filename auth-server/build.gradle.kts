@@ -35,9 +35,6 @@ tasks.jar {
 
 tasks.test {
     jvmArgs(
-        "-Xshare:off",
-        "-XX:+EnableDynamicAgentLoading",
-        "-Dkotest.framework.classpath.scanning.autoscan.disable=true",
         "-Dkotest.framework.config.fqn=no.vicx.authserver.KotestConfig",
     )
 }
