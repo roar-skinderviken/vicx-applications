@@ -1,7 +1,6 @@
 package no.vicx.ktor.db.model
 
 import kotlinx.datetime.LocalDateTime
-import kotlinx.datetime.toKotlinLocalDateTime
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -12,8 +11,5 @@ data class CalcEntry(
     val operation: CalculatorOperation,
     val result: Long,
     val username: String?,
-    val createdAt: LocalDateTime =
-        java.time.LocalDateTime
-            .now()
-            .toKotlinLocalDateTime(),
+    val createdAt: LocalDateTime? = null,
 )

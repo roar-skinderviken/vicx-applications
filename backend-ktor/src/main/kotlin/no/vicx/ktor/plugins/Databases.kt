@@ -5,7 +5,6 @@ import com.zaxxer.hikari.HikariDataSource
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
 import io.zonky.test.db.postgres.embedded.EmbeddedPostgres
-import kotlinx.datetime.toJavaLocalDateTime
 import kotlinx.datetime.toKotlinLocalDateTime
 import no.vicx.ktor.db.FlywayPlugin
 import no.vicx.ktor.db.entity.VicxUserEntity
@@ -17,7 +16,7 @@ import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import java.time.LocalDateTime
-import java.time.ZoneOffset
+import java.time.OffsetDateTime
 import javax.sql.DataSource
 
 object TestDb {
@@ -77,7 +76,7 @@ fun Application.connectToPostgres(embedded: Boolean): DataSource =
                     row[operation] = calcEntry.operation
                     row[result] = calcEntry.result
                     row[username] = calcEntry.username
-                    row[createdAt] = calcEntry.createdAt.toJavaLocalDateTime().atOffset(ZoneOffset.UTC)
+                    row[createdAt] = OffsetDateTime.now()
                 }
             }
 

@@ -6,7 +6,6 @@ import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockkObject
 import kotlinx.coroutines.runBlocking
-import kotlinx.datetime.toJavaLocalDateTime
 import no.vicx.ktor.db.entity.CalcEntryEntity
 import no.vicx.ktor.db.table.CalcEntryTable
 import no.vicx.ktor.util.CalculatorTestUtils.calcEntryInTest
@@ -26,7 +25,6 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import java.time.OffsetDateTime
-import java.time.ZoneOffset
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.toJavaDuration
@@ -106,7 +104,7 @@ class CalculatorRepositoryTest {
                             row[operation] = calcEntry.operation
                             row[result] = calcEntry.result
                             row[username] = calcEntry.username
-                            row[createdAt] = calcEntry.createdAt.toJavaLocalDateTime().atOffset(ZoneOffset.UTC)
+                            row[createdAt] = OffsetDateTime.now()
                         }
                     }
                 }
@@ -139,7 +137,7 @@ class CalculatorRepositoryTest {
                                 row[operation] = calcEntry.operation
                                 row[result] = calcEntry.result
                                 row[username] = calcEntry.username
-                                row[createdAt] = calcEntry.createdAt.toJavaLocalDateTime().atOffset(ZoneOffset.UTC)
+                                row[createdAt] = OffsetDateTime.now()
                             }
                         }
                 }
@@ -165,7 +163,7 @@ class CalculatorRepositoryTest {
                         row[operation] = calcEntry.operation
                         row[result] = calcEntry.result
                         row[username] = calcEntry.username
-                        row[createdAt] = calcEntry.createdAt.toJavaLocalDateTime().atOffset(ZoneOffset.UTC)
+                        row[createdAt] = OffsetDateTime.now()
                     }
                 }
 

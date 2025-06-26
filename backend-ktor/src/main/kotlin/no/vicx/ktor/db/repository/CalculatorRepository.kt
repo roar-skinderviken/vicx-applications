@@ -1,6 +1,5 @@
 package no.vicx.ktor.db.repository
 
-import kotlinx.datetime.toJavaLocalDateTime
 import no.vicx.ktor.db.entity.CalcEntryEntity
 import no.vicx.ktor.db.model.CalcEntry
 import no.vicx.ktor.db.suspendTransaction
@@ -29,7 +28,7 @@ class CalculatorRepository {
                     row[operation] = calcEntry.operation
                     row[result] = calcEntry.result
                     row[username] = calcEntry.username
-                    row[createdAt] = calcEntry.createdAt.toJavaLocalDateTime().atOffset(ZoneOffset.UTC)
+                    row[createdAt] = OffsetDateTime.now(ZoneOffset.UTC)
                 }.let { insertedId -> CalcEntryEntity[insertedId] }
                 .toModel()
         }
