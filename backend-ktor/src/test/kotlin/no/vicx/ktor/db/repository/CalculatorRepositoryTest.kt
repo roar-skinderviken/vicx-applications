@@ -1,5 +1,6 @@
 package no.vicx.ktor.db.repository
 
+import io.kotest.assertions.assertSoftly
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.ktor.server.testing.testApplication
@@ -7,13 +8,12 @@ import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockkObject
 import kotlinx.coroutines.runBlocking
-import kotlinx.datetime.Clock
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
+import kotlinx.datetime.toJavaLocalDateTime
 import no.vicx.ktor.db.entity.CalcEntryEntity
 import no.vicx.ktor.db.table.CalcEntryTable
 import no.vicx.ktor.util.CalculatorTestUtils.calcEntryInTest
 import no.vicx.ktor.util.CalculatorTestUtils.generateTestCalcEntries
+import no.vicx.ktor.util.MiscTestUtils.shouldBeCloseTo
 import no.vicx.ktor.util.SecurityTestUtils.USERNAME_IN_TEST
 import no.vicx.ktor.util.configureTestDb
 import no.vicx.ktor.util.insertTestData
@@ -28,6 +28,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import java.time.LocalDateTime
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
 import kotlin.time.Duration.Companion.hours
@@ -65,16 +66,8 @@ class CalculatorRepositoryTest {
                         savedCalcEntry,
                     )
 
-                    val expectedCreatedAt =
-                        Clock.System
-                            .now()
-                            .toLocalDateTime(TimeZone.currentSystemDefault())
-
-                    with(savedCalcEntry.createdAt.shouldNotBeNull()) {
-                        val actualCreatedAt = this
-
-                        actualCreatedAt.minute shouldBe expectedCreatedAt.minute
-                        actualCreatedAt.hour shouldBe expectedCreatedAt.hour
+                    assertSoftly(savedCalcEntry.createdAt.shouldNotBeNull()) {
+                        this.toJavaLocalDateTime() shouldBeCloseTo LocalDateTime.now()
                     }
                 }
             }
