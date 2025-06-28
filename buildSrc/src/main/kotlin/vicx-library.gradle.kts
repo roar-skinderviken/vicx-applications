@@ -69,6 +69,10 @@ if (name in kotlinProjects) {
 
     configure<KotlinJvmProjectExtension> {
         jvmToolchain(javaVersion)
+        compilerOptions {
+            // handling Java nullable annotations
+            freeCompilerArgs.add("-Xjsr305=strict")
+        }
     }
 
     configure<KtlintExtension> {
