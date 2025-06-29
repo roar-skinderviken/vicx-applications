@@ -1,10 +1,8 @@
 package no.vicx.ktor.util
 
-import io.ktor.server.testing.ApplicationTestBuilder
 import io.zonky.test.db.postgres.embedded.EmbeddedPostgres
 import org.flywaydb.core.Flyway
 import org.jetbrains.exposed.sql.Database
-import org.jetbrains.exposed.sql.transactions.transaction
 import javax.sql.DataSource
 
 object TestDb {
@@ -27,11 +25,3 @@ fun configureTestDb(): DataSource {
 
     return TestDb.postgres
 }
-
-fun ApplicationTestBuilder.insertTestData(block: () -> Unit) =
-    application {
-        transaction {
-            // addLogger(StdOutSqlLogger)
-            block()
-        }
-    }

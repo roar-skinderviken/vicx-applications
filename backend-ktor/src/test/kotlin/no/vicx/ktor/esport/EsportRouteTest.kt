@@ -1,37 +1,36 @@
 package no.vicx.ktor.esport
 
-import io.kotest.assertions.assertSoftly
-import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.http.HttpStatusCode
 import io.mockk.coEvery
+import no.vicx.ktor.RouteTestBase
 import no.vicx.ktor.esport.EsportServiceTest.Companion.createMatches
 import no.vicx.ktor.esport.vm.EsportVm
 import no.vicx.ktor.esport.vm.MatchType
 import no.vicx.ktor.user.UserTestConstants.API_ESPORT
-import no.vicx.ktor.util.RouteTestContext
+import org.koin.test.inject
 
 class EsportRouteTest :
-    BehaviorSpec({
-        coroutineTestScope = true
+    RouteTestBase({
+        Given("a mocked environment for testing") {
+            val mockEsportService by inject<EsportService>()
 
-        Given("configured routing for esport") {
-            val routeTestApplication = RouteTestContext()
-            coEvery { routeTestApplication.esportService.getMatches() } returns expectedEsportVm
+            When("retrieving esport matches from /api/esport") {
+                coEvery { mockEsportService.getMatches() } returns expectedEsportVm
 
-            When("calling GET /api/esport") {
                 val response =
-                    routeTestApplication.runInTestApplicationContext { httpClient ->
+                    withTestApplicationContext { httpClient ->
                         httpClient.get(API_ESPORT)
                     }
 
-                Then("it should return status OK and the expected body") {
-                    assertSoftly(response) {
-                        status shouldBe HttpStatusCode.OK
-                        body<EsportVm>() shouldBe expectedEsportVm
-                    }
+                Then("the response status should be OK") {
+                    response.status shouldBe HttpStatusCode.OK
+                }
+
+                And("the response body should contain JSON that can be deserialized to EsportVm") {
+                    response.body<EsportVm>() shouldBe expectedEsportVm
                 }
             }
         }

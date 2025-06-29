@@ -13,7 +13,7 @@ import kotlin.time.Duration.Companion.seconds
 fun Application.configureHealth(dataSource: DataSource) {
     val livenessChecks =
         HealthCheckRegistry(Dispatchers.Default) {
-            // detects if threads are mutually blocked on each others locks
+            // detects if threads are mutually blocked on each other's locks
             register(
                 check = ThreadDeadlockHealthCheck(),
                 initialDelay = 1.seconds,
