@@ -1,6 +1,5 @@
 package no.vicx.ktor.user
 
-import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.data.Row3
 import io.kotest.data.forAll
 import io.kotest.matchers.shouldBe
@@ -20,54 +19,55 @@ import io.mockk.clearAllMocks
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.just
+import no.vicx.ktor.RouteTestBase
+import no.vicx.ktor.db.repository.UserRepository
 import no.vicx.ktor.error.ApiError
 import no.vicx.ktor.user.UserTestConstants.API_USER_PASSWORD
 import no.vicx.ktor.user.vm.ChangePasswordVm
 import no.vicx.ktor.util.MiscTestUtils.VALID_PLAINTEXT_PASSWORD
 import no.vicx.ktor.util.MiscTestUtils.assertValidationErrors
 import no.vicx.ktor.util.MiscTestUtils.userModelInTest
-import no.vicx.ktor.util.RouteTestContext
 import no.vicx.ktor.util.SecurityTestUtils.USERNAME_IN_TEST
 import no.vicx.ktor.util.SecurityTestUtils.tokenStringInTest
+import org.koin.test.inject
 
 class ChangePasswordRouteTest :
-    BehaviorSpec({
-        coroutineTestScope = true
-        val routeTestContext = RouteTestContext()
+    RouteTestBase({
+        Given("a mocked environment for testing") {
+            val userRepository by inject<UserRepository>()
 
-        Given("mocked environment") {
             beforeContainer {
                 clearAllMocks()
             }
 
-            When("calling PATCH /api/user/password without authentication") {
+            When("updating the password without authentication") {
                 val response =
-                    routeTestContext.runInTestApplicationContext { httpClient ->
+                    withTestApplicationContext { httpClient ->
                         performPatchRequest(httpClient, changePasswordVm, false)
                     }
 
-                Then("expect Unauthorized") {
+                Then("the response status should be Unauthorized") {
                     response.status shouldBe HttpStatusCode.Unauthorized
 
-                    coVerify { routeTestContext.userRepository wasNot called }
+                    coVerify { userRepository wasNot called }
                 }
             }
 
-            When("calling PATCH /api/user/password with authentication and user in db") {
-                coEvery { routeTestContext.userRepository.findByUsername(USERNAME_IN_TEST) } returns userModelInTest
-                coEvery { routeTestContext.userRepository.updateUser(any(), any(), any(), any()) } just Runs
+            When("updating the password with valid authentication") {
+                coEvery { userRepository.findByUsername(USERNAME_IN_TEST) } returns userModelInTest
+                coEvery { userRepository.updateUser(any(), any(), any(), any()) } just Runs
 
                 val response =
-                    routeTestContext.runInTestApplicationContext { httpClient ->
+                    withTestApplicationContext { httpClient ->
                         performPatchRequest(httpClient, changePasswordVm)
                     }
 
-                Then("expect OK") {
+                Then("the response status should be OK") {
                     response.status shouldBe HttpStatusCode.OK
-                    response.bodyAsText() shouldBe "Your password has been successfully updated."
+
                     coVerify(exactly = 1) {
-                        routeTestContext.userRepository.findByUsername(userModelInTest.username)
-                        routeTestContext.userRepository.updateUser(
+                        userRepository.findByUsername(userModelInTest.username)
+                        userRepository.updateUser(
                             userModelInTest.id,
                             isNull(),
                             isNull(),
@@ -75,13 +75,17 @@ class ChangePasswordRouteTest :
                         )
                     }
                 }
+
+                And("the response body should contain an updated-user message") {
+                    response.bodyAsText() shouldBe "Your password has been successfully updated."
+                }
             }
 
-            When("calling PATCH /api/user/password with wrong existing password") {
-                coEvery { routeTestContext.userRepository.findByUsername(USERNAME_IN_TEST) } returns userModelInTest
+            When("providing an incorrect current password") {
+                coEvery { userRepository.findByUsername(USERNAME_IN_TEST) } returns userModelInTest
 
                 val response =
-                    routeTestContext.runInTestApplicationContext { httpClient ->
+                    withTestApplicationContext { httpClient ->
                         performPatchRequest(
                             httpClient,
                             ChangePasswordVm(
@@ -91,35 +95,40 @@ class ChangePasswordRouteTest :
                         )
                     }
 
-                Then("expect BadRequest") {
+                Then("the response status should be BadRequest") {
                     response.status shouldBe HttpStatusCode.BadRequest
 
+                    coVerify(exactly = 1) { userRepository.findByUsername(userModelInTest.username) }
+                    coVerify(exactly = 0) {
+                        userRepository.updateUser(any(), any(), any(), any())
+                    }
+                }
+
+                And("the response body should contain an ApiError with incorrect password error") {
                     localAssertValidationErrors(
                         response.body<ApiError>(),
                         mapOf("currentPassword" to "currentPassword is incorrect"),
                     )
-
-                    coVerify(exactly = 1) { routeTestContext.userRepository.findByUsername(userModelInTest.username) }
-                    coVerify(exactly = 0) {
-                        routeTestContext.userRepository.updateUser(any(), any(), any(), any())
-                    }
                 }
             }
 
-            When("calling PATCH /api/user/password with no user in db") {
-                coEvery { routeTestContext.userRepository.findByUsername(any()) } returns null
+            When("updating the password for a non-existent user") {
+                coEvery { userRepository.findByUsername(any()) } returns null
 
                 val response =
-                    routeTestContext.runInTestApplicationContext { httpClient ->
+                    withTestApplicationContext { httpClient ->
                         performPatchRequest(httpClient, changePasswordVm)
                     }
 
-                Then("expect NotFound") {
+                Then("the response status should be NotFound") {
                     response.status shouldBe HttpStatusCode.NotFound
-                    response.body<ApiError>().message shouldBe "User $USERNAME_IN_TEST not found"
 
-                    coVerify(exactly = 1) { routeTestContext.userRepository.findByUsername(any()) }
-                    coVerify(exactly = 0) { routeTestContext.userRepository.updateUser(any(), any(), any(), any()) }
+                    coVerify(exactly = 1) { userRepository.findByUsername(any()) }
+                    coVerify(exactly = 0) { userRepository.updateUser(any(), any(), any(), any()) }
+                }
+
+                And("the response body should contain an ApiError with user-not-found error") {
+                    response.body<ApiError>().message shouldBe "User $USERNAME_IN_TEST not found"
                 }
             }
 
@@ -158,22 +167,25 @@ class ChangePasswordRouteTest :
                     mapOf("password" to "Password must contain at least one lowercase letter, one uppercase letter, and one digit"),
                 ),
             ) { description, changePasswordVm, expectedValidationErrors ->
-                When("calling PATCH /api/user/password: $description") {
-                    coEvery { routeTestContext.userRepository.findByUsername(any()) } returns null
+                When("providing invalid input: $description") {
+                    coEvery { userRepository.findByUsername(any()) } returns null
 
                     val response =
-                        routeTestContext.runInTestApplicationContext { httpClient ->
+                        withTestApplicationContext { httpClient ->
                             performPatchRequest(httpClient, changePasswordVm)
                         }
 
-                    Then("expect BadRequest") {
+                    Then("the response status should be BadRequest") {
                         response.status shouldBe HttpStatusCode.BadRequest
+
+                        coVerify { userRepository wasNot called }
+                    }
+
+                    And("the response body should contain an ApiError with the expected validation errors") {
                         localAssertValidationErrors(
                             apiError = response.body<ApiError>(),
                             expectedValidationErrors = expectedValidationErrors,
                         )
-
-                        coVerify { routeTestContext.userRepository wasNot called }
                     }
                 }
             }

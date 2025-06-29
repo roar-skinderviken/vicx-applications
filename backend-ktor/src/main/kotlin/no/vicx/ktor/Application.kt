@@ -11,7 +11,7 @@ import no.vicx.ktor.db.repository.UserImageRepository
 import no.vicx.ktor.db.repository.UserRepository
 import no.vicx.ktor.esport.EsportClient
 import no.vicx.ktor.esport.EsportService
-import no.vicx.ktor.esport.HttpClientConfig.defaultClient
+import no.vicx.ktor.esport.HttpClientConfig
 import no.vicx.ktor.plugins.configureGraphQL
 import no.vicx.ktor.plugins.configureHealth
 import no.vicx.ktor.plugins.configureRestApi
@@ -21,6 +21,11 @@ import no.vicx.ktor.plugins.connectToPostgres
 import no.vicx.ktor.user.service.RecaptchaClient
 import no.vicx.ktor.user.service.UserImageService
 import no.vicx.ktor.user.service.UserService
+import org.koin.core.module.dsl.singleOf
+import org.koin.ktor.ext.get
+import org.koin.ktor.plugin.Koin
+import org.koin.ktor.plugin.koinModule
+import org.koin.logger.slf4jLogger
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import javax.sql.DataSource
@@ -37,16 +42,22 @@ fun Application.module() {
     val esportToken = environment.config.property("esport.token").getString()
     val reCaptchaSecret = environment.config.property("recaptcha.secret").getString()
 
-    val calculatorRepository = CalculatorRepository()
-    val calculatorService = CalculatorService(CalculatorRepository())
+    install(Koin) {
+        slf4jLogger()
+    }
 
-    val recaptchaClient = RecaptchaClient(defaultClient, reCaptchaSecret)
-    val userRepository = UserRepository()
-    val userImageRepository = UserImageRepository()
-    val userService = UserService(recaptchaClient, userRepository)
-    val userImageService = UserImageService(userService, userRepository, userImageRepository)
+    koinModule {
+        singleOf(::CalculatorRepository)
+        singleOf(::UserRepository)
+        singleOf(::UserImageRepository)
 
-    val esportService = EsportService(EsportClient(defaultClient, esportToken))
+        single { CalculatorService(get()) }
+        single { EsportClient(HttpClientConfig.defaultClient, esportToken) }
+        single { EsportService(get()) }
+        single { RecaptchaClient(HttpClientConfig.defaultClient, reCaptchaSecret) }
+        single { UserService(get(), get()) }
+        single { UserImageService(get(), get(), get()) }
+    }
 
     // for localhost testing
     install(CORS) {
@@ -59,12 +70,12 @@ fun Application.module() {
     configureHealth(dataSource)
     configureSecurity()
     configureStatusPage()
-    configureGraphQL(calculatorService, calculatorRepository)
+    configureGraphQL(get(), get())
     configureRestApi(
-        esportService,
-        userService,
-        userImageService,
+        get(),
+        get(),
+        get(),
     )
 
-    RemoveOldEntriesTask(calculatorRepository).also { it.start(this) }
+    RemoveOldEntriesTask(get()).also { it.start(this) }
 }

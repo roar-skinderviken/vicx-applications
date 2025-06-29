@@ -9,6 +9,10 @@ application {
 }
 
 dependencies {
+    implementation(project.dependencies.platform(libs.koin.bom))
+    implementation("io.insert-koin:koin-ktor")
+    implementation("io.insert-koin:koin-logger-slf4j")
+
     implementation(libs.ktor.server.auth)
     implementation(libs.ktor.server.core)
     implementation(libs.ktor.server.auth.jwt)
@@ -42,6 +46,8 @@ dependencies {
     implementation(libs.tika.core)
     implementation(libs.cohort.ktor)
 
+    testImplementation("io.insert-koin:koin-test")
+    testImplementation(libs.kotest.extensions.koin)
     testImplementation(libs.ktor.server.test.host)
     implementation(libs.embedded.postgres) // TODO
 

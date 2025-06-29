@@ -45,8 +45,6 @@ class CalculatorQueryTest : BehaviorSpec() {
     private val calculatorRepository: CalculatorRepository = mockk()
 
     init {
-        coroutineTestScope = true
-
         Given("GraphQL environment with mocked dependencies") {
             beforeContainer {
                 clearAllMocks()
@@ -62,9 +60,9 @@ class CalculatorQueryTest : BehaviorSpec() {
 
                 coEvery { calculatorService.getPagedCalculations(1) } returns expectedPaginatedCalculations
 
-                val responseBody = postGraphQLRequestAndReturnResult<GetAllCalculations>(getAllCalculationsQuery)
+                val responseBody = performGraphQLPostAndAssertStatus<GetAllCalculations>(getAllCalculationsQuery)
 
-                Then("expect paginated calculations") {
+                Then("the response body should contain JSON for paginated calculations") {
                     responseBody.data?.getAllCalculations shouldBe expectedPaginatedCalculations
                 }
             }
@@ -81,12 +79,12 @@ class CalculatorQueryTest : BehaviorSpec() {
                     } returns expectedCalcEntry
 
                     val responseBody =
-                        postGraphQLRequestAndReturnResult<CreateCalculation>(
+                        performGraphQLPostAndAssertStatus<CreateCalculation>(
                             createCalculationMutation,
                             addAuthHeader,
                         )
 
-                    Then("expect result") {
+                    Then("the response body should contain JSON for calculation result") {
                         responseBody.data?.createCalculation shouldBe expectedCalcEntry
                     }
                 }
@@ -94,12 +92,12 @@ class CalculatorQueryTest : BehaviorSpec() {
 
             When("deleteCalculations request without auth") {
                 val responseBody =
-                    postGraphQLRequestAndReturnResult<DeleteCalculations>(
+                    performGraphQLPostAndAssertStatus<DeleteCalculations>(
                         deleteCalculationsMutation,
                         false,
                     )
 
-                Then("expect Unauthorized") {
+                Then("the response body should contain Unauthorized exception") {
                     responseBody.errors.shouldNotBeNull().apply {
                         size shouldBeGreaterThan 0
                         first().message shouldContain "Exception while fetching data (/deleteCalculations) : Unauthorized"
@@ -109,16 +107,16 @@ class CalculatorQueryTest : BehaviorSpec() {
                 }
             }
 
-            When("deleteCalculations request for other user") {
+            When("deleteCalculations request for calculations belonging to other user") {
                 coEvery { calculatorService.isAllowedToDelete(listOf(1, 2), USERNAME_IN_TEST) } returns false
 
                 val responseBody =
-                    postGraphQLRequestAndReturnResult<DeleteCalculations>(
+                    performGraphQLPostAndAssertStatus<DeleteCalculations>(
                         deleteCalculationsMutation,
                         true,
                     )
 
-                Then("expect Forbidden") {
+                Then("the response body should contain Forbidden exception") {
                     responseBody.errors.shouldNotBeNull().apply {
                         size shouldBeGreaterThan 0
                         first().message shouldContain "Exception while fetching data (/deleteCalculations) : Forbidden"
@@ -133,28 +131,28 @@ class CalculatorQueryTest : BehaviorSpec() {
                 coEvery { calculatorRepository.deleteByIdIn(listOf(1, 2)) } returns 2
 
                 val responseBody =
-                    postGraphQLRequestAndReturnResult<DeleteCalculations>(
+                    performGraphQLPostAndAssertStatus<DeleteCalculations>(
                         deleteCalculationsMutation,
                         true,
                     )
 
-                Then("expect success") {
+                Then("the response body should contain deleteCalculations: true") {
                     responseBody.data?.deleteCalculations shouldBe true
                 }
             }
         }
     }
 
-    private suspend inline fun <reified T : Any> postGraphQLRequestAndReturnResult(
+    private suspend inline fun <reified T : Any> performGraphQLPostAndAssertStatus(
         query: String,
         addAuthHeader: Boolean = false,
     ): GraphQLResponseBody<T> {
-        val response = postGraphQLRequest(query, addAuthHeader)
+        val response = performGraphQLPost(query, addAuthHeader)
         response.status shouldBe HttpStatusCode.OK
         return response.body<GraphQLResponseBody<T>>()
     }
 
-    private fun postGraphQLRequest(
+    private fun performGraphQLPost(
         query: String,
         addAuthHeader: Boolean = false,
     ): HttpResponse {

@@ -7,7 +7,6 @@ import io.ktor.server.testing.testApplication
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
-import kotlinx.coroutines.runBlocking
 import no.vicx.ktor.db.repository.CalculatorRepository
 import kotlin.time.Duration.Companion.seconds
 
@@ -33,13 +32,11 @@ class RemoveOldEntriesTaskTest :
                         val job = task.start(this)
 
                         try {
-                            runBlocking {
-                                eventually(5.seconds) {
-                                    coVerify(atLeast = 1) {
-                                        calculatorRepository.deleteAllByCreatedAtBeforeAndUsernameNull(
-                                            any(),
-                                        )
-                                    }
+                            eventually(5.seconds) {
+                                coVerify(atLeast = 1) {
+                                    calculatorRepository.deleteAllByCreatedAtBeforeAndUsernameNull(
+                                        any(),
+                                    )
                                 }
                             }
                         } finally {

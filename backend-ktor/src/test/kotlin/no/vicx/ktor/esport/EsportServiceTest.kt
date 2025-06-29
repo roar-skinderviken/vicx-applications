@@ -1,42 +1,70 @@
 package no.vicx.ktor.esport
 
+import io.kotest.assertions.assertSoftly
+import io.kotest.core.spec.style.BehaviorSpec
+import io.kotest.koin.KoinExtension
+import io.kotest.koin.KoinLifecycleMode
+import io.kotest.matchers.shouldBe
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
-import kotlinx.coroutines.runBlocking
 import no.vicx.ktor.esport.vm.EsportMatchVm
 import no.vicx.ktor.esport.vm.MatchType
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Test
+import org.koin.dsl.module
+import org.koin.test.KoinTest
+import org.koin.test.inject
 
-class EsportServiceTest {
-    private val esportClient: EsportClient = mockk()
-    private val sut = EsportService(esportClient)
+class EsportServiceTest :
+    BehaviorSpec(),
+    KoinTest {
+    val testModule =
+        module {
+            single<EsportClient> { mockk() }
+            single { EsportService(get()) }
+        }
 
-    @Test
-    fun `given data on remote server then expect result with both running and upcoming matches`() {
-        val expectedRunningMatches = createMatches(MatchType.RUNNING)
-        val expectedUpcomingMatches = createMatches(MatchType.UPCOMING)
+    override fun extensions() = listOf(KoinExtension(module = testModule, mode = KoinLifecycleMode.Root))
 
-        coEvery { esportClient.getMatches(MatchType.RUNNING) } returns expectedRunningMatches
-        coEvery { esportClient.getMatches(MatchType.UPCOMING) } returns expectedUpcomingMatches
+    init {
+        val sut by inject<EsportService>()
+        val mockEsportClient by inject<EsportClient>()
 
-        val result = runBlocking { sut.getMatches() }
+        Given("EsportService with mocked EsportClient") {
+            When("calling getMatches with data on remote server") {
+                val expectedRunningMatches = createMatches(MatchType.RUNNING)
+                val expectedUpcomingMatches = createMatches(MatchType.UPCOMING)
 
-        assertEquals(expectedRunningMatches, result.runningMatches)
-        assertEquals(expectedUpcomingMatches, result.upcomingMatches)
-    }
+                coEvery { mockEsportClient.getMatches(MatchType.RUNNING) } returns expectedRunningMatches
+                coEvery { mockEsportClient.getMatches(MatchType.UPCOMING) } returns expectedUpcomingMatches
 
-    @Test
-    fun `given cached data then expect no further calls to esportClient`() {
-        coEvery { esportClient.getMatches(MatchType.RUNNING) } returns createMatches(MatchType.RUNNING)
-        coEvery { esportClient.getMatches(MatchType.UPCOMING) } returns createMatches(MatchType.UPCOMING)
+                val result = sut.getMatches()
 
-        runBlocking { sut.getMatches() }
-        runBlocking { sut.getMatches() }
+                Then("expect result with both running and upcoming matches") {
+                    assertSoftly(result) {
+                        runningMatches shouldBe expectedRunningMatches
+                        upcomingMatches shouldBe expectedUpcomingMatches
+                    }
+                }
+            }
 
-        coVerify(exactly = 1) { esportClient.getMatches(MatchType.RUNNING) }
-        coVerify(exactly = 1) { esportClient.getMatches(MatchType.UPCOMING) }
+            When("calling getMatches a second time") {
+                val expectedRunningMatches = createMatches(MatchType.RUNNING)
+                val expectedUpcomingMatches = createMatches(MatchType.UPCOMING)
+
+                coEvery { mockEsportClient.getMatches(MatchType.RUNNING) } returns expectedRunningMatches
+                coEvery { mockEsportClient.getMatches(MatchType.UPCOMING) } returns expectedUpcomingMatches
+
+                sut.getMatches()
+                sut.getMatches()
+
+                Then("expect cached result for second call") {
+                    coVerify(exactly = 1) {
+                        mockEsportClient.getMatches(MatchType.RUNNING)
+                        mockEsportClient.getMatches(MatchType.UPCOMING)
+                    }
+                }
+            }
+        }
     }
 
     companion object {

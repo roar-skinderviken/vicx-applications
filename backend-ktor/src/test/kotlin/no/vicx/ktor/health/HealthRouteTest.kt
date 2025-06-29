@@ -1,5 +1,6 @@
 package no.vicx.ktor.health
 
+import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.nondeterministic.eventually
 import io.kotest.assertions.nondeterministic.eventuallyConfig
 import io.kotest.core.spec.style.BehaviorSpec
@@ -26,7 +27,7 @@ class HealthRouteTest :
                 Row1("/readiness"),
                 Row1("/liveness"),
             ) { endpoint ->
-                When("calling endpoint $endpoint") {
+                When("retrieving health status from $endpoint endpoint") {
                     lateinit var response: HttpResponse
 
                     testApplication {
@@ -52,9 +53,10 @@ class HealthRouteTest :
                     }
 
                     Then("response should report healthy") {
-                        response.status shouldBe HttpStatusCode.OK
-
-                        response.bodyAsText() shouldContain "\"status\":\"Healthy\""
+                        assertSoftly(response) {
+                            status shouldBe HttpStatusCode.OK
+                            bodyAsText() shouldContain "\"status\":\"Healthy\""
+                        }
                     }
                 }
             }

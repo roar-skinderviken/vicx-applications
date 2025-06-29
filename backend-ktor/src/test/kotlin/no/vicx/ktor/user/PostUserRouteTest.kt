@@ -1,7 +1,6 @@
 package no.vicx.ktor.user
 
 import io.kotest.assertions.assertSoftly
-import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.data.Row4
 import io.kotest.data.forAll
 import io.kotest.matchers.shouldBe
@@ -21,9 +20,12 @@ import io.mockk.called
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
 import io.mockk.coVerify
+import no.vicx.ktor.RouteTestBase
+import no.vicx.ktor.db.repository.UserRepository
 import no.vicx.ktor.error.ApiError
 import no.vicx.ktor.plugins.VALIDATION_ERROR
 import no.vicx.ktor.user.UserTestConstants.API_USER
+import no.vicx.ktor.user.service.RecaptchaClient
 import no.vicx.ktor.user.vm.CreateUserVm
 import no.vicx.ktor.util.MiscTestUtils.GIF_CONTENT_TYPE
 import no.vicx.ktor.util.MiscTestUtils.GIF_RESOURCE_NAME
@@ -34,115 +36,126 @@ import no.vicx.ktor.util.MiscTestUtils.VALID_BCRYPT_PASSWORD
 import no.vicx.ktor.util.MiscTestUtils.VALID_PLAINTEXT_PASSWORD
 import no.vicx.ktor.util.MiscTestUtils.getResourceAsByteArray
 import no.vicx.ktor.util.MiscTestUtils.userModelInTest
-import no.vicx.ktor.util.RouteTestContext
+import org.koin.core.component.inject
+import java.util.UUID
 
 class PostUserRouteTest :
-    BehaviorSpec({
-        coroutineTestScope = true
-        val routeTestContext = RouteTestContext()
+    RouteTestBase({
+        Given("a mocked environment for testing") {
+            val mockUserRepository by inject<UserRepository>()
+            val mockRecaptchaClient by inject<RecaptchaClient>()
 
-        Given("mocked environment") {
             beforeContainer {
                 clearAllMocks()
+
+                coEvery { mockRecaptchaClient.verifyToken(any()) } returns true
             }
 
-            When("calling POST /api/user with invalid reCAPTCHA token") {
-                coEvery { routeTestContext.recaptchaClient.verifyToken(any()) } returns false
+            When("posting to /api/user with invalid reCAPTCHA token") {
+                coEvery { mockRecaptchaClient.verifyToken(any()) } returns false
 
                 val response =
-                    routeTestContext.runInTestApplicationContext { httpClient ->
+                    withTestApplicationContext { httpClient ->
                         httpClient.post(API_USER) {
                             contentType(ContentType.MultiPart.FormData)
-                            setBody(createMultiPartFormDataContent(validCreateUserVm))
+                            setBody(createMultiPartFormDataContent(validCreateUserVm()))
                         }
                     }
 
-                Then("expect BadRequest and validation error") {
+                Then("the response status should be BadRequest") {
                     response.status shouldBe HttpStatusCode.BadRequest
+
+                    coVerify { mockUserRepository wasNot called }
+                }
+
+                And("the response body should contain an ApiError with invalid-reCAPTCHA-token error") {
                     assertValidationError(
                         response.body<ApiError>(),
                         "recaptchaToken",
                         "recaptchaToken is invalid. Please wait to token expires and try again",
                     )
-
-                    coVerify { routeTestContext.userRepository wasNot called }
                 }
             }
 
-            When("calling POST /api/user with duplicate username") {
-                coEvery { routeTestContext.recaptchaClient.verifyToken(any()) } returns true
+            When("posting to /api/user with a duplicate username") {
                 coEvery {
-                    routeTestContext.userRepository.findIdByUsername(any())
+                    mockUserRepository.findIdByUsername(any())
                 } returns userModelInTest.id
 
                 val response =
-                    routeTestContext.runInTestApplicationContext { httpClient ->
+                    withTestApplicationContext { httpClient ->
                         httpClient.post(API_USER) {
                             contentType(ContentType.MultiPart.FormData)
-                            setBody(createMultiPartFormDataContent(validCreateUserVm))
+                            setBody(createMultiPartFormDataContent(validCreateUserVm()))
                         }
                     }
 
-                Then("expect BadRequest and validation error") {
+                Then("the response status should be BadRequest") {
                     response.status shouldBe HttpStatusCode.BadRequest
+
+                    coVerify(exactly = 0) { mockUserRepository.createUser(any()) }
+                }
+
+                And("the response body should contain an ApiError with duplicate-user error") {
                     assertValidationError(
                         response.body<ApiError>(),
                         "username",
                         "Username is already in use",
                     )
-
-                    coVerify(exactly = 0) { routeTestContext.userRepository.createUser(any()) }
                 }
             }
 
-            When("calling POST /api/user with valid data") {
-                coEvery { routeTestContext.recaptchaClient.verifyToken(any()) } returns true
-                coEvery { routeTestContext.userRepository.findIdByUsername(any()) } returns null
-                coEvery { routeTestContext.userRepository.createUser(any()) } returns
-                    validCreateUserVm.toDbModel(
+            When("posting to /api/user with valid user data") {
+                coEvery { mockUserRepository.findIdByUsername(any()) } returns null
+                coEvery { mockUserRepository.createUser(any()) } returns
+                    validCreateUserVm().toDbModel(
                         VALID_BCRYPT_PASSWORD,
                     )
 
                 val response =
-                    routeTestContext.runInTestApplicationContext { httpClient ->
+                    withTestApplicationContext { httpClient ->
                         httpClient.post(API_USER) {
                             contentType(ContentType.MultiPart.FormData)
                             setBody(
                                 createMultiPartFormDataContent(
-                                    validCreateUserVm,
+                                    validCreateUserVm(),
                                     PNG_CONTENT_TYPE to PNG_RESOURCE_NAME,
                                 ),
                             )
                         }
                     }
 
-                Then("expect user created content in response") {
+                Then("the response status should be OK") {
                     response.status shouldBe HttpStatusCode.OK
-                    response.bodyAsText() shouldBe "User created successfully."
 
-                    coVerify(exactly = 1) { routeTestContext.userRepository.createUser(any()) }
+                    coVerify(exactly = 1) { mockUserRepository.createUser(any()) }
+                }
+
+                And("the response body should contain a user-created message") {
+                    response.bodyAsText() shouldBe "User created successfully."
                 }
             }
 
-            When("calling POST /api/user twice with same username") {
-                coEvery { routeTestContext.recaptchaClient.verifyToken(any()) } returns true
-                coEvery { routeTestContext.userRepository.findByUsername(any()) } returns userModelInTest
-                coEvery { routeTestContext.userRepository.createUser(any()) } returns
-                    validCreateUserVm.toDbModel(
+            When("posting to /api/user twice with the same username") {
+                coEvery { mockUserRepository.findByUsername(any()) } returns userModelInTest
+                coEvery { mockUserRepository.createUser(any()) } returns
+                    validCreateUserVm().toDbModel(
                         VALID_BCRYPT_PASSWORD,
                     )
 
-                routeTestContext.runInTestApplicationContext { httpClient ->
+                val createUserVm = validCreateUserVm()
+
+                withTestApplicationContext { httpClient ->
                     repeat(2) {
                         httpClient.post(API_USER) {
                             contentType(ContentType.MultiPart.FormData)
-                            setBody(createMultiPartFormDataContent(validCreateUserVm))
+                            setBody(createMultiPartFormDataContent(createUserVm))
                         }
                     }
                 }
 
-                Then("expect single call to recaptchaClient#verifyToken due to caching") {
-                    coVerify(exactly = 1) { routeTestContext.recaptchaClient.verifyToken(any()) }
+                Then("recaptchaClient#verifyToken should have been called just once due to caching") {
+                    coVerify(exactly = 1) { mockRecaptchaClient.verifyToken(any()) }
                 }
             }
 
@@ -154,7 +167,13 @@ class PostUserRouteTest :
                     "Username cannot be blank",
                 ),
                 Row4(
-                    CreateUserVm(" ".repeat(4), VALID_PLAINTEXT_PASSWORD, "The User", "user@example.com", "mock-token"),
+                    CreateUserVm(
+                        " ".repeat(4),
+                        VALID_PLAINTEXT_PASSWORD,
+                        "The User",
+                        "user@example.com",
+                        "mock-token",
+                    ),
                     null,
                     "username",
                     "Username cannot be blank",
@@ -166,13 +185,25 @@ class PostUserRouteTest :
                     "Username must be between 4 and 255 characters",
                 ),
                 Row4(
-                    CreateUserVm("a".repeat(256), VALID_PLAINTEXT_PASSWORD, "The User", "user@example.com", "mock-token"),
+                    CreateUserVm(
+                        "a".repeat(256),
+                        VALID_PLAINTEXT_PASSWORD,
+                        "The User",
+                        "user@example.com",
+                        "mock-token",
+                    ),
                     null,
                     "username",
                     "Username must be between 4 and 255 characters",
                 ),
                 Row4(
-                    CreateUserVm("John Doe", VALID_PLAINTEXT_PASSWORD, "The User", "user@example.com", "mock-token"),
+                    CreateUserVm(
+                        "John Doe",
+                        VALID_PLAINTEXT_PASSWORD,
+                        "The User",
+                        "user@example.com",
+                        "mock-token",
+                    ),
                     null,
                     "username",
                     "Username can only contain letters, numbers, hyphens, and underscores",
@@ -214,19 +245,37 @@ class PostUserRouteTest :
                     "Name cannot be blank",
                 ),
                 Row4(
-                    CreateUserVm("user1", VALID_PLAINTEXT_PASSWORD, " ".repeat(4), "user@example.com", "mock-token"),
+                    CreateUserVm(
+                        "user1",
+                        VALID_PLAINTEXT_PASSWORD,
+                        " ".repeat(4),
+                        "user@example.com",
+                        "mock-token",
+                    ),
                     null,
                     "name",
                     "Name cannot be blank",
                 ),
                 Row4(
-                    CreateUserVm("user1", VALID_PLAINTEXT_PASSWORD, "a".repeat(3), "user@example.com", "mock-token"),
+                    CreateUserVm(
+                        "user1",
+                        VALID_PLAINTEXT_PASSWORD,
+                        "a".repeat(3),
+                        "user@example.com",
+                        "mock-token",
+                    ),
                     null,
                     "name",
                     "Name must be between 4 and 255 characters",
                 ),
                 Row4(
-                    CreateUserVm("user1", VALID_PLAINTEXT_PASSWORD, "a".repeat(256), "user@example.com", "mock-token"),
+                    CreateUserVm(
+                        "user1",
+                        VALID_PLAINTEXT_PASSWORD,
+                        "a".repeat(256),
+                        "user@example.com",
+                        "mock-token",
+                    ),
                     null,
                     "name",
                     "Name must be between 4 and 255 characters",
@@ -262,13 +311,25 @@ class PostUserRouteTest :
                     "Email format is invalid",
                 ),
                 Row4(
-                    CreateUserVm("user1", VALID_PLAINTEXT_PASSWORD, "The User", " john.doe@example.com", "mock-token"),
+                    CreateUserVm(
+                        "user1",
+                        VALID_PLAINTEXT_PASSWORD,
+                        "The User",
+                        " john.doe@example.com",
+                        "mock-token",
+                    ),
                     null,
                     "email",
                     "Email format is invalid",
                 ),
                 Row4(
-                    CreateUserVm("user1", VALID_PLAINTEXT_PASSWORD, "The User", "john.doe@example.com ", "mock-token"),
+                    CreateUserVm(
+                        "user1",
+                        VALID_PLAINTEXT_PASSWORD,
+                        "The User",
+                        "john.doe@example.com ",
+                        "mock-token",
+                    ),
                     null,
                     "email",
                     "Email format is invalid",
@@ -299,34 +360,39 @@ class PostUserRouteTest :
                 ),
             ) { createUserVm, imageInfo, field, expectedValidationError ->
 
-                When("calling POST /api/user with invalid $field, $createUserVm, $imageInfo") {
+                When("posting to /api/user with invalid $field: $createUserVm, $imageInfo") {
                     val response =
-                        routeTestContext.runInTestApplicationContext { httpClient ->
+                        withTestApplicationContext { httpClient ->
                             httpClient.post(API_USER) {
                                 contentType(ContentType.MultiPart.FormData)
                                 setBody(createMultiPartFormDataContent(createUserVm, imageInfo))
                             }
                         }
 
-                    Then("it should return status BadRequest and the expected body") {
+                    Then("the response status should be BadRequest") {
                         response.status shouldBe HttpStatusCode.BadRequest
-                        assertValidationError(response.body<ApiError>(), field, expectedValidationError)
 
-                        coVerify { routeTestContext.recaptchaClient wasNot called }
-                        coVerify { routeTestContext.userRepository wasNot called }
+                        coVerify {
+                            mockRecaptchaClient wasNot called
+                            mockUserRepository wasNot called
+                        }
+                    }
+
+                    And("the response body should contain an ApiError with expected validation errors") {
+                        assertValidationError(response.body<ApiError>(), field, expectedValidationError)
                     }
                 }
             }
         }
     }) {
     companion object {
-        val validCreateUserVm =
+        fun validCreateUserVm() =
             CreateUserVm(
                 "user1",
                 VALID_PLAINTEXT_PASSWORD,
                 "The User",
                 "user@example.com",
-                "~invalid-token~",
+                UUID.randomUUID().toString(),
             )
 
         fun assertValidationError(

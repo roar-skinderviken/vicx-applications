@@ -19,8 +19,6 @@ import java.time.LocalDateTime
 
 class CalculatorServiceTest :
     BehaviorSpec({
-        coroutineTestScope = true
-
         val calculatorRepository: CalculatorRepository = mockk()
         val sut = CalculatorService(calculatorRepository)
 
