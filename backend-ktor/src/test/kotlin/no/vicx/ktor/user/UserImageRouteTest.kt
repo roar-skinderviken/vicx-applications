@@ -25,8 +25,6 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.just
 import no.vicx.ktor.RouteTestBase
-import no.vicx.ktor.db.repository.UserImageRepository
-import no.vicx.ktor.db.repository.UserRepository
 import no.vicx.ktor.error.ApiError
 import no.vicx.ktor.user.UserTestConstants.API_USER_IMAGE
 import no.vicx.ktor.util.MiscTestUtils.GIF_CONTENT_TYPE
@@ -41,14 +39,10 @@ import no.vicx.ktor.util.MiscTestUtils.userImageModelInTest
 import no.vicx.ktor.util.MiscTestUtils.userModelInTest
 import no.vicx.ktor.util.SecurityTestUtils.USERNAME_IN_TEST
 import no.vicx.ktor.util.SecurityTestUtils.tokenStringInTest
-import org.koin.test.inject
 
 class UserImageRouteTest :
     RouteTestBase({
         Given("a mocked environment for testing") {
-            val userRepository by inject<UserRepository>()
-            val userImageRepository by inject<UserImageRepository>()
-
             When("posting to /user/image without authentication") {
                 val response =
                     withTestApplicationContext { httpClient ->
@@ -108,9 +102,9 @@ class UserImageRouteTest :
                     val expectedUserModel =
                         if (hasExistingImage) userModelInTest else userModelInTest.copy(userImage = null)
 
-                    coEvery { userRepository.findByUsername(any()) } returns expectedUserModel
-                    coEvery { userImageRepository.saveUserImage(any()) } just Runs
-                    coEvery { userImageRepository.updateUserImage(any()) } just Runs
+                    coEvery { mockUserRepository.findByUsername(any()) } returns expectedUserModel
+                    coEvery { mockUserImageRepository.saveUserImage(any()) } just Runs
+                    coEvery { mockUserImageRepository.updateUserImage(any()) } just Runs
 
                     val response =
                         withTestApplicationContext { httpClient ->
@@ -126,9 +120,9 @@ class UserImageRouteTest :
 
                         coVerify(exactly = 1) {
                             if (hasExistingImage) {
-                                userImageRepository.updateUserImage(any())
+                                mockUserImageRepository.updateUserImage(any())
                             } else {
-                                userImageRepository.saveUserImage(any())
+                                mockUserImageRepository.saveUserImage(any())
                             }
                         }
                     }
@@ -148,7 +142,7 @@ class UserImageRouteTest :
 
             When("getting /user/image for user without an image") {
                 coEvery {
-                    userRepository.findByUsername(any())
+                    mockUserRepository.findByUsername(any())
                 } returns userModelInTest.copy(userImage = null)
 
                 val response =
@@ -160,13 +154,13 @@ class UserImageRouteTest :
                     response.status shouldBe HttpStatusCode.NotFound
 
                     coVerify(exactly = 1) {
-                        userRepository.findByUsername(USERNAME_IN_TEST)
+                        mockUserRepository.findByUsername(USERNAME_IN_TEST)
                     }
                 }
             }
 
             When("getting /user/image for user with an image") {
-                coEvery { userRepository.findByUsername(any()) } returns userModelInTest
+                coEvery { mockUserRepository.findByUsername(any()) } returns userModelInTest
 
                 val response =
                     withTestApplicationContext { httpClient ->
@@ -177,7 +171,7 @@ class UserImageRouteTest :
                     response.status shouldBe HttpStatusCode.OK
 
                     coVerify(exactly = 1) {
-                        userRepository.findByUsername(USERNAME_IN_TEST)
+                        mockUserRepository.findByUsername(USERNAME_IN_TEST)
                     }
                 }
 
@@ -191,7 +185,7 @@ class UserImageRouteTest :
             }
 
             When("deleting /user/image for non-existing user") {
-                coEvery { userRepository.findIdByUsername(any()) } returns null
+                coEvery { mockUserRepository.findIdByUsername(any()) } returns null
 
                 val response =
                     withTestApplicationContext { httpClient ->
@@ -201,13 +195,13 @@ class UserImageRouteTest :
                 Then("the response status should be NotFound") {
                     response.status shouldBe HttpStatusCode.NotFound
 
-                    coVerify { userImageRepository wasNot called }
+                    coVerify { mockUserImageRepository wasNot called }
                 }
             }
 
             When("deleting /user/image for existing user") {
-                coEvery { userRepository.findIdByUsername(any()) } returns userModelInTest.id
-                coEvery { userImageRepository.deleteById(any()) } just Runs
+                coEvery { mockUserRepository.findIdByUsername(any()) } returns userModelInTest.id
+                coEvery { mockUserImageRepository.deleteById(any()) } just Runs
 
                 val response =
                     withTestApplicationContext { httpClient ->
@@ -217,7 +211,7 @@ class UserImageRouteTest :
                 Then("the response status should be NoContent") {
                     response.status shouldBe HttpStatusCode.NoContent
 
-                    coVerify(exactly = 1) { userImageRepository.deleteById(userModelInTest.id) }
+                    coVerify(exactly = 1) { mockUserImageRepository.deleteById(userModelInTest.id) }
                 }
             }
         }

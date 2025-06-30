@@ -10,13 +10,10 @@ import no.vicx.ktor.esport.EsportServiceTest.Companion.createMatches
 import no.vicx.ktor.esport.vm.EsportVm
 import no.vicx.ktor.esport.vm.MatchType
 import no.vicx.ktor.user.UserTestConstants.API_ESPORT
-import org.koin.test.inject
 
 class EsportRouteTest :
     RouteTestBase({
         Given("a mocked environment for testing") {
-            val mockEsportService by inject<EsportService>()
-
             When("retrieving esport matches from /api/esport") {
                 coEvery { mockEsportService.getMatches() } returns expectedEsportVm
 

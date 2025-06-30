@@ -2,34 +2,19 @@ package no.vicx.ktor.esport
 
 import io.kotest.assertions.assertSoftly
 import io.kotest.core.spec.style.BehaviorSpec
-import io.kotest.koin.KoinExtension
-import io.kotest.koin.KoinLifecycleMode
 import io.kotest.matchers.shouldBe
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import no.vicx.ktor.esport.vm.EsportMatchVm
 import no.vicx.ktor.esport.vm.MatchType
-import org.koin.dsl.module
-import org.koin.test.KoinTest
-import org.koin.test.inject
 
 class EsportServiceTest :
-    BehaviorSpec(),
-    KoinTest {
-    val testModule =
-        module {
-            single<EsportClient> { mockk() }
-            single { EsportService(get()) }
-        }
-
-    override fun extensions() = listOf(KoinExtension(module = testModule, mode = KoinLifecycleMode.Root))
-
-    init {
-        val sut by inject<EsportService>()
-        val mockEsportClient by inject<EsportClient>()
-
+    BehaviorSpec({
         Given("EsportService with mocked EsportClient") {
+            val mockEsportClient: EsportClient = mockk()
+            val sut = EsportService(mockEsportClient)
+
             When("calling getMatches with data on remote server") {
                 val expectedRunningMatches = createMatches(MatchType.RUNNING)
                 val expectedUpcomingMatches = createMatches(MatchType.UPCOMING)
@@ -65,8 +50,7 @@ class EsportServiceTest :
                 }
             }
         }
-    }
-
+    }) {
     companion object {
         fun createMatches(matchType: MatchType): List<EsportMatchVm> =
             listOf(
