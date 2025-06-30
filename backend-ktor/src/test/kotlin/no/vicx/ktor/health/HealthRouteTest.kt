@@ -4,8 +4,6 @@ import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.nondeterministic.eventually
 import io.kotest.assertions.nondeterministic.eventuallyConfig
 import io.kotest.core.spec.style.BehaviorSpec
-import io.kotest.data.Row1
-import io.kotest.data.forAll
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -23,45 +21,47 @@ import kotlin.time.Duration.Companion.seconds
 class HealthRouteTest :
     BehaviorSpec({
         Given("application context with Cohort") {
+            When("retrieving health status from liveness and readiness") {
+                lateinit var livenessResponse: HttpResponse
+                lateinit var readinessResponse: HttpResponse
 
-            forAll(
-                Row1("/readiness"),
-                Row1("/liveness"),
-            ) { endpoint ->
-                When("retrieving health status from $endpoint endpoint") {
-                    lateinit var response: HttpResponse
-
-                    testApplication {
-                        application {
-                            dependencies {
-                                provide { configureTestDb() }
-                            }
-
-                            configureHealth()
+                testApplication {
+                    application {
+                        dependencies {
+                            provide { configureTestDb() }
                         }
 
-                        val httpClient =
-                            createClient {
-                                install(ContentNegotiation) { json() }
-                            }
-
-                        val config =
-                            eventuallyConfig {
-                                initialDelay = 2.seconds
-                                duration = 5.seconds
-                            }
-
-                        eventually(config) {
-                            response = httpClient.get(endpoint)
-                            response.status shouldBe HttpStatusCode.OK
-                        }
+                        configureHealth()
                     }
 
-                    Then("response should report healthy") {
-                        assertSoftly(response) {
-                            status shouldBe HttpStatusCode.OK
-                            bodyAsText() shouldContain "\"status\":\"Healthy\""
+                    val httpClient =
+                        createClient {
+                            install(ContentNegotiation) { json() }
                         }
+
+                    eventually(
+                        eventuallyConfig {
+                            initialDelay = 2.seconds
+                            duration = 5.seconds
+                        },
+                    ) {
+                        livenessResponse = httpClient.get("/liveness")
+                        livenessResponse.status shouldBe HttpStatusCode.OK
+
+                        readinessResponse = httpClient.get("/readiness")
+                        readinessResponse.status shouldBe HttpStatusCode.OK
+                    }
+                }
+
+                Then("it should report healthy for both endpoints") {
+                    assertSoftly(livenessResponse) {
+                        status shouldBe HttpStatusCode.OK
+                        bodyAsText() shouldContain "\"status\":\"Healthy\""
+                    }
+
+                    assertSoftly(readinessResponse) {
+                        status shouldBe HttpStatusCode.OK
+                        bodyAsText() shouldContain "\"status\":\"Healthy\""
                     }
                 }
             }
