@@ -56,9 +56,9 @@ suspend fun Application.module() {
     }
 
     install(CORS) {
+        allowHost("vicx.no", schemes = listOf("https"))
         // for localhost testing
         allowHost("localhost:3000", schemes = listOf("http"))
-        allowHeader(HttpHeaders.AccessControlAllowOrigin)
         allowHeader(HttpHeaders.ContentType)
         allowHeader(HttpHeaders.Authorization)
     }
