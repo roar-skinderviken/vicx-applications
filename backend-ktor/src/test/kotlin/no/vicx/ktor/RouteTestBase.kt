@@ -44,21 +44,17 @@ abstract class RouteTestBase(
         testApplication {
             application {
                 dependencies {
-                    provide<UserRepository> { mockUserRepository }
-                    provide<UserImageRepository> { mockUserImageRepository }
-                    provide<EsportService> { mockEsportService }
-                    provide<RecaptchaClient> { mockRecaptchaClient }
-                    provide<UserService> { UserService(resolve(), resolve()) }
-                    provide<UserImageService> { UserImageService(resolve(), resolve(), resolve()) }
+                    provide { mockUserRepository }
+                    provide { mockUserImageRepository }
+                    provide { mockEsportService }
+                    provide { mockRecaptchaClient }
+                    provide { UserService(resolve(), resolve()) }
+                    provide { UserImageService(resolve(), resolve(), resolve()) }
                 }
 
                 configureStatusPage()
                 configureTestSecurity()
-                configureRestApi(
-                    esportService = dependencies.resolve(),
-                    userService = dependencies.resolve(),
-                    userImageService = dependencies.resolve(),
-                )
+                configureRestApi()
             }
 
             result =

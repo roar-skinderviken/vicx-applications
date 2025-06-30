@@ -14,6 +14,7 @@ import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.kotlinx.json.json
+import io.ktor.server.plugins.di.dependencies
 import io.ktor.server.testing.testApplication
 import no.vicx.ktor.plugins.configureHealth
 import no.vicx.ktor.util.configureTestDb
@@ -32,7 +33,11 @@ class HealthRouteTest :
 
                     testApplication {
                         application {
-                            configureHealth(configureTestDb())
+                            dependencies {
+                                provide { configureTestDb() }
+                            }
+
+                            configureHealth()
                         }
 
                         val httpClient =

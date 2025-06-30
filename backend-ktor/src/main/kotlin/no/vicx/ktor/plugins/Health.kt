@@ -6,11 +6,14 @@ import com.sksamuel.cohort.db.DatabaseConnectionHealthCheck
 import com.sksamuel.cohort.threads.ThreadDeadlockHealthCheck
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
+import io.ktor.server.plugins.di.dependencies
 import kotlinx.coroutines.Dispatchers
 import javax.sql.DataSource
 import kotlin.time.Duration.Companion.seconds
 
-fun Application.configureHealth(dataSource: DataSource) {
+suspend fun Application.configureHealth() {
+    val dataSource: DataSource = dependencies.resolve()
+
     val livenessChecks =
         HealthCheckRegistry(Dispatchers.Default) {
             // detects if threads are mutually blocked on each other's locks

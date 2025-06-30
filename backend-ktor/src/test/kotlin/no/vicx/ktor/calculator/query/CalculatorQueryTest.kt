@@ -17,6 +17,7 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
+import io.ktor.server.plugins.di.dependencies
 import io.ktor.server.testing.testApplication
 import io.mockk.Called
 import io.mockk.clearAllMocks
@@ -41,8 +42,8 @@ import no.vicx.ktor.util.SecurityTestUtils.configureTestSecurity
 import no.vicx.ktor.util.SecurityTestUtils.tokenStringInTest
 
 class CalculatorQueryTest : BehaviorSpec() {
-    private val calculatorService: CalculatorService = mockk()
-    private val calculatorRepository: CalculatorRepository = mockk()
+    private val mockCalculatorService: CalculatorService = mockk()
+    private val mockCalculatorRepository: CalculatorRepository = mockk()
 
     init {
         Given("GraphQL environment with mocked dependencies") {
@@ -58,7 +59,7 @@ class CalculatorQueryTest : BehaviorSpec() {
                         totalPages = 1,
                     )
 
-                coEvery { calculatorService.getPagedCalculations(1) } returns expectedPaginatedCalculations
+                coEvery { mockCalculatorService.getPagedCalculations(1) } returns expectedPaginatedCalculations
 
                 val responseBody = performGraphQLPostAndAssertStatus<GetAllCalculations>(getAllCalculationsQuery)
 
@@ -75,7 +76,7 @@ class CalculatorQueryTest : BehaviorSpec() {
                     val expectedCalcEntry = calcEntryInTest(username = username).toGraphQLModel()
 
                     coEvery {
-                        calculatorService.calculate(2, 1, CalculatorOperation.PLUS, username)
+                        mockCalculatorService.calculate(2, 1, CalculatorOperation.PLUS, username)
                     } returns expectedCalcEntry
 
                     val responseBody =
@@ -103,12 +104,12 @@ class CalculatorQueryTest : BehaviorSpec() {
                         first().message shouldContain "Exception while fetching data (/deleteCalculations) : Unauthorized"
                     }
 
-                    coVerify { calculatorRepository wasNot Called }
+                    coVerify { mockCalculatorRepository wasNot Called }
                 }
             }
 
             When("deleteCalculations request for calculations belonging to other user") {
-                coEvery { calculatorService.isAllowedToDelete(listOf(1, 2), USERNAME_IN_TEST) } returns false
+                coEvery { mockCalculatorService.isAllowedToDelete(listOf(1, 2), USERNAME_IN_TEST) } returns false
 
                 val responseBody =
                     performGraphQLPostAndAssertStatus<DeleteCalculations>(
@@ -122,13 +123,13 @@ class CalculatorQueryTest : BehaviorSpec() {
                         first().message shouldContain "Exception while fetching data (/deleteCalculations) : Forbidden"
                     }
 
-                    coVerify { calculatorRepository wasNot Called }
+                    coVerify { mockCalculatorRepository wasNot Called }
                 }
             }
 
             When("valid deleteCalculations request") {
-                coEvery { calculatorService.isAllowedToDelete(listOf(1, 2), USERNAME_IN_TEST) } returns true
-                coEvery { calculatorRepository.deleteByIdIn(listOf(1, 2)) } returns 2
+                coEvery { mockCalculatorService.isAllowedToDelete(listOf(1, 2), USERNAME_IN_TEST) } returns true
+                coEvery { mockCalculatorRepository.deleteByIdIn(listOf(1, 2)) } returns 2
 
                 val responseBody =
                     performGraphQLPostAndAssertStatus<DeleteCalculations>(
@@ -160,11 +161,13 @@ class CalculatorQueryTest : BehaviorSpec() {
 
         testApplication {
             application {
+                dependencies {
+                    provide { mockCalculatorRepository }
+                    provide { mockCalculatorService }
+                }
+
                 configureTestSecurity()
-                configureGraphQL(
-                    calculatorService,
-                    calculatorRepository,
-                )
+                configureGraphQL()
             }
 
             val client =
