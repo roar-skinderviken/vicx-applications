@@ -13,10 +13,8 @@ import ButtonWithSpinner from "@/components/ButtonWithSpinner"
 import {extractUserOrSignOut} from "@/auth/tokenUtils"
 import {createClient, gql, fetchExchange} from "urql"
 
-// put this in next-app/.env.local
-// NEXT_PUBLIC_CALCULATOR_BACKEND_URL=http://localhost:8080/backend-spring-boot/graphql
-export const CALC_BACKEND_BASE_URL = process.env.NEXT_PUBLIC_CALCULATOR_BACKEND_URL || "/backend-spring-boot/graphql"
-export const CALC_NEXT_BACKEND_URL = "/api/user/calculator"
+export const CALC_PUBLIC_GRAPHQL_URL = "/api/graphql/calculator"
+export const CALC_RESTRICTED_GRAPHQL_URL = "/api/user/calculator"
 
 enum CalculatorOperation {
     PLUS = 'PLUS',
@@ -55,13 +53,13 @@ export const deleteCalculationsQuery = gql`
         deleteCalculations(ids: $ids)
     }`
 
-const backendClient = () => createClient({
-    url: CALC_BACKEND_BASE_URL,
+const publicApiClient = () => createClient({
+    url: CALC_PUBLIC_GRAPHQL_URL,
     exchanges: [fetchExchange]
 })
 
-const nextClient = () => createClient({
-    url: CALC_NEXT_BACKEND_URL,
+const restrictedApiClient = () => createClient({
+    url: CALC_RESTRICTED_GRAPHQL_URL,
     exchanges: [fetchExchange]
 })
 
@@ -108,7 +106,7 @@ const CalculatorFormAndResult = () => {
     const operationFromForm = watch("operation")
 
     const fetchPreviousCalculations = (pageNumber: number) => {
-        backendClient()
+        publicApiClient()
             .query(previousResultsQuery, {page: pageNumber}).toPromise()
             .then(response => response.data)
             .then(data => {
@@ -133,7 +131,7 @@ const CalculatorFormAndResult = () => {
                     if (!hasUserRole) {
                         throw new Error('User not allowed to perform this operation')
                     }
-                    return nextClient()
+                    return restrictedApiClient()
                 }
             )
             .then(client => client.mutation(deleteCalculationsQuery, {ids: idsToDelete}))
@@ -155,8 +153,8 @@ const CalculatorFormAndResult = () => {
                     }
 
                     return hasUserRole
-                        ? nextClient()
-                        : backendClient()
+                        ? restrictedApiClient()
+                        : publicApiClient()
                 }
             )
             .then(client => client

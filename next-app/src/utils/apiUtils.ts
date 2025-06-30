@@ -62,3 +62,26 @@ export async function forwardRequest(
         return NextResponse.json({ message: "Internal server error" }, { status: 500 })
     }
 }
+
+export async function forwardGraphQLRequestWithoutAuth(
+    request: NextRequest
+) {
+    const fetchOptions: RequestInit = {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        ...{body: request.body, duplex: "half" as const}
+    }
+
+    try {
+        const response = await fetch(`${SPRING_BACKEND_BASE_URL}/graphql`, fetchOptions)
+
+        return new NextResponse(response.body, {
+            status: response.status,
+            headers: response.headers,
+        })
+    } catch (error) {
+        console.error("Error forwarding request:", error)
+        return NextResponse.json({message: "Internal server error"}, {status: 500})
+    }
+}
+
