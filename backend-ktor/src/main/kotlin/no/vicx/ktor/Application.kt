@@ -57,7 +57,7 @@ suspend fun Application.module() {
 
     // for localhost testing
     install(CORS) {
-        anyHost()
+        allowHost("localhost:3000", schemes = listOf("http"))
         allowHeader(HttpHeaders.ContentType)
         allowHeader(HttpHeaders.Authorization)
     }
