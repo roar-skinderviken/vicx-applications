@@ -3,10 +3,10 @@ package no.vicx.ktor
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.isRootTest
-import io.kotest.koin.KoinExtension
-import io.kotest.koin.KoinLifecycleMode
 import io.ktor.client.HttpClient
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.serialization.kotlinx.json.json
+import io.ktor.server.plugins.di.dependencies
 import io.ktor.server.testing.testApplication
 import io.mockk.clearAllMocks
 import io.mockk.mockk
@@ -19,16 +19,14 @@ import no.vicx.ktor.user.service.RecaptchaClient
 import no.vicx.ktor.user.service.UserImageService
 import no.vicx.ktor.user.service.UserService
 import no.vicx.ktor.util.SecurityTestUtils.configureTestSecurity
-import org.koin.dsl.module
-import org.koin.ktor.ext.get
-import org.koin.test.KoinTest
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation as ClientContentNegotiation
 
 abstract class RouteTestBase(
     body: RouteTestBase.() -> Unit,
-) : BehaviorSpec(),
-    KoinTest {
-    override fun extensions() = listOf(KoinExtension(module = koinTestModule, mode = KoinLifecycleMode.Root))
+) : BehaviorSpec() {
+    val mockUserRepository: UserRepository = mockk()
+    val mockUserImageRepository: UserImageRepository = mockk()
+    val mockEsportService: EsportService = mockk()
+    val mockRecaptchaClient: RecaptchaClient = mockk()
 
     override suspend fun beforeContainer(testCase: TestCase) {
         if (!testCase.isRootTest()) {
@@ -40,40 +38,37 @@ abstract class RouteTestBase(
         this.body()
     }
 
-    companion object {
-        val koinTestModule =
-            module {
-                single<UserRepository> { mockk() }
-                single<UserImageRepository> { mockk() }
-                single<EsportService> { mockk() }
-                single<RecaptchaClient> { mockk() }
-                single { UserService(get(), get()) }
-                single { UserImageService(get(), get(), get()) }
-            }
+    fun <T : Any> withTestApplicationContext(block: suspend (HttpClient) -> T): T {
+        lateinit var result: T
 
-        fun <T : Any> withTestApplicationContext(callback: suspend (HttpClient) -> T): T {
-            lateinit var result: T
-
-            testApplication {
-                application {
-                    configureStatusPage()
-                    configureTestSecurity()
-                    configureRestApi(
-                        esportService = get(),
-                        userService = get(),
-                        userImageService = get(),
-                    )
+        testApplication {
+            application {
+                dependencies {
+                    provide<UserRepository> { mockUserRepository }
+                    provide<UserImageRepository> { mockUserImageRepository }
+                    provide<EsportService> { mockEsportService }
+                    provide<RecaptchaClient> { mockRecaptchaClient }
+                    provide<UserService> { UserService(resolve(), resolve()) }
+                    provide<UserImageService> { UserImageService(resolve(), resolve(), resolve()) }
                 }
 
-                result =
-                    callback(
-                        createClient {
-                            install(ClientContentNegotiation) { json() }
-                        },
-                    )
+                configureStatusPage()
+                configureTestSecurity()
+                configureRestApi(
+                    esportService = dependencies.resolve(),
+                    userService = dependencies.resolve(),
+                    userImageService = dependencies.resolve(),
+                )
             }
 
-            return result
+            result =
+                block(
+                    createClient {
+                        install(ContentNegotiation) { json() }
+                    },
+                )
         }
+
+        return result
     }
 }

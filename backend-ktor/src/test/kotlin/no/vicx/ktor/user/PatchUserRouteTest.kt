@@ -15,12 +15,10 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
 import io.mockk.Runs
 import io.mockk.called
-import io.mockk.clearAllMocks
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.just
 import no.vicx.ktor.RouteTestBase
-import no.vicx.ktor.db.repository.UserRepository
 import no.vicx.ktor.error.ApiError
 import no.vicx.ktor.user.UserTestConstants.API_USER
 import no.vicx.ktor.user.vm.UserPatchVm
@@ -28,17 +26,10 @@ import no.vicx.ktor.util.MiscTestUtils.assertValidationErrors
 import no.vicx.ktor.util.MiscTestUtils.userModelInTest
 import no.vicx.ktor.util.SecurityTestUtils.USERNAME_IN_TEST
 import no.vicx.ktor.util.SecurityTestUtils.tokenStringInTest
-import org.koin.test.inject
 
 class PatchUserRouteTest :
     RouteTestBase({
         Given("a mocked environment for testing") {
-            val userRepository by inject<UserRepository>()
-
-            beforeContainer {
-                clearAllMocks()
-            }
-
             When("patching /api/user without authentication") {
                 val response =
                     withTestApplicationContext { httpClient ->
@@ -48,13 +39,13 @@ class PatchUserRouteTest :
                 Then("the response status should be Unauthorized") {
                     response.status shouldBe HttpStatusCode.Unauthorized
 
-                    coVerify { userRepository wasNot called }
+                    coVerify { mockUserRepository wasNot called }
                 }
             }
 
             When("patching /api/user with authentication when user exists") {
-                coEvery { userRepository.findByUsername(USERNAME_IN_TEST) } returns userModelInTest
-                coEvery { userRepository.updateUser(any(), any(), any(), any()) } just Runs
+                coEvery { mockUserRepository.findByUsername(USERNAME_IN_TEST) } returns userModelInTest
+                coEvery { mockUserRepository.updateUser(any(), any(), any(), any()) } just Runs
 
                 val response =
                     withTestApplicationContext { httpClient ->
@@ -65,8 +56,8 @@ class PatchUserRouteTest :
                     response.status shouldBe HttpStatusCode.OK
 
                     coVerify(exactly = 1) {
-                        userRepository.findByUsername(userModelInTest.username)
-                        userRepository.updateUser(
+                        mockUserRepository.findByUsername(userModelInTest.username)
+                        mockUserRepository.updateUser(
                             userModelInTest.id,
                             userModelInTest.name,
                             userModelInTest.email,
@@ -81,7 +72,7 @@ class PatchUserRouteTest :
             }
 
             When("patching /api/user with authentication when user does not exist") {
-                coEvery { userRepository.findByUsername(any()) } returns null
+                coEvery { mockUserRepository.findByUsername(any()) } returns null
 
                 val response =
                     withTestApplicationContext { httpClient ->
@@ -91,8 +82,8 @@ class PatchUserRouteTest :
                 Then("the response status should be NotFound") {
                     response.status shouldBe HttpStatusCode.NotFound
 
-                    coVerify(exactly = 1) { userRepository.findByUsername(any()) }
-                    coVerify(exactly = 0) { userRepository.updateUser(any(), any(), any(), any()) }
+                    coVerify(exactly = 1) { mockUserRepository.findByUsername(any()) }
+                    coVerify(exactly = 0) { mockUserRepository.updateUser(any(), any(), any(), any()) }
                 }
 
                 And("the response body should contain an ApiError with user-not-found error") {
@@ -156,7 +147,7 @@ class PatchUserRouteTest :
                 ),
             ) { description, patchVm, expectedValidationErrors ->
                 When("patching /api/user with invalid input: $description") {
-                    coEvery { userRepository.findByUsername(any()) } returns null
+                    coEvery { mockUserRepository.findByUsername(any()) } returns null
 
                     val response =
                         withTestApplicationContext { httpClient ->
@@ -166,7 +157,7 @@ class PatchUserRouteTest :
                     Then("the response status should be BadRequest") {
                         response.status shouldBe HttpStatusCode.BadRequest
 
-                        coVerify { userRepository wasNot called }
+                        coVerify { mockUserRepository wasNot called }
                     }
 
                     And("the response body should contain an ApiError with expected validation error(s)") {

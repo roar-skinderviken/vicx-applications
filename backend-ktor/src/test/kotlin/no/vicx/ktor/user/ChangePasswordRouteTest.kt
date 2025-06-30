@@ -15,12 +15,10 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
 import io.mockk.Runs
 import io.mockk.called
-import io.mockk.clearAllMocks
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.just
 import no.vicx.ktor.RouteTestBase
-import no.vicx.ktor.db.repository.UserRepository
 import no.vicx.ktor.error.ApiError
 import no.vicx.ktor.user.UserTestConstants.API_USER_PASSWORD
 import no.vicx.ktor.user.vm.ChangePasswordVm
@@ -29,17 +27,10 @@ import no.vicx.ktor.util.MiscTestUtils.assertValidationErrors
 import no.vicx.ktor.util.MiscTestUtils.userModelInTest
 import no.vicx.ktor.util.SecurityTestUtils.USERNAME_IN_TEST
 import no.vicx.ktor.util.SecurityTestUtils.tokenStringInTest
-import org.koin.test.inject
 
 class ChangePasswordRouteTest :
     RouteTestBase({
         Given("a mocked environment for testing") {
-            val userRepository by inject<UserRepository>()
-
-            beforeContainer {
-                clearAllMocks()
-            }
-
             When("updating the password without authentication") {
                 val response =
                     withTestApplicationContext { httpClient ->
@@ -49,13 +40,13 @@ class ChangePasswordRouteTest :
                 Then("the response status should be Unauthorized") {
                     response.status shouldBe HttpStatusCode.Unauthorized
 
-                    coVerify { userRepository wasNot called }
+                    coVerify { mockUserRepository wasNot called }
                 }
             }
 
             When("updating the password with valid authentication") {
-                coEvery { userRepository.findByUsername(USERNAME_IN_TEST) } returns userModelInTest
-                coEvery { userRepository.updateUser(any(), any(), any(), any()) } just Runs
+                coEvery { mockUserRepository.findByUsername(USERNAME_IN_TEST) } returns userModelInTest
+                coEvery { mockUserRepository.updateUser(any(), any(), any(), any()) } just Runs
 
                 val response =
                     withTestApplicationContext { httpClient ->
@@ -66,8 +57,8 @@ class ChangePasswordRouteTest :
                     response.status shouldBe HttpStatusCode.OK
 
                     coVerify(exactly = 1) {
-                        userRepository.findByUsername(userModelInTest.username)
-                        userRepository.updateUser(
+                        mockUserRepository.findByUsername(userModelInTest.username)
+                        mockUserRepository.updateUser(
                             userModelInTest.id,
                             isNull(),
                             isNull(),
@@ -82,7 +73,7 @@ class ChangePasswordRouteTest :
             }
 
             When("providing an incorrect current password") {
-                coEvery { userRepository.findByUsername(USERNAME_IN_TEST) } returns userModelInTest
+                coEvery { mockUserRepository.findByUsername(USERNAME_IN_TEST) } returns userModelInTest
 
                 val response =
                     withTestApplicationContext { httpClient ->
@@ -98,9 +89,9 @@ class ChangePasswordRouteTest :
                 Then("the response status should be BadRequest") {
                     response.status shouldBe HttpStatusCode.BadRequest
 
-                    coVerify(exactly = 1) { userRepository.findByUsername(userModelInTest.username) }
+                    coVerify(exactly = 1) { mockUserRepository.findByUsername(userModelInTest.username) }
                     coVerify(exactly = 0) {
-                        userRepository.updateUser(any(), any(), any(), any())
+                        mockUserRepository.updateUser(any(), any(), any(), any())
                     }
                 }
 
@@ -113,7 +104,7 @@ class ChangePasswordRouteTest :
             }
 
             When("updating the password for a non-existent user") {
-                coEvery { userRepository.findByUsername(any()) } returns null
+                coEvery { mockUserRepository.findByUsername(any()) } returns null
 
                 val response =
                     withTestApplicationContext { httpClient ->
@@ -123,8 +114,8 @@ class ChangePasswordRouteTest :
                 Then("the response status should be NotFound") {
                     response.status shouldBe HttpStatusCode.NotFound
 
-                    coVerify(exactly = 1) { userRepository.findByUsername(any()) }
-                    coVerify(exactly = 0) { userRepository.updateUser(any(), any(), any(), any()) }
+                    coVerify(exactly = 1) { mockUserRepository.findByUsername(any()) }
+                    coVerify(exactly = 0) { mockUserRepository.updateUser(any(), any(), any(), any()) }
                 }
 
                 And("the response body should contain an ApiError with user-not-found error") {
@@ -168,7 +159,7 @@ class ChangePasswordRouteTest :
                 ),
             ) { description, changePasswordVm, expectedValidationErrors ->
                 When("providing invalid input: $description") {
-                    coEvery { userRepository.findByUsername(any()) } returns null
+                    coEvery { mockUserRepository.findByUsername(any()) } returns null
 
                     val response =
                         withTestApplicationContext { httpClient ->
@@ -178,7 +169,7 @@ class ChangePasswordRouteTest :
                     Then("the response status should be BadRequest") {
                         response.status shouldBe HttpStatusCode.BadRequest
 
-                        coVerify { userRepository wasNot called }
+                        coVerify { mockUserRepository wasNot called }
                     }
 
                     And("the response body should contain an ApiError with the expected validation errors") {

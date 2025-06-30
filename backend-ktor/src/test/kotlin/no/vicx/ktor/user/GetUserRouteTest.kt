@@ -6,28 +6,19 @@ import io.ktor.client.request.bearerAuth
 import io.ktor.client.request.get
 import io.ktor.http.HttpStatusCode
 import io.mockk.called
-import io.mockk.clearAllMocks
 import io.mockk.coEvery
 import io.mockk.coVerify
 import no.vicx.ktor.RouteTestBase
-import no.vicx.ktor.db.repository.UserRepository
 import no.vicx.ktor.error.ApiError
 import no.vicx.ktor.user.UserTestConstants.API_USER
 import no.vicx.ktor.user.vm.UserVm
 import no.vicx.ktor.util.MiscTestUtils.userModelInTest
 import no.vicx.ktor.util.SecurityTestUtils.USERNAME_IN_TEST
 import no.vicx.ktor.util.SecurityTestUtils.tokenStringInTest
-import org.koin.test.inject
 
 class GetUserRouteTest :
     RouteTestBase({
         Given("a mocked environment for testing") {
-            val userRepository by inject<UserRepository>()
-
-            beforeContainer {
-                clearAllMocks()
-            }
-
             When("requesting /api/user without authentication") {
                 val response =
                     withTestApplicationContext { httpClient ->
@@ -37,12 +28,12 @@ class GetUserRouteTest :
                 Then("the response status should be Unauthorized") {
                     response.status shouldBe HttpStatusCode.Unauthorized
 
-                    coVerify { userRepository wasNot called }
+                    coVerify { mockUserRepository wasNot called }
                 }
             }
 
             When("requesting /api/user with valid authentication when the user exists") {
-                coEvery { userRepository.findByUsername(USERNAME_IN_TEST) } returns userModelInTest
+                coEvery { mockUserRepository.findByUsername(USERNAME_IN_TEST) } returns userModelInTest
 
                 val response =
                     withTestApplicationContext { httpClient ->
@@ -52,7 +43,7 @@ class GetUserRouteTest :
                 Then("the response status should be OK") {
                     response.status shouldBe HttpStatusCode.OK
 
-                    coVerify(exactly = 1) { userRepository.findByUsername(USERNAME_IN_TEST) }
+                    coVerify(exactly = 1) { mockUserRepository.findByUsername(USERNAME_IN_TEST) }
                 }
 
                 And("the response body should deserialize into a UserVm object with expected properties") {
@@ -61,7 +52,7 @@ class GetUserRouteTest :
             }
 
             When("requesting /api/user with valid authentication when the user does not exist") {
-                coEvery { userRepository.findByUsername(any()) } returns null
+                coEvery { mockUserRepository.findByUsername(any()) } returns null
 
                 val response =
                     withTestApplicationContext { httpClient ->
@@ -71,7 +62,7 @@ class GetUserRouteTest :
                 Then("the response status should be NotFound") {
                     response.status shouldBe HttpStatusCode.NotFound
 
-                    coVerify(exactly = 1) { userRepository.findByUsername(USERNAME_IN_TEST) }
+                    coVerify(exactly = 1) { mockUserRepository.findByUsername(USERNAME_IN_TEST) }
                 }
 
                 And("the response body should contain an ApiError with user-not-found error") {

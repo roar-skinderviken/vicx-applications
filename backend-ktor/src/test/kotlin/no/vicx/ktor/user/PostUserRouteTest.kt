@@ -17,15 +17,12 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.http.append
 import io.ktor.http.contentType
 import io.mockk.called
-import io.mockk.clearAllMocks
 import io.mockk.coEvery
 import io.mockk.coVerify
 import no.vicx.ktor.RouteTestBase
-import no.vicx.ktor.db.repository.UserRepository
 import no.vicx.ktor.error.ApiError
 import no.vicx.ktor.plugins.VALIDATION_ERROR
 import no.vicx.ktor.user.UserTestConstants.API_USER
-import no.vicx.ktor.user.service.RecaptchaClient
 import no.vicx.ktor.user.vm.CreateUserVm
 import no.vicx.ktor.util.MiscTestUtils.GIF_CONTENT_TYPE
 import no.vicx.ktor.util.MiscTestUtils.GIF_RESOURCE_NAME
@@ -36,18 +33,12 @@ import no.vicx.ktor.util.MiscTestUtils.VALID_BCRYPT_PASSWORD
 import no.vicx.ktor.util.MiscTestUtils.VALID_PLAINTEXT_PASSWORD
 import no.vicx.ktor.util.MiscTestUtils.getResourceAsByteArray
 import no.vicx.ktor.util.MiscTestUtils.userModelInTest
-import org.koin.core.component.inject
 import java.util.UUID
 
 class PostUserRouteTest :
     RouteTestBase({
         Given("a mocked environment for testing") {
-            val mockUserRepository by inject<UserRepository>()
-            val mockRecaptchaClient by inject<RecaptchaClient>()
-
             beforeContainer {
-                clearAllMocks()
-
                 coEvery { mockRecaptchaClient.verifyToken(any()) } returns true
             }
 

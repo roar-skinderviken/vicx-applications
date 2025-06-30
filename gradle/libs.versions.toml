@@ -22,8 +22,6 @@ kotest-extensions-spring-version = "1.3.0"
 springmockk-version = "4.0.2"
 
 # Ktor
-koin-bom-version = "4.1.0"
-kotest-extensions-koin-version = "1.3.0"
 ktor-version = "3.2.0"
 exposed-version = "0.61.0"
 kotlin-version = "2.2.0"
@@ -60,9 +58,7 @@ kotest-extensions-spring = { module = "io.kotest.extensions:kotest-extensions-sp
 springmockk = { module = "com.ninja-squad:springmockk", version.ref = "springmockk-version" }
 
 # Ktor
-koin-bom = { module = "io.insert-koin:koin-bom", version.ref = "koin-bom-version" }
-kotest-extensions-koin = {module="io.kotest.extensions:kotest-extensions-koin", version.ref="kotest-extensions-koin-version"}
-
+ktor-server-di-jvm = { module = "io.ktor:ktor-server-di-jvm", version.ref = "ktor-version" }
 ktor-server-auth = { module = "io.ktor:ktor-server-auth", version.ref = "ktor-version" }
 ktor-server-core = { module = "io.ktor:ktor-server-core", version.ref = "ktor-version" }
 ktor-server-auth-jwt = { module = "io.ktor:ktor-server-auth-jwt", version.ref = "ktor-version" }
