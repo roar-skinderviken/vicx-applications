@@ -28,7 +28,7 @@ const nextConfig: NextConfig = {
                 ],
             },
             {
-                source: "/api/auth/(.*)",
+                source: "/api/(.*)",
                 headers: [
                     {
                         key: "Cache-Control",
@@ -37,11 +37,11 @@ const nextConfig: NextConfig = {
                 ],
             },
             {
-                source: "/api/user(.*)",
+                source: "/api/hero-bg-image(.*)",
                 headers: [
                     {
                         key: "Cache-Control",
-                        value: "no-store, max-age=0"
+                        value: "public, max-age=3600"
                     },
                 ],
             },
