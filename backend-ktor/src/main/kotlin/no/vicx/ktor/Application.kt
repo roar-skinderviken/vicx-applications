@@ -43,9 +43,9 @@ suspend fun Application.module() {
             .toBoolean()
 
     dependencies {
-        provide { ::CalculatorRepository }
-        provide { ::UserRepository }
-        provide { ::UserImageRepository }
+        provide { CalculatorRepository() }
+        provide { UserRepository() }
+        provide { UserImageRepository() }
 
         provide { CalculatorService(resolve()) }
         provide { EsportClient(defaultClient, esportToken) }
