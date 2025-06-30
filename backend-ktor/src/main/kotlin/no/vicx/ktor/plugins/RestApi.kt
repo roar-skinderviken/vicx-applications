@@ -10,6 +10,7 @@ import io.ktor.server.auth.authenticate
 import io.ktor.server.auth.jwt.JWTPrincipal
 import io.ktor.server.auth.principal
 import io.ktor.server.plugins.NotFoundException
+import io.ktor.server.plugins.di.dependencies
 import io.ktor.server.plugins.requestvalidation.RequestValidationException
 import io.ktor.server.plugins.requestvalidation.ValidationResult
 import io.ktor.server.request.receiveMultipart
@@ -53,12 +54,10 @@ private val jsonIgnoreUnknown =
         ignoreUnknownKeys = true
     }
 
-fun Application.configureRestApi(
-    esportService: EsportService,
-    userService: UserService,
-    userImageService: UserImageService,
-) {
-    // because of GraphQL, we cannot use global ContentNegotiation, hence respondText
+suspend fun Application.configureRestApi() {
+    val esportService: EsportService = dependencies.resolve()
+    val userService: UserService = dependencies.resolve()
+    val userImageService: UserImageService = dependencies.resolve()
 
     routing {
         route("/api") {

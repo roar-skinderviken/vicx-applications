@@ -13,16 +13,17 @@ import io.ktor.server.auth.AuthenticationStrategy
 import io.ktor.server.auth.authenticate
 import io.ktor.server.auth.jwt.JWTPrincipal
 import io.ktor.server.auth.principal
+import io.ktor.server.plugins.di.dependencies
 import io.ktor.server.request.ApplicationRequest
 import io.ktor.server.routing.routing
 import no.vicx.ktor.calculator.CalculatorService
 import no.vicx.ktor.calculator.query.CalculatorQuery
 import no.vicx.ktor.db.repository.CalculatorRepository
 
-fun Application.configureGraphQL(
-    calculatorService: CalculatorService,
-    calculatorRepository: CalculatorRepository,
-) {
+suspend fun Application.configureGraphQL() {
+    val calculatorService: CalculatorService = dependencies.resolve()
+    val calculatorRepository: CalculatorRepository = dependencies.resolve()
+
     install(GraphQL) {
         schema {
             packages =

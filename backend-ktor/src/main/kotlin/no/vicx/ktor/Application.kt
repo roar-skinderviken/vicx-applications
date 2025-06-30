@@ -6,15 +6,14 @@ import io.ktor.server.application.install
 import io.ktor.server.plugins.cors.routing.CORS
 import io.ktor.server.plugins.di.dependencies
 import no.vicx.ktor.calculator.CalculatorService
-import no.vicx.ktor.calculator.RemoveOldEntriesTask
 import no.vicx.ktor.db.repository.CalculatorRepository
 import no.vicx.ktor.db.repository.UserImageRepository
 import no.vicx.ktor.db.repository.UserRepository
 import no.vicx.ktor.esport.EsportClient
 import no.vicx.ktor.esport.EsportService
-import no.vicx.ktor.esport.HttpClientConfig.defaultClient
 import no.vicx.ktor.plugins.configureGraphQL
 import no.vicx.ktor.plugins.configureHealth
+import no.vicx.ktor.plugins.configureOldCalcEntryCleanup
 import no.vicx.ktor.plugins.configureRestApi
 import no.vicx.ktor.plugins.configureSecurity
 import no.vicx.ktor.plugins.configureStatusPage
@@ -22,11 +21,10 @@ import no.vicx.ktor.plugins.connectToPostgres
 import no.vicx.ktor.user.service.RecaptchaClient
 import no.vicx.ktor.user.service.UserImageService
 import no.vicx.ktor.user.service.UserService
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
+import no.vicx.ktor.util.HttpClientConfig.defaultClient
 import javax.sql.DataSource
 
-inline fun <reified T : Any> loggerFor(): Logger = LoggerFactory.getLogger(T::class.java)
+// inline fun <reified T : Any> loggerFor(): Logger = LoggerFactory.getLogger(T::class.java)
 
 fun main(args: Array<String>) {
     io.ktor.server.netty.EngineMain
@@ -46,11 +44,12 @@ suspend fun Application.module() {
         provide { CalculatorRepository() }
         provide { UserRepository() }
         provide { UserImageRepository() }
+        provide { defaultClient }
 
         provide { CalculatorService(resolve()) }
-        provide { EsportClient(defaultClient, esportToken) }
+        provide { EsportClient(resolve(), esportToken) }
         provide { EsportService(resolve()) }
-        provide { RecaptchaClient(defaultClient, reCaptchaSecret) }
+        provide { RecaptchaClient(resolve(), reCaptchaSecret) }
         provide { UserService(resolve(), resolve()) }
         provide { UserImageService(resolve(), resolve(), resolve()) }
         provide<DataSource> { this@module.connectToPostgres(useEmbeddedPg) }
@@ -63,15 +62,10 @@ suspend fun Application.module() {
         allowHeader(HttpHeaders.Authorization)
     }
 
-    configureHealth(dataSource = dependencies.resolve())
+    configureHealth()
     configureSecurity()
     configureStatusPage()
-    configureGraphQL(calculatorService = dependencies.resolve(), calculatorRepository = dependencies.resolve())
-    configureRestApi(
-        esportService = dependencies.resolve(),
-        userService = dependencies.resolve(),
-        userImageService = dependencies.resolve(),
-    )
-
-    RemoveOldEntriesTask(calculatorRepository = dependencies.resolve()).also { it.start(this) }
+    configureGraphQL()
+    configureRestApi()
+    configureOldCalcEntryCleanup()
 }
