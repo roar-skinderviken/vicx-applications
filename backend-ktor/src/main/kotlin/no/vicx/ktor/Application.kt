@@ -55,8 +55,9 @@ suspend fun Application.module() {
         provide<DataSource> { this@module.connectToPostgres(useEmbeddedPg) }
     }
 
-    // for localhost testing
     install(CORS) {
+        allowHost("vicx.no", schemes = listOf("https"))
+        // for localhost testing
         allowHost("localhost:3000", schemes = listOf("http"))
         allowHeader(HttpHeaders.ContentType)
         allowHeader(HttpHeaders.Authorization)
