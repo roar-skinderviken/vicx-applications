@@ -2,7 +2,6 @@ package no.vicx.ktor.util
 
 import io.ktor.http.content.MultiPartData
 import io.ktor.http.content.PartData
-import io.ktor.http.content.forEachPart
 import io.ktor.server.plugins.requestvalidation.ValidationResult
 import no.vicx.ktor.user.vm.CreateUserVm
 import no.vicx.ktor.util.MultiPartUtils.consumeAndValidateUserImageFilePart
@@ -20,12 +19,15 @@ suspend fun MultiPartData.extractFormItemsAndFileItem(
 ) {
     val capturedFormItems = mutableMapOf<String, String>()
 
-    this.forEachPart { part ->
+    while (true) {
+        val part = this.readPart() ?: break
+
         when (part) {
             is PartData.FormItem -> part.name?.also { partName -> capturedFormItems[partName] = part.value }
             is PartData.FileItem -> userImageCallback(consumeAndValidateUserImageFilePart(part))
             else -> Unit
         }
+
         part.dispose()
     }
 
