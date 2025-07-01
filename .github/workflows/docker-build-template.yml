@@ -55,7 +55,7 @@ jobs:
 
       - name: Build with Gradle
         if : ${{ inputs.buildWithGradle }}
-        run: ./gradlew build -p ${{ inputs.moduleName }} --console=plain
+        run: ./gradlew build -p ${{ inputs.moduleName }} --console=plain --no-daemon --info
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
