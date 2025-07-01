@@ -27,5 +27,8 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
 
-      - name: Run tests with Gradle
-        run: ./gradlew check -p ${{ inputs.moduleName }} --console=plain --no-daemon --info
+      - name: Build with Gradle
+        run: ./gradlew build -p ${{ inputs.moduleName }} --console=plain --no-daemon --info
+
+      - name: Dependency submission (for Dependabot)
+        uses: gradle/actions/dependency-submission@v4

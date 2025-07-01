@@ -50,8 +50,6 @@ kotlin {
     }
 }
 
-// no daemon test
-
 tasks.test {
     jvmArgs(
         "-Dkotest.framework.config.fqn=no.vicx.backend.KotestConfig",
