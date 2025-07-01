@@ -25,8 +25,6 @@ springBoot {
     mainClass = "sample.DemoClientApplication"
 }
 
-//
-
 tasks.jar {
     enabled = false
 }
