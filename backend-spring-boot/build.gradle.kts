@@ -50,8 +50,6 @@ kotlin {
     }
 }
 
-// restesting build
-
 tasks.test {
     jvmArgs(
         "-Dkotest.framework.config.fqn=no.vicx.backend.KotestConfig",
