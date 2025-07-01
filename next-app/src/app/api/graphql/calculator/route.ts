@@ -1,6 +1,6 @@
 import {NextRequest} from "next/server"
-import {forwardGraphQLRequestWithoutAuth} from "@/utils/apiUtils"
+import {forwardRequest} from "@/utils/apiUtils"
 
 export async function POST(request: NextRequest) {
-    return forwardGraphQLRequestWithoutAuth(request)
+    return forwardRequest(request, "/graphql", "POST", "application/json", false)
 }
