@@ -18,9 +18,7 @@ import {signInOptions} from "@/components/navbar/navbarConstants"
 import {DEFAULT_OAUTH_CLIENT_ID} from "@/auth/authProviders"
 import {userRegistrationSchema} from "@/app/user/register/userRegistrationSchema"
 
-// put this in next-app/.env.local
-// NEXT_PUBLIC_USER_BACKEND_URL=http://localhost:8080/api/user
-const BACKEND_URL = process.env.NEXT_PUBLIC_USER_BACKEND_URL || "/backend-spring-boot/api/user"
+export const USER_REGISTRATION_URL = "/api/register"
 
 type UserSignupFormData = InferType<typeof userRegistrationSchema>
 
@@ -82,7 +80,7 @@ const UserSignupForm = ({reCaptchaSiteKey}: { reCaptchaSiteKey: string }) => {
             body: multipartFormData
         }
 
-        fetch(BACKEND_URL, fetchConfig)
+        fetch(USER_REGISTRATION_URL, fetchConfig)
             .then(async response => {
                 // Parse error response as JSON to extract validation errors
                 if (!response.ok) throw await response.json()
