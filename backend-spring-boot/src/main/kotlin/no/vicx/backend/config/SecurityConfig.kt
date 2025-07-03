@@ -82,6 +82,8 @@ class SecurityConfig {
                 authorize
                     .requestMatchers(EndpointRequest.to(HealthEndpoint::class.java))
                     .permitAll()
+                    .requestMatchers(HttpMethod.GET, "/hello")
+                    .permitAll()
                     .requestMatchers(HttpMethod.GET, "/gitproperties")
                     .permitAll()
                     .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html")
