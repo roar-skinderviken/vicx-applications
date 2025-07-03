@@ -10,6 +10,6 @@ import org.springframework.web.bind.annotation.RestController
 class HelloWorldController {
     @GetMapping
     fun hello(
-        @RequestHeader("X-Forwarded-For") forwardedForHeader: String,
+        @RequestHeader("X-Forwarded-For", required = false) forwardedForHeader: String?,
     ) = "Hello World! $forwardedForHeader"
 }
