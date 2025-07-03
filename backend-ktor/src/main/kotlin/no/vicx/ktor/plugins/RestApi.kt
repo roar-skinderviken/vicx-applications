@@ -13,6 +13,7 @@ import io.ktor.server.plugins.NotFoundException
 import io.ktor.server.plugins.di.dependencies
 import io.ktor.server.plugins.requestvalidation.RequestValidationException
 import io.ktor.server.plugins.requestvalidation.ValidationResult
+import io.ktor.server.request.header
 import io.ktor.server.request.receiveMultipart
 import io.ktor.server.request.receiveText
 import io.ktor.server.response.respond
@@ -60,6 +61,11 @@ suspend fun Application.configureRestApi() {
     val userImageService: UserImageService = dependencies.resolve()
 
     routing {
+        get("/hello") {
+            val forwardedForHeader = call.request.header("X-Forwarded-For")
+            call.respond("Hello World! $forwardedForHeader")
+        }
+
         route("/api") {
             post("/user") {
                 val multiPartData = call.receiveMultipart()
