@@ -30,5 +30,5 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build -p ${{ inputs.moduleName }} --console=plain --no-daemon --info
 
-      - name: Dependency submission (for Dependabot)
-        uses: gradle/actions/dependency-submission@v4
+#      - name: Dependency submission (for Dependabot)
+#        uses: gradle/actions/dependency-submission@v4
