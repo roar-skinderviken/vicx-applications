@@ -3,9 +3,11 @@ package no.vicx.authserver.config
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.types.shouldNotBeSameInstanceAs
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.context.annotation.Import
 import org.springframework.security.core.userdetails.UserDetailsService
 
 @SpringBootTest
+@Import(SecurityConfig::class)
 class UserDetailsConfigIntegrationTest(
     userDetailsService: UserDetailsService,
 ) : StringSpec({
