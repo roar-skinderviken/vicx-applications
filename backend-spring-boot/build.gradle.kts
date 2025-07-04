@@ -51,7 +51,6 @@ kotlin {
 }
 
 tasks.test {
-    jvmArgs(
-        "-Dkotest.framework.config.fqn=no.vicx.backend.KotestConfig",
-    )
+    @Suppress("UNNECESSARY_SAFE_CALL")
+    jvmArgs?.add("-Dkotest.framework.config.fqn=no.vicx.backend.KotestConfig")
 }

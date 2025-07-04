@@ -1,8 +1,7 @@
 plugins {
     id("vicx-library")
-    id("java-library")
+    java
     alias(libs.plugins.freefair.lombok)
-    // remaining plugins are added in parent
 }
 
 java {
@@ -17,6 +16,9 @@ dependencyManagement {
     }
 }
 
+// https://javadoc.io/doc/org.mockito/mockito-core/latest/org/mockito/Mockito.html#0.3
+val mockitoAgent = configurations.create("mockitoAgent")
+
 dependencies {
     api("org.springframework.boot:spring-boot-starter-data-jpa")
 
@@ -26,20 +28,16 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.boot:spring-boot-testcontainers")
     testImplementation("org.testcontainers:postgresql")
-}
 
-tasks.withType<JavaCompile> {
-    options.compilerArgs.add("-parameters")
-}
-
-// https://javadoc.io/doc/org.mockito/mockito-core/latest/org/mockito/Mockito.html#0.3
-val mockitoAgent = configurations.create("mockitoAgent")
-
-dependencies {
     testImplementation(libs.mockito)
     mockitoAgent(libs.mockito) { isTransitive = false }
 }
 
+tasks.compileJava {
+    options.compilerArgs.add("-parameters")
+}
+
+// intentionally overwriting jvmArgs from vicx-library plugin here.
 tasks.test {
     jvmArgs("-javaagent:${mockitoAgent.asPath}")
     systemProperty("spring.profiles.active", "test")

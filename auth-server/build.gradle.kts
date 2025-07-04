@@ -34,7 +34,6 @@ tasks.jar {
 }
 
 tasks.test {
-    jvmArgs(
-        "-Dkotest.framework.config.fqn=no.vicx.authserver.KotestConfig",
-    )
+    @Suppress("UNNECESSARY_SAFE_CALL")
+    jvmArgs?.add("-Dkotest.framework.config.fqn=no.vicx.authserver.KotestConfig")
 }
