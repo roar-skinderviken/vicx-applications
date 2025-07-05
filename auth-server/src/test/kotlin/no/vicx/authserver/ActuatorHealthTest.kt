@@ -6,8 +6,8 @@ import io.kotest.data.Row1
 import io.kotest.data.forAll
 import io.kotest.matchers.shouldBe
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.web.client.TestRestTemplate
-import org.springframework.boot.test.web.server.LocalManagementPort
+import org.springframework.boot.web.server.test.LocalManagementPort
+import org.springframework.boot.web.server.test.client.TestRestTemplate
 import org.springframework.http.HttpStatus
 import org.springframework.web.util.UriComponentsBuilder
 

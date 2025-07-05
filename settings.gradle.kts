@@ -6,4 +6,5 @@ include(
     ":backend-ktor",
     ":backend-spring-boot",
     ":spring-boot-client",
-    ":next-app")
+    ":next-app",
+)
