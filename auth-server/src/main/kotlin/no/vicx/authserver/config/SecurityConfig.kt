@@ -40,6 +40,23 @@ class SecurityConfig {
     @Bean
     fun passwordEncoder(): PasswordEncoder = BCryptPasswordEncoder()
 
+    /*
+        @Bean
+        fun checkObjectPostProcessor(
+            ctx: ApplicationContext,
+            @Qualifier("webAuthorizationManagerPostProcessor") objectPostProcessor: ObjectPostProcessor<Any>,
+        ): CommandLineRunner =
+            CommandLineRunner {
+                val beans =
+                    ctx
+                        .getBeansOfType(ObjectPostProcessor::class.java)
+
+                println("Beans of type ObjectPostProcessor:")
+                beans
+                    .forEach { (name, _) -> println("ROARRR -> $name") }
+            }
+     */
+
     // https://docs.spring.io/spring-authorization-server/reference/getting-started.html#defining-required-components
     @Bean
     @Order(1)

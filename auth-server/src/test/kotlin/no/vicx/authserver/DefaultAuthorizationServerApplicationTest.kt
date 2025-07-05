@@ -67,7 +67,7 @@ class DefaultAuthorizationServerApplicationTest(
                 }
             }
 
-            When("when logging in and requesting token") {
+            When("logging in and requesting token") {
                 with(webClient) {
                     options.isThrowExceptionOnFailingStatusCode = false
                     options.isRedirectEnabled = false
