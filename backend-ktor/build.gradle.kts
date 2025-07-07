@@ -45,8 +45,6 @@ dependencies {
 
     testImplementation(libs.ktor.server.test.host)
     implementation(libs.embedded.postgres) // TODO
-
-    testImplementation(libs.kotlin.test)
 }
 
 tasks.jar {

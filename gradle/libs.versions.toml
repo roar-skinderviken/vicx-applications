@@ -93,8 +93,6 @@ logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "lo
 graphql-kotlin-server = { module = "com.expediagroup:graphql-kotlin-ktor-server", version.ref = "graphql-kotlin-version" }
 graphql-kotlin-schema-generator = { module = "com.expediagroup:graphql-kotlin-schema-generator", version.ref = "graphql-kotlin-version" }
 
-kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin-version" }
-
 # spring-boot-client
 webjars-bootstrap = { module = "org.webjars:bootstrap", version.ref = "webjars-bootstrap-version" }
 webjars-popper-js = { module = "org.webjars:popper.js", version.ref = "webjars-popper-js-version" }
