@@ -6,7 +6,6 @@ import io.kotest.matchers.shouldBe
 import no.vicx.backend.user.UserTestUtils.createValidVicxUser
 import no.vicx.backend.user.vm.UserVm.Companion.fromVicxUser
 import no.vicx.database.user.UserImage
-import org.springframework.data.jpa.domain.AbstractPersistable_.id
 
 class UserVmTest :
     StringSpec({
@@ -17,7 +16,6 @@ class UserVmTest :
             val viewModel = fromVicxUser(vicxUser)
 
             assertSoftly(viewModel) {
-                id shouldBe vicxUser.id
                 username shouldBe vicxUser.username
                 name shouldBe vicxUser.name
                 email shouldBe vicxUser.email
