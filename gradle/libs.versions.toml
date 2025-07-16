@@ -33,7 +33,7 @@ embedded-postgres-version = "2.1.0"
 graphql-kotlin-version = "8.5.0"
 
 spring-security-crypto-version = "6.5.1"
-caffeine-version = "3.2.1"
+caffeine-version = "3.2.2"
 cohort-ktor-version = "2.7.2"
 
 # Logging
