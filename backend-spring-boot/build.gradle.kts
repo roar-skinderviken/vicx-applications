@@ -45,8 +45,10 @@ tasks.jar {
 
 kotlin {
     compilerOptions {
-        freeCompilerArgs
-            .add("-Xannotation-default-target=param-property")
+        freeCompilerArgs.addAll(
+            "-Xjsr305=strict",
+            "-Xannotation-default-target=param-property",
+        )
     }
 }
 
