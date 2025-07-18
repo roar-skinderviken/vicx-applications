@@ -13,6 +13,14 @@ class CacheConfig {
     fun cacheManager(): CacheManager =
         CaffeineCacheManager().apply {
             registerCustomCache(
+                "ESPORT",
+                Caffeine
+                    .newBuilder()
+                    .expireAfterWrite(30, TimeUnit.SECONDS)
+                    .buildAsync(),
+            )
+
+            registerCustomCache(
                 "GITHUB_OPAQUE_PRINCIPALS",
                 Caffeine
                     .newBuilder()
@@ -26,14 +34,6 @@ class CacheConfig {
                     .newBuilder()
                     .expireAfterWrite(5, TimeUnit.MINUTES)
                     .build(),
-            )
-
-            registerCustomCache(
-                "ESPORT",
-                Caffeine
-                    .newBuilder()
-                    .expireAfterWrite(30, TimeUnit.SECONDS)
-                    .buildAsync(),
             )
         }
 }
