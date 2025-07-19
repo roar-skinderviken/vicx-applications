@@ -6,7 +6,7 @@ import io.kotest.data.forAll
 import io.kotest.matchers.collections.shouldContainAll
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.web.server.LocalManagementPort
+import org.springframework.boot.web.server.test.LocalManagementPort
 import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.test.web.reactive.server.expectBody
 import org.springframework.web.util.UriComponentsBuilder

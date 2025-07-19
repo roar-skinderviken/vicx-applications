@@ -4,6 +4,7 @@ import kotlin.jvm.optionals.getOrNull
 
 repositories {
     mavenCentral()
+    maven("https://repo.spring.io/snapshot")
 }
 
 plugins {
