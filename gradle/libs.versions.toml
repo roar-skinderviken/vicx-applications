@@ -28,7 +28,7 @@ kotlin-version = "2.2.0"
 logback-version = "1.5.18"
 postgres-version = "42.7.7"
 flyway-version = "11.10.3"
-hikari-version = "6.3.0"
+hikari-version = "6.3.1"
 embedded-postgres-version = "2.1.0"
 graphql-kotlin-version = "8.5.0"
 
