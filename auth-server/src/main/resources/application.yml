@@ -24,7 +24,6 @@ oauth:
 
 spring:
   main:
-    allow-circular-references: true
     banner-mode: off
 
   application:
