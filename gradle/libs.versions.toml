@@ -32,7 +32,7 @@ hikari-version = "7.0.1"
 embedded-postgres-version = "2.1.0"
 graphql-kotlin-version = "8.5.0"
 
-spring-security-crypto-version = "6.5.2"
+spring-security-crypto-version = "6.5.3"
 caffeine-version = "3.2.2"
 cohort-ktor-version = "2.7.2"
 
