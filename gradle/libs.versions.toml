@@ -29,7 +29,7 @@ logback-version = "1.5.18"
 postgres-version = "42.7.7"
 flyway-version = "11.11.2"
 hikari-version = "7.0.2"
-embedded-postgres-version = "2.1.0"
+embedded-postgres-version = "2.1.1"
 graphql-kotlin-version = "8.5.0"
 
 spring-security-crypto-version = "6.5.3"
