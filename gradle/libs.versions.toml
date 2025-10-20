@@ -1,5 +1,5 @@
 [versions]
-mockito-version = "5.19.0"
+mockito-version = "5.20.0"
 tika-core-version = "3.2.3"
 springdoc-openapi-version = "2.8.13"
 spring-boot-version = "3.5.6"
