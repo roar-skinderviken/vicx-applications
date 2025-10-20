@@ -17,7 +17,7 @@ webjars-query-version = "3.7.1"
 
 # test
 mockk-version = "1.14.5"
-kotest-version = "6.0.3"
+kotest-version = "6.0.4"
 kotest-extensions-spring-version = "1.3.0"
 springmockk-version = "4.0.2"
 
@@ -52,9 +52,10 @@ logstash-logback-encoder = { module = "net.logstash.logback:logstash-logback-enc
 
 # test
 kotest-runner-junit5 = { module = "io.kotest:kotest-runner-junit5-jvm", version.ref = "kotest-version" }
-mockk = { module = "io.mockk:mockk-jvm", version.ref = "mockk-version" }
 kotest-assertions-core = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest-version" }
+kotest-assertions-table = { module = "io.kotest:kotest-assertions-table", version.ref = "kotest-version" }
 kotest-extensions-spring = { module = "io.kotest.extensions:kotest-extensions-spring", version.ref = "kotest-extensions-spring-version" }
+mockk = { module = "io.mockk:mockk-jvm", version.ref = "mockk-version" }
 springmockk = { module = "com.ninja-squad:springmockk", version.ref = "springmockk-version" }
 
 # Ktor

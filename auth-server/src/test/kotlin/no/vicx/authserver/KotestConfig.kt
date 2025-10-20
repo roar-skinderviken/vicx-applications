@@ -1,6 +1,7 @@
 package no.vicx.authserver
 
 import io.kotest.core.config.AbstractProjectConfig
+import io.kotest.core.extensions.Extension
 import io.kotest.extensions.spring.SpringAutowireConstructorExtension
 import io.kotest.extensions.spring.SpringExtension
 import org.springframework.core.env.AbstractEnvironment
@@ -10,8 +11,8 @@ object KotestConfig : AbstractProjectConfig() {
         System.setProperty(AbstractEnvironment.ACTIVE_PROFILES_PROPERTY_NAME, "test")
     }
 
-    override fun extensions() =
-        listOf(
+    override val extensions: List<Extension>
+        get() = listOf(
             SpringExtension,
             SpringAutowireConstructorExtension,
         )
