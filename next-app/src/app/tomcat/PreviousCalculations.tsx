@@ -35,12 +35,18 @@ const PreviousCalculations = (
     }) => {
     const [selectedItems, setSelectedItems] = useState<number[]>([])
     const [isLoadingDeleteItems, setIsLoadingDeleteItems] = useState(false)
-    const [isLoadingFetchNore, setIsLoadingFetchNore] = useState(false)
+    const [isLoadingFetchMore, setIsLoadingFetchMore] = useState(false)
 
     useEffect(() => {
-        setSelectedItems([])
-        setIsLoadingFetchNore(false)
-        setIsLoadingDeleteItems(false)
+        const reset = () => {
+            setSelectedItems([])
+            setIsLoadingFetchMore(false)
+            setIsLoadingDeleteItems(false)
+        }
+
+        const timeout = setTimeout(reset, 0)
+
+        return () => clearTimeout(timeout)
     }, [calculations])
 
     const isAllSelected = selectedItems.length > 0 && calculations
@@ -144,9 +150,9 @@ const PreviousCalculations = (
                     <ButtonWithSpinner
                         buttonText="Fetch more"
                         type="button"
-                        isLoading={isLoadingFetchNore}
+                        isLoading={isLoadingFetchMore}
                         onClick={() => {
-                            setIsLoadingFetchNore(true)
+                            setIsLoadingFetchMore(true)
                             onFetchMore()
                         }}
                         className="flex items-center space-x-2"

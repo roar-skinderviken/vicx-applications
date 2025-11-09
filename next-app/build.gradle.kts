@@ -15,14 +15,14 @@ tasks.register<NpmTask>("installDependencies") {
     args.set(listOf("ci"))
 }
 
-tasks.register<NpmTask>("lint") {
+tasks.register<NpmTask>("eslint") {
     dependsOn("installDependencies")
     workingDir.set(file("."))
-    args.set(listOf("run", "lint"))
+    args.set(listOf("run", "eslint"))
 }
 
 tasks.register<NpmTask>("check") {
-    dependsOn("lint")
+    dependsOn("eslint")
     workingDir.set(file("."))
     args.set(listOf("run", "test"))
 }

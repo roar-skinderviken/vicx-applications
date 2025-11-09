@@ -1,7 +1,7 @@
 "use client"
 
 import {useCallback, useState} from "react"
-import {FormProvider, useForm} from "react-hook-form"
+import {FormProvider, useForm, useWatch} from "react-hook-form"
 import {yupResolver} from "@hookform/resolvers/yup"
 import * as yup from "yup"
 import ValidatedTextInput from "@/components/ValidatedTextInput"
@@ -102,8 +102,12 @@ const CalculatorFormAndResult = () => {
         },
     })
 
-    const {handleSubmit, formState, register, watch} = methods
-    const operationFromForm = watch("operation")
+    const {handleSubmit, formState, register} = methods
+
+    const operationFromForm = useWatch({
+        control: methods.control,
+        name: "operation"
+    })
 
     const fetchPreviousCalculations = (pageNumber: number) => {
         publicApiClient()

@@ -6,8 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "lint:fix": "next lint --fix",
+    "eslint": "eslint . --ext .ts,.tsx,.js,.jsx",
+    "eslint:fix": "eslint . --ext .ts,.tsx,.js,.jsx --fix",
     "test": "jest",
     "test:watch": "jest --watch"
   },
