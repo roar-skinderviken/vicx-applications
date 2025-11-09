@@ -8,13 +8,13 @@ packages = [{include = "src"}]
 
 [tool.poetry.dependencies]
 python = "^3.12"
-fastapi = "^0.121.0"
+fastapi = "^0.121.1"
 uvicorn = "^0.38.0"
 scikit-learn = "^1.7.2"
 
 
 [tool.poetry.group.dev.dependencies]
-pytest = "^8.4.2"
+pytest = "^9.0.0"
 
 [build-system]
 requires = ["poetry-core"]
