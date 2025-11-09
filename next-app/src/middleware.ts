@@ -8,7 +8,6 @@ const authConfigMatchers: string[] = [
 
 export function middleware(req: NextRequest) {
     if (authConfigMatchers.some(path => req.url.includes(path))) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         return nextAuthMiddleware(req as any)
     }
 

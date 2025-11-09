@@ -1,4 +1,4 @@
-import {act, fireEvent, render, screen} from "@testing-library/react"
+import {act, fireEvent, render, screen, waitFor} from "@testing-library/react"
 import UserSignupForm from "./UserSignupForm"
 import {changeInputValue, delayedResponse} from "@/testUtils"
 
@@ -227,7 +227,9 @@ describe("UserSignupForm", () => {
 
             await changeInputValue("Username", "User2")
 
-            expect(screen.queryByText(errorResponse.validationErrors.username)).not.toBeInTheDocument()
+            await waitFor(() =>
+                expect(screen.queryByText(errorResponse.validationErrors.username)).not.toBeInTheDocument()
+            )
         })
 
         it("displays backend validation error when reCAPTCHA error", async () => {

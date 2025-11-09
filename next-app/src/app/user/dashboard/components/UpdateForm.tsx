@@ -1,7 +1,7 @@
 "use client"
 
 import React, {useState, useRef, useEffect} from "react"
-import {DefaultValues, FormProvider, useForm} from "react-hook-form"
+import {DefaultValues, FormProvider, useForm, useWatch} from "react-hook-form"
 import {yupResolver} from "@hookform/resolvers/yup"
 import ButtonWithSpinner from "@/components/ButtonWithSpinner"
 import ValidatedTextInput from "@/components/ValidatedTextInput"
@@ -47,8 +47,11 @@ const UpdateForm = <T extends yup.AnyObjectSchema>({
         defaultValues,
     })
 
-    const {handleSubmit, watch, formState} = methods
-    const watchedValues = watch()
+    const {handleSubmit, formState} = methods
+    const watchedValues = useWatch({
+        control: methods.control,
+        name: undefined,
+    })
     const prevWatchedValuesRef = useRef<yup.InferType<T>>(defaultValues)
 
     const isSubmitDisabled =
@@ -56,6 +59,7 @@ const UpdateForm = <T extends yup.AnyObjectSchema>({
 
     useEffect(() => {
         if (JSON.stringify(watchedValues) !== JSON.stringify(prevWatchedValuesRef.current)) {
+            // eslint-disable-next-line react-hooks/set-state-in-effect
             setValidationErrors(undefined)
             prevWatchedValuesRef.current = watchedValues
         }

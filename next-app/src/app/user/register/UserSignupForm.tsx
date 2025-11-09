@@ -2,7 +2,7 @@
 
 import Image from "next/image"
 import React, {useEffect, useState} from "react"
-import {FormProvider, useForm} from "react-hook-form"
+import {FormProvider, useForm, useWatch} from "react-hook-form"
 import {yupResolver} from "@hookform/resolvers/yup"
 import {InferType} from "yup"
 import ValidatedTextInput from "@/components/ValidatedTextInput"
@@ -40,12 +40,18 @@ const UserSignupForm = ({reCaptchaSiteKey}: { reCaptchaSiteKey: string }) => {
             errors
         },
         register,
-        watch,
         trigger
     } = methods
 
-    const watchedFile = watch("image")
-    const watchedUsername = watch("username")
+    const watchedFile = useWatch({
+        control: methods.control,
+        name: "image"
+    })
+
+    const watchedUsername = useWatch({
+        control: methods.control,
+        name: "username"
+    })
 
     useEffect(() => {
         if (errors.image) return
@@ -58,7 +64,10 @@ const UserSignupForm = ({reCaptchaSiteKey}: { reCaptchaSiteKey: string }) => {
         }
     }, [watchedFile, errors.image])
 
-    useEffect(() => setValidationErrors(undefined), [watchedUsername])
+    useEffect(() => {
+        const timeout = setTimeout(() => setValidationErrors(undefined), 0)
+        return () => clearTimeout(timeout)
+    }, [watchedUsername])
 
     const onSubmit = async (formData: UserSignupFormData) => {
         const multipartFormData = new FormData()

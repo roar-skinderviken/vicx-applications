@@ -3,7 +3,7 @@
 import React, {useEffect, useState} from "react"
 import {InferType} from "yup"
 import {MAX_IMAGE_FILE_SIZE, SUPPORTED_IMAGE_FORMATS} from "@/utils/yupSharedSchemas"
-import {FormProvider, useForm} from "react-hook-form"
+import {FormProvider, useForm, useWatch} from "react-hook-form"
 import {yupResolver} from "@hookform/resolvers/yup"
 import Image from "next/image"
 import {Button, Card, FileInput} from "flowbite-react"
@@ -67,12 +67,14 @@ const UpdateProfileImageForm = ({onUploadSuccess, onCancel}: {
             errors
         },
         register,
-        watch,
         setValue,
         trigger
     } = methods
 
-    const watchedFile = watch("image")
+    const watchedFile = useWatch({
+        control: methods.control,
+        name: "image"
+    })
 
     useEffect(() => {
         if (errors.image) return
@@ -138,7 +140,7 @@ const UpdateProfileImageForm = ({onUploadSuccess, onCancel}: {
                 <input {...getInputProps()} />
                 {isDragActive
                     ? <p className="mb-4">Drop the file here ...</p>
-                    : <p className="mb-4">Drag 'n' drop a file here, or click to select file</p>}
+                    : <p className="mb-4">Drag and drop a file here, or click to select file</p>}
 
                 {profileImage
                     ? <Image
