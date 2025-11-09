@@ -11,15 +11,18 @@ node {
 }
 
 tasks.register<NpmTask>("installDependencies") {
+    workingDir.set(file("."))
     args.set(listOf("ci"))
 }
 
 tasks.register<NpmTask>("lint") {
     dependsOn("installDependencies")
+    workingDir.set(file("."))
     args.set(listOf("run", "lint"))
 }
 
 tasks.register<NpmTask>("check") {
     dependsOn("lint")
+    workingDir.set(file("."))
     args.set(listOf("run", "test"))
 }
