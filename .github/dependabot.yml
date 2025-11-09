@@ -7,6 +7,13 @@ updates:
       time: "03:00"
       timezone: Europe/Oslo
     open-pull-requests-limit: 10
+    groups:
+      minor-and-patch:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
 
   - package-ecosystem: npm
     versioning-strategy: increase
@@ -20,6 +27,9 @@ updates:
       npm-dependencies:
         patterns:
           - "*"
+    ignore:
+      - dependency-name: "flowbite-react"
+      - dependency-name: "tailwindcss"
 
   - package-ecosystem: pip
     versioning-strategy: increase
