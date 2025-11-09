@@ -6,7 +6,7 @@ const authConfigMatchers: string[] = [
     "/api/user:path*"
 ]
 
-export function middleware(req: NextRequest) {
+export function proxy(req: NextRequest) {
     if (authConfigMatchers.some(path => req.url.includes(path))) {
         return nextAuthMiddleware(req as any)
     }

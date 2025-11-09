@@ -14,10 +14,10 @@ const buildFallbackResponse = () => {
     return buildResponse(fs.readFileSync(FALLBACK_IMAGE_PATH))
 }
 
-const buildResponse = (buffer: Buffer) => new Response(
-    buffer,
-    {headers: {"Content-Type": JPEG_IMAGE_CONTENT_TYPE}}
-)
+const buildResponse = (buffer: Buffer) =>
+    new Response(new Uint8Array(buffer), {
+        headers: { "Content-Type": JPEG_IMAGE_CONTENT_TYPE },
+    })
 
 export async function GET() {
     try {
@@ -27,7 +27,7 @@ export async function GET() {
         )
 
         if (!response.ok) {
-            revalidateTag(FALLBACK_CACHE_TAG)
+            revalidateTag(FALLBACK_CACHE_TAG, "default")
             return buildFallbackResponse()
         }
 
