@@ -16,9 +16,7 @@ updates:
           - "patch"
     ignore:
       - dependency-name: "com.expediagroup:graphql-kotlin-ktor-server"
-        versions: [ "*" ]
       - dependency-name: "com.expediagroup:graphql-kotlin-schema-generator"
-        versions: [ "*" ]
 
   - package-ecosystem: npm
     versioning-strategy: increase
