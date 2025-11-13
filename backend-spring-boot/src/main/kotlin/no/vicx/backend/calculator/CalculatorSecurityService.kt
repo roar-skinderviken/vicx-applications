@@ -3,7 +3,9 @@ package no.vicx.backend.calculator
 import no.vicx.database.calculator.CalculatorRepository
 import org.springframework.security.core.Authentication
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
+@Transactional
 @Service
 class CalculatorSecurityService(
     private val calculatorRepository: CalculatorRepository,

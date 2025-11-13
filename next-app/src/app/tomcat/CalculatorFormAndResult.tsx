@@ -1,7 +1,7 @@
 "use client"
 
 import {useCallback, useState} from "react"
-import {FormProvider, useForm} from "react-hook-form"
+import {FormProvider, useForm, useWatch} from "react-hook-form"
 import {yupResolver} from "@hookform/resolvers/yup"
 import * as yup from "yup"
 import ValidatedTextInput from "@/components/ValidatedTextInput"
@@ -55,12 +55,14 @@ export const deleteCalculationsQuery = gql`
 
 const publicApiClient = () => createClient({
     url: CALC_PUBLIC_GRAPHQL_URL,
-    exchanges: [fetchExchange]
+    exchanges: [fetchExchange],
+    preferGetMethod: false
 })
 
 const restrictedApiClient = () => createClient({
     url: CALC_RESTRICTED_GRAPHQL_URL,
-    exchanges: [fetchExchange]
+    exchanges: [fetchExchange],
+    preferGetMethod: false
 })
 
 const calculatorYupSchema = yup.object({
@@ -102,8 +104,12 @@ const CalculatorFormAndResult = () => {
         },
     })
 
-    const {handleSubmit, formState, register, watch} = methods
-    const operationFromForm = watch("operation")
+    const {handleSubmit, formState, register} = methods
+
+    const operationFromForm = useWatch({
+        control: methods.control,
+        name: "operation"
+    })
 
     const fetchPreviousCalculations = (pageNumber: number) => {
         publicApiClient()

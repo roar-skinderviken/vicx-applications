@@ -43,6 +43,6 @@ describe('GET /api/hero', () => {
         expect(response.headers.get("Content-Type")).toBe(JPEG_IMAGE_CONTENT_TYPE)
         expect(Buffer.from(buffer)).toEqual(FALLBACK_IMAGE_BUFFER)
 
-        expect(revalidateTag).toHaveBeenCalledWith(FALLBACK_CACHE_TAG)
+        expect(revalidateTag).toHaveBeenCalledWith(FALLBACK_CACHE_TAG, "default")
     })
 })

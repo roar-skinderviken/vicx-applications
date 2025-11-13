@@ -5,21 +5,24 @@ plugins {
 }
 
 node {
-    version.set("20.18.0")
-    npmVersion.set("10.9.0")
+    version.set("24.11.0")
+    npmVersion.set("11.6.1")
     download.set(true)
 }
 
 tasks.register<NpmTask>("installDependencies") {
+    workingDir.set(file("."))
     args.set(listOf("ci"))
 }
 
-tasks.register<NpmTask>("lint") {
+tasks.register<NpmTask>("eslint") {
     dependsOn("installDependencies")
-    args.set(listOf("run", "lint"))
+    workingDir.set(file("."))
+    args.set(listOf("run", "eslint"))
 }
 
 tasks.register<NpmTask>("check") {
-    dependsOn("lint")
+    dependsOn("eslint")
+    workingDir.set(file("."))
     args.set(listOf("run", "test"))
 }

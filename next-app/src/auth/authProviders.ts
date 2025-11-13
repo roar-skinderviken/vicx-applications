@@ -38,8 +38,6 @@ export const springBootProvider: Provider = {
 
     // this exists as well
     // "http://localhost:9000/auth-server/.well-known/oauth-authorization-server",
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     profile: (profile: any) => {
         return {
             id: profile.sub,

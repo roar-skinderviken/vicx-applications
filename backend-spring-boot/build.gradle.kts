@@ -51,12 +51,13 @@ tasks.jar {
 
 kotlin {
     compilerOptions {
-        freeCompilerArgs
-            .add("-Xannotation-default-target=param-property")
+        freeCompilerArgs.addAll(
+            "-Xjsr305=strict",
+            "-Xannotation-default-target=param-property",
+        )
     }
 }
 
 tasks.test {
-    @Suppress("UNNECESSARY_SAFE_CALL")
-    jvmArgs?.add("-Dkotest.framework.config.fqn=no.vicx.backend.KotestConfig")
+    systemProperty("kotest.framework.config.fqn", "no.vicx.backend.KotestConfig")
 }
