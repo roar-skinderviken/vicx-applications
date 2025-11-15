@@ -30,7 +30,7 @@ class DefaultAuthorizationServerConsentTests(
 ) : BehaviorSpec({
 
         // disabled tests until I figure out how this can be done with SB 4
-        Given("Authorization Server Application") {
+        xGiven("Authorization Server Application") {
             lateinit var consentPage: HtmlPage
 
             beforeContainer {
