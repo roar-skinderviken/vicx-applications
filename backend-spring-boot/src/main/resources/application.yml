@@ -22,6 +22,10 @@ spring:
   main:
     banner-mode: off
 
+  threads:
+    virtual:
+      enabled: true
+
   security:
     oauth2:
       resourceserver:

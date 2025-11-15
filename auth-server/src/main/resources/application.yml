@@ -26,6 +26,10 @@ spring:
   main:
     banner-mode: off
 
+  threads:
+    virtual:
+      enabled: true
+
   application:
     name: auth-server
 
