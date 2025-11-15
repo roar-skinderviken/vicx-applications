@@ -20,8 +20,6 @@ object HtmlUnitTestUtils {
             .queryParam("scope", scopes)
             .queryParam("state", "state")
             .queryParam("redirect_uri", REDIRECT_URI)
-//            .queryParam("code_challenge", "xyz123")
-//            .queryParam("code_challenge_method", "S256")
             .toUriString()
 
     fun withMockUser(

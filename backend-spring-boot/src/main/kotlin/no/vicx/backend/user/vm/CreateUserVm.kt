@@ -4,7 +4,6 @@ import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.media.Schema.RequiredMode
 import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotBlank
-import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Pattern
 import jakarta.validation.constraints.Size
 import no.vicx.backend.user.validation.RecaptchaThenUniqueUsername
@@ -22,38 +21,34 @@ data class CreateUserVm(
         example = "john_doe123",
         requiredMode = RequiredMode.REQUIRED,
     )
-    @field:NotNull(message = "{vicx.constraints.username.NotNull.message}")
     @field:Size(min = 4, max = 255)
     @field:Pattern(regexp = "^[a-zA-Z0-9_-]+$", message = "{vicx.constraints.username.Pattern.message}")
-    val username: String? = null,
+    val username: String = "",
     @Schema(
         description = "Password of the user. It must contain at least one lowercase letter, one uppercase letter, and one digit.",
         example = "Password123",
         requiredMode = RequiredMode.REQUIRED,
     )
-    @field:NotNull
     @field:Size(min = 8, max = 255)
     @field:Pattern(
         regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).*$",
         message = "{vicx.constraints.password.Pattern.message}",
     )
-    val password: String? = null,
+    val password: String = "",
     @Schema(
         description = "Full name of the user.",
         example = "John Doe",
         requiredMode = RequiredMode.REQUIRED,
     )
-    @field:NotNull
     @field:Size(min = 4, max = 255)
-    val name: String? = null,
+    val name: String = "",
     @Schema(
         description = "Email address of the user. Must be a valid email format.",
         example = "john.doe@example.com",
         requiredMode = RequiredMode.REQUIRED,
     )
-    @field:NotNull
     @field:Email
-    val email: String? = null,
+    val email: String = "",
     @Schema(
         description = "reCAPTCHA token for validation to prevent bot submissions.",
         requiredMode = RequiredMode.REQUIRED,

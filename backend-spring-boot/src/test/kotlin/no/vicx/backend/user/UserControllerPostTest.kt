@@ -129,13 +129,6 @@ class UserControllerPostTest(
             }
 
             forAll(
-            /*
-                            Row3(
-                                CreateUserVm(null, VALID_PLAINTEXT_PASSWORD, "The User", "user@example.com", "mock-token"),
-                                "username",
-                                "Username cannot be null",
-                            ),
-             */
                 Row3(
                     CreateUserVm(" ".repeat(4), VALID_PLAINTEXT_PASSWORD, "The User", "user@example.com", "mock-token"),
                     "username",
@@ -156,13 +149,6 @@ class UserControllerPostTest(
                     "username",
                     "Username can only contain letters, numbers, hyphens, and underscores",
                 ),
-            /*
-                            Row3(
-                                CreateUserVm("user1", null, "The User", "user@example.com", "mock-token"),
-                                "password",
-                                "Cannot be null",
-                            ),
-             */
                 Row3(
                     CreateUserVm("user1", "Aa1Aa1", "The User", "user@example.com", "mock-token"),
                     "password",
@@ -178,25 +164,11 @@ class UserControllerPostTest(
                     "password",
                     "Password must have at least one uppercase, one lowercase letter and one number",
                 ),
-            /*
-                            Row3(
-                                CreateUserVm("user1", VALID_PLAINTEXT_PASSWORD, null, "user@example.com", "mock-token"),
-                                "name",
-                                "Cannot be null",
-                            ),
-             */
                 Row3(
                     CreateUserVm("user1", VALID_PLAINTEXT_PASSWORD, "a".repeat(3), "user@example.com", "mock-token"),
                     "name",
                     "It must have minimum 4 and maximum 255 characters",
                 ),
-            /*
-                            Row3(
-                                CreateUserVm("user1", VALID_PLAINTEXT_PASSWORD, "The User", null, "mock-token"),
-                                "email",
-                                "Cannot be null",
-                            ),
-             */
                 Row3(
                     CreateUserVm("user1", VALID_PLAINTEXT_PASSWORD, "The User", "a", "mock-token"),
                     "email",
@@ -235,10 +207,10 @@ class UserControllerPostTest(
             multipart("/api/user").apply {
                 this
                     .contentType(MediaType.MULTIPART_FORM_DATA) // not required, just for clarity
-                    .param("username", createUserVm.username ?: "")
-                    .param("password", createUserVm.password ?: "")
-                    .param("email", createUserVm.email ?: "")
-                    .param("name", createUserVm.name ?: "")
+                    .param("username", createUserVm.username)
+                    .param("password", createUserVm.password)
+                    .param("email", createUserVm.email)
+                    .param("name", createUserVm.name)
                     .param("recaptchaToken", createUserVm.recaptchaToken)
 
                 if (imageFile != null) {
