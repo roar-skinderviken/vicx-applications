@@ -4,15 +4,15 @@ import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.data.Row2
 import io.kotest.data.forAll
 import io.kotest.matchers.collections.shouldContainAll
-import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.web.server.test.LocalManagementPort
+import org.springframework.boot.test.web.server.LocalManagementPort
+import org.springframework.boot.webtestclient.autoconfigure.AutoConfigureWebTestClient
 import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.test.web.reactive.server.expectBody
 import org.springframework.web.util.UriComponentsBuilder
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWebTestClient
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class ActuatorHealthTest(
     @LocalManagementPort managementPort: Int,
     webTestClient: WebTestClient,

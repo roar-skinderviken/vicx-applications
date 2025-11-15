@@ -4,6 +4,8 @@ plugins {
 }
 
 dependencies {
+    implementation("tools.jackson.module:jackson-module-kotlin")
+    implementation("org.springframework.boot:spring-boot-jackson")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-webclient")
@@ -39,6 +41,12 @@ dependencies {
 
     testImplementation("org.springframework.graphql:spring-graphql-test")
     testImplementation("io.projectreactor:reactor-test")
+
+    testImplementation("org.springframework.boot:spring-boot-webtestclient")
+    testImplementation("org.springframework.boot:spring-boot-restclient-test")
+    testImplementation("org.springframework.boot:spring-boot-webmvc-test")
+    testImplementation("org.springframework.boot:spring-boot-graphql-test")
+    testImplementation("org.springframework.boot:spring-boot-webflux-test")
 }
 
 springBoot {

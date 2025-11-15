@@ -12,12 +12,12 @@ object UserTestUtils {
     private val userImageInTest = UserImage(byteArrayOf(1, 2, 3), MediaType.IMAGE_PNG_VALUE)
 
     val defaultUserProperties =
-        DefaultUserProperties(
-            DEFAULT_USERNAME_IN_TEST,
-            "~default-user-password~",
-            "~default-user-name~",
-            "~default-user-email~",
-        )
+        DefaultUserProperties().apply {
+            username = DEFAULT_USERNAME_IN_TEST
+            password = "~default-user-password~"
+            name = "~default-user-name~"
+            email = "~default-user-email~"
+        }
 
     fun customUserDetailsInTest(hasImage: Boolean = true) =
         CustomUserDetails(

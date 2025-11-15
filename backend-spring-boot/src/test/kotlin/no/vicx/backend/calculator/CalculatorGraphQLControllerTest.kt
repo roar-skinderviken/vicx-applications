@@ -6,7 +6,7 @@ import io.mockk.every
 import no.vicx.backend.calculator.vm.CalcVm
 import no.vicx.backend.calculator.vm.PaginatedCalculations
 import no.vicx.database.calculator.CalculatorOperation
-import org.springframework.boot.test.autoconfigure.graphql.GraphQlTest
+import org.springframework.boot.graphql.test.autoconfigure.GraphQlTest
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
 import org.springframework.graphql.test.tester.GraphQlTester

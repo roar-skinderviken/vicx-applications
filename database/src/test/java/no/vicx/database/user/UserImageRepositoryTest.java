@@ -44,7 +44,7 @@ class UserImageRepositoryTest extends RepositoryTestBase {
     }
 
     long getImageCountInDb() {
-        return (long) entityManager.getEntityManager()
+        return (long) entityManager
                 .createQuery("SELECT COUNT(1) FROM UserImage")
                 .getSingleResult();
     }

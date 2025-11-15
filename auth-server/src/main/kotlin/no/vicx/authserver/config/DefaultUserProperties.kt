@@ -6,9 +6,16 @@ import org.springframework.validation.annotation.Validated
 
 @Validated
 @ConfigurationProperties("default-user")
-data class DefaultUserProperties(
-    @field:NotBlank val username: String,
-    @field:NotBlank val password: String,
-    @field:NotBlank val name: String,
-    @field:NotBlank val email: String,
-)
+class DefaultUserProperties {
+    @NotBlank
+    lateinit var username: String
+
+    @NotBlank
+    lateinit var password: String
+
+    @NotBlank
+    lateinit var name: String
+
+    @NotBlank
+    lateinit var email: String
+}

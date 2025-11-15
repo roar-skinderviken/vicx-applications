@@ -16,5 +16,7 @@
         </appender>
     </springProfile>
 
+    <logger name="org.springframework.security" level="debug"/>
+
     <appender-ref ref="console"/>
 </configuration>

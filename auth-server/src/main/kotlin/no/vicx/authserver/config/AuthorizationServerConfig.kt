@@ -20,6 +20,11 @@ class AuthorizationServerConfig {
     @Bean
     fun authorizationService(): OAuth2AuthorizationService = InMemoryOAuth2AuthorizationService()
 
+/*
+    @Bean
+    fun authorizationConsentService(): OAuth2AuthorizationConsentService = InMemoryOAuth2AuthorizationConsentService()
+*/
+
     @Bean
     fun registeredClientRepository(
         oAuthProperties: OAuthProperties,

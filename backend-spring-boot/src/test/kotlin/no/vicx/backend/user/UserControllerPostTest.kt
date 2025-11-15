@@ -15,11 +15,11 @@ import no.vicx.backend.user.service.UserService
 import no.vicx.backend.user.vm.CreateUserVm
 import no.vicx.database.user.UserRepository
 import no.vicx.database.user.VicxUser.VALID_PLAINTEXT_PASSWORD
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.mock.web.MockMultipartFile
-import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder
+import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.header
@@ -129,13 +129,13 @@ class UserControllerPostTest(
             }
 
             forAll(
-/*
-                Row3(
-                    CreateUserVm(null, VALID_PLAINTEXT_PASSWORD, "The User", "user@example.com", "mock-token"),
-                    "username",
-                    "Username cannot be null",
-                ),
-*/
+            /*
+                            Row3(
+                                CreateUserVm(null, VALID_PLAINTEXT_PASSWORD, "The User", "user@example.com", "mock-token"),
+                                "username",
+                                "Username cannot be null",
+                            ),
+             */
                 Row3(
                     CreateUserVm(" ".repeat(4), VALID_PLAINTEXT_PASSWORD, "The User", "user@example.com", "mock-token"),
                     "username",
@@ -156,13 +156,13 @@ class UserControllerPostTest(
                     "username",
                     "Username can only contain letters, numbers, hyphens, and underscores",
                 ),
-/*
-                Row3(
-                    CreateUserVm("user1", null, "The User", "user@example.com", "mock-token"),
-                    "password",
-                    "Cannot be null",
-                ),
-*/
+            /*
+                            Row3(
+                                CreateUserVm("user1", null, "The User", "user@example.com", "mock-token"),
+                                "password",
+                                "Cannot be null",
+                            ),
+             */
                 Row3(
                     CreateUserVm("user1", "Aa1Aa1", "The User", "user@example.com", "mock-token"),
                     "password",
@@ -178,25 +178,25 @@ class UserControllerPostTest(
                     "password",
                     "Password must have at least one uppercase, one lowercase letter and one number",
                 ),
-/*
-                Row3(
-                    CreateUserVm("user1", VALID_PLAINTEXT_PASSWORD, null, "user@example.com", "mock-token"),
-                    "name",
-                    "Cannot be null",
-                ),
-*/
+            /*
+                            Row3(
+                                CreateUserVm("user1", VALID_PLAINTEXT_PASSWORD, null, "user@example.com", "mock-token"),
+                                "name",
+                                "Cannot be null",
+                            ),
+             */
                 Row3(
                     CreateUserVm("user1", VALID_PLAINTEXT_PASSWORD, "a".repeat(3), "user@example.com", "mock-token"),
                     "name",
                     "It must have minimum 4 and maximum 255 characters",
                 ),
-/*
-                Row3(
-                    CreateUserVm("user1", VALID_PLAINTEXT_PASSWORD, "The User", null, "mock-token"),
-                    "email",
-                    "Cannot be null",
-                ),
-*/
+            /*
+                            Row3(
+                                CreateUserVm("user1", VALID_PLAINTEXT_PASSWORD, "The User", null, "mock-token"),
+                                "email",
+                                "Cannot be null",
+                            ),
+             */
                 Row3(
                     CreateUserVm("user1", VALID_PLAINTEXT_PASSWORD, "The User", "a", "mock-token"),
                     "email",
@@ -231,7 +231,7 @@ class UserControllerPostTest(
         private fun buildMultipartRequest(
             createUserVm: CreateUserVm,
             imageFile: MockMultipartFile? = null,
-        ): MockHttpServletRequestBuilder =
+        ): MockMultipartHttpServletRequestBuilder =
             multipart("/api/user").apply {
                 this
                     .contentType(MediaType.MULTIPART_FORM_DATA) // not required, just for clarity

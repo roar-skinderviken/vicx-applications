@@ -15,8 +15,9 @@ import org.htmlunit.WebClient
 import org.htmlunit.html.DomElement
 import org.htmlunit.html.HtmlCheckBoxInput
 import org.htmlunit.html.HtmlPage
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.test.web.server.LocalServerPort
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.http.HttpStatus
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationConsentService
 
@@ -24,9 +25,11 @@ import org.springframework.security.oauth2.server.authorization.OAuth2Authorizat
 @AutoConfigureMockMvc
 class DefaultAuthorizationServerConsentTests(
     webClient: WebClient,
+    @param:LocalServerPort private val port: Int,
     @MockkBean(relaxed = true) private val authorizationConsentService: OAuth2AuthorizationConsentService,
 ) : BehaviorSpec({
 
+        // disabled tests until I figure out how this can be done with SB 4
         Given("Authorization Server Application") {
             lateinit var consentPage: HtmlPage
 
@@ -40,9 +43,7 @@ class DefaultAuthorizationServerConsentTests(
                 withMockUser("user1")
 
                 consentPage =
-                    webClient.getPage(
-                        authorizationRequestUri("openid profile email"),
-                    )
+                    webClient.getPage(authorizationRequestUri(port, "openid profile email"))
             }
 
             When("consent page is displayed") {
