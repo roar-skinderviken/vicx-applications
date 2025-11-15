@@ -98,8 +98,11 @@ class CalculatorRepositoryTest extends RepositoryTestBase {
 
     @Test
     void deleteAllByCreatedAtBeforeAndUsernameNull_expectOnlyRecordWithoutUsernameToBeDeleted() {
-        var user1Record = entityManager.persist(createValidEntity("user1"));
-        var anonymousRecord = entityManager.persist(createValidEntity(null));
+        var user1Record = createValidEntity("user1");
+        entityManager.persist(user1Record);
+
+        var anonymousRecord = createValidEntity(null);
+        entityManager.persist(anonymousRecord);
 
         assertEquals(2, getCalculationCountInDb());
 
@@ -113,7 +116,7 @@ class CalculatorRepositoryTest extends RepositoryTestBase {
     }
 
     private long getCalculationCountInDb() {
-        return (long) entityManager.getEntityManager()
+        return (long) entityManager
                 .createQuery("SELECT COUNT(1) FROM CalcEntry")
                 .getSingleResult();
     }

@@ -8,9 +8,13 @@ import org.springframework.web.util.UriComponentsBuilder
 object HtmlUnitTestUtils {
     const val REDIRECT_URI = "http://localhost:3000/api/auth/callback/next-app-client"
 
-    fun authorizationRequestUri(scopes: String = "openid"): String =
+    fun authorizationRequestUri(
+        port: Int,
+        scopes: String = "openid",
+    ): String =
         UriComponentsBuilder
-            .fromPath("/oauth2/authorize")
+            .fromPath("http://localhost:$port/oauth2/authorize")
+            // .fromPath("/oauth2/authorize")
             .queryParam("response_type", "code")
             .queryParam("client_id", "next-app-client")
             .queryParam("scope", scopes)

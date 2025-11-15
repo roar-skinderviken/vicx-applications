@@ -1,8 +1,8 @@
 package no.vicx.database;
 
+import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
@@ -22,5 +22,5 @@ public class RepositoryTestBase {
             .waitingFor(Wait.forListeningPort());
 
     @Autowired
-    protected TestEntityManager entityManager;
+    protected EntityManager entityManager;
 }

@@ -1,16 +1,17 @@
 package no.vicx.authserver.config
 
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest
-import org.springframework.boot.actuate.health.HealthEndpoint
+import org.springframework.boot.health.actuate.endpoint.HealthEndpoint
+import org.springframework.boot.security.autoconfigure.actuate.web.servlet.EndpointRequest
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.annotation.Order
 import org.springframework.http.MediaType
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
+import org.springframework.security.config.annotation.web.configurers.oauth2.server.authorization.OAuth2AuthorizationServerConfigurer
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
-import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint
 import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher
@@ -18,6 +19,7 @@ import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 
+@EnableWebSecurity
 @Configuration(proxyBeanMethods = false)
 class SecurityConfig {
     // required for Swagger on localhost
@@ -42,15 +44,12 @@ class SecurityConfig {
     @Bean
     @Order(1)
     fun authorizationServerSecurityFilterChain(http: HttpSecurity): SecurityFilterChain {
-        val authorizationServerConfigurer =
-            OAuth2AuthorizationServerConfigurer.authorizationServer()
+        val authorizationServerConfigurer = OAuth2AuthorizationServerConfigurer()
 
         http
             .cors {} // required for Swagger on localhost
             .securityMatcher(authorizationServerConfigurer.endpointsMatcher)
-            .with(
-                authorizationServerConfigurer,
-            ) { authorizationServer ->
+            .with(authorizationServerConfigurer) { authorizationServer ->
                 authorizationServer.oidc {}
             }.authorizeHttpRequests { authorize ->
                 authorize.anyRequest().authenticated()
@@ -71,7 +70,7 @@ class SecurityConfig {
     @Order(2)
     fun defaultSecurityFilterChain(
         http: HttpSecurity,
-        @Value("\${oauth.post-logout-redirect-uri}") postLogoutRedirectUri: String?,
+        @Value($$"${oauth.post-logout-redirect-uri}") postLogoutRedirectUri: String?,
     ): SecurityFilterChain {
         http
             .cors {} // required for Swagger on localhost

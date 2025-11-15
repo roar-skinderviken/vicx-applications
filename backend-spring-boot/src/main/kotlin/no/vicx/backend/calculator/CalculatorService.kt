@@ -18,7 +18,7 @@ import java.time.LocalDateTime
 @Transactional
 class CalculatorService(
     private val calculatorRepository: CalculatorRepository,
-    @Value("\${app.calculator.max-age}") private val maxAge: Duration,
+    @Value($$"${app.calculator.max-age}") private val maxAge: Duration,
 ) {
     fun getAllCalculations(page: Int): Page<CalcVm> {
         val entryPage: Page<CalcEntry> =

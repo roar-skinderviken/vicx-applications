@@ -6,8 +6,8 @@ import io.mockk.every
 import no.vicx.backend.esport.vm.EsportMatchVm
 import no.vicx.backend.esport.vm.EsportVm
 import no.vicx.backend.esport.vm.MatchType
-import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest
 import org.springframework.boot.test.context.TestConfiguration
+import org.springframework.boot.webflux.test.autoconfigure.WebFluxTest
 import org.springframework.context.annotation.Bean
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity
 import org.springframework.security.config.web.server.ServerHttpSecurity

@@ -19,9 +19,18 @@ class CurrentPasswordValidator(
     override fun isValid(
         value: String?,
         context: ConstraintValidatorContext,
-    ): Boolean =
-        value == null ||
+    ): Boolean {
+        val authentication = SecurityContextHolder.getContext().authentication
+
+        // if any validation errors that should be handled by other validators, return true
+        return if (value == null ||
             value.length < passwordMinLength ||
             value.length > passwordMaxLength ||
-            userService.isValidPassword(SecurityContextHolder.getContext().authentication.name, value)
+            authentication == null
+        ) {
+            true
+        } else {
+            userService.isValidPassword(authentication.name, value)
+        }
+    }
 }

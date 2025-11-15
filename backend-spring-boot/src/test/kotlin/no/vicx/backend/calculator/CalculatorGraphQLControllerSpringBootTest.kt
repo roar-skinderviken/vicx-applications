@@ -11,8 +11,8 @@ import no.vicx.backend.SecurityTestUtils.AUTH_HEADER_IN_TEST
 import no.vicx.backend.SecurityTestUtils.createPrincipalInTest
 import no.vicx.backend.calculator.vm.CalcVm
 import no.vicx.database.calculator.CalculatorOperation
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.security.oauth2.server.resource.introspection.OpaqueTokenIntrospector

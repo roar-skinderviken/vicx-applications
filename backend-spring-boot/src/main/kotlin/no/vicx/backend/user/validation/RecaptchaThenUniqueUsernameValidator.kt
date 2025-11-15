@@ -25,7 +25,7 @@ class RecaptchaThenUniqueUsernameValidator(
         context: ConstraintValidatorContext,
     ): Boolean {
         if (value.recaptchaToken.isBlank() ||
-            value.username.isNullOrBlank() ||
+            value.username.isBlank() ||
             value.username.length < usernameMinLength
         ) {
             return true // let other validators handle this

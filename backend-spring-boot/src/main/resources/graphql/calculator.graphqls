@@ -25,9 +25,10 @@ type Query {
 
 type Mutation {
     createCalculation(
-        firstValue: Int,
-        secondValue: Int,
-        operation: CalculatorOperation): CalcVm
+        firstValue: Int!,
+        secondValue: Int!,
+        operation: CalculatorOperation!
+    ): CalcVm
 
     deleteCalculations(ids: [Int!]!): Boolean
 }
