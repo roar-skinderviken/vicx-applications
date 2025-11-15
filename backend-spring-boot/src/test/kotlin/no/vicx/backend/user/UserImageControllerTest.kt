@@ -10,11 +10,11 @@ import no.vicx.backend.user.UserTestUtils.createMockMultipartFile
 import no.vicx.backend.user.service.UserImageService
 import no.vicx.database.user.UserImage
 import no.vicx.database.user.UserImageRepository
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.mock.web.MockMultipartFile
-import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder
+import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart
@@ -169,7 +169,7 @@ class UserImageControllerTest(
         private fun buildMultipartRequest(
             imageFile: MockMultipartFile?,
             addAuth: Boolean,
-        ): MockHttpServletRequestBuilder =
+        ): MockMultipartHttpServletRequestBuilder =
             multipart("/api/user/image").apply {
                 if (addAuth) header(HttpHeaders.AUTHORIZATION, AUTH_HEADER_IN_TEST)
                 if (imageFile != null) {

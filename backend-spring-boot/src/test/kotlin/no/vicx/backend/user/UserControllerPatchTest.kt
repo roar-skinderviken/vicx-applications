@@ -10,7 +10,7 @@ import no.vicx.backend.BaseWebMvcTest
 import no.vicx.backend.SecurityTestUtils
 import no.vicx.backend.user.service.UserService
 import no.vicx.backend.user.vm.UserPatchVm
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch

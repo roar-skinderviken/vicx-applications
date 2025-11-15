@@ -1,11 +1,11 @@
 [versions]
-mockito-version = "5.20.0"
-tika-core-version = "3.2.3"
-springdoc-openapi-version = "2.8.14"
-spring-boot-version = "3.5.7"
+mockito-version = "5.18.0"
+tika-core-version = "3.2.0"
+springdoc-openapi-version = "2.8.9"
+spring-boot-version = "4.0.0-RC2"
 spring-dependency-management-version = "1.1.7"
 git-properties-version = "2.5.3"
-jackson-module-kotlin-version = "2.20.1"
+jackson-module-kotlin-version = "3.0.2"
 freefair-lombok-version = "9.1.0"
 ktlint-plugin-version = "12.3.0"
 ktlint-version = "1.6.0"
@@ -43,7 +43,7 @@ logstash-logback-encoder-version = "9.0"
 mockito = { module = "org.mockito:mockito-core", version.ref = "mockito-version" }
 tika-core = { module = "org.apache.tika:tika-core", version.ref = "tika-core-version" }
 springdoc-openapi = { module = "org.springdoc:springdoc-openapi-starter-webmvc-ui", version.ref = "springdoc-openapi-version" }
-jackson-module-kotlin = { module = "com.fasterxml.jackson.module:jackson-module-kotlin", version.ref = "jackson-module-kotlin-version" }
+jackson-module-kotlin = { module = "tools.jackson.module:jackson-module-kotlin", version.ref = "jackson-module-kotlin-version" }
 
 # logging
 logback-access-spring-boot-starter = { module = "dev.akkinoc.spring.boot:logback-access-spring-boot-starter", version.ref = "logback-access-spring-boot-starter-version" }

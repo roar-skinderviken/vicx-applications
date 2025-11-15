@@ -9,7 +9,7 @@ import no.vicx.backend.user.UserTestUtils.createValidVicxUser
 import no.vicx.backend.user.service.UserService
 import no.vicx.backend.user.vm.UserVm
 import no.vicx.backend.user.vm.UserVm.Companion.fromVicxUser
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest
 import org.springframework.http.HttpHeaders
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath

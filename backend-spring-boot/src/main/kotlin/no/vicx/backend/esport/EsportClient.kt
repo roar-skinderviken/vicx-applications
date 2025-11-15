@@ -13,7 +13,7 @@ import reactor.core.publisher.Flux
 @Service
 class EsportClient(
     webClientBuilder: WebClient.Builder,
-    @Value("\${esport.token}") private val token: String,
+    @Value($$"${esport.token}") private val token: String,
 ) {
     private val webClient =
         webClientBuilder

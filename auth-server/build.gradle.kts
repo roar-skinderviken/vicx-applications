@@ -23,6 +23,10 @@ dependencies {
         exclude(module = "mockito-core")
     }
     testImplementation("org.springframework.security:spring-security-test")
+    testImplementation("org.springframework.boot:spring-boot-starter-restclient")
+
+    testImplementation("org.springframework.boot:spring-boot-resttestclient")
+    testImplementation("org.springframework.boot:spring-boot-webmvc-test")
 }
 
 springBoot {

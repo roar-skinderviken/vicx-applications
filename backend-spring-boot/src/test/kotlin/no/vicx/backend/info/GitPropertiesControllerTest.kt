@@ -4,8 +4,8 @@ import com.ninjasquad.springmockk.MockkBean
 import io.kotest.core.spec.style.StringSpec
 import no.vicx.backend.config.SecurityConfig
 import org.springframework.boot.info.GitProperties
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.context.TestConfiguration
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Import
 import org.springframework.security.oauth2.server.resource.introspection.OpaqueTokenIntrospector

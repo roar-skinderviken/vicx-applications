@@ -8,15 +8,16 @@ import io.mockk.slot
 import no.vicx.backend.SecurityTestUtils.GITHUB_USER_TOKEN
 import no.vicx.backend.SecurityTestUtils.VICX_USER_TOKEN
 import no.vicx.backend.SecurityTestUtils.createPrincipalInTest
-import no.vicx.backend.config.JsonCustomizerConfig
 import no.vicx.backend.config.SecurityConfig
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.webtestclient.autoconfigure.AutoConfigureWebTestClient
 import org.springframework.context.annotation.Import
 import org.springframework.security.oauth2.server.resource.introspection.OpaqueTokenIntrospector
 import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.test.web.servlet.MockMvc
 
-@Import(SecurityConfig::class, JsonCustomizerConfig::class)
+@AutoConfigureWebTestClient
+@Import(SecurityConfig::class)
 abstract class BaseWebMvcTest(
     body: BaseWebMvcTest.() -> Unit,
 ) : BehaviorSpec() {

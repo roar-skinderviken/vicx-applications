@@ -10,7 +10,7 @@ import org.springframework.web.util.UriComponentsBuilder
 @Service
 class RecaptchaService(
     restClientBuilder: RestClient.Builder,
-    @Value("\${recaptcha.secret}") private val recaptchaSecret: String,
+    @Value($$"${recaptcha.secret}") private val recaptchaSecret: String,
 ) {
     private val restClient =
         restClientBuilder

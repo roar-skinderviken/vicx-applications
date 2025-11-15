@@ -30,7 +30,8 @@ class UserDetailsConfig {
         if (username.equals(userProperties.username, ignoreCase = true)) {
             CustomUserDetails(
                 userProperties.username,
-                passwordEncoder.encode(userProperties.password),
+                passwordEncoder.encode(userProperties.password)
+                    ?: throw IllegalStateException("Password cannot be null"),
                 userProperties.name,
                 userProperties.email,
                 false,
