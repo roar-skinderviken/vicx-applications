@@ -8,25 +8,12 @@ import java.time.Duration
 
 @Validated
 @ConfigurationProperties("oauth")
-class OAuthProperties {
-    @NotBlank
-    lateinit var clientId: String
-
-    @NotBlank
-    lateinit var clientSecret: String
-
-    @NotBlank
-    lateinit var redirectUri: String
-
-    @NotBlank
-    lateinit var postLogoutRedirectUri: String
-
-    @NotBlank
-    lateinit var resourceServer: String
-
-    @NotNull
-    var accessTokenTimeToLive: Duration? = null
-
-    @NotNull
-    var refreshTokenTimeToLive: Duration? = null
-}
+data class OAuthProperties(
+    @field:NotBlank val clientId: String,
+    @field:NotBlank val clientSecret: String,
+    @field:NotBlank val redirectUri: String,
+    @field:NotBlank val postLogoutRedirectUri: String,
+    @field:NotBlank val resourceServer: String,
+    @field:NotNull var accessTokenTimeToLive: Duration?,
+    @field:NotNull var refreshTokenTimeToLive: Duration?,
+)

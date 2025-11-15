@@ -4,8 +4,6 @@ plugins {
 }
 
 dependencies {
-    implementation("tools.jackson.module:jackson-module-kotlin")
-    implementation("org.springframework.boot:spring-boot-jackson")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-webclient")
@@ -15,7 +13,6 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-cache")
     implementation("org.springframework.boot:spring-boot-starter-graphql")
-
     implementation("org.springframework.boot:spring-boot-restclient")
 
     implementation(libs.springdoc.openapi)

@@ -46,7 +46,7 @@ if (name in springBootProjects && name in kotlinProjects) {
     apply(plugin = "org.jetbrains.kotlin.plugin.spring")
 
     dependencies {
-        // implementation("jackson.module.kotlin".getLibraryValue())
+        implementation("jackson-module-kotlin".getLibraryValue())
         springBootTestDependencies.forEach {
             testImplementation(it.getLibraryValue())
         }
