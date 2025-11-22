@@ -3,11 +3,6 @@ plugins {
     alias(libs.plugins.git.properties)
 }
 
-configurations.all {
-    exclude(group = "io.netty", module = "netty-codec-classes-quic")
-    exclude(group = "io.netty", module = "netty-codec-native-quic")
-}
-
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-security")
@@ -17,8 +12,10 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-cache")
     implementation("org.springframework.boot:spring-boot-starter-graphql")
     implementation("org.springframework.boot:spring-boot-restclient")
-    implementation("org.springframework.boot:spring-boot-starter-webflux")
-    implementation("org.springframework.boot:spring-boot-starter-webclient")
+    implementation("org.springframework.boot:spring-boot-starter-webclient") {
+        exclude(group = "io.netty", module = "netty-codec-classes-quic")
+        exclude(group = "io.netty", module = "netty-codec-native-quic")
+    }
 
     implementation(libs.springdoc.openapi)
 
