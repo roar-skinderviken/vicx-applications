@@ -12,7 +12,7 @@ plugins {
 }
 
 // Shared configuration
-val javaVersion = 21
+val javaVersion = 24
 val kotlinProjects = setOf("auth-server", "backend-ktor", "backend-spring-boot")
 val springBootProjects = setOf("auth-server", "backend-spring-boot", "spring-boot-client", "database")
 val kotlinProjectTestDependencies = setOf("kotest.runner.junit5", "kotest.assertions.core", "kotest.assertions.table", "mockk")
