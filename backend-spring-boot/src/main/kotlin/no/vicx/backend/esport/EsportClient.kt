@@ -21,7 +21,7 @@ class EsportClient(
     private val httpClient =
         HttpClient
             .create()
-            .protocol(HttpProtocol.H2, HttpProtocol.HTTP11)
+            .protocol(HttpProtocol.HTTP11)
 
     private val webClient =
         webClientBuilder
