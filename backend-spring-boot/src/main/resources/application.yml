@@ -35,10 +35,6 @@ spring:
           authorities-claim-name: roles
           authority-prefix: ROLE_
 
-  http:
-    client:
-      factory: jdk
-
   servlet:
     multipart:
       enabled: true
