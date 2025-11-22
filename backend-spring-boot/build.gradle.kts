@@ -62,7 +62,3 @@ kotlin {
 tasks.named<Jar>("jar") {
     enabled = false
 }
-
-tasks.named<Test>("test") {
-    systemProperty("kotest.framework.config.fqn", "no.vicx.backend.KotestConfig")
-}

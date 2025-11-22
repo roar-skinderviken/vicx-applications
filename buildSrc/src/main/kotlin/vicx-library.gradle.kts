@@ -89,7 +89,6 @@ if (name in kotlinProjects) {
 
 tasks.named<Test>("test") {
     useJUnitPlatform()
-    systemProperty("kotest.framework.classpath.scanning.config.disable", "true")
     jvmArgs(
         "-Xshare:off",
         "-XX:+EnableDynamicAgentLoading",
