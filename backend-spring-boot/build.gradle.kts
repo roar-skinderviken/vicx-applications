@@ -13,8 +13,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-graphql")
     implementation("org.springframework.boot:spring-boot-restclient")
     implementation("org.springframework.boot:spring-boot-starter-webclient") {
-        exclude(group = "io.netty", module = "netty-codec-classes-quic")
-        exclude(group = "io.netty", module = "netty-codec-native-quic")
+        exclude(group = "io.netty", module = "netty-codec-http3")
     }
 
     implementation(libs.springdoc.openapi)
