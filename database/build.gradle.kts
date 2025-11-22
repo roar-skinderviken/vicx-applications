@@ -1,3 +1,5 @@
+import org.springframework.boot.gradle.tasks.bundling.BootJar
+
 plugins {
     id("vicx-library")
     java
@@ -36,16 +38,20 @@ dependencies {
     mockitoAgent(libs.mockito) { isTransitive = false }
 }
 
-tasks.compileJava {
+tasks.named<JavaCompile>("compileJava") {
     options.compilerArgs.add("-parameters")
 }
 
-// intentionally overwriting jvmArgs from vicx-library plugin here.
-tasks.test {
+tasks.named<Test>("test") {
+    // intentionally overwriting jvmArgs from vicx-library plugin here.
     jvmArgs("-javaagent:${mockitoAgent.asPath}")
     systemProperty("spring.profiles.active", "test")
 }
 
-tasks.bootJar {
+tasks.named<Jar>("jar") {
+    enabled = true
+}
+
+tasks.named<BootJar>("bootJar") {
     enabled = false
 }

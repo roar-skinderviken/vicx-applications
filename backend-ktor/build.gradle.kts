@@ -1,3 +1,5 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+
 plugins {
     id("vicx-library")
     alias(libs.plugins.ktor)
@@ -47,15 +49,15 @@ dependencies {
     implementation(libs.embedded.postgres) // TODO
 }
 
-tasks.jar {
+tasks.named<Jar>("jar") {
     enabled = false
 }
 
-tasks.shadowJar {
+tasks.named<ShadowJar>("shadowJar") {
     mergeServiceFiles()
 }
 
-tasks.processResources {
+tasks.named("processResources") {
     dependsOn("copyMigrations")
 }
 

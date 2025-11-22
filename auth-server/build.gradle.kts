@@ -33,10 +33,10 @@ springBoot {
     mainClass = "no.vicx.authserver.AuthServerApplicationKt"
 }
 
-tasks.jar {
+tasks.named<Jar>("jar") {
     enabled = false
 }
 
-tasks.test {
+tasks.named<Test>("test") {
     systemProperty("kotest.framework.config.fqn", "no.vicx.authserver.KotestConfig")
 }

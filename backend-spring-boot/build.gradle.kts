@@ -50,10 +50,6 @@ springBoot {
     mainClass = "no.vicx.backend.VicxBackendApplicationKt"
 }
 
-tasks.jar {
-    enabled = false
-}
-
 kotlin {
     compilerOptions {
         freeCompilerArgs.addAll(
@@ -63,6 +59,10 @@ kotlin {
     }
 }
 
-tasks.test {
+tasks.named<Jar>("jar") {
+    enabled = false
+}
+
+tasks.named<Test>("test") {
     systemProperty("kotest.framework.config.fqn", "no.vicx.backend.KotestConfig")
 }
