@@ -4,14 +4,11 @@ import io.kotest.core.spec.style.StringSpec
 import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
-import io.mockk.junit5.MockKExtension
 import io.mockk.verifyAll
 import no.vicx.backend.esport.vm.MatchType
-import org.junit.jupiter.api.extension.ExtendWith
 import reactor.core.publisher.Flux
 import reactor.test.StepVerifier
 
-@ExtendWith(MockKExtension::class)
 class EsportServiceTest : StringSpec() {
     @MockK
     lateinit var esportClient: EsportClient
