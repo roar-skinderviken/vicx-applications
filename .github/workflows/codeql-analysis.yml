@@ -1,4 +1,4 @@
-name: CodeQL
+name: CodeQL Kotlin/Java
 on:
   merge_group:
   pull_request:
