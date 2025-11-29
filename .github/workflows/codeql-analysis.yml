@@ -1,9 +1,23 @@
 name: CodeQL Kotlin/Java
 on:
   merge_group:
+    paths:
+      - "auth-server/**"
+      - "backend-ktor/**"
+      - "backend-spring-boot/**"
+      - "database/**"
+      - "spring-boot-client/**"
+
   pull_request:
     branches:
       - main
+    paths:
+      - "auth-server/**"
+      - "backend-ktor/**"
+      - "backend-spring-boot/**"
+      - "database/**"
+      - "spring-boot-client/**"
+
   schedule:
     - cron: "0 0 * * 3"
 
