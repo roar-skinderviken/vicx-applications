@@ -5,7 +5,7 @@ springdoc-openapi-version = "3.0.0"
 spring-boot-version = "4.0.0"
 spring-dependency-management-version = "1.1.7"
 git-properties-version = "2.5.4"
-jackson-module-kotlin-version = "3.0.2"
+jackson-module-kotlin-version = "3.0.3"
 freefair-lombok-version = "9.1.0"
 ktlint-plugin-version = "12.3.0"
 ktlint-version = "1.6.0"
@@ -17,7 +17,7 @@ webjars-query-version = "3.7.1"
 
 # test
 mockk-version = "1.14.6"
-kotest-version = "6.0.5"
+kotest-version = "6.0.6"
 springmockk-version = "4.0.2"
 
 # Ktor
