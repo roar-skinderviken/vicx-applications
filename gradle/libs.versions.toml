@@ -18,7 +18,7 @@ webjars-query-version = "3.7.1"
 # test
 mockk-version = "1.14.6"
 kotest-version = "6.0.7"
-springmockk-version = "4.0.2"
+springmockk-version = "5.0.1"
 
 # Ktor
 ktor-version = "3.3.3"
