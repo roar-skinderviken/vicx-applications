@@ -22,12 +22,14 @@ jobs:
       fail-fast: false
       matrix:
         include:
+          - language: actions
+            build-mode: none
           - language: java-kotlin
-            build: gradle
+            build-mode: manual
           - language: javascript-typescript
-            build: none
+            build-mode: none
           - language: python
-            build: none
+            build-mode: none
 
     steps:
       - name: Checkout repository
@@ -37,10 +39,10 @@ jobs:
         uses: github/codeql-action/init@v4
         with:
           languages: ${{ matrix.language }}
-          build-mode: none
+          build-mode: ${{ matrix['build-mode'] }}
 
       - name: Setup Java (only for Gradle)
-        if: matrix.build == 'gradle'
+        if: matrix.build-mode == 'manual'
         uses: actions/setup-java@v5
         with:
           distribution: temurin
