@@ -15,7 +15,7 @@ class MapperTest :
                 .builder()
                 .polymorphicTypeValidator(VicxPolymorphicTypeValidator())
                 .annotationIntrospector(GlobalTypeInfoIntrospector())
-                .apply { addModule(KotlinModule.Builder().build()) }
+                .addModule(KotlinModule.Builder().build())
                 .build()
 
         Given("add operation") {
