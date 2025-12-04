@@ -2,19 +2,15 @@ package no.vicx.backend.esport
 
 import io.kotest.core.spec.style.StringSpec
 import io.mockk.every
-import io.mockk.impl.annotations.InjectMockKs
-import io.mockk.impl.annotations.MockK
+import io.mockk.mockk
 import io.mockk.verifyAll
 import no.vicx.backend.esport.vm.MatchType
 import reactor.core.publisher.Flux
 import reactor.test.StepVerifier
 
 class EsportServiceTest : StringSpec() {
-    @MockK
-    lateinit var esportClient: EsportClient
-
-    @InjectMockKs
-    lateinit var sut: EsportService
+    private val esportClient: EsportClient = mockk()
+    private val sut = EsportService(esportClient)
 
     init {
         "when calling getMatches then expect result with both match types" {
