@@ -50,11 +50,11 @@ jobs:
           cache: gradle
 
       - name: Setup Gradle (only for Java/Kotlin)
-        if: matrix.build == 'gradle'
+        if: matrix.build-mode == 'manual'
         uses: gradle/actions/setup-gradle@v5
 
       - name: Build Java/Kotlin project
-        if: matrix.build == 'gradle'
+        if: matrix.build-mode == 'manual'
         run: ./gradlew build --no-daemon --no-build-cache -x test
 
       - name: Perform CodeQL Analysis
