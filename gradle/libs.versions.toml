@@ -16,7 +16,7 @@ webjars-popper-js-version = "2.11.7"
 webjars-query-version = "3.7.1"
 
 # test
-mockk-version = "1.14.6"
+mockk-version = "1.14.7"
 kotest-version = "6.0.7"
 springmockk-version = "5.0.1"
 
