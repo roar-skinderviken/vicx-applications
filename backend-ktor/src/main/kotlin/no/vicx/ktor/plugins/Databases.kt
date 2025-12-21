@@ -86,6 +86,7 @@ fun Application.connectToPostgres(embedded: Boolean): DataSource =
                 name = "John Doe"
                 email = "user1@example.com"
                 password = BCryptPasswordEncoder().encode("password")
+                    ?: throw IllegalStateException("Could not encode password")
             }
         }
 
