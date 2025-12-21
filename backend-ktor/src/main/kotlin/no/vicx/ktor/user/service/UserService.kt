@@ -56,7 +56,9 @@ class UserService(
 
         return userRepository.createUser(
             createUserVm.toDbModel(
-                encryptedPassword = passwordEncoder.encode(createUserVm.password),
+                encryptedPassword =
+                    passwordEncoder.encode(createUserVm.password)
+                        ?: throw IllegalStateException("Could not encode password for user ${createUserVm.username}"),
                 userImage = userImage,
             ),
         )
