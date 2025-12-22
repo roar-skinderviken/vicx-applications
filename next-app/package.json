@@ -25,7 +25,7 @@
     "react-dropzone": "^14.3.8",
     "react-fontawesome": "^1.7.1",
     "react-google-recaptcha": "^3.1.0",
-    "react-hook-form": "^7.68.0",
+    "react-hook-form": "^7.69.0",
     "sharp": "^0.34.2",
     "urql": "^5.0.1",
     "yup": "^1.7.1"
