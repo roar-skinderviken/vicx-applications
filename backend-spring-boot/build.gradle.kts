@@ -12,9 +12,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-cache")
     implementation("org.springframework.boot:spring-boot-starter-graphql")
     implementation("org.springframework.boot:spring-boot-restclient")
-    implementation("org.springframework.boot:spring-boot-starter-webclient") {
-        exclude(group = "io.netty", module = "netty-codec-http3")
-    }
+    implementation("org.springframework.boot:spring-boot-starter-webclient")
 
     implementation(libs.springdoc.openapi)
 
@@ -63,4 +61,3 @@ kotlin {
 tasks.named<Jar>("jar") {
     enabled = false
 }
-// trigger build
