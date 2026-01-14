@@ -6,7 +6,7 @@ spring-boot-version = "4.0.1"
 spring-dependency-management-version = "1.1.7"
 git-properties-version = "2.5.4"
 jackson-module-kotlin-version = "3.0.3"
-freefair-lombok-version = "9.1.0"
+freefair-lombok-version = "9.2.0"
 ktlint-plugin-version = "12.3.0"
 ktlint-version = "1.6.0"
 
