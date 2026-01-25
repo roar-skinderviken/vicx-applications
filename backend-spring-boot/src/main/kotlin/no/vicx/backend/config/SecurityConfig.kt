@@ -100,6 +100,8 @@ class SecurityConfig {
                     .hasRole("USER")
                     .requestMatchers("/error")
                     .permitAll()
+                    .requestMatchers(HttpMethod.GET, "/stackoverflow/get-user")
+                    .permitAll()
                     .anyRequest()
                     .authenticated()
             }.oauth2ResourceServer { oauth2 ->
