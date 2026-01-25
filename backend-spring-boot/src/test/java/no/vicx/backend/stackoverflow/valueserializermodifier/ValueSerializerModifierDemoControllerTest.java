@@ -26,11 +26,13 @@ public class ValueSerializerModifierDemoControllerTest {
 
     @Test
     void idShouldBeMasked() throws Exception {
-        var resultActions = mockMvc.perform(get("/stackoverflow/get-user"));
+        var resultActions = mockMvc.perform(get("/stackoverflow/get-base-models"));
 
         resultActions
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value("usr_MQ=="))
-                .andExpect(jsonPath("$.email").value("REDACTED"));
+                .andExpect(jsonPath("$[0].id").value("usr_MQ=="))
+                .andExpect(jsonPath("$[0].email").value("REDACTED"))
+                .andExpect(jsonPath("$[1].id").value("usr_Mg=="))
+                .andExpect(jsonPath("$[1].total").value(42.0));
     }
 }

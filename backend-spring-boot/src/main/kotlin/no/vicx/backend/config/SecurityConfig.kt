@@ -100,7 +100,7 @@ class SecurityConfig {
                     .hasRole("USER")
                     .requestMatchers("/error")
                     .permitAll()
-                    .requestMatchers(HttpMethod.GET, "/stackoverflow/get-user")
+                    .requestMatchers(HttpMethod.GET, "/stackoverflow/get-base-models")
                     .permitAll()
                     .anyRequest()
                     .authenticated()

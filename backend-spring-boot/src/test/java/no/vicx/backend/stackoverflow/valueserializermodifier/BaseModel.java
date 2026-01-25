@@ -1,6 +1,6 @@
 package no.vicx.backend.stackoverflow.valueserializermodifier;
 
-abstract class BaseModel {
+public abstract class BaseModel {
     public abstract long getId();
 
     public static class User extends BaseModel {
