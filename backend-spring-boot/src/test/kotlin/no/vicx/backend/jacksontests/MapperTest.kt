@@ -41,6 +41,6 @@ class MapperTest :
     }) {
     companion object {
         private const val EXPECTED_JSON_FOR_ADD =
-            """{"@class":"no.vicx.backend.jacksontests.CalculatorOperation${'$'}Add","firstValue":1,"secondValue":2,"something":{"@class":"no.vicx.backend.jacksontests.CalculatorOperation${'$'}MySecondLevelType${'$'}Foo","message":"Hello"}}"""
+            $$"""{"@class":"no.vicx.backend.jacksontests.CalculatorOperation$Add","firstValue":1,"secondValue":2,"something":{"@class":"no.vicx.backend.jacksontests.CalculatorOperation$MySecondLevelType$Foo","message":"Hello"}}"""
     }
 }

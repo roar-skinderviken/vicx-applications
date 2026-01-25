@@ -1,6 +1,7 @@
 package no.vicx.ktor.db.repository
 
 import io.kotest.assertions.assertSoftly
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
@@ -20,7 +21,6 @@ import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.insertAndGetId
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
-import org.junit.jupiter.api.assertThrows
 import java.time.LocalDateTime
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
@@ -70,7 +70,7 @@ class CalculatorRepositoryTest :
                 every { CalcEntryEntity[any<EntityID<Long>>()] } throws
                     EntityNotFoundException(expectedEntityId, CalcEntryEntity)
 
-                val thrown = assertThrows<EntityNotFoundException> { sut.save(expectedCalcEntry) }
+                val thrown = shouldThrow<EntityNotFoundException> { sut.save(expectedCalcEntry) }
 
                 Then("it should throw an EntityNotFoundException with a not found message") {
                     thrown.message shouldBe "Entity CalcEntryEntity, id=${expectedCalcEntry.id} not found in the database"
@@ -155,7 +155,7 @@ class CalculatorRepositoryTest :
                 Then("it should delete the specified entry") {
                     val thrown =
                         transaction {
-                            assertThrows<EntityNotFoundException> {
+                            shouldThrow<EntityNotFoundException> {
                                 CalcEntryEntity[1L]
                             }
                         }

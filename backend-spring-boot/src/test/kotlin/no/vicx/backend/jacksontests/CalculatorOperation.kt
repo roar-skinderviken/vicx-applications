@@ -1,16 +1,19 @@
 package no.vicx.backend.jacksontests
 
-sealed interface CalculatorOperation {
+sealed class CalculatorOperation {
+    abstract val firstValue: Long
+    abstract val secondValue: Long
+
     data class Add(
-        val firstValue: Long,
-        val secondValue: Long,
+        override val firstValue: Long,
+        override val secondValue: Long,
         val something: MySecondLevelType,
-    ) : CalculatorOperation
+    ) : CalculatorOperation()
 
     data class Subtract(
-        val firstValue: Long,
-        val secondValue: Long,
-    ) : CalculatorOperation
+        override val firstValue: Long,
+        override val secondValue: Long,
+    ) : CalculatorOperation()
 
     sealed interface MySecondLevelType {
         data class Foo(
