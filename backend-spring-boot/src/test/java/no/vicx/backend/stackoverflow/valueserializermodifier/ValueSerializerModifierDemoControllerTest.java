@@ -30,6 +30,7 @@ public class ValueSerializerModifierDemoControllerTest {
 
         resultActions
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value("usr_MQ=="));
+                .andExpect(jsonPath("$.id").value("usr_MQ=="))
+                .andExpect(jsonPath("$.email").value("REDACTED"));
     }
 }

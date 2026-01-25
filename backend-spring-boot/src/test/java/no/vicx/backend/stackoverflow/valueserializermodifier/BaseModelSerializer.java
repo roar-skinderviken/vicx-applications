@@ -18,9 +18,9 @@ class BaseModelSerializer extends ValueSerializer<BaseModel> {
         gen.writeString(maskedId);
 
         // Subclass-specific fields
-        if (value instanceof BaseModel.User user) {
+        if (value instanceof BaseModel.User) {
             gen.writeName("email");
-            gen.writeString(user.getEmail());
+            gen.writeString("REDACTED");
         } else if (value instanceof BaseModel.Order order) {
             gen.writeName("total");
             gen.writeNumber(order.getTotal());
