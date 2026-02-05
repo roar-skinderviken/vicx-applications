@@ -8,7 +8,7 @@ packages = [{include = "src"}]
 
 [tool.poetry.dependencies]
 python = "^3.12"
-fastapi = "^0.128.0"
+fastapi = "^0.128.1"
 uvicorn = "^0.40.0"
 scikit-learn = "^1.8.0"
 
