@@ -32,6 +32,7 @@ embedded-postgres-version = "2.2.2"
 graphql-kotlin-version = "8.5.0"
 
 spring-security-crypto-version = "7.0.5"
+commons-logging-version = "1.3.6"
 caffeine-version = "3.2.4"
 cohort-ktor-version = "2.9.4"
 
@@ -86,6 +87,7 @@ exposed-datetime = { module = "org.jetbrains.exposed:exposed-kotlin-datetime", v
 exposed-dao = { module = "org.jetbrains.exposed:exposed-dao", version.ref = "exposed-version" }
 
 spring-security-crypto = { module = "org.springframework.security:spring-security-crypto", version.ref = "spring-security-crypto-version" }
+commons-logging = { module = "commons-logging:commons-logging", version.ref = "commons-logging-version" }
 caffeine = { module = "com.github.ben-manes.caffeine:caffeine", version.ref = "caffeine-version" }
 cohort-ktor = { module = "com.sksamuel.cohort:cohort-ktor", version.ref = "cohort-ktor-version" }
 logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logback-version" }
