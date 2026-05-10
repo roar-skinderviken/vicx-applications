@@ -35,7 +35,6 @@ dependencies {
         exclude(module = "mockito-core")
     }
 
-    testImplementation("org.springframework.graphql:spring-graphql-test")
     testImplementation("io.projectreactor:reactor-test")
 
     testImplementation("org.springframework.boot:spring-boot-webtestclient")

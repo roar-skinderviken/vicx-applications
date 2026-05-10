@@ -41,6 +41,7 @@ dependencies {
     implementation(libs.ktor.server.config.yaml)
 
     implementation(libs.spring.security.crypto)
+    runtimeOnly(libs.commons.logging)
     implementation(libs.caffeine)
     implementation(libs.tika.core)
     implementation(libs.cohort.ktor)
