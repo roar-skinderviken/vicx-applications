@@ -59,7 +59,6 @@ const UpdateForm = <T extends yup.AnyObjectSchema>({
 
     useEffect(() => {
         if (JSON.stringify(watchedValues) !== JSON.stringify(prevWatchedValuesRef.current)) {
-            // eslint-disable-next-line react-hooks/set-state-in-effect
             setValidationErrors(undefined)
             prevWatchedValuesRef.current = watchedValues
         }
