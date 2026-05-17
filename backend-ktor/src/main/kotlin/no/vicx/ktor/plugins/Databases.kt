@@ -11,9 +11,9 @@ import no.vicx.ktor.db.entity.VicxUserEntity
 import no.vicx.ktor.db.model.CalcEntry
 import no.vicx.ktor.db.model.CalculatorOperation
 import no.vicx.ktor.db.table.CalcEntryTable
-import org.jetbrains.exposed.sql.Database
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.v1.jdbc.Database
+import org.jetbrains.exposed.v1.jdbc.insert
+import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import java.time.LocalDateTime
 import java.time.OffsetDateTime

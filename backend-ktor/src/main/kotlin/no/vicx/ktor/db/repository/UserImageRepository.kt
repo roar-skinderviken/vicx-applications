@@ -4,8 +4,8 @@ import no.vicx.ktor.db.entity.UserImageEntity
 import no.vicx.ktor.db.model.UserImage
 import no.vicx.ktor.db.suspendTransaction
 import no.vicx.ktor.db.table.UserImageTable
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import org.jetbrains.exposed.sql.deleteWhere
+import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.jdbc.deleteWhere
 
 class UserImageRepository {
     suspend fun saveUserImage(userImageModel: UserImage): Unit =

@@ -1,8 +1,8 @@
 package no.vicx.ktor.db.table
 
-import org.jetbrains.exposed.dao.id.EntityID
-import org.jetbrains.exposed.dao.id.IdTable
-import org.jetbrains.exposed.sql.Column
+import org.jetbrains.exposed.v1.core.Column
+import org.jetbrains.exposed.v1.core.dao.id.EntityID
+import org.jetbrains.exposed.v1.core.dao.id.IdTable
 
 object UserImageTable : IdTable<Long>("user_image") {
     override val id: Column<EntityID<Long>> = reference("user_id", VicxUserTable.id)

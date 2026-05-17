@@ -6,8 +6,9 @@ import no.vicx.ktor.db.model.VicxUser
 import no.vicx.ktor.db.suspendTransaction
 import no.vicx.ktor.db.table.VicxUserTable
 import no.vicx.ktor.db.toModel
-import org.jetbrains.exposed.sql.StdOutSqlLogger
-import org.jetbrains.exposed.sql.addLogger
+import org.jetbrains.exposed.v1.core.StdOutSqlLogger
+import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.jdbc.select
 
 class UserRepository {
     suspend fun createUser(userModel: VicxUser): VicxUser =

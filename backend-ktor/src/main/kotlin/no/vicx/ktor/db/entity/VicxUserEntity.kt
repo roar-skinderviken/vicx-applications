@@ -2,9 +2,9 @@ package no.vicx.ktor.db.entity
 
 import no.vicx.ktor.db.table.UserImageTable
 import no.vicx.ktor.db.table.VicxUserTable
-import org.jetbrains.exposed.dao.LongEntity
-import org.jetbrains.exposed.dao.LongEntityClass
-import org.jetbrains.exposed.dao.id.EntityID
+import org.jetbrains.exposed.v1.core.dao.id.EntityID
+import org.jetbrains.exposed.v1.dao.LongEntity
+import org.jetbrains.exposed.v1.dao.LongEntityClass
 
 class VicxUserEntity(
     id: EntityID<Long>,

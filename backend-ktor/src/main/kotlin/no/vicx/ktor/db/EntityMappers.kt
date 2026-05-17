@@ -1,6 +1,5 @@
 package no.vicx.ktor.db
 
-import kotlinx.coroutines.Dispatchers
 import kotlinx.datetime.toKotlinLocalDateTime
 import no.vicx.ktor.db.entity.CalcEntryEntity
 import no.vicx.ktor.db.entity.UserImageEntity
@@ -8,11 +7,11 @@ import no.vicx.ktor.db.entity.VicxUserEntity
 import no.vicx.ktor.db.model.CalcEntry
 import no.vicx.ktor.db.model.UserImage
 import no.vicx.ktor.db.model.VicxUser
-import org.jetbrains.exposed.sql.Transaction
-import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
+import org.jetbrains.exposed.v1.core.Transaction
+import org.jetbrains.exposed.v1.jdbc.transactions.suspendTransaction
 import java.time.ZoneId
 
-suspend fun <T> suspendTransaction(block: Transaction.() -> T): T = newSuspendedTransaction(Dispatchers.IO, statement = block)
+suspend fun <T> suspendTransaction(block: Transaction.() -> T): T = suspendTransaction(statement = block)
 
 fun CalcEntryEntity.toModel() =
     CalcEntry(
