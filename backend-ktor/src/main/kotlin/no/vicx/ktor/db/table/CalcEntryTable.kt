@@ -1,9 +1,9 @@
 package no.vicx.ktor.db.table
 
 import no.vicx.ktor.db.model.CalculatorOperation
-import org.jetbrains.exposed.dao.id.LongIdTable
-import org.jetbrains.exposed.sql.kotlin.datetime.CurrentTimestampWithTimeZone
-import org.jetbrains.exposed.sql.kotlin.datetime.timestampWithTimeZone
+import org.jetbrains.exposed.v1.core.dao.id.LongIdTable
+import org.jetbrains.exposed.v1.datetime.CurrentTimestampWithTimeZone
+import org.jetbrains.exposed.v1.datetime.timestampWithTimeZone
 
 object CalcEntryTable : LongIdTable("calc_entry") {
     val firstValue = long("first_value")

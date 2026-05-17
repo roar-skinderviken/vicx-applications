@@ -22,7 +22,7 @@ springmockk-version = "5.0.1"
 
 # Ktor
 ktor-version = "3.4.3"
-exposed-version = "0.61.0"
+exposed-version = "1.2.0"
 kotlin-version = "2.3.21"
 logback-version = "1.5.32"
 postgres-version = "42.7.11"

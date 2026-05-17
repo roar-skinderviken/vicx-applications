@@ -18,7 +18,7 @@ import no.vicx.ktor.util.MiscTestUtils.VALID_PLAINTEXT_PASSWORD
 import no.vicx.ktor.util.MiscTestUtils.userImageModelInTest
 import no.vicx.ktor.util.MiscTestUtils.userModelInTest
 import no.vicx.ktor.util.configureTestDb
-import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 
 class UserRepositoryTest :
     BehaviorSpec({
