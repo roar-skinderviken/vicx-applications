@@ -13,7 +13,7 @@ ktlint-version = "1.6.0"
 # spring-boot-client
 webjars-bootstrap-version = "5.3.8"
 webjars-popper-js-version = "2.11.7"
-webjars-query-version = "3.7.1"
+webjars-query-version = "4.0.0"
 
 # test
 mockk-version = "1.14.9"
