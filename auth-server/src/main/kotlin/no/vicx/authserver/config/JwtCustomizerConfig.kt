@@ -22,7 +22,7 @@ class JwtCustomizerConfig {
                 jwtEncodingContext.tokenType.value,
             )
 
-            val authentication = jwtEncodingContext.getPrincipal<Authentication?>() ?: return@OAuth2TokenCustomizer
+            val authentication = jwtEncodingContext.getPrincipal<Authentication>() ?: return@OAuth2TokenCustomizer
             val builder: JwtClaimsSet.Builder = jwtEncodingContext.claims
 
             builder.claim(

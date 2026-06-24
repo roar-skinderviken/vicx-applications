@@ -20,10 +20,10 @@ class AuthorizationServerConfig {
     @Bean
     fun authorizationService(): OAuth2AuthorizationService = InMemoryOAuth2AuthorizationService()
 
-/*
-    @Bean
-    fun authorizationConsentService(): OAuth2AuthorizationConsentService = InMemoryOAuth2AuthorizationConsentService()
-*/
+    /*
+        @Bean
+        fun authorizationConsentService(): OAuth2AuthorizationConsentService = InMemoryOAuth2AuthorizationConsentService()
+     */
 
     @Bean
     fun registeredClientRepository(
@@ -35,7 +35,7 @@ class AuthorizationServerConfig {
                 .withId(UUID.randomUUID().toString())
                 .clientId(oAuthProperties.clientId)
                 .clientSettings(ClientSettings.builder().requireAuthorizationConsent(true).build())
-                .clientSecret(passwordEncoder.encode(oAuthProperties.clientSecret))
+                .clientSecret(passwordEncoder.encode(oAuthProperties.clientSecret)!!)
                 .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
                 .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
                 .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_POST)
@@ -54,8 +54,8 @@ class AuthorizationServerConfig {
                 .tokenSettings(
                     TokenSettings
                         .builder()
-                        .accessTokenTimeToLive(oAuthProperties.accessTokenTimeToLive)
-                        .refreshTokenTimeToLive(oAuthProperties.refreshTokenTimeToLive)
+                        .accessTokenTimeToLive(oAuthProperties.accessTokenTimeToLive!!)
+                        .refreshTokenTimeToLive(oAuthProperties.refreshTokenTimeToLive!!)
                         .build(),
                 ).build()
 

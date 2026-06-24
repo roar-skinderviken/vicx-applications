@@ -25,7 +25,7 @@ class TokenStatusController(
 
         val accessToken = authorization.accessToken
 
-        return if (accessToken.isInvalidated) {
+        return if (accessToken!!.isInvalidated) {
             log.info("Token isInvalidated: {}", token)
             ResponseEntity.ok("Token isInvalidated")
         } else {

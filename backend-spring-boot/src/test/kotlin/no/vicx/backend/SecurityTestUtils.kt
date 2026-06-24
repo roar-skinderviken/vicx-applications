@@ -27,7 +27,7 @@ object SecurityTestUtils {
             override fun getName(): String = "user1"
         }
 
-    fun createJwtInTest(roles: List<String?>?): Jwt =
+    fun createJwtInTest(roles: List<String>): Jwt =
         Jwt
             .withTokenValue(VALID_JWT_STRING)
             .issuedAt(Instant.now())
