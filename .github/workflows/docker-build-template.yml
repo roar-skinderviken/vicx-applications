@@ -51,7 +51,7 @@ jobs:
 
       - name: Setup Gradle
         if : ${{ inputs.buildWithGradle }}
-        uses: gradle/actions/setup-gradle@v6
+        uses: gradle/actions/setup-gradle@v6.2.0
 
       - name: Build with Gradle
         if : ${{ inputs.buildWithGradle }}
